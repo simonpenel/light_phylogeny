@@ -1,0 +1,26 @@
+name: Examples
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: read_newick
+      run: cargo run --example  read_newick
+    - name: lca
+      run: cargo run --example  lca
+    - name: build_tree
+      run: cargo run --example  build_tree
+    - name: modify_tree
+      run: cargo run --example  modify_tree
