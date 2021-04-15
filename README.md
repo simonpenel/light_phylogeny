@@ -27,16 +27,16 @@ phyloXML, recPhyloXML, rooted newick ( NHX balises will not be considered ).
 
 multiple genes reconciliation recphyloxml:
 
-https://raw.githubusercontent.com/simonpenel/light_phylogeny/9244f3136961f909fd7b33818f0a220e3f32c880/tree2svg.example.svg
+https://raw.githubusercontent.com/simonpenel/rectree2svg/9244f3136961f909fd7b33818f0a220e3f32c880/tree2svg.example.svg
 
 
 single gene reconciliation in recphyloxml:
 
-https://raw.githubusercontent.com/simonpenel/light_phylogeny/9244f3136961f909fd7b33818f0a220e3f32c880/FAM000696_reconciliated_recphyloxml.svg
+https://raw.githubusercontent.com/simonpenel/rectree2svg/9244f3136961f909fd7b33818f0a220e3f32c880/FAM000696_reconciliated_recphyloxml.svg
 
 the same gene reconciliation in phyloxml:
 
-https://raw.githubusercontent.com/simonpenel/light_phylogeny/9244f3136961f909fd7b33818f0a220e3f32c880/FAM000696_reconciliated_xml.svg
+https://raw.githubusercontent.com/simonpenel/rectree2svg/9244f3136961f909fd7b33818f0a220e3f32c880/FAM000696_reconciliated_xml.svg
 
 # Configuration file:
 
