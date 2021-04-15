@@ -3,7 +3,19 @@ name = "light_phylogeny"
 version = "0.1.0"
 authors = ["Simon Penel <simon.penel@univ-lyon1.fr>"]
 edition = "2018"
+description ="Methods and functions for phylogeny."
+license="CECILL-2.1"
+keywords=["phylogeny", "recphyloxml", "phyloxml", "newick", "phylogenetic-tree"]
+homepage = "https://github.com/simonpenel/rectree2svg/wiki"
+repository = "https://github.com/simonpenel/rectree2svg"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
+svg = "0.8.1"
+log = "0.4.14"
+env_logger = "0.8.3"
+structopt = "0.3"
+getopt = "1.1.0"
+roxmltree = "0.14.0"
+random_color = "0.5.0"
