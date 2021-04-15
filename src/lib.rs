@@ -10,7 +10,7 @@ pub use self::arena::Event;
 pub use self::arena::Noeud;
 pub use self::arena::ArenaTree;
 
-// pub use self::arena::add_child;
+pub use self::arena::add_child;
 // pub use self::arena::bilan_mappings;
 // pub use self::arena::center_gene_nodes;
 // pub use self::arena::check_contour_postorder;
@@ -28,7 +28,7 @@ pub use self::arena::check_is_rooted;
 pub use self::arena::lca;
 // pub use self::arena::map_gene_trees;
 // pub use self::arena::map_species_trees;
-// pub use self::arena::move_child;
+pub use self::arena::move_child;
 // pub use self::arena::move_dupli_mappings;
 pub use self::arena::newick2tree;
 // pub use self::arena::node_xpos;
@@ -36,12 +36,12 @@ pub use self::arena::newick2tree;
 // pub use self::arena::push_down;
 // pub use self::arena::push_right;
 pub use self::arena::real_length;
-// pub use self::arena::reset_pos;
+pub use self::arena::reset_pos;
 // pub use self::arena::set_leaves_to_bottom;
 // pub use self::arena::set_middle_postorder;
 // pub use self::arena::set_species_width;
 // pub use self::arena::shift_mod_xy;
-// pub use self::arena::summary;
+pub use self::arena::summary;
 // pub use self::arena::xml2tree;
 //
 mod drawing;
@@ -130,7 +130,7 @@ mod tests {
         let options: Options = Options::new();
         let config: Config = Config::new();
         let _root = tree.new_node("Root".to_string());
-        phyloxml_processing(&mut tree, options, config, "toto".to_string() ) ;
+        phyloxml_processing(&mut tree, &options, &config, "toto".to_string() ) ;
         println!("Tree {:?}",tree);
     }
     #[test]
