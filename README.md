@@ -38,14 +38,6 @@ the same gene reconciliation in phyloxml:
 
 https://raw.githubusercontent.com/simonpenel/rectree2svg/9244f3136961f909fd7b33818f0a220e3f32c880/FAM000696_reconciliated_xml.svg
 
-# Configuration file:
-
-You may configure some of the features of the svg with the -c option.
-
-The default values are the values of the "config_default.txt" file.
-
-Modify the default values and save it into  "my_config.txt" then type:
-
 
 # Using the API:
 
