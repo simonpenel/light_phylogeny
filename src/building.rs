@@ -109,9 +109,8 @@ pub fn read_recphyloxml(filename:String, sp_tree: &mut ArenaTree<String>,
     info!("List of gene trees : {:?}",gene_trees);
 }
 
-
-
-
+/// Create a svg of the tree in phyloxml context
+// =============================================
 pub fn phyloxml_processing(mut tree: &mut ArenaTree<String>, options:Options, config:Config,
      outfile: String ) {
     info!("Tree : {:?}",tree);
@@ -161,6 +160,8 @@ pub fn phyloxml_processing(mut tree: &mut ArenaTree<String>, options:Options, co
     draw_tree(&mut tree, outfile, & options, & config);
 }
 
+/// Create a svg of the tree in recphyloxml context
+// =============================================
 pub fn recphyloxml_processing(mut sp_tree: &mut ArenaTree<String>,
     mut gene_trees:&mut std::vec::Vec<ArenaTree<String>>,
     mut options:Options, config:Config, outfile: String ) {
