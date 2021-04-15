@@ -51,10 +51,6 @@ Modify the default values and save it into  "my_config.txt" then type:
 
 https://crates.io/crates/light_phylogeny
 
-The API functions and methods are tagged as "API" in the Rust package documentation (https://docs.rs/light_phylogeny)
-
- Semantic Versioning Specification applies only to "API" tagged functions and methods.
-
 You may find code  examples in the "examples" directory.
 
 Simple Rust example: read a newick.txt file and creates the svg
