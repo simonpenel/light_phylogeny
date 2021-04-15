@@ -111,7 +111,7 @@ pub fn read_recphyloxml(filename:String, sp_tree: &mut ArenaTree<String>,
 
 /// Create a svg of the tree in phyloxml context
 // =============================================
-pub fn phyloxml_processing(mut tree: &mut ArenaTree<String>, options:Options, config:Config,
+pub fn phyloxml_processing(mut tree: &mut ArenaTree<String>, options: &Options, config: &Config,
      outfile: String ) {
     info!("Tree : {:?}",tree);
     // -----------------------
@@ -164,7 +164,7 @@ pub fn phyloxml_processing(mut tree: &mut ArenaTree<String>, options:Options, co
 // =============================================
 pub fn recphyloxml_processing(mut sp_tree: &mut ArenaTree<String>,
     mut gene_trees:&mut std::vec::Vec<ArenaTree<String>>,
-    mut options:Options, config:Config, outfile: String ) {
+    mut options:&mut Options, config: &Config, outfile: String ) {
 // -----------------------
 // Traitement en 12 etapes
 // -----------------------
