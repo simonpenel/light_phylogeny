@@ -18,6 +18,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: read_newick
       run: cargo run --example  read_newick
+    - name: read_recphyloxml
+      run: cargo run --example  read_recphyloxml
     - name: lca
       run: cargo run --example  lca
     - name: build_tree
