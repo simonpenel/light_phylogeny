@@ -69,9 +69,11 @@ fn main() {
 
 Some newick examples are available here : https://github.com/simonpenel/light_phylogeny/tree/master/newick_examples
 
-Simple Rust example: build a gene tree with a duplication and creates the svg
+Simple Rust example:build a gene tree, creates the svg, modiy the tree and creates a new svg:
+
 ```
-use light_phylogeny::{ArenaTree,Options,Config,Event,phyloxml_processing,summary};
+use light_phylogeny::{ArenaTree,Options,Config,Event,add_child,move_child,phyloxml_processing,
+    summary,reset_pos};
 fn main() {
     let mut tree: ArenaTree<String> = ArenaTree::default();
     let mut options: Options = Options::new();
@@ -83,6 +85,8 @@ fn main() {
     let a1 = tree.new_node("a1".to_string());
     let a2 = tree.new_node("a2".to_string());
     let a = tree.new_node("a".to_string());
+    let b1 = tree.new_node("b1".to_string());
+    let b2 = tree.new_node("b2".to_string());
     let b = tree.new_node("b".to_string());
     let c = tree.new_node("c".to_string());
     let d = tree.new_node("d".to_string());
@@ -95,6 +99,8 @@ fn main() {
     tree.arena[a1].name = "Gene A1".to_string();
     tree.arena[a2].name = "Gene A2".to_string();
     tree.arena[b].name = "Gene B".to_string();
+    tree.arena[b1].name = "Gene B1".to_string();
+    tree.arena[b2].name = "Gene B2".to_string();
     tree.arena[c].name = "Gene C".to_string();
     tree.arena[d].name = "Gene D".to_string();
     println!("");
@@ -102,34 +108,51 @@ fn main() {
     summary(&mut tree);
     // Set hierarchy
     //  a1 and a2 are children of a
-    tree.arena[a1].parent = Some(a);
-    tree.arena[a2].parent = Some(a);
-    tree.arena[a].children.push(a1);
-    tree.arena[a].children.push(a2);
+    add_child(&mut tree,a,a1);
+    add_child(&mut tree,a,a2);
+    //  a1 and a2 are children of a
+    add_child(&mut tree,b,b1);
+    add_child(&mut tree,b,b2);
     // a and b are children of c
-    tree.arena[a].parent = Some(c);
-    tree.arena[b].parent = Some(c);
-    tree.arena[c].children.push(a);
-    tree.arena[c].children.push(b);
+    add_child(&mut tree,c,a);
+    add_child(&mut tree,c,b);
     // c and d are children of root
-    tree.arena[c].parent = Some(root);
-    tree.arena[d].parent = Some(root);
-    tree.arena[root].children.push(c);
-    tree.arena[root].children.push(d);
+    add_child(&mut tree,root,c);
+    add_child(&mut tree,root,d);
+
     println!("");
     println!("Tree after hierarchy attribution:");
     summary(&mut tree);
-
-    // set duplication
-    tree.arena[a].e = Event::Duplication;
-    println!("");
-    println!("Event associated to gene {} ({}) : {:?}",a,tree.arena[a].name,tree.arena[a].e);
     // Display internal nodes
     options.gene_internal = true ;
-    phyloxml_processing(&mut tree, &options, &config,"build_tree.svg".to_string());
-    println!("Please open output file 'build_tree.svg' with your browser");
+
+    phyloxml_processing(&mut tree, &options, &config,"modify_tree_ini.svg".to_string());
+
+    println!("Add a loss to C");
+    let loss = tree.new_node("loss".to_string());
+    tree.arena[loss].name = "Loss".to_string();
+    tree.arena[loss].e = Event::Loss;
+    add_child(&mut tree,c,loss);
+
+    println!("Add a node up to  B");
+    let add = tree.new_node("add".to_string());
+    tree.arena[add].name = "Added up to  B".to_string();
+    println!("Move A to new node ");
+    move_child(&mut tree, a, add);
+    println!("Move B to new node ");
+    move_child(&mut tree, b, add);
+    println!("Move  new node to C ");
+    add_child(&mut tree, c, add);
+
+    println!("Tree after hierarchy modification:");
+    summary(&mut tree);
+    reset_pos(&mut tree);
+    phyloxml_processing(&mut tree, &options, &config,"modify_tree_mod.svg".to_string());
+
+    println!("Please open output files  'modify_tree_ini.svg' and 'modify_tree_mod.svg' with your browser");
     println!("OK.");
 }
+
 ```
 # Code Examples
 
