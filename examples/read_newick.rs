@@ -16,4 +16,23 @@ fn main() {
     read_newick("examples/newick.txt".to_string(), &mut tree);
     phyloxml_processing(&mut tree, &options, &config,"read_newick_real_landcsape.svg".to_string());
     println!("Please open output file 'read_newick_real_landcsape.svg' with your browser");
+
+    let mut tree: ArenaTree<String> = ArenaTree::default();
+    let mut options: Options = Options::new();
+    options.real_length_flag = true;
+    options.rotate = false;
+    let config: Config = Config::new();
+    read_newick("examples/newick.220.txt".to_string(), &mut tree);
+    phyloxml_processing(&mut tree, &options, &config,"read_newick_220_real_landscape.svg".to_string());
+    println!("Please open output file 'read_newick_220_real_landscape.svg' with your browser");
+
+    let mut tree: ArenaTree<String> = ArenaTree::default();
+    let mut options: Options = Options::new();
+    options.rotate = false;
+    let config: Config = Config::new();
+    read_newick("examples/newick.220.txt".to_string(), &mut tree);
+    phyloxml_processing(&mut tree, &options, &config,"read_newick_220_landscape.svg".to_string());
+    println!("Please open output file 'read_newick_220_landscape.svg' with your browser");
+
+
 }
