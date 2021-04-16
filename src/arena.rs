@@ -241,6 +241,7 @@ pub struct Options{
     pub disp_gene: usize,
     pub scale: f32,
     pub ratio: f32,
+    pub rotate: bool,
 }
 impl Options {
     pub fn new() -> Self {
@@ -255,6 +256,7 @@ impl Options {
             disp_gene:0,
             scale:1.0,
             ratio:1.0,
+            rotate:true,
         }
     }
 }

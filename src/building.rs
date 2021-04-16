@@ -111,8 +111,12 @@ pub fn read_recphyloxml(filename:String, sp_tree: &mut ArenaTree<String>,
 
 /// Create a svg of the tree in phyloxml context
 // =============================================
-pub fn phyloxml_processing(mut tree: &mut ArenaTree<String>, options: &Options, config: &Config,
-     outfile: String ) {
+pub fn phyloxml_processing(
+    mut tree: &mut ArenaTree<String>, // tree
+    options: &Options,                // display options
+    config: &Config,                  // svg configuration
+    outfile: String                   // output file
+    ) {
     info!("Tree : {:?}",tree);
     // -----------------------
     // Traitement en 4 étapes
@@ -126,7 +130,6 @@ pub fn phyloxml_processing(mut tree: &mut ArenaTree<String>, options: &Options, 
     // ---------------------------------------------------------
     let  root = tree.get_root();
     knuth_layout(&mut tree,root, &mut 1);
-
     // ---------------------------------------------------------
     // Option : Cladogramme
     // ---------------------------------------------------------
@@ -142,7 +145,6 @@ pub fn phyloxml_processing(mut tree: &mut ArenaTree<String>, options: &Options, 
     // de xmod
     // ---------------------------------------------------------
     shift_mod_xy(&mut tree, root, &mut 0.0, &mut 0.0);
-
     // ---------------------------------------------------------
     // 4ème étape : Place le parent entre les enfants
     // ---------------------------------------------------------
@@ -162,9 +164,15 @@ pub fn phyloxml_processing(mut tree: &mut ArenaTree<String>, options: &Options, 
 
 /// Create a svg of the tree in recphyloxml context
 // =============================================
-pub fn recphyloxml_processing(mut sp_tree: &mut ArenaTree<String>,
-    mut gene_trees:&mut std::vec::Vec<ArenaTree<String>>,
-    mut options:&mut Options, config: &Config, outfile: String ) {
+pub fn recphyloxml_processing(
+    mut sp_tree: &mut ArenaTree<String>,                    // species tree
+    mut gene_trees: &mut std::vec::Vec<ArenaTree<String>>,  // gene trees
+    mut options: &mut Options,                              // display options
+    config: &Config,                                        // svg configuration
+    mapping:bool,                                           // map gene and species
+    transfers: & std::vec::Vec<(String,String)>,            // optional additional transfers
+    outfile: String                                         // output file
+) {
 // -----------------------
 // Traitement en 12 etapes
 // -----------------------
@@ -188,8 +196,10 @@ if options.clado_flag {
 // connaître le nombre de noeuds d'arbre de gènes associés à
 // chaque noeud de l'arbre d'espèces
 // ---------------------------------------------------------
-map_species_trees(&mut sp_tree,&mut gene_trees);
-info!("Species tree after mapping : {:?}",sp_tree);
+if mapping {
+    map_species_trees(&mut sp_tree,&mut gene_trees);
+    info!("Species tree after mapping : {:?}",sp_tree);
+}
 // ---------------------------------------------------------
 // 3eme étape : Vérifie les conflits dans l'arbre d'espèces
 // au niveau horizontal -> valeurs xmod
@@ -219,7 +229,9 @@ check_vertical_contour_postorder(&mut sp_tree, root, 0.0);
 // d'espèce pour initialiser les coordonées des noeuds des
 // arbres de gènes
 // ---------------------------------------------------------
-map_gene_trees(&mut sp_tree,&mut gene_trees);
+if mapping {
+    map_gene_trees(&mut sp_tree,&mut gene_trees);
+}
 // ---------------------------------------------------------
 // 9ème etape : décale les noeuds de gene associés à un
 // noeud d'especes pour éviter qu'ils soit superposés
@@ -256,10 +268,10 @@ match options.species_only_flag {
     true => {
         if options.species_internal {
              options.gene_internal = true;}
-             draw_tree(&mut sp_tree, outfile, &options,  &config);
+             draw_tree(&mut sp_tree, outfile, &options, &config);
 
     },
     false => draw_sptree_gntrees(&mut sp_tree, &mut gene_trees, outfile,
-        &options, &config),
+        &options, &config, &transfers),
 };
 }
