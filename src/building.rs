@@ -14,8 +14,16 @@ use crate::drawing::{draw_tree,draw_sptree_gntrees};
 /// Read a newick file and store the tree into ArenaTree structure
 //  ===============================================================
 pub fn read_newick(filename:String, tree: &mut ArenaTree<String>) {
-    let contents = fs::read_to_string(filename)
-        .expect("Something went wrong reading the newick file");
+    let contents = fs::read_to_string(filename);
+    let contents = match contents {
+        Ok(contents) => contents,
+        Err(err) => {
+            eprintln!("Error! Something went wrong reading the newick file.");
+            eprintln!("{}",err);
+            eprintln!("Please check file name and path.");
+            std::process::exit(1);
+        },
+    };
     let root = tree.new_node("Root".to_string());
     newick2tree(contents, tree, root, &mut 0);
 }
@@ -23,8 +31,16 @@ pub fn read_newick(filename:String, tree: &mut ArenaTree<String>) {
 /// Read a phyloxml file and store the tree into a ArenaTree structure
 //  ===============================================================
 pub fn read_phyloxml(filename:String, tree: &mut ArenaTree<String>) {
-    let contents = fs::read_to_string(filename)
-        .expect("Something went wrong reading the phyloxml file");
+    let contents = fs::read_to_string(filename);
+    let contents = match contents {
+        Ok(contents) => contents,
+        Err(err) => {
+            eprintln!("Error! Something went wrong reading the phyloxml file.");
+            eprintln!("{}",err);
+            eprintln!("Please check file name and path.");
+            std::process::exit(1);
+        },
+    };
     let doc = roxmltree::Document::parse(&contents).unwrap();
     let descendants = doc.root().descendants();
     // Search for the first occurence of the "clade" tag
@@ -48,8 +64,16 @@ pub fn read_phyloxml(filename:String, tree: &mut ArenaTree<String>) {
 //  ==============================================================================================
 pub fn read_recphyloxml(filename:String, sp_tree: &mut ArenaTree<String>,
     gene_trees: &mut std::vec::Vec<ArenaTree<String>>) {
-    let contents = fs::read_to_string(filename)
-        .expect("Something went wrong reading the recphyloxml file");
+    let contents = fs::read_to_string(filename);
+    let contents = match contents {
+        Ok(contents) => contents,
+        Err(err) => {
+            eprintln!("Error! Something went wrong reading the recPhyloXML file.");
+            eprintln!("{}",err);
+            eprintln!("Please check file name and path.");
+            std::process::exit(1);
+        },
+    };
     let doc = &mut roxmltree::Document::parse(&contents).unwrap();
     // Get the  species tree:
     // Get the  NodeId associated to the first element with the "spTree" tag
