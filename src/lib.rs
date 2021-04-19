@@ -116,16 +116,23 @@ mod tests {
     }
     #[test]
     fn  check_read_newick() {
-        use std::fs;
         let mut tree: ArenaTree<String> = ArenaTree::default();
-        let contents = fs::read_to_string("examples/newick.txt")
-                    .expect("Something went wrong reading the newick file");
-        let root = tree.new_node("Root".to_string());
-        newick2tree(contents, &mut tree, root, &mut 0);
-        println!("Tree {:?}",tree);
+        read_newick("examples/newick.txt".to_string(),&mut tree);
+        let options: Options = Options::new();
+        let config: Config = Config::new();
+        phyloxml_processing(&mut tree, &options, &config, "toto.svg".to_string() ) ;
     }
     #[test]
     fn  check_read_recphylo() {
+        let mut tree: ArenaTree<String> = ArenaTree::default();
+        let options: Options = Options::new();
+        let config: Config = Config::new();
+        let _root = tree.new_node("Root".to_string());
+        phyloxml_processing(&mut tree, &options, &config, "toto".to_string() ) ;
+        println!("Tree {:?}",tree);
+    }
+    #[test]
+    fn  check_read_phylo() {
         let mut tree: ArenaTree<String> = ArenaTree::default();
         let options: Options = Options::new();
         let config: Config = Config::new();
