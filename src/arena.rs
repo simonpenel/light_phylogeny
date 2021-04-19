@@ -1543,12 +1543,13 @@ for index in &tree.arena {
             for child in children {
                 print!(" {} ({})", child, &tree.arena[*child].name);
             };
-            println!(" and its parent is {}",parent);
+            print!(" and its parent is {}",parent);
             },
         false => {
-            println!("Node {} ({}) has no children and its parent is {}",index.idx,index.name,parent)
+            print!("Node {} ({}) has no children and its parent is {}",index.idx,index.name,parent)
             },
         }
+        println!(" [{:?}]",index.e);
     }
 }
 
