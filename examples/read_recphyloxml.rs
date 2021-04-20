@@ -1,3 +1,5 @@
+// Display a reconciled tree form recPhyloXML format
+
 use light_phylogeny::{ArenaTree,Options,Config,read_recphyloxml,recphyloxml_processing};
 
 fn main() {
