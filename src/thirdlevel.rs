@@ -161,7 +161,8 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                                 gene_trees[*ng].arena[new_svgnode_bis].location = index.name.clone();
                                 // para_as_species.arena[j].nbg = 2;
                                 // debug.push((index.idx,*ng,(new_svgnode_bis,*nn)));
-                                add_gnodes.push((j,*ng,(new_svgnode_bis,*nn)));
+                                // add_gnodes.push((j,*ng,(new_svgnode_bis,*nn)));
+                                add_gnodes.push((j,*ng,(new_svgnode_bis,new_svgnode)));
                                 // para_as_species.arena[j].nodes.push = [].to_vec();
                                 //  le nouveau noeud a comme parent le parent du noeud traité
                                 gene_trees[*ng].arena[new_svgnode].parent=p;
@@ -180,8 +181,12 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                         }
                         for (node,ng,(node1,node2))  in add_gnodes {
                             println!("DEBUG ADD Gene number {}, node {} ({},{})",ng,node,node1,node2);
-                            // para_as_species.arena[node].nbg = 2;
+                            para_as_species.arena[node].nbg = para_as_species.arena[node].nbg + 1;
                             // para_as_species.arena[node].nodes = [(ng,node1),(ng,node2)].to_vec();
+                            para_as_species.arena[node].nodes.push((ng,node1)) ;
+                            para_as_species.arena[node].nbg = para_as_species.arena[node].nbg + 1;
+                            // para_as_species.arena[node].nodes = [(ng,node1),(ng,node2)].to_vec();
+                            para_as_species.arena[node].nodes.push((ng,node2)) ;
                         }
                         // let  (ng,nn)  = vecbug[2];
 
