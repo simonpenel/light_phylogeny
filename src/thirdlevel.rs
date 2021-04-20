@@ -179,7 +179,7 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                         // }
                         }
                         for (node,ng,(node1,node2))  in add_gnodes {
-                            // println!("AAAARG {:?}",bug);
+                            println!("DEBUG ADD Gene number {}, node {} ({},{})",ng,node,node1,node2);
                             // para_as_species.arena[node].nbg = 2;
                             // para_as_species.arena[node].nodes = [(ng,node1),(ng,node2)].to_vec();
                         }
