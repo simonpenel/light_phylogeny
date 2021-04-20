@@ -343,7 +343,8 @@ pub fn draw_sptree_gntrees (
                 // Est ce que BifurcationOut existe encore ???
                 Event::BifurcationOut  =>  g.append(get_carre(index.x,index.y,5.0,
                                                     "yellow".to_string())),
-                _ =>  g.append(get_circle(index.x,index.y,3.0,gene_color.to_string())),
+                Event::Speciation  =>  g.append(get_circle(index.x,index.y,3.0,gene_color.to_string())),
+                _ =>  {},
             };
             // Affiche le texte associe au noeud
             match event {
