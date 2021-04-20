@@ -1,7 +1,10 @@
 //! # light_phylogeny
 //!
 //! `light_phylogeny` is a set of methods and functions dedicated  to phylogeny.
-
+/// name = "light_phylogeny"
+/// version = "0.7.0"
+/// authors = ["Simon Penel <simon.penel@univ-lyon1.fr>"]
+/// license = "CECILL-2.1"
 
 mod arena;
 pub use self::arena::Options;

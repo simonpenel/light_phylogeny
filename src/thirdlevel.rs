@@ -1,3 +1,7 @@
+/// name = "light_phylogeny"
+/// version = "0.7.0"
+/// authors = ["Simon Penel <simon.penel@univ-lyon1.fr>"]
+/// license = "CECILL-2.1"
 use log::{info};
 use crate::arena::ArenaTree;
 use crate::arena::Event;
