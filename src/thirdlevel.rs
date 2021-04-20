@@ -50,6 +50,7 @@ pub fn map_parasite_g2s(para_as_species: &mut ArenaTree<String>,para_as_gene: &m
                     &Event::Duplication => Event::Duplication,
                     &Event::BranchingOut => Event::BranchingOut,
                     &Event::Speciation => Event::Speciation,
+                    &Event::BifurcationOut => Event::BifurcationOut,
                     &Event::Loss => Event::Loss,
                     &Event::Leaf => Event::Leaf,
                     _ => {println!("Event {:?} not selected",e);
@@ -67,6 +68,7 @@ pub fn map_parasite_g2s(para_as_species: &mut ArenaTree<String>,para_as_gene: &m
 pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
     para_as_gene: &mut ArenaTree<String>,
     gene_trees : &mut std::vec::Vec<ArenaTree<String>>) {
+    let mut virt_svg = 0; //Increment sur les noms des noeus svg virtuels
     for index in &para_as_gene.arena {
         let name = &index.name;
         let i = para_as_species.get_index(name.to_string());
@@ -145,7 +147,7 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                             println!("[map_parasite_s2g] New {:?}:", &gene_trees[*ng].arena[*nn]);
                             // In case the node is not a root (I expect index 0 is root, maybe this
                             // is not perfect) we need to add a gene node to map with the pipe species
-                            if nn > &0 {
+                            if (nn > &0) && (!index.is_a_transfert) {
                                 println!("[map_parasite_s2g] This not a gene root: adding a new gene.");
                                 // parent du noeud traité
                                 let p = gene_trees[*ng].arena[*nn].parent;
@@ -154,10 +156,14 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                                     None => panic!("[map_parasite_s2g] Unable to find parent"),
                                 };
                                 // nouveau noeud 1
-                                let new_svgnode = gene_trees[*ng].new_node("virtual1_svg".to_string());
+                                let new_svgnode = gene_trees[*ng].new_node("virtualsvg_".to_string()
+                                    + &virt_svg.to_string());
+                                virt_svg = virt_svg + 1 ;
                                 gene_trees[*ng].arena[new_svgnode].location = index.name.clone();
                                 // nouveau noeud 2
-                                let new_svgnode_bis = gene_trees[*ng].new_node("virtual2_svg".to_string());
+                                let new_svgnode_bis = gene_trees[*ng].new_node("virtualsvg_".to_string()
+                                    + &virt_svg.to_string());
+                                virt_svg = virt_svg + 1 ;
                                 gene_trees[*ng].arena[new_svgnode_bis].location = index.name.clone();
                                 // para_as_species.arena[j].nbg = 2;
                                 // debug.push((index.idx,*ng,(new_svgnode_bis,*nn)));
@@ -174,6 +180,7 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                                 gene_trees[*ng].arena[new_svgnode].children.push(*nn);
                                 gene_trees[*ng].arena[parent].children.push(new_svgnode);
                                 gene_trees[*ng].arena[parent].children.retain(|&x| x !=  *nn);
+                                println!("[map_parasite_s2g] new gene added.");
                             }
                             // &gene_trees[ng].arena[nn].nodes = vecbug;
                             // println!("DEBUG {:?}", &gene_trees[*ng].arena[*nn]);
