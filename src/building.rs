@@ -260,7 +260,9 @@ if mapping {
 // 9ème etape : décale les noeuds de gene associés à un
 // noeud d'especes pour éviter qu'ils soit superposés
 // ---------------------------------------------------------
+
 bilan_mappings(&mut sp_tree, &mut gene_trees,root, & options);
+
 // ---------------------------------------------------------
 // 10ème étape : recalcule les coordonnées svg de tous les
 // arbres de gènes
