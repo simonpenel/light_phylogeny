@@ -61,6 +61,11 @@ pub use self::building::recphyloxml_processing;
 pub use self::building::read_newick;
 pub use self::building::read_phyloxml;
 pub use self::building::read_recphyloxml;
+mod thirdlevel;
+pub use self::thirdlevel::map_transfer;
+pub use self::thirdlevel::get_gtransfer;
+pub use self::thirdlevel::map_parasite_s2g;
+pub use self::thirdlevel::map_parasite_g2s;
 #[cfg(test)]
 mod tests {
     use super::*;
