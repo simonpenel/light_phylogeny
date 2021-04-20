@@ -141,7 +141,7 @@ where
                 return Ok(node.idx)
              }
             }
-        println!("Error: Unable to find {} in the tree.",name);
+        println!("Note: Unable to find {} in the tree.",name);
         Err(0)
     }
     /// Get the index of the root.
