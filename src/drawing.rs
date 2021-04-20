@@ -178,6 +178,53 @@ pub fn draw_sptree_gntrees (
                                                  config.species_opacity.to_string());
                     g.append(chemin);
                 }
+                match  index.e {
+                    Event::Loss => {
+                        let chemin = get_chemin_sp(index.x, index.y,
+                                                   index.width/2.0, index.height/2.0,
+                                                   n.x, n.y,
+                                                   n.width/2.0, n.height/2.0,
+                                                   "black".to_string(),
+                                                   config.species_opacity.to_string());
+                        g.append(chemin);
+                        let chemin = close_chemin_sp(index.x, index.y,
+                                                     index.width/2.0, index.height/2.0,
+                                                     "black".to_string(),
+                                                     config.species_opacity.to_string());
+                        g.append(chemin);
+
+                    }
+                    Event::Duplication => {
+                        println!("Duplication!!");
+                        let carre = get_carre(index.x,index.y,2.0 * PIPEBLOCK,
+                            config.species_color.to_string());
+                        g.append(carre);
+
+                    }
+                    _=> {},
+                }
+                match  index.is_a_transfert {
+                    true => {
+                        let chemin = get_chemin_sp(index.x, index.y,
+                                                   index.width/2.0, index.height/2.0,
+                                                   n.x, n.y,
+                                                   n.width/2.0, n.height/2.0,
+                                                   "green".to_string(),
+                                                   config.species_opacity.to_string());
+                        g.append(chemin);
+                        if sp_tree.is_leaf(index.idx) {
+                            let chemin = close_chemin_sp(index.x, index.y,
+                                                         index.width/2.0, index.height/2.0,
+                                                        "green".to_string(),
+                                                         config.species_opacity.to_string());
+                            g.append(chemin);
+                        }
+
+
+
+                    },
+                    false => {},
+                }
             },
             None => {},
         };
