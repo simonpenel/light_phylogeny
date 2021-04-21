@@ -246,6 +246,7 @@ pub struct Options{
     pub scale: f32,
     pub ratio: f32,
     pub rotate: bool,
+    pub remove:bool,
 }
 impl Options {
     pub fn new() -> Self {
@@ -261,6 +262,7 @@ impl Options {
             scale:1.0,
             ratio:1.0,
             rotate:true,
+            remove:false,
         }
     }
 }
@@ -1477,6 +1479,12 @@ pub fn lca(tree : &mut ArenaTree<String>, index1:usize, index2: usize)  -> usize
         Some(p) => p,
         None =>  return index2,
     };
+    if p1 == index2 {
+        return index2
+    }
+    if p2 == index1 {
+        return index1
+    }
     let d1 = tree.depth(index1);
     let d2 = tree.depth(index2);
     info!("[lca] Distance {}: {}",index1,d1);
