@@ -199,8 +199,8 @@ pub fn draw_sptree_gntrees (
 
                     }
                     Event::Duplication => {
-                        println!("Duplication!!");
-                        let carre = get_carre(index.x,index.y,2.0 * PIPEBLOCK,
+                        // println!("Duplication!!");
+                        let carre = get_carre(index.x,index.y,1.5 * index.width,
                             config.species_color.to_string());
                         g.append(carre);
 
