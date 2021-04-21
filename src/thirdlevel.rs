@@ -166,6 +166,7 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                             // In case the node is not a root (I expect index 0 is root, maybe this
                             // is not perfect) we need to add a gene node to map exactly with the
                             // pipe species, except if the node is transfer
+                            // NOTE :  IN FACT INDEX 0 IS NOT A CORRECT INDICATION IF FORMAT IS NEWICK
                             if (nn > &0) && (!index.is_a_transfert) {
                                 info!("[map_parasite_s2g] Node is not a gene root nor a transfer: adding 2 new genes.");
                                 // We need to add 2 virtual svg nodes, 1 to be displayed in the
