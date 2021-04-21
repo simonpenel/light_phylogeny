@@ -75,25 +75,31 @@ pub fn draw_tree (
         };
         let  event = &index.e;
         match event {
-            Event::Leaf        =>  g.append(get_carre(index.x,index.y,2.0,"red".to_string())),
-            Event::Duplication =>  g.append(get_carre(index.x,index.y,SQUARESIZE,gene_color.to_string())),
+            Event::Leaf        =>  g.append(get_carre(index.x,index.y,2.0,"red".to_string(),
+                                    config.gene_opacity.to_string())),
+            Event::Duplication =>  g.append(get_carre(index.x,index.y,SQUARESIZE,
+                                    gene_color.to_string(),config.gene_opacity.to_string())),
             Event::Loss =>  {
-                let mut cross = get_cross(index.x,index.y,4.0,gene_color.to_string());
+                let mut cross = get_cross(index.x,index.y,4.0,gene_color.to_string(),
+                                    config.gene_opacity.to_string());
                 cross.assign("transform","rotate(45 ".to_owned()+&index.x.to_string()
                 + " "+&index.y.to_string()+")");
                 g.append(cross);
             },
             Event::BranchingOut =>  {
-                let mut diamond = get_carre(index.x,index.y,12.0,"orange".to_string());
+                let mut diamond = get_carre(index.x,index.y,12.0,"orange".to_string(),
+                    config.gene_opacity.to_string());
                 diamond.assign("transform","rotate(45 ".to_owned() + &index.x.to_string()
                      + " " + &index.y.to_string() + ")" );
                 g.append(diamond);
             },
 
-            _   =>  g.append(get_circle(index.x,index.y,3.0,gene_color.to_string())),
+            _   =>  g.append(get_circle(index.x,index.y,3.0,gene_color.to_string(),
+                                        config.gene_opacity.to_string())),
         };
         match index.is_a_transfert {
-            true => { g.append(get_triangle(index.x,index.y - 6.0,12.0,"yellow".to_string())) },
+            true => { g.append(get_triangle(index.x,index.y - 6.0,12.0,"yellow".to_string(),
+                                            config.gene_opacity.to_string())) },
             false => {},
         };
         let mut element = Element::new("text");
@@ -201,7 +207,7 @@ pub fn draw_sptree_gntrees (
                     Event::Duplication => {
                         // println!("Duplication!!");
                         let carre = get_carre(index.x,index.y,1.5 * index.width,
-                            config.species_color.to_string());
+                            config.species_color.to_string(),config.species_opacity.to_string());
                         g.append(carre);
 
                     }
@@ -319,18 +325,21 @@ pub fn draw_sptree_gntrees (
                  None => {
                     // C'est la racine
                     let triangle=get_triangle(index.x,index.y-SQUARESIZE,SQUARESIZE,
-                        gene_color.to_string());
+                        gene_color.to_string(),config.gene_opacity.to_string());
                     g.append(triangle);
                  },
              };
              // Dessine le symbole associe au noeud
              let  event = &index.e;
              match event {
-                 Event::Leaf        =>  g.append(get_carre(index.x,index.y,1.0,"red".to_string())),
+                 Event::Leaf        =>  g.append(get_carre(index.x,index.y,1.0,"red".to_string(),
+                                                            config.gene_opacity.to_string())),
                  Event::Duplication =>  g.append(get_carre(index.x,index.y,SQUARESIZE,
-                                                 gene_color.to_string())),
+                                                 gene_color.to_string(),
+                                                 config.gene_opacity.to_string())),
                  Event::Loss => {
-                     let mut cross = get_cross(index.x,index.y,2.0,gene_color.to_string());
+                     let mut cross = get_cross(index.x,index.y,2.0,gene_color.to_string(),
+                                                config.gene_opacity.to_string());
                      cross.assign("transform","rotate(45 ".to_owned() + &index.x.to_string()
                      + " " + &index.y.to_string() + ")" );
                      g.append(cross);
@@ -339,15 +348,19 @@ pub fn draw_sptree_gntrees (
                 // a un autre event,c'est ce dernier qui est stocké dans le champs "e"
                 // Par contre le champs "is_a_transfert" indique si le noeud prvient d'un transfer
                 Event::BranchingOut  =>  {
-                    let mut diamond = get_carre(index.x,index.y,4.0,gene_color.to_string());
+                    let mut diamond = get_carre(index.x,index.y,4.0,gene_color.to_string(),
+                                                config.gene_opacity.to_string());
                     diamond.assign("transform","rotate(45 ".to_owned() + &index.x.to_string()
                     + " " + &index.y.to_string() + ")" );
                     g.append(diamond);
                     },
                 // Est ce que BifurcationOut existe encore ???
                 Event::BifurcationOut  =>  g.append(get_carre(index.x,index.y,5.0,
-                                                    "yellow".to_string())),
-                Event::Speciation  =>  g.append(get_circle(index.x,index.y,3.0,gene_color.to_string())),
+                                                    "yellow".to_string(),
+                                                    config.gene_opacity.to_string())),
+                Event::Speciation  =>  g.append(get_circle(index.x,index.y,3.0,
+                                                            gene_color.to_string(),
+                                                            config.gene_opacity.to_string())),
                 _ =>  {},
             };
             // Affiche le texte associe au noeud
@@ -433,7 +446,7 @@ pub fn get_cadre (x: f32, y:f32,w:f32,h:f32, c:String) -> Path {
 }
 
 // Draw a square  of size s at x,y
-pub fn get_carre (x: f32, y:f32, s:f32, c:String) -> Path {
+pub fn get_carre (x: f32, y:f32, s:f32, c:String, o:String) -> Path {
     let data = Data::new()
     .move_to((x*1.0 -s*0.5 , y*1.0 -s*0.5))
     .line_by((0, s))
@@ -444,30 +457,31 @@ pub fn get_carre (x: f32, y:f32, s:f32, c:String) -> Path {
     let path = Path::new()
     .set("fill", fill)
     .set("stroke", c)
+    .set("opacity", o)
     .set("stroke-width", 3)
     .set("d", data);
     path
 }
 
 // Draw a triangle  of size s at x,y
-pub fn get_triangle (x: f32, y:f32, s:f32, c:String) -> Path {
+pub fn get_triangle (x: f32, y:f32, s:f32, c:String, o:String) -> Path {
     let data = Data::new()
     .move_to((x*1.0, y*1.0))
     .line_by((-s, -s))
     .line_by((2.0 * s, 0))
-    // .line_by((0, -s))
     .close();
     let fill = c.clone();
     let path = Path::new()
     .set("fill", fill)
     .set("stroke", c)
+    .set("opacity", o)
     .set("stroke-width", 1)
     .set("d", data);
     path
 }
 
 // Draw a circle  of size s at x,y
-pub fn get_circle (x: f32, y:f32, r:f32, c:String) -> Circle {
+pub fn get_circle (x: f32, y:f32, r:f32, c:String, o:String) -> Circle {
     let fill = c.clone();
     let circle = Circle::new()
     .set("cx", x)
@@ -475,12 +489,13 @@ pub fn get_circle (x: f32, y:f32, r:f32, c:String) -> Circle {
     .set("r", r)
     .set("fill", fill)
     .set("stroke", c)
+    .set("opacity", o)
     .set("stroke-width", 1);
     circle
 }
 
 // Draw a cross  of size s at x,y
-pub fn get_cross (x: f32, y:f32, s:f32, c:String) -> Path {
+pub fn get_cross (x: f32, y:f32, s:f32, c:String, o:String) -> Path {
     let data = Data::new()
     .move_to((x*1.0 , y*1.0 -s*2.0))
     .line_by((0, s*4.0))
@@ -490,6 +505,7 @@ pub fn get_cross (x: f32, y:f32, s:f32, c:String) -> Path {
     let path = Path::new()
     .set("fill", fill)
     .set("stroke", c)
+    .set("opacity", o)
     .set("stroke-width", s*1.0)
     .set("d", data);
     path
