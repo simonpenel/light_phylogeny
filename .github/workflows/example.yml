@@ -28,3 +28,7 @@ jobs:
       run: cargo run --example  build_tree
     - name: modify_tree
       run: cargo run --example  modify_tree
+    - name: read_recphyloxml_2
+      run: cargo run --example  read_recphyloxml_2
+    - name: read_recphyloxml_3
+      run: cargo run --example  read_recphyloxml_3
