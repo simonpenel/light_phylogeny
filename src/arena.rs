@@ -38,7 +38,10 @@ where
                                 // his parent is a BranchingOut . Since more than 1 event is
                                 // associated to the node in xml (as transferBack+leaf)
                                 // and only one is  associated to the node in the structure
-                                // ( here leaf), this is useful for drawing the transfer.
+    pub go_left: usize,                            // ( here leaf), this is useful for drawing the transfer.
+    pub go_right: usize,
+    pub fixed: bool,
+
 }
 impl<T> Noeud<T>
 where
@@ -63,6 +66,9 @@ where
             nbg: 0,
             nodes: vec![],
             is_a_transfert:false,
+            go_left: 0,
+            go_right: 0,
+            fixed:false,
         }
     }
     /// Set node event

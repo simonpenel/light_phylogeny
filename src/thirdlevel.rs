@@ -5,7 +5,7 @@
 use log::{info};
 use crate::arena::ArenaTree;
 use crate::arena::Event;
-
+use crate::arena::{lca};
 // map a transfert in gene  tree to the species tree
 pub fn map_transfer(transfers: Vec<(String,String)> , parasite_tree: &mut ArenaTree<String>) -> Vec<(String,String)> {
         let mut  map_transfers = vec![];
@@ -218,4 +218,207 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
             },
         }
     }
+}
+
+//  get the trasnsfers in a gene tree
+pub fn select_transfer(transfers: & Vec<(String,String)>,species_tree: &mut ArenaTree<String>) -> Vec<(String,String)> {
+let mut  selected = vec![];
+for (start,end) in transfers {
+    let s = species_tree.get_index(start.to_string()).expect("[select_transfer] Unable fo find start");
+    let e = species_tree.get_index(end.to_string()).expect("[select_transfer] Unable fo find start");
+    let ancestor = lca(species_tree,s,e);
+    if (ancestor != s) && (ancestor != e) {
+        selected.push((start.clone(),end.clone()));
+    }
+}
+selected
+
+}
+
+//  get the trasnsfers in a gene tree
+pub fn optimisation(transfer: & (String,String),species_tree: &mut ArenaTree<String>)  {
+    println!("");
+        let  (start,end) = transfer;
+    println!("=========================================");
+    println!("===> TRANSFER {}->{}",start,end);
+    println!("=========================================");
+    // est ce le start est a droite du end?
+    let s = species_tree.get_index(start.to_string()).expect("[select_transfer] Unable fo find start");
+    let e = species_tree.get_index(end.to_string()).expect("[select_transfer] Unable fo find start");
+    let ancestor = lca(species_tree,s,e);
+    println!("Ancestor of {}->{} is {}",start,end, &species_tree.arena[ancestor].name);
+    //  le noeu de droite de l'ancetre
+    let droite = species_tree.arena[ancestor].children[1];
+    let gauche = species_tree.arena[ancestor].children[0];
+    println!("Rigth son of ancestor is {}",&species_tree.arena[droite].name);
+    let mut _right_left_start = false;
+    if droite == s {
+        _right_left_start = true;
+    }
+    else {
+        let mut parent = species_tree.arena[s].parent;
+        while parent != None {
+            let p = match parent {
+                Some(p) => p,
+                None => panic!("[select_transfer] unexpected None"),
+            };
+            if p == droite {
+                _right_left_start = true;
+            }
+            parent = species_tree.arena[p].parent;
+        }
+    }
+    if _right_left_start {
+        println!("The start is on the right");
+// Si le start est a droit j'ajour un go_left a tous les noeuds entre le star et la racine
+// et un go right  a tous les noeuds entr ele end et la racine
+
+// SAIF QUNAD ON EST SOI MEME KE PERE
+    println!(" Start: Check if {} is not {}",species_tree.arena[s].name,species_tree.arena[droite].name);
+    if s != droite {
+        species_tree.arena[s].go_left = species_tree.arena[s].go_left +1;
+        println!("increment go left at {}",species_tree.arena[s].name);
+    }
+    let mut parent = species_tree.arena[s].parent;
+    println!("Start: Add a go left from parent of {} to {}",species_tree.arena[s].name,species_tree.arena[droite].name);
+    while (parent != Some(droite) && parent != Some(ancestor)  && parent != None) {
+                let p = match parent {
+                Some(p) => p,
+                None => panic!("[select_transfer] unexpected None"),
+            };
+            println!("increment go left at {}",species_tree.arena[p].name);
+            species_tree.arena[p].go_left = species_tree.arena[p].go_left +1;
+            parent = species_tree.arena[p].parent;
+
+    }
+
+    println!("End: Check if {} is not {}",species_tree.arena[e].name,species_tree.arena[gauche].name);
+
+    if e != gauche {
+        species_tree.arena[e].go_right = species_tree.arena[e].go_right +1;
+        println!("increment go right at {}",species_tree.arena[e].name);
+    }
+    let mut parent = species_tree.arena[e].parent;
+    println!("End: Add a go right from parent of {} to {}",species_tree.arena[e].name,species_tree.arena[gauche].name);
+
+    while (parent != Some(gauche) && parent != Some(ancestor)) {
+                let p = match parent {
+                Some(p) => p,
+                None => panic!("[select_transfer] unexpected None"),
+            };
+            println!("increment go right at {}",species_tree.arena[p].name);
+            species_tree.arena[p].go_right = species_tree.arena[p].go_right +1;
+            parent = species_tree.arena[p].parent;
+    }
+
+
+
+} else {
+    println!("The start is on the the left");
+
+    // SAIF QUNAD ON EST SOI MEME KE PERE
+        println!(" Start: Check if {} is not {}",species_tree.arena[s].name,species_tree.arena[gauche].name);
+        if s != gauche {
+            species_tree.arena[s].go_right = species_tree.arena[s].go_right +1;
+            println!("increment go rigth at {}",species_tree.arena[s].name);
+        }
+        let mut parent = species_tree.arena[s].parent;
+        println!("Start: Add a go right from parent of {} to {}",species_tree.arena[s].name,species_tree.arena[gauche].name);
+        while (parent != Some(gauche) && parent != Some(ancestor)  && parent != None) {
+                    let p = match parent {
+                    Some(p) => p,
+                    None => panic!("[select_transfer] unexpected None"),
+                };
+                println!("increment go right at {}",species_tree.arena[p].name);
+                species_tree.arena[p].go_right = species_tree.arena[p].go_right +1;
+                parent = species_tree.arena[p].parent;
+
+        }
+
+        println!("End: Check if {} is not {}",species_tree.arena[e].name,species_tree.arena[droite].name);
+
+        if e != droite {
+            species_tree.arena[e].go_left = species_tree.arena[e].go_left +1;
+            println!("increment go left at {}",species_tree.arena[e].name);
+        }
+        let mut parent = species_tree.arena[e].parent;
+        println!("End: Add a go left from parent of {} to {}",species_tree.arena[e].name,species_tree.arena[droite].name);
+
+        while (parent != Some(droite) && parent != Some(ancestor)) {
+                    let p = match parent {
+                    Some(p) => p,
+                    None => panic!("[select_transfer] unexpected None"),
+                };
+                println!("increment go left at {}",species_tree.arena[p].name);
+                species_tree.arena[p].go_left = species_tree.arena[p].go_left +1;
+                parent = species_tree.arena[p].parent;
+        }
+
+
+
+}
+
+}
+
+pub fn check_optimisation(species_tree: &mut ArenaTree<String>,node: usize, inversion:  i32) {
+    let inversion = 1;
+    let children = &mut species_tree.arena[node].children;
+    if children.len() > 0 {
+    let left = children[0];
+    let right = children[1];
+
+    let goleft_left =      species_tree.arena[left].go_left as i32;
+    let goright_left =     species_tree.arena[left].go_right as i32;
+
+    let score_goleft_left = goleft_left - goright_left;
+
+
+    let goleft_right =      species_tree.arena[right].go_left as i32;
+    let goright_right =     species_tree.arena[right].go_right as i32;
+
+    let score_goleft_right = goleft_right - goright_right;
+
+    let switch  = match inversion {
+             1 =>  score_goleft_right > score_goleft_left,
+            -1 => score_goleft_left > score_goleft_right,
+            _ => panic!("akalzkla"),
+
+    };
+    let mut _inversion = inversion;
+    println!("check fixed {}",species_tree.arena[node].name);
+    // if species_tree.arena[node].fixed == true {panic!("zzz")};
+    // if score_goleft_right > score_goleft_left {
+    if switch && ( species_tree.arena[node].fixed == false ){
+        println!("INterversion at node {} {} ({}>{})",node,species_tree.arena[node].name,score_goleft_right,score_goleft_left);
+        species_tree.arena[node].children[0] = right;
+        species_tree.arena[node].children[1] = left;
+        species_tree.arena[node].fixed = true;
+        let mut parent = species_tree.arena[node].parent;
+        while parent != None {
+            let p = match parent {
+                Some(p) => p ,
+                None => panic!("unexpected"),
+            };
+            species_tree.arena[p].fixed = true;
+            parent = species_tree.arena[p].parent;
+        };
+
+
+        _inversion = match inversion {
+            1 => -1,
+            -1 => 1,
+            _ => panic!("akalzkla"),
+        };
+
+    }
+    species_tree.arena[node].go_right = 0;
+    species_tree.arena[node].go_left = 0;
+    let inversion = _inversion;
+    check_optimisation(species_tree,left,inversion);
+
+    check_optimisation(species_tree,right,inversion);
+}
+
+
+
 }

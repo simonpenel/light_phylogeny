@@ -13,6 +13,7 @@ use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,shift_mod_xy
 use crate::arena::{map_species_trees,set_species_width,check_vertical_contour_postorder,
     map_gene_trees,bilan_mappings,center_gene_nodes,move_dupli_mappings};
 use crate::arena::{find_sptree,find_rgtrees,check_for_obsolete};
+use crate::thirdlevel::{get_gtransfer,select_transfer,optimisation,check_optimisation};
 use crate::drawing::{draw_tree,draw_sptree_gntrees};
 
 /// Read a newick file and store the tree into ArenaTree structure
@@ -228,6 +229,32 @@ if mapping {
     map_species_trees(&mut sp_tree,&mut gene_trees);
     info!("Species tree after mapping : {:?}",sp_tree);
 }
+
+// Analyse des transfers
+let gene_transfers = get_gtransfer(&mut gene_trees[0]);
+println!("TRANSFERS = {:?}",gene_transfers);
+let selected_transfers = select_transfer(&gene_transfers, &mut sp_tree);
+println!("SELECTED TRANSFERS = {:?}",selected_transfers);
+// for transfer in selected_transfers {
+//
+//     optimisation(&transfer, &mut sp_tree);
+// }
+//
+optimisation(&selected_transfers[0], &mut sp_tree);
+// println!("Species tree after optmisiation : {:?}",sp_tree);
+check_optimisation(&mut sp_tree, root, 1);
+optimisation(&selected_transfers[1], &mut sp_tree);
+// println!("Species tree after optmisiation : {:?}",sp_tree);
+check_optimisation(&mut sp_tree, root,  1);
+
+// optimisation(&gene_transfers[0], &mut sp_tree);
+// // println!("Species tree after optmisiation : {:?}",sp_tree);
+// check_optimisation(&mut sp_tree, root,  1);
+
+// optimisation(&gene_transfers[0], &mut sp_tree);
+// // println!("Species tree after optmisiation : {:?}",sp_tree);
+// check_optimisation(&mut sp_tree, root);
+
 // ---------------------------------------------------------
 // 3eme étape : Vérifie les conflits dans l'arbre d'espèces
 // au niveau horizontal -> valeurs xmod
