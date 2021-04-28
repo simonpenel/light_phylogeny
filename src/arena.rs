@@ -41,6 +41,7 @@ where
     pub go_left: usize,                            // ( here leaf), this is useful for drawing the transfer.
     pub go_right: usize,
     pub fixed: bool,
+    pub transfers: Vec<usize>,      // gene nodes associes (dans le cas d'arbre d'espece)
 
 }
 impl<T> Noeud<T>
@@ -69,6 +70,7 @@ where
             go_left: 0,
             go_right: 0,
             fixed:false,
+            transfers: vec![],
         }
     }
     /// Set node event

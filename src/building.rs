@@ -13,7 +13,7 @@ use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,shift_mod_xy
 use crate::arena::{map_species_trees,set_species_width,check_vertical_contour_postorder,
     map_gene_trees,bilan_mappings,center_gene_nodes,move_dupli_mappings};
 use crate::arena::{find_sptree,find_rgtrees,check_for_obsolete};
-use crate::thirdlevel::{get_gtransfer,select_transfer,optimisation,check_optimisation};
+use crate::thirdlevel::{get_gtransfer,select_transfer,optimisation,check_optimisation,classify_transfer,reorder_transfers};
 use crate::drawing::{draw_tree,draw_sptree_gntrees};
 
 /// Read a newick file and store the tree into ArenaTree structure
@@ -234,18 +234,62 @@ if mapping {
 let gene_transfers = get_gtransfer(&mut gene_trees[0]);
 println!("TRANSFERS = {:?}",gene_transfers);
 let selected_transfers = select_transfer(&gene_transfers, &mut sp_tree);
+
+let selected_transfers =gene_transfers;
 println!("SELECTED TRANSFERS = {:?}",selected_transfers);
+let nbt = selected_transfers.len();
+println!("Nmber of transfers = {:?}",nbt);
+
+// let mut numt = 0;
+// while numt < nbt {
+// let tr_root = optimisation(&selected_transfers[numt], &mut sp_tree);
+// // println!("Species tree after optmisiation : {:?}",sp_tree);
+// check_optimisation(&mut sp_tree, tr_root,  1);
+// numt = numt + 1;
+//
+// }
+
+let mut numt = 0 ;
+while numt < nbt {
+classify_transfer(&selected_transfers[numt], &mut sp_tree, & numt);
+numt = numt + 1;
+
+}
+ println!("Species tree after CLASS : {:?}",sp_tree);
+ let mut ordered = Vec::<usize>::new();
+ reorder_transfers(&mut sp_tree, root, &mut ordered);
+ println!("REORDERED : {:?}",ordered);
+
+
+ordered.reverse();
+for numt in ordered {
+println!("NUMT {}",numt);
+let tr_root = optimisation(&selected_transfers[numt], &mut sp_tree);
+// println!("Species tree after optmisiation : {:?}",sp_tree);
+check_optimisation(&selected_transfers[numt], &mut sp_tree, tr_root,  1);
+}
+
+// let mut numt = nbt ;
+// while numt > 0 {
+// let tr_root = optimisation(&selected_transfers[numt-1], &mut sp_tree);
+// // println!("Species tree after optmisiation : {:?}",sp_tree);
+// check_optimisation(&mut sp_tree, tr_root,  1);
+// numt = numt - 1;
+//
+// }
+
 // for transfer in selected_transfers {
 //
 //     optimisation(&transfer, &mut sp_tree);
 // }
 //
-optimisation(&selected_transfers[0], &mut sp_tree);
-// println!("Species tree after optmisiation : {:?}",sp_tree);
-check_optimisation(&mut sp_tree, root, 1);
-optimisation(&selected_transfers[1], &mut sp_tree);
-// println!("Species tree after optmisiation : {:?}",sp_tree);
-check_optimisation(&mut sp_tree, root,  1);
+// let tr_root = optimisation(&selected_transfers[1], &mut sp_tree);
+// // println!("Species tree after optmisiation : {:?}",sp_tree);
+// check_optimisation(&mut sp_tree, tr_root, 1);
+
+// let tr_root = optimisation(&selected_transfers[0], &mut sp_tree);
+// // println!("Species tree after optmisiation : {:?}",sp_tree);
+// check_optimisation(&mut sp_tree, tr_root,  1);
 
 // optimisation(&gene_transfers[0], &mut sp_tree);
 // // println!("Species tree after optmisiation : {:?}",sp_tree);
