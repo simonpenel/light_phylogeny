@@ -229,11 +229,11 @@ if mapping {
     map_species_trees(&mut sp_tree,&mut gene_trees);
     info!("Species tree after mapping : {:?}",sp_tree);
 }
-
-// Analyse des transfers
+// Analyse des transfers -inutile?/
+// ---------------------
 let gene_transfers = get_gtransfer(&mut gene_trees[0]);
-println!("TRANSFERS = {:?}",gene_transfers);
-let selected_transfers = select_transfer(&gene_transfers, &mut sp_tree);
+println!("Gene transfers = {:?}",gene_transfers);
+// let selected_transfers = select_transfer(&gene_transfers, &mut sp_tree);
 
 let selected_transfers =gene_transfers;
 println!("SELECTED TRANSFERS = {:?}",selected_transfers);
