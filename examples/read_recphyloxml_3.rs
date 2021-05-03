@@ -10,9 +10,9 @@ fn main() {
 
 
     let mut options: Options = Options::new();
-    let mut config: Config = Config::new();    
-    config.species_opacity = "0.3".to_string();
-    config.gene_opacity = "0.6".to_string();
+    let mut config: Config = Config::new();
+    config.species_opacity = "0.7".to_string();
+    config.gene_opacity = "0.9".to_string();
     let transfers = vec![];
     let infile_gene_para = "examples/recgs_dtl.recphyloxml".to_string();
     let infile_para_host = "examples/rechp_dtl.recphyloxml".to_string();

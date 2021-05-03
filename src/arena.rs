@@ -1,5 +1,5 @@
 /// name = "light_phylogeny"
-/// version = "0.7.0"
+/// version = "0.10.0"
 /// authors = ["Simon Penel <simon.penel@univ-lyon1.fr>"]
 /// license = "CECILL-2.1"
 use std::process;
@@ -254,7 +254,10 @@ pub struct Options{
     pub scale: f32,
     pub ratio: f32,
     pub rotate: bool,
-    pub remove:bool,
+    pub remove: bool,
+    pub thickness_flag: bool,
+    pub thickness_thresh: usize,
+    pub thickness_gene: usize,
 }
 impl Options {
     pub fn new() -> Self {
@@ -271,6 +274,9 @@ impl Options {
             ratio:1.0,
             rotate:true,
             remove:false,
+            thickness_flag:false,
+            thickness_thresh:0,
+            thickness_gene:0,
         }
     }
 }
