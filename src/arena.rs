@@ -246,7 +246,10 @@ pub struct Options{
     pub scale: f32,
     pub ratio: f32,
     pub rotate: bool,
-    pub remove:bool,
+    pub remove: bool,
+    pub thickness_flag: bool,
+    pub thickness_thresh: usize,
+    pub thickness_gene: usize,
 }
 impl Options {
     pub fn new() -> Self {
@@ -263,6 +266,9 @@ impl Options {
             ratio:1.0,
             rotate:true,
             remove:false,
+            thickness_flag:false,
+            thickness_thresh:0,
+            thickness_gene:0,
         }
     }
 }
