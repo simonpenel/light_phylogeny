@@ -298,18 +298,28 @@ pub fn draw_sptree_gntrees (
                      // La forme du chemin depend de l'evenement
                      let chemin = match index.is_a_transfert {
                         true => {
+
+                            // If flga thickness, the transfers will  draw later according to
+                            // redundancy
+                            // if !options.thikness_flag
+                            let transfer_opacity = match options.thickness_flag {
+                                    true => "0.0".to_string(),
+                                    false => config.gene_opacity.to_string(),
+                            };
+
                             // Verifie que le parent est bien un branchingout
                             match n.e {
+
                                 Event::BranchingOut => get_chemin_transfer(index.x,index.y,
                                         n.x,n.y,
                                         gene_color.to_string(),
-                                        config.gene_opacity.to_string(),
+                                        transfer_opacity,
                                         config.bezier.to_string().parse::<f32>().unwrap(),
                                         true),
                                 Event::BifurcationOut => get_chemin_transfer(index.x,index.y,
                                         n.x,n.y,
                                         gene_color.to_string(),
-                                        config.gene_opacity.to_string(),
+                                        transfer_opacity,
                                         config.bezier.to_string().parse::<f32>().unwrap(),
                                         true),
                                 _ => panic!("Wrong recPhyloXML feature.
@@ -400,21 +410,50 @@ pub fn draw_sptree_gntrees (
       }
   }
   // Ajoute les Transfers surnumeraire
-  for (end,start) in transfers {
-    info!("[draw_sptree_gntrees] Adding additional transfers {:?} {:?}",start,end);
-    let start_node = sp_tree.get_index(start.to_string()).expect("arg");
-    let end_node = sp_tree.get_index(end.to_string()).expect("arg");
-    let chemin = get_chemin_transfer(sp_tree.arena[start_node].x,
-        sp_tree.arena[start_node].y,
-        sp_tree.arena[end_node].x,
-        sp_tree.arena[end_node].y,
-        "red".to_string(),
-        config.gene_opacity.to_string(),
-        config.bezier.to_string().parse::<f32>().unwrap(),
-      false);
-      g.append(chemin);
+  // Analyse l'abondance des transferts
+  let mut unique_transfers: std::vec::Vec<(String,String)> =  vec![];
+  let mut scores: std::vec::Vec<usize> =  vec![];
+  let mut score_max = 1;
+  for transfer in transfers {
+      let index = unique_transfers.iter().position(|r| r == transfer);
+      match index {
+          None => {
+              unique_transfers.push(transfer.clone());
+              scores.push(1)},
+          Some(i) => {
+              scores[i] = scores[i]+ 1;
+              if scores[i] > score_max {
+                  score_max = scores[i];
+              }
+          },
+      }
   }
-  // g.append(get_cadre(x_viewbox,y_viewbox,width_svg,height_svg,"red".to_string()));
+  let mut  i_trans = 0;
+  while i_trans < unique_transfers.len() {
+      let (end,start) = &unique_transfers[i_trans];
+      let score = scores[i_trans];
+      info!("[draw_sptree_gntrees] Additional transfer {}: {}=>{} Score = {}",i_trans,start,end,score);
+      i_trans = i_trans + 1;
+      if score > options.thickness_thresh {
+          info!("[draw_sptree_gntrees] Selecting additional transfer {:?} {:?}",start,end);
+          let start_node = sp_tree.get_index(start.to_string()).expect("arg");
+          let end_node = sp_tree.get_index(end.to_string()).expect("arg");
+          let opacity = score * 100/ score_max ;
+          let opacity = opacity as f32 / 100.0 ;
+          let opacity = opacity.to_string();
+          info!("[draw_sptree_gntrees] Adding additional transfer {:?} {:?} with opacity {}",start,end,opacity);
+          let chemin = get_chemin_transfer(sp_tree.arena[start_node].x,
+              sp_tree.arena[start_node].y,
+              sp_tree.arena[end_node].x,
+              sp_tree.arena[end_node].y,
+              "red".to_string(),
+              opacity,
+              config.bezier.to_string().parse::<f32>().unwrap(),
+              false
+          );
+          g.append(chemin);
+      }
+  }
   let mut transfo: String = "translate(  ".to_owned();
   transfo.push_str(&( x_viewbox).to_string());
   transfo.push_str(" ");
