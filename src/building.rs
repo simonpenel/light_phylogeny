@@ -229,44 +229,42 @@ if mapping {
     map_species_trees(&mut sp_tree,&mut gene_trees);
     info!("Species tree after mapping : {:?}",sp_tree);
 }
-// Analyse des transfers -inutile?/
-// ---------------------
-let gene_transfers = get_gtransfer(&mut gene_trees[0]);
-println!("Gene transfers = {:?}",gene_transfers);
-// let selected_transfers = select_transfer(&gene_transfers, &mut sp_tree);
+if options.optimisation {
+    // Analyse des transfers
+    // ---------------------
+    let gene_transfers = get_gtransfer(&mut gene_trees[0]);
+    println!("Gene transfers = {:?}",gene_transfers);
+    // let selected_transfers = select_transfer(&gene_transfers, &mut sp_tree);
 
-let selected_transfers =gene_transfers;
-println!("SELECTED TRANSFERS = {:?}",selected_transfers);
-let nbt = selected_transfers.len();
-println!("Nmber of transfers = {:?}",nbt);
+    let selected_transfers =gene_transfers;
+    println!("SELECTED TRANSFERS = {:?}",selected_transfers);
+    let nbt = selected_transfers.len();
+    println!("Nmber of transfers = {:?}",nbt);
 
-// let mut numt = 0;
-// while numt < nbt {
-// let tr_root = optimisation(&selected_transfers[numt], &mut sp_tree);
-// // println!("Species tree after optmisiation : {:?}",sp_tree);
-// check_optimisation(&mut sp_tree, tr_root,  1);
-// numt = numt + 1;
-//
-// }
+    // let mut numt = 0;
+    // while numt < nbt {
+    // let tr_root = optimisation(&selected_transfers[numt], &mut sp_tree);
+    // // println!("Species tree after optmisiation : {:?}",sp_tree);
+    // check_optimisation(&mut sp_tree, tr_root,  1);
+    // numt = numt + 1;
+    //
+    // }
 
-let mut numt = 0 ;
-while numt < nbt {
-classify_transfer(&selected_transfers[numt], &mut sp_tree, & numt);
-numt = numt + 1;
-
-}
- println!("Species tree after CLASS : {:?}",sp_tree);
- let mut ordered = Vec::<usize>::new();
- reorder_transfers(&mut sp_tree, root, &mut ordered);
- println!("REORDERED : {:?}",ordered);
-
-
-ordered.reverse();
-for numt in ordered {
-println!("NUMT {}",numt);
-let tr_root = optimisation(&selected_transfers[numt], &mut sp_tree);
-// println!("Species tree after optmisiation : {:?}",sp_tree);
-check_optimisation(&selected_transfers[numt], &mut sp_tree, tr_root,  1);
+    let mut numt = 0 ;
+    while numt < nbt {
+        classify_transfer(&selected_transfers[numt], &mut sp_tree, & numt);
+        numt = numt + 1;
+    }
+    println!("Species tree after CLASS : {:?}",sp_tree);
+    let mut ordered = Vec::<usize>::new();
+    reorder_transfers(&mut sp_tree, root, &mut ordered);
+    ordered.reverse();
+    println!("REORDERED : {:?}",ordered);
+    for numt in ordered {
+        println!("NUMT {}",numt);
+        let tr_root = optimisation(&selected_transfers[numt], &mut sp_tree);
+        check_optimisation(&selected_transfers[numt], &mut sp_tree, tr_root,  1);
+    }
 }
 
 // let mut numt = nbt ;
