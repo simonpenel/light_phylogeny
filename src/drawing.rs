@@ -470,9 +470,12 @@ pub fn draw_sptree_gntrees (
               element.assign("class", "rouge");
               let txt  = Text::new(score.to_string());
               element.append(txt);
-              element.assign("transform","rotate(90 ".to_owned()+ &controle_x.to_string() + "," +
-               &controle_y.to_string()+")");
-               g.append(element);
+              match options.rotate {
+                  false => {}
+                  true => element.assign("transform","rotate(90 ".to_owned()+ &controle_x.to_string() + "," +
+                                 &controle_y.to_string()+")"),
+              };
+              g.append(element);
            }
       }
   }

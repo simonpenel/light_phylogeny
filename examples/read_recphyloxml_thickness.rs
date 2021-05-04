@@ -55,6 +55,7 @@ fn main() {
         &mut sp_tree, &mut gene_trees);
     options.thickness_thresh = 1;
     options.thickness_disp_score = true;
+    options.rotate = false;
     recphyloxml_processing(&mut sp_tree, &mut selected_gene_trees, &mut options, &config, true,
          &gene_transfers, "read_recphyloxml_threshold_3.svg".to_string());
     println!("Please open output file 'read_recphyloxml_threshold_3.svg' with your browser");
