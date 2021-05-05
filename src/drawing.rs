@@ -414,6 +414,10 @@ pub fn draw_sptree_gntrees (
   let mut unique_transfers: std::vec::Vec<(String,String)> =  vec![];
   let mut scores: std::vec::Vec<usize> =  vec![];
   let mut score_max = 1;
+  if options.thickness_disp_score {
+      let style = Style::new(".rouge { font: ".to_owned()+ &config.gene_police_size.to_string()+"px serif; fill:red ; }" );
+      document.append(style);
+  }
   for transfer in transfers {
       let index = unique_transfers.iter().position(|r| r == transfer);
       match index {
@@ -452,6 +456,27 @@ pub fn draw_sptree_gntrees (
               false
           );
           g.append(chemin);
+
+          // Affichage du score
+          if options.thickness_disp_score {
+              let bez_y = config.bezier.to_string().parse::<f32>().unwrap()  * BLOCK;
+              // Point de controle de la courbe de Bezier
+              let controle_x = (sp_tree.arena[start_node].x + sp_tree.arena[end_node].x) / 2.0  ;
+              let controle_y = (sp_tree.arena[start_node].y + sp_tree.arena[end_node].y) / 2.0
+                - bez_y - ( score.to_string().len() as f32 * &config.gene_police_size.parse::<f32>().unwrap()) ;
+              let mut element = Element::new("text");
+              element.assign("x", controle_x - 0.0);
+              element.assign("y", controle_y + 0.0);
+              element.assign("class", "rouge");
+              let txt  = Text::new(score.to_string());
+              element.append(txt);
+              match options.rotate {
+                  false => {}
+                  true => element.assign("transform","rotate(90 ".to_owned()+ &controle_x.to_string() + "," +
+                                 &controle_y.to_string()+")"),
+              };
+              g.append(element);
+           }
       }
   }
   let mut transfo: String = "translate(  ".to_owned();
