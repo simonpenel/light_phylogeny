@@ -259,6 +259,7 @@ pub struct Options{
     pub thickness_thresh: usize,
     pub thickness_gene: usize,
     pub thickness_disp_score:bool,
+    pub optimisation:bool,
 }
 impl Options {
     pub fn new() -> Self {
@@ -279,6 +280,7 @@ impl Options {
             thickness_thresh:0,
             thickness_gene:0,
             thickness_disp_score:false,
+            optimisation:false,
 
         }
     }
