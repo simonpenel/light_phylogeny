@@ -231,6 +231,10 @@ if mapping {
 }
 if options.optimisation {
     println!("Optimisation of orientation according to transfers");
+    if gene_trees.len() > 1 {
+        eprintln!("Optimisation is working only with single gene tree reconciliation.\nExit");
+        std::process::exit(1);
+    }
     // Analyse des transfers
     // ---------------------
     let gene_transfers = get_gtransfer(&mut gene_trees[0]);
