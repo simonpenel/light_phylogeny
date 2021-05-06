@@ -40,6 +40,8 @@ pub use self::arena::newick2tree;
 // pub use self::arena::push_right;
 pub use self::arena::real_length;
 pub use self::arena::reset_pos;
+pub use self::arena::scale_heigth;
+pub use self::arena::scale_width;
 // pub use self::arena::set_leaves_to_bottom;
 // pub use self::arena::set_middle_postorder;
 // pub use self::arena::set_species_width;

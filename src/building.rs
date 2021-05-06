@@ -12,7 +12,7 @@ use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,shift_mod_xy
     set_middle_postorder,real_length};
 use crate::arena::{map_species_trees,set_species_width,check_vertical_contour_postorder,
     map_gene_trees,bilan_mappings,center_gene_nodes,move_dupli_mappings};
-use crate::arena::{find_sptree,find_rgtrees,check_for_obsolete};
+use crate::arena::{find_sptree,find_rgtrees,check_for_obsolete,scale_heigth,scale_width};
 use crate::thirdlevel::{get_gtransfer,optimisation,check_optimisation,classify_transfer,reorder_transfers};
 use crate::drawing::{draw_tree,draw_sptree_gntrees};
 
@@ -179,6 +179,14 @@ pub fn phyloxml_processing(
     // ---------------------------------------------------------
     set_middle_postorder(&mut tree, root);
     // ---------------------------------------------------------
+    // OPTIONAL Scale the heigt if needed
+    // ---------------------------------------------------------
+    if options.height != 1.0 { scale_heigth(&mut tree,options.height)};
+    // ---------------------------------------------------------
+    // OPTIONAL Scale the width if needed
+    // ---------------------------------------------------------
+    if options.width != 1.0 { scale_width(&mut tree,options.width)};
+    // ---------------------------------------------------------
     // Option : real_length
     // ---------------------------------------------------------
     if options.real_length_flag {
@@ -215,7 +223,7 @@ pub fn recphyloxml_processing(
 let  root = sp_tree.get_root();
 knuth_layout(&mut sp_tree,root, &mut 1);
 // --------------------
-// Option : Cladogramme
+// OPTIONAL  Cladogramme
 // --------------------
 if options.clado_flag {
     cladogramme(&mut sp_tree);
@@ -229,6 +237,9 @@ if mapping {
     map_species_trees(&mut sp_tree,&mut gene_trees);
     info!("Species tree after mapping : {:?}",sp_tree);
 }
+// ---------------------------------------------------------
+// OPTIONAL Optimisation if needed
+// ---------------------------------------------------------
 if options.optimisation {
     println!("Optimisation of orientation according to transfers");
     if gene_trees.len() > 1 {
@@ -259,37 +270,6 @@ if options.optimisation {
         check_optimisation(&selected_transfers[numt], &mut sp_tree, tr_root);
     }
 }
-
-// let mut numt = nbt ;
-// while numt > 0 {
-// let tr_root = optimisation(&selected_transfers[numt-1], &mut sp_tree);
-// // println!("Species tree after optmisiation : {:?}",sp_tree);
-// check_optimisation(&mut sp_tree, tr_root,  1);
-// numt = numt - 1;
-//
-// }
-
-// for transfer in selected_transfers {
-//
-//     optimisation(&transfer, &mut sp_tree);
-// }
-//
-// let tr_root = optimisation(&selected_transfers[1], &mut sp_tree);
-// // println!("Species tree after optmisiation : {:?}",sp_tree);
-// check_optimisation(&mut sp_tree, tr_root, 1);
-
-// let tr_root = optimisation(&selected_transfers[0], &mut sp_tree);
-// // println!("Species tree after optmisiation : {:?}",sp_tree);
-// check_optimisation(&mut sp_tree, tr_root,  1);
-
-// optimisation(&gene_transfers[0], &mut sp_tree);
-// // println!("Species tree after optmisiation : {:?}",sp_tree);
-// check_optimisation(&mut sp_tree, root,  1);
-
-// optimisation(&gene_transfers[0], &mut sp_tree);
-// // println!("Species tree after optmisiation : {:?}",sp_tree);
-// check_optimisation(&mut sp_tree, root);
-
 // ---------------------------------------------------------
 // 3eme étape : Vérifie les conflits dans l'arbre d'espèces
 // au niveau horizontal -> valeurs xmod
@@ -315,6 +295,15 @@ set_species_width(&mut sp_tree);
 // ---------------------------------------------------------
 check_vertical_contour_postorder(&mut sp_tree, root, 0.0);
 // ---------------------------------------------------------
+// OPTIONAL Scale the heigt if needed
+// ---------------------------------------------------------
+if options.height != 1.0 { scale_heigth(&mut sp_tree,options.height)};
+// ---------------------------------------------------------
+// OPTIONAL Scale the width if needed
+// ---------------------------------------------------------
+if options.width != 1.0 { scale_width(&mut sp_tree,options.width)};
+// ---------------------------------------------------------
+// ---------------------------------------------------------
 // 8ème étape :  mapping des noeuds de genes sur les noeuds
 // d'espèce pour initialiser les coordonées des noeuds des
 // arbres de gènes
@@ -326,9 +315,7 @@ if mapping {
 // 9ème etape : décale les noeuds de gene associés à un
 // noeud d'especes pour éviter qu'ils soit superposés
 // ---------------------------------------------------------
-
 bilan_mappings(&mut sp_tree, &mut gene_trees,root, & options);
-
 // ---------------------------------------------------------
 // 10ème étape : recalcule les coordonnées svg de tous les
 // arbres de gènes
