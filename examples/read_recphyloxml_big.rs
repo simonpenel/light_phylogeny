@@ -7,6 +7,8 @@ fn main() {
     let transfers = vec![];
     let mut options: Options = Options::new();
     let mut config: Config = Config::new();
+    options.height = 2.0;
+    options.ratio = 1.5;
     // Version portrait
     let mut sp_tree: ArenaTree<String> = ArenaTree::default();
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
