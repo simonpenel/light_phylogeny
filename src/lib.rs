@@ -1,6 +1,8 @@
-//! # light_phylogeny
+//! # light structures and functions for phylogeny
 //!
-//! `light_phylogeny` is a set of methods and functions dedicated  to phylogeny.
+//! `light_phylogeny` is a set of structures and functions dedicated to reading, building,
+//! manipulating and displaying phylogenic trees, especially reconciled trees  with speciation,
+//! duplication, loss and horizontal transfer events. Read newick, phyloXML and recPhyloXML files.
 /// name = "light_phylogeny"
 /// version = "0.10.0"
 /// authors = ["Simon Penel <simon.penel@univ-lyon1.fr>"]

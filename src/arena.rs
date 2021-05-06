@@ -17,31 +17,52 @@ pub struct Noeud<T>
 where
     T: PartialEq
 {
+    /// index in the Arena structure
     pub idx: usize,             // index dans la structure
     val: T,                     // valeur unique dans la structure
+    /// name of the node
     pub name: String,           // nom du noeud ou de la feuille
+    /// parent if the node
     pub parent: Option<usize>,  // index du parent
+    /// children of the node
     pub children: Vec<usize>,   // indexes des enfants
+    /// x coordinate
     pub x: f32,                 // coordonnee x (avant rotation 90 svg)
+    /// x shift
     pub xmod: f32,              // decalage x a ajouter a x
+    /// y coordinate
     pub y: f32,                 // coordonnee y (avant rotation 90 svg)
+    /// y shift
     pub ymod: f32,              // decalage y a ajouter a y (pour les arbres reconcilies)
+    /// real branch length
     pub l: f32,                 // longueur de branche lue dans le fichier
+    /// event (duplication, speciation, loss, transfer ...)
     pub e: Event,               // evenement (dans le cas d'arbre de gene) Duplication, Loss, etc.
+    /// location of the gene tree node in the species tree (recPhyloXML)
     pub location: String,       // SpeciesLocaton associe evenement (dans le cas d'arbre de gene)
+    /// pipe width (recPhyloXML)
     pub width: f32,             // largeur du tuyeau (dans le cas d'arbre d'espece)
+    /// pipe height (recPhyloXML)
     pub height: f32,            // hauteur du tuyeau (dans le cas d'arbre d'espece)
+    /// number of gene nodes associated to the species node (recPhyloXML)
     pub nbg: usize,             // nombre de noeud  d'arbre de genes associcés à ce noeud
                                 // (dans le cas d'arbre d'espece)
+    /// number of gene nodes associated to the species node (recPhyloXML)
     pub nodes: Vec<(usize,usize)>,      // gene nodes associes (dans le cas d'arbre d'espece)
+    /// the node come from a transfer (it is a transferBack and its parent is a BranchingOut)
     pub is_a_transfert: bool,   // the node come from a tarnsfert, i.e. he is a transferBack and
                                 // his parent is a BranchingOut . Since more than 1 event is
                                 // associated to the node in xml (as transferBack+leaf)
                                 // and only one is  associated to the node in the structure
-    pub go_left: usize,                            // ( here leaf), this is useful for drawing the transfer.
+                                // (here leaf)
+    /// optimisation: number of left-side orientation minimising transfer crossings (recPhyloXML)
+    pub go_left: usize,                            // this is useful for drawing the transfer.
+    /// optimisation: number of right-side orientation minimising transfer crossings (recPhyloXML)
     pub go_right: usize,
+    /// optimisation: node is fixed, left/side orientation of children can not be modified (recPhyloXML)
     pub fixed: bool,
-    pub transfers: Vec<usize>,      // gene nodes associes (dans le cas d'arbre d'espece)
+    /// optimisation: indexes of transfers associated to the node (recPhyloXML)
+    pub transfers: Vec<usize>,      // transfer associes (dans le cas d'arbre d'espece)
 
 }
 impl<T> Noeud<T>
@@ -243,24 +264,43 @@ where
 ///  Structure Options: drawing options.
 #[derive(Debug)]
 pub struct Options{
+    /// display internal gene nodes
     pub gene_internal: bool,
+    /// display internal species nodes (recPhyloXML)
     pub species_internal: bool,
+    /// display a cladogramme
     pub clado_flag: bool,
+    /// only draw the species tree (recPhyloXML)
     pub species_only_flag: bool,
+    /// use the real branch length
     pub real_length_flag: bool,
+    /// open the svg in the browser
     pub open_browser: bool,
+    /// verbose mode
     pub verbose: bool,
+    /// only draw gene tree number # (recPhyloXML)
     pub disp_gene: usize,
+    /// scale to be applied to real branch length
     pub scale: f32,
+    /// ratio between  species pipe tree width and cumulated gene trees width (recPhyloXML)
     pub ratio: f32,
+    /// rotate the svg 90 counter clockwise
     pub rotate: bool,
+    /// not yet implemented
     pub remove: bool,
+    /// draw only one transfer to represent redundant transfers (recPhyloXML)
     pub thickness_flag: bool,
+    /// abundance threshold for displaying redundant transfers (recPhyloXML)
     pub thickness_thresh: usize,
+    /// number of the gene tree to display when displaying redundant transfers as one (recPhyloXML)
     pub thickness_gene: usize,
+    /// display the abundance of the redundant transfers (recPhyloXML)
     pub thickness_disp_score:bool,
+    /// optimise species branches left/right orientation in order to minimise transfer crossings (recPhyloXML, under development)
     pub optimisation:bool,
+    /// scale to be applied to the heigth of the tree
     pub height:f32,
+    /// width to be applied to the heigth of the tree
     pub width:f32,
 }
 impl Options {
@@ -1269,6 +1309,7 @@ pub fn shift_mod_xy( tree: &mut ArenaTree<String>, index: usize, xmod: &mut f32,
 
 }
 
+/// Scaling tree height
 pub fn scale_heigth( tree: &mut ArenaTree<String>, scale: f32) {
     for spindex in  &mut tree.arena {
         let y = spindex.y;
@@ -1276,7 +1317,7 @@ pub fn scale_heigth( tree: &mut ArenaTree<String>, scale: f32) {
 
     };
 }
-
+/// Scaling width height
 pub fn scale_width( tree: &mut ArenaTree<String>, scale: f32) {
     for spindex in  &mut tree.arena {
         let x = spindex.x;

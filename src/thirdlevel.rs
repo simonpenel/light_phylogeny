@@ -6,7 +6,7 @@ use log::{info};
 use crate::arena::ArenaTree;
 use crate::arena::Event;
 use crate::arena::{lca};
-// map a transfert in gene  tree to the species tree
+/// Map a transfert in gene  tree to the species tree
 pub fn map_transfer(transfers: Vec<(String,String)> , parasite_tree: &mut ArenaTree<String>) -> Vec<(String,String)> {
         let mut  map_transfers = vec![];
         for (start, end) in transfers {
@@ -21,7 +21,7 @@ pub fn map_transfer(transfers: Vec<(String,String)> , parasite_tree: &mut ArenaT
         map_transfers
 }
 
-//  get the trasnsfers in a gene tree
+///  Get the transfers in a gene tree
 pub fn get_gtransfer(gene_tree: &mut ArenaTree<String>) -> Vec<(String,String)> {
     let mut  transfers = vec![];
     for index in  &gene_tree.arena {
@@ -39,7 +39,7 @@ pub fn get_gtransfer(gene_tree: &mut ArenaTree<String>) -> Vec<(String,String)> 
     transfers
 }
 
-// Map a reconciled species tree to a pipe species tree
+/// Map a reconciled species tree to a pipe species tree
 pub fn map_parasite_g2s(para_as_species: &mut ArenaTree<String>,para_as_gene: &mut ArenaTree<String>,) {
     // Explore pipe species tree
     for index in  &mut para_as_species.arena {
@@ -70,7 +70,7 @@ pub fn map_parasite_g2s(para_as_species: &mut ArenaTree<String>,para_as_gene: &m
     }
 }
 
-// Map pipe species tree to reconciled species tree
+/// Map a pipe species tree to a reconciled species tree
 pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
     para_as_gene: &mut ArenaTree<String>,
     gene_trees : &mut std::vec::Vec<ArenaTree<String>>) {
