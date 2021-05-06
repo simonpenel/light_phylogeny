@@ -260,6 +260,8 @@ pub struct Options{
     pub thickness_gene: usize,
     pub thickness_disp_score:bool,
     pub optimisation:bool,
+    pub height:f32,
+    pub width:f32,
 }
 impl Options {
     pub fn new() -> Self {
@@ -281,6 +283,8 @@ impl Options {
             thickness_gene:0,
             thickness_disp_score:false,
             optimisation:false,
+            height:1.0,
+            width:1.0,
 
         }
     }
@@ -1265,7 +1269,21 @@ pub fn shift_mod_xy( tree: &mut ArenaTree<String>, index: usize, xmod: &mut f32,
 
 }
 
+pub fn scale_heigth( tree: &mut ArenaTree<String>, scale: f32) {
+    for spindex in  &mut tree.arena {
+        let y = spindex.y;
+        spindex.y = y * scale;
 
+    };
+}
+
+pub fn scale_width( tree: &mut ArenaTree<String>, scale: f32) {
+    for spindex in  &mut tree.arena {
+        let x = spindex.x;
+        spindex.x = x * scale;
+
+    };
+}
 
 #[allow(dead_code)]
 // Traverse the tree using post-order traversal starting from a given node
