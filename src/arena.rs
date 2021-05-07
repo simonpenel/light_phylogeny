@@ -571,6 +571,14 @@ pub fn xml2tree(node: roxmltree::Node, parent: usize, mut numero : &mut usize,
                 None    => tree.arena[parent].name = "Unkwnown".to_string(),
             };
         }
+        // Attribue la distance definie dans le tag branch_length
+        if child.has_tag_name("branch_length"){
+            let dist = child.first_child().unwrap().text();
+            match dist {
+                Some(text) => tree.arena[parent].l = text.to_string().parse::<f32>().unwrap(),
+                None    => panic!("[xml2tree] Unable to read branch length"),
+            };
+        }
         // Attribue l evenement
         if child.has_tag_name("eventsRec"){
             info!("[xml2tree] Event detected at {:?}",tree.arena[parent]);
