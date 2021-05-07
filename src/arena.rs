@@ -22,6 +22,8 @@ where
     val: T,                     // valeur unique dans la structure
     /// name of the node
     pub name: String,           // nom du noeud ou de la feuille
+    /// support of the node
+    pub support: String,           // support du noeud
     /// parent if the node
     pub parent: Option<usize>,  // index du parent
     /// children of the node
@@ -74,6 +76,7 @@ where
             idx,
             val,
             name: String::from("Undefined"),
+            support: String::from("Undefined"),
             parent: None,
             children: vec![],
             x: 0.0,
@@ -302,6 +305,8 @@ pub struct Options{
     pub height:f32,
     /// width to be applied to the heigth of the tree
     pub width:f32,
+    /// display support
+    pub support:bool,
 }
 impl Options {
     pub fn new() -> Self {
@@ -325,6 +330,7 @@ impl Options {
             optimisation:false,
             height:1.0,
             width:1.0,
+            support:false,
 
         }
     }
@@ -577,6 +583,14 @@ pub fn xml2tree(node: roxmltree::Node, parent: usize, mut numero : &mut usize,
             match dist {
                 Some(text) => tree.arena[parent].l = text.to_string().parse::<f32>().unwrap(),
                 None    => panic!("[xml2tree] Unable to read branch length"),
+            };
+        }
+        // Attribue le support defini dans confidence
+        if child.has_tag_name("confidence"){
+            let support = child.first_child().unwrap().text();
+            match support {
+                Some(text) => tree.arena[parent].support = text.to_string(),
+                None    => panic!("[xml2tree] Unable to read branch support"),
             };
         }
         // Attribue l evenement

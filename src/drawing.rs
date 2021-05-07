@@ -57,6 +57,9 @@ pub fn draw_tree (
         + &config.gene_police_size.to_string()+"px serif; fill:"
         + &gene_color.to_string() + "; }" );
     document.append(style);
+    let style = Style::new(".support { font:  ".to_owned()
+        + &config.gene_police_size.to_string()+"px serif; fill: red; }" );
+    document.append(style);
     let mut g = Element::new("g");
     for  index in &tree.arena {
         let _parent =  match index.parent {
@@ -102,6 +105,7 @@ pub fn draw_tree (
                                             config.gene_opacity.to_string())) },
             false => {},
         };
+        // Display name
         let mut element = Element::new("text");
         element.assign("x", index.x-5.0);
         element.assign("y", index.y+10.0);
@@ -113,6 +117,23 @@ pub fn draw_tree (
         match tree.is_leaf(index.idx) {
             true => g.append(element),
             _   =>  match options.gene_internal {
+                        true =>  g.append(element),
+                        false => {},
+                    },
+        };
+
+        // Display support
+        let mut element = Element::new("text");
+        element.assign("x", index.x-15.0);
+        element.assign("y", index.y+10.0);
+        element.assign("class", "support");
+        let txt  = Text::new(&index.support);
+        element.append(txt);
+        element.assign("transform","rotate(90 ".to_owned()+&(index.x - 15.0).to_string()
+        + ","+&(index.y + 10.0).to_string()+")");
+        match tree.is_leaf(index.idx) {
+            true => {},
+            _   =>  match options.support {
                         true =>  g.append(element),
                         false => {},
                     },
