@@ -82,7 +82,8 @@ pub fn read_recphyloxml(filename:String, sp_tree: &mut ArenaTree<String>,
     let doc = &mut roxmltree::Document::parse(&contents).unwrap();
     // Get the  species tree:
     // Get the  NodeId associated to the first element with the "spTree" tag
-    let spnode = find_sptree(doc).expect("No clade spTree has been found in xml");
+    let spnode = find_sptree(doc).expect("No clade spTree has been found in xml.\
+     Maybe input file is not a recPhyloXML file? Use option -F to use another format.");
     // Get the  Node associated  to the NodeId
     let spnode = doc.get_node(spnode).expect("Unable to get the Node associated to this nodeId");
     info!("spTree Id: {:?}",spnode);
@@ -105,7 +106,8 @@ pub fn read_recphyloxml(filename:String, sp_tree: &mut ArenaTree<String>,
     info!("Species tree : {:?}",sp_tree);
     // Get the gene trees:
     // Get the list of nodes associated to  the "recGeneTree" tag
-    let rgnodes = find_rgtrees(doc).expect("No clade recGeneTree has been found in xml");
+    let rgnodes = find_rgtrees(doc).expect("No clade recGeneTree has been found in xml.\
+     Maybe input file is not a recPhyloXML file? Use option -F to use another format");
     for rgnode in rgnodes {
         let mut gene_tree: ArenaTree<String> = ArenaTree::default();
         info!("Search recGeneTree node {:?}",rgnode);
