@@ -33,5 +33,14 @@ fn main() {
     phyloxml_processing(&mut tree, &options, &config,"read_phyloxml_dist_real.svg".to_string());
     println!("Please open output file 'read_phyloxml_dist_real.svg' with your browser");
 
+    let mut tree: ArenaTree<String> = ArenaTree::default();
+    let mut options: Options = Options::new();
+    options.real_length_flag = true;
+    options.scale = 4.0;
+    options.support = true;
+    let config: Config = Config::new();
+    read_phyloxml("examples/bcl_2.xml".to_string(), &mut tree);
+    phyloxml_processing(&mut tree, &options, &config,"read_phyloxml_events.svg".to_string());
+    println!("Please open output file 'read_phyloxml_events.svg' with your browser");
 
 }

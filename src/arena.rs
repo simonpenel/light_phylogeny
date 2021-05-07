@@ -593,9 +593,32 @@ pub fn xml2tree(node: roxmltree::Node, parent: usize, mut numero : &mut usize,
                 None    => panic!("[xml2tree] Unable to read branch support"),
             };
         }
-        // Attribue l evenement
+        // traitement events (phyloXML)
+        if child.has_tag_name("events"){
+            info!("[xml2tree]  phyloXML event detected at {:?}",tree.arena[parent]);
+            for evenement in child.children() {
+                if evenement.has_tag_name("speciations"){
+                    tree.arena[parent].set_event(Event::Speciation);
+                    info!("[xml2tree] setting event of {:?} : {:?}",tree.arena[parent].name,
+                     tree.arena[parent].e);
+                };
+                if evenement.has_tag_name("duplications"){
+                    tree.arena[parent].set_event(Event::Duplication);
+                    info!("[xml2tree] setting event of {:?} : {:?}",tree.arena[parent].name,
+                     tree.arena[parent].e);
+                };
+                if evenement.has_tag_name("losses"){
+                    tree.arena[parent].set_event(Event::Loss);
+                    info!("[xml2tree] setting event of {:?} : {:?}",tree.arena[parent].name,
+                     tree.arena[parent].e);
+                };
+
+
+            }
+        }
+        // traitement eventsRec (recPhyloXML)
         if child.has_tag_name("eventsRec"){
-            info!("[xml2tree] Event detected at {:?}",tree.arena[parent]);
+            info!("[xml2tree] recPhyloXML event detected at {:?}",tree.arena[parent]);
             let mut event_num = 0; // Le nb d'evenements dans balise eventsRec
             let mut sploss_num = 0; // pour le format obsolete
             let current_sploss_name = parent;
