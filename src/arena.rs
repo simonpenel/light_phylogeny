@@ -558,6 +558,21 @@ pub fn xml2tree(node: roxmltree::Node, parent: usize, mut numero : &mut usize,
             tree.arena[parent].children.push(name);
             // Attribue un parent a ce noeud
             tree.arena[name].parent = Some(parent);
+            let nb_att = child.attributes().len();
+            if nb_att >= 1 {
+                let mut i = 0;
+                while i < nb_att {
+                    if child.attributes()[i].name() == "branch_length" {
+                        let dist = child.attributes()[i].value().parse::<f32>();
+                        match dist {
+                            Ok(dist) => tree.arena[name].l = dist,
+                            Err(_err)    => panic!("[xml2tree] Unable to read branch length"),
+                        };
+
+                        }
+                    i = i + 1 ;
+                }
+            }
             // Explore le reste de l'arbre a partir de ce noeud
             xml2tree(child, name, &mut numero, &mut tree);
         }

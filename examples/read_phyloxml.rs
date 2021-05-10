@@ -43,4 +43,14 @@ fn main() {
     phyloxml_processing(&mut tree, &options, &config,"read_phyloxml_events.svg".to_string());
     println!("Please open output file 'read_phyloxml_events.svg' with your browser");
 
+    let mut tree: ArenaTree<String> = ArenaTree::default();
+    let mut options: Options = Options::new();
+    options.real_length_flag = true;
+    options.scale = 10.0;
+    options.support = true;
+    let config: Config = Config::new();
+    read_phyloxml("examples/ENSGT00390000003602.xml".to_string(), &mut tree);
+    phyloxml_processing(&mut tree, &options, &config,"read_phyloxml_ensembl.svg".to_string());
+    println!("Please open output file 'read_phyloxml_ensembl.svg' with your browser");
+
 }
