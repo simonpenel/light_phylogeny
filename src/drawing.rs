@@ -201,7 +201,9 @@ pub fn draw_sptree_gntrees (
                                            n.width/2.0, n.height/2.0,
                                            config.species_color.to_string(),
                                            config.species_opacity.to_string());
-                g.append(chemin);
+                if sp_tree.arena[p].visible {
+                    g.append(chemin)
+                };                           
                 if sp_tree.is_leaf(index.idx) {
                     let chemin = close_chemin_sp(index.x, index.y,
                                                  index.width/2.0, index.height/2.0,
