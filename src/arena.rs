@@ -65,6 +65,8 @@ where
     pub fixed: bool,
     /// optimisation: indexes of transfers associated to the node (recPhyloXML)
     pub transfers: Vec<usize>,      // transfer associes (dans le cas d'arbre d'espece)
+    /// will be displayed
+    pub visible: bool,
 
 }
 impl<T> Noeud<T>
@@ -95,6 +97,7 @@ where
             go_right: 0,
             fixed:false,
             transfers: vec![],
+            visible:true,
         }
     }
     /// Set node event
@@ -1253,7 +1256,22 @@ pub fn find_sptree( doc: &mut roxmltree::Document) -> Result < roxmltree::NodeId
     }
     Err(0)
 }
-
+/// Get the list of ids of all the "spTree" tag in a xml document.
+pub fn find_sptrees( doc: &mut roxmltree::Document) -> Result < Vec<roxmltree::NodeId>, usize> {
+    let descendants = doc.root().descendants();
+    let mut gene_nodes:std::vec::Vec<roxmltree::NodeId> = Vec::new();
+    // Search for the first occurnce of clade spTree
+    for  node in descendants {
+        if node.has_tag_name("spTree"){
+            gene_nodes.push(node.id());
+        }
+    }
+    info!("[find_sptrees] Number of species trees in xml = {}",gene_nodes.len());
+    match gene_nodes.len() > 0 {
+        true => return Ok(gene_nodes),
+        false => Err(0),
+    }
+}
 /// Get the list of ids of all the "regGeneTree" tag in a xml document.
 pub fn find_rgtrees( doc: &mut roxmltree::Document) -> Result < Vec<roxmltree::NodeId>, usize> {
     let descendants = doc.root().descendants();

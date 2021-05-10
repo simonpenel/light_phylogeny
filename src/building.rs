@@ -12,7 +12,7 @@ use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,shift_mod_xy
     set_middle_postorder,real_length};
 use crate::arena::{map_species_trees,set_species_width,check_vertical_contour_postorder,
     map_gene_trees,bilan_mappings,center_gene_nodes,move_dupli_mappings};
-use crate::arena::{find_sptree,find_rgtrees,check_for_obsolete,scale_heigth,scale_width};
+use crate::arena::{find_sptree,find_sptrees,find_rgtrees,check_for_obsolete,scale_heigth,scale_width};
 use crate::thirdlevel::{get_gtransfer,optimisation,check_optimisation,classify_transfer,reorder_transfers};
 use crate::drawing::{draw_tree,draw_sptree_gntrees};
 
@@ -148,6 +148,101 @@ pub fn read_recphyloxml(filename:String, sp_tree: &mut ArenaTree<String>,
         }
         // Traitement des balises obsoletes potentielles (ancien format recPhyloXML)
         check_for_obsolete(&mut gene_tree,sp_tree);
+        // Ajoute l'arbre de gene
+        gene_trees.push(gene_tree);
+    }
+    let  nb_gntree =  gene_trees.len().clone();
+    println!("Number of gene trees : {}",nb_gntree);
+    info!("List of gene trees : {:?}",gene_trees);
+}
+
+/// Read a recphyloxml file and store the species and gene trees into several ArenaTree structures
+//  ==============================================================================================
+pub fn read_recphyloxml_multi(filename:String, global_pipe: &mut ArenaTree<String>,
+    gene_trees: &mut std::vec::Vec<ArenaTree<String>>,
+    global_roots:  &mut std::vec::Vec<usize>) {
+    let contents = fs::read_to_string(filename);
+    let contents = match contents {
+        Ok(contents) => contents,
+        Err(err) => {
+            eprintln!("Error! Something went wrong reading the recPhyloXML file.");
+            eprintln!("{}",err);
+            eprintln!("Please check file name and path.");
+            std::process::exit(1);
+        },
+    };
+    let doc = &mut roxmltree::Document::parse(&contents).unwrap();
+    // Get the species trees:
+    // Get the list of nodes associated to  the "spTree" tag
+    let spnodes = find_sptrees(doc).expect("No clade spTree has been found in xml");
+    let  mut index  =  &mut 0;
+    // let mut groots: std::vec::Vec<usize> = Vec::new();
+
+    for spnode in spnodes {
+        info!("Search recGeneTree node {:?}",spnode);
+        let spnode = doc.get_node(spnode).expect("Unable to get the Node associated to this nodeId");
+        info!("Associated recGeneTree  : {:?}",spnode);
+        // Analyse the gene tree
+        let descendants = spnode.descendants();
+        // Search for the first occurence of the "clade" tag
+        // index = &(index + 1) ;
+        *index +=1;
+        for node in descendants {
+            if node.has_tag_name("clade"){
+                let globalroot = "G".to_owned()+&index.to_string();
+                // Create the node, get its associated index and store it in root again
+                println!("Create {}","G".to_owned()+&index.to_string());
+                let globalroot =global_pipe.new_node(globalroot.to_string());
+                global_roots.push(globalroot);
+                // Call xlm2tree on the root
+                xml2tree(node, globalroot, &mut index, global_pipe);
+                break;
+            }
+        }
+    }
+    if global_roots.len() > 1 {
+    println!("Racine gauche = {}",global_roots[0]);
+    println!("Racine droite = {}",global_roots[1]);
+
+    let super_root = global_pipe.new_node("SUPER_ROOT".to_string());
+    global_pipe.arena[super_root].name="SUPER ROOT".to_string();
+    global_pipe.arena[super_root].visible = false;
+    global_pipe.arena[super_root].children.push(global_roots[0]);
+    global_pipe.arena[super_root].children.push(global_roots[1]);
+    global_pipe.arena[global_roots[0]].parent = Some(super_root);
+    global_pipe.arena[global_roots[1]].parent = Some(super_root);
+    }
+
+    let  nb_sptree =  global_roots.len().clone();
+    println!("Number of species trees : {}",nb_sptree);
+    info!("List of species roots : {:?}",global_roots);
+    // Get the gene trees:
+    // Get the list of nodes associated to  the "recGeneTree" tag
+    let rgnodes = find_rgtrees(doc).expect("No clade recGeneTree has been found in xml");
+    for rgnode in rgnodes {
+        let mut gene_tree: ArenaTree<String> = ArenaTree::default();
+        info!("Search recGeneTree node {:?}",rgnode);
+        let rgnode = doc.get_node(rgnode).expect("Unable to get the Node associated to this nodeId");
+        info!("Associated recGeneTree  : {:?}",rgnode);
+        // Analyse the gene tree
+        let descendants = rgnode.descendants();
+        // Search for the first occurence of the "clade" tag
+        for node in descendants {
+            if node.has_tag_name("clade"){
+                // The first clade is the root
+                // Initialize the index used for defining the value
+                let mut index  = &mut 0;
+                // Val of the root
+                let root = "N".to_owned()+&index.to_string();
+                // Create the node, get its associated index and store it in root again
+                let root = gene_tree.new_node(root.to_string());
+                // Call xlm2tree on the root
+                xml2tree(node, root, &mut index, &mut gene_tree);
+                break;
+            }
+        }
+        // Traitement des balises obsoletes potentielles (ancien format recPhyloXML)
+        check_for_obsolete(&mut gene_tree, global_pipe);
         // Ajoute l'arbre de gene
         gene_trees.push(gene_tree);
     }

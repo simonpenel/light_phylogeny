@@ -6,6 +6,7 @@ use log::{info};
 use crate::arena::ArenaTree;
 use crate::arena::Event;
 use crate::arena::{lca};
+
 /// Map a transfert in gene  tree to the species tree
 pub fn map_transfer(transfers: Vec<(String,String)> , parasite_tree: &mut ArenaTree<String>) -> Vec<(String,String)> {
         let mut  map_transfers = vec![];
@@ -19,6 +20,56 @@ pub fn map_transfer(transfers: Vec<(String,String)> , parasite_tree: &mut ArenaT
             map_transfers.push((map_start,map_end));
         }
         map_transfers
+}
+
+// map a transfert in gene  tree to the species trees
+pub fn map_transfer_mul(transfers: Vec<(String,String)> ,
+    parasite_trees: &mut  Vec<ArenaTree<String>>) -> Vec<(String,String)> {
+    let mut  map_transfers = vec![];
+    let nb_par = parasite_trees.len();  // Nb of parasite trees
+    let mut map_start: Result<usize, usize> = Err(0);
+    let mut map_end: Result<usize, usize> = Err(0);
+    for (start, end) in transfers {
+        // Search for start
+        let mut i = 0;
+        while i < nb_par {
+            map_start = parasite_trees[i].get_index(start.to_string());
+            match map_start {
+                Ok(_) => {
+                    info!("[map_transfer_mul] Find transfert start in parasite tree {}",i);
+                    break
+                    },
+                Err(_e) => {},
+            }
+        i = i + 1;
+        };
+        info!("Map start {:?}",map_start);
+        let map_start = match map_start {
+            Ok(m) => m,
+            Err(_e) => panic!("Unable to find start of transfer"),
+        };
+        let map_start = parasite_trees[i].arena[map_start].location.to_string();
+        // Search for end
+        let mut i = 0;
+        while i < nb_par {
+            map_end = parasite_trees[i].get_index(end.to_string());
+            match map_end {
+                Ok(_) => {
+                    info!("[map_transfer_mul] Find transfert end in parasite tree {}",i);
+                    break
+                },
+                Err(_e) => {},
+            }
+            i = i + 1;
+        };
+        let map_end = match map_end {
+            Ok(m) => m,
+            Err(_e) => panic!("Unable to find end of transfer"),
+        };
+        let map_end = parasite_trees[i].arena[map_end].location.to_string();
+        map_transfers.push((map_start,map_end));
+        }
+    map_transfers
 }
 
 ///  Get the transfers in a gene tree
