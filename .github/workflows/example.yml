@@ -16,19 +16,33 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: lca
+      run: cargo run --example  lca
+    - name: lca_2
+      run: cargo run --example  lca_2
+    - name: build_tree
+      run: cargo run --example  build_tree
+    - name: modify_tree
+      run: cargo run --example  modify_tree
     - name: read_newick
       run: cargo run --example  read_newick
     - name: read_phyloxml
       run: cargo run --example  read_phyloxml
     - name: read_recphyloxml
       run: cargo run --example  read_recphyloxml
-    - name: lca
-      run: cargo run --example  lca
-    - name: build_tree
-      run: cargo run --example  build_tree
-    - name: modify_tree
-      run: cargo run --example  modify_tree
     - name: read_recphyloxml_2
       run: cargo run --example  read_recphyloxml_2
     - name: read_recphyloxml_3
       run: cargo run --example  read_recphyloxml_3
+    - name: read_recphyloxml_multi
+      run: cargo run --example  read_recphyloxml_multi
+    - name: read_recphyloxml_switch
+      run: cargo run --example  read_recphyloxml_switch
+    - name: read_recphyloxml_thickness
+      run: cargo run --example  read_recphyloxml_thickness
+    - name: read_recphyloxml_width_height
+      run: cargo run --example  read_recphyloxml_width_height
+
+  examples/read_recphyloxml_switch.rs
+examples/modify_tree.rs  examples/read_recphyloxml_big.rs    examples/read_recphyloxml_thickness.rs
+examples/read_newick.rs  examples/read_recphyloxml_multi.rs  examples/read_recphyloxml_width_height.rs
