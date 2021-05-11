@@ -42,7 +42,3 @@ jobs:
       run: cargo run --example  read_recphyloxml_thickness
     - name: read_recphyloxml_width_height
       run: cargo run --example  read_recphyloxml_width_height
-
-  examples/read_recphyloxml_switch.rs
-examples/modify_tree.rs  examples/read_recphyloxml_big.rs    examples/read_recphyloxml_thickness.rs
-examples/read_newick.rs  examples/read_recphyloxml_multi.rs  examples/read_recphyloxml_width_height.rs
