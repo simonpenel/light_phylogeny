@@ -174,14 +174,25 @@ pub fn read_recphyloxml_multi(filename:String, global_pipe: &mut ArenaTree<Strin
     let doc = &mut roxmltree::Document::parse(&contents).unwrap();
     // Get the species trees:
     // Get the list of nodes associated to  the "spTree" tag
-    let spnodes = find_sptrees(doc).expect("No clade spTree has been found in xml");
+    // let spnodes = find_sptrees(doc).expect("No clade spTree has been found in xml");
+    let spnodes = find_sptrees(doc);
+    let spnodes = match spnodes {
+        Ok(indexes) => indexes,
+        Err(_err) => {
+            eprintln!("\nError: No clade spTree has been found in xml.\
+            \nIt seems that the input file is not a recPhyloXML file.\
+            \nUse option -F to force to use phyloXML or newick format.");
+             std::process::exit(1);
+        },
+    };
+
     let  mut index  =  &mut 0;
     // let mut groots: std::vec::Vec<usize> = Vec::new();
 
     for spnode in spnodes {
-        info!("Search recGeneTree node {:?}",spnode);
+        info!("Search spTree node {:?}",spnode);
         let spnode = doc.get_node(spnode).expect("Unable to get the Node associated to this nodeId");
-        info!("Associated recGeneTree  : {:?}",spnode);
+        info!("Associated spTree  : {:?}",spnode);
         // Analyse the gene tree
         let descendants = spnode.descendants();
         // Search for the first occurence of the "clade" tag
@@ -218,11 +229,23 @@ pub fn read_recphyloxml_multi(filename:String, global_pipe: &mut ArenaTree<Strin
     info!("List of species roots : {:?}",global_roots);
     // Get the gene trees:
     // Get the list of nodes associated to  the "recGeneTree" tag
-    let rgnodes = find_rgtrees(doc).expect("No clade recGeneTree has been found in xml");
+    // let rgnodes = find_rgtrees(doc).expect("No clade recGeneTree has been found in xml");
+    let rgnodes = find_rgtrees(doc);
+    let rgnodes = match rgnodes {
+        Ok(indexes) => indexes,
+        Err(_err) => {
+            eprintln!("\nError: No clade recGeneTree has been found in xml.\
+            \nIt seems that the input file is not a recPhyloXML file.\
+            \nUse option -F to force to use phyloXML or newick format.");
+             std::process::exit(1);
+        },
+    };
     for rgnode in rgnodes {
         let mut gene_tree: ArenaTree<String> = ArenaTree::default();
         info!("Search recGeneTree node {:?}",rgnode);
         let rgnode = doc.get_node(rgnode).expect("Unable to get the Node associated to this nodeId");
+
+
         info!("Associated recGeneTree  : {:?}",rgnode);
         // Analyse the gene tree
         let descendants = rgnode.descendants();
