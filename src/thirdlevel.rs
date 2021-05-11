@@ -142,7 +142,7 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                 let p = &index.parent;
                 let p = match p {
                     Some(p) => p,
-                    None => panic!("[map_parasite_s2g] Error: node as not parent"),
+                    None => panic!("[map_parasite_s2g] Error: node has not parent"),
                 };
                 // p is the parent of the node in the rec species which is not found
                 // in the pipe species
@@ -170,8 +170,88 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                         para_as_species.arena[j].children.push(new_loss);
                         info!("[map_parasite_s2g]  => parent is now : {:?}",para_as_species.arena[j]);
                     },
+                    Event::Leaf => {
+                        info!("[map_parasite_s2g]  => missing node is a Leaf, I add it to parent");
+                        //  New pipe species node with the name find in the rec species tree
+                        let new_leaf = para_as_species.new_node(name.to_string());
+                        para_as_species.arena[new_leaf].name = name.to_string();
+                        // Add the new pipe species node to j
+                        para_as_species.arena[new_leaf].parent = Some(j);
+                        para_as_species.arena[j].children.push(new_leaf);
+                        //  Transfering the gene nodes associated to j in  the pipe species
+                        //  to the new pipe species node
+                        let gnodes = &para_as_species.arena[j].nodes;
+                        let &nbg = &para_as_species.arena[j].nbg;
+                        para_as_species.arena[new_leaf].nodes = gnodes.to_vec();
+                        para_as_species.arena[new_leaf].nbg = nbg;
+                        para_as_species.arena[j].nbg = 0;
+                        para_as_species.arena[j].nodes = [].to_vec();
+
+                        info!("[map_parasite_s2g]  => parent is now : {:?}",para_as_species.arena[j]);
+
+                        // Now we modify the location of  the gene nodes (gene species maping)
+                        // We may have to add  a node in  the gene tree for j
+                        // gene nodes associated to the new rec species node:
+                        let new_gnodes = &para_as_species.arena[new_leaf].nodes;
+                        // Array of gene nodes we will have to deal with  afterrwawrds
+                        let mut add_gnodes = [].to_vec();
+                        for (ng,nn) in new_gnodes { // ng is the tree number, nn the index of node
+                            info!("[map_parasite_s2g] Modify gene tree number {}",*ng);
+                            info!("[map_parasite_s2g] Redefine location of the node.");
+                            info!("[map_parasite_s2g] Previous {:?}:", &gene_trees[*ng].arena[*nn]);
+                            gene_trees[*ng].arena[*nn].location = para_as_species.arena[new_leaf].name.to_string();
+                            info!("[map_parasite_s2g] New {:?}:", &gene_trees[*ng].arena[*nn]);
+                            // In case the node is not a root (I expect index 0 is root, maybe this
+                            // is not perfect) we need to add a gene node to map exactly with the
+                            // pipe species, except if the node is transfer
+                            // NOTE :  IN FACT INDEX 0 IS NOT A CORRECT INDICATION IF FORMAT IS NEWICK
+                            if (nn > &0) && (!index.is_a_transfert) {
+                                info!("[map_parasite_s2g] Node is not a gene root nor a transfer: adding 2 new genes.");
+                                // We need to add 2 virtual svg nodes, 1 to be displayed in the
+                                // pipe node j, and 1 because we want a binary tree.
+                                // parent du noeud traité
+                                let p = gene_trees[*ng].arena[*nn].parent;
+                                let parent =  match p {
+                                    Some(p) => p,
+                                    None => panic!("[map_parasite_s2g] Unable to find parent"),
+                                };
+                                // nouveau noeud 1
+                                let new_svgnode = gene_trees[*ng].new_node("virtualsvg_".to_string()
+                                + &virt_svg.to_string());
+                                virt_svg = virt_svg + 1 ;
+                                // A verifier
+                                gene_trees[*ng].arena[new_svgnode].location = index.name.clone();
+                                // nouveau noeud 2
+                                let new_svgnode_bis = gene_trees[*ng].new_node("virtualsvg_".to_string()
+                                + &virt_svg.to_string());
+                                virt_svg = virt_svg + 1 ;
+                                // A verifier
+                                gene_trees[*ng].arena[new_svgnode_bis].location = index.name.clone();
+                                add_gnodes.push((j,*ng,(new_svgnode_bis,new_svgnode)));
+                                // para_as_species.arena[j].nodes.push = [].to_vec();
+                                //  le nouveau noeud a comme parent le parent du noeud traité
+                                gene_trees[*ng].arena[new_svgnode].parent=p;
+                                //  le noeud traite a comme parent le nouveau noeud
+                                gene_trees[*ng].arena[*nn].parent=Some(new_svgnode);
+                                //  le noeud bis a comme parent le nouveau noeud
+                                gene_trees[*ng].arena[new_svgnode_bis].parent=Some(new_svgnode);
+                                gene_trees[*ng].arena[new_svgnode].children.push(new_svgnode_bis);
+                                gene_trees[*ng].arena[new_svgnode].children.push(*nn);
+                                gene_trees[*ng].arena[parent].children.push(new_svgnode);
+                                gene_trees[*ng].arena[parent].children.retain(|&x| x !=  *nn);
+                                info!("[map_parasite_s2g] new gene added.");
+                            }
+                        }
+                        for (node,ng,(node1,node2))  in add_gnodes {
+                            info!("[map_parasite_s2g] Adding gene nodes of tree number {} to species node {} ({},{})",ng,node,node1,node2);
+                            para_as_species.arena[node].nbg = para_as_species.arena[node].nbg + 1;
+                            para_as_species.arena[node].nodes.push((ng,node1)) ;
+                            para_as_species.arena[node].nbg = para_as_species.arena[node].nbg + 1;
+                            para_as_species.arena[node].nodes.push((ng,node2)) ;
+                        }
+                    },
                     _ => {
-                        info!("[map_parasite_s2g]  => missing node is a not Loss, I insert it between  parent and chidren");
+                        info!("[map_parasite_s2g]  => missing node is a not Loss nor a Leaf, I insert it between  parent and chidren");
                         //  New pipe species node with the name find in the rec species tree
                         let new_node = para_as_species.new_node(name.to_string());
                         para_as_species.arena[new_node].name = name.to_string();
