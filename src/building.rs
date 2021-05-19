@@ -433,7 +433,6 @@ check_vertical_contour_postorder(&mut sp_tree, root, 0.0);
 // Egalise les feuilles
 let largest_y  = sp_tree.get_largest_y();
 set_leaves_y_values(sp_tree,root,largest_y);
-
 // ---------------------------------------------------------
 // OPTIONAL Scale the heigt if needed
 // ---------------------------------------------------------
@@ -479,6 +478,12 @@ center_gene_nodes(&mut sp_tree,&mut gene_trees,root);
 // 12eme etape traite spécifiquement les duplications et les feuilles
 // ---------------------------------------------------------
 move_dupli_mappings(&mut sp_tree, &mut gene_trees,root);
+
+
+// Egalise les feuilles
+let largest_y  = sp_tree.get_largest_y();
+set_leaves_y_values(sp_tree,root,largest_y);
+
 // // ---------------------------------------------------------
 // // Fin: Ecriture du fichier svg
 // // ---------------------------------------------------------
