@@ -9,7 +9,7 @@ use crate::arena::ArenaTree;
 use crate::arena::Config;
 use crate::arena::{newick2tree,xml2tree};
 use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,shift_mod_xy,
-    set_middle_postorder,real_length};
+    set_middle_postorder,real_length,set_leaves_y_values};
 use crate::arena::{map_species_trees,set_species_width,check_vertical_contour_postorder,
     map_gene_trees,bilan_mappings,center_gene_nodes,move_dupli_mappings};
 use crate::arena::{find_sptree,find_sptrees,find_rgtrees,check_for_obsolete,scale_heigth,scale_width};
@@ -430,6 +430,10 @@ set_species_width(&mut sp_tree);
 // l'arbre d'espèces
 // ---------------------------------------------------------
 check_vertical_contour_postorder(&mut sp_tree, root, 0.0);
+// Egalise les feuilles
+let largest_y  = sp_tree.get_largest_y();
+set_leaves_y_values(sp_tree,root,largest_y);
+
 // ---------------------------------------------------------
 // OPTIONAL Scale the heigt if needed
 // ---------------------------------------------------------
