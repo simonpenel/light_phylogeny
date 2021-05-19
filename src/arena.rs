@@ -1363,6 +1363,24 @@ pub fn set_leaves_to_bottom( tree: &mut ArenaTree<String>, index: usize, max:&mu
     }
 }
 
+// Set the y values of the leaves
+pub fn set_leaves_y_values( tree: &mut ArenaTree<String>, index: usize, y:  f32) {
+    let children  = &mut  tree.arena[index].children;
+    if children.len() > 0 {
+        let son_left = children[0];
+        let son_right = children[1];
+        set_leaves_y_values(tree,son_left,y);
+        set_leaves_y_values(tree,son_right,y);
+    }
+    else {
+        match tree.arena[index].e {
+            Event::Loss => {},
+            _ => tree.arena[index].set_y_noref(y),
+        };
+    }
+}
+
+
 // Shift the  x values  of a node and its children according to the cumulated xmod values
 pub fn shift_mod_xy( tree: &mut ArenaTree<String>, index: usize, xmod: &mut f32, ymod: &mut f32) {
     info!("[shift_mod_xy] shifting {:?} xmod={} ymod={}",tree.arena[index],xmod,ymod);
