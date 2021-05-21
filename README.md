@@ -37,6 +37,10 @@ the same gene reconciliation in phyloxml:
 
 https://raw.githubusercontent.com/simonpenel/rectree2svg/9244f3136961f909fd7b33818f0a220e3f32c880/FAM000696_reconciliated_xml.svg
 
+multiple gene trees with redundant transfers. Display only 1 gene tree and the transfers according to the abundance of the transfer:
+
+https://raw.githubusercontent.com/simonpenel/rectree2svg/f9ee031fa23b815ff7cc7298fd0dc4fb45707d53/transfers_abundance.svg
+
 
 
 # Using the API:
