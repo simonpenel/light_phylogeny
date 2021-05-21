@@ -414,12 +414,12 @@ pub fn draw_sptree_gntrees (
                 Event::Leaf        => {
                     let mut element = Element::new("text");
                     element.assign("x", index.x - 5.0);
-                    element.assign("y", index.y + 25.0);
+                    element.assign("y", index.y + 15.0);
                     element.assign("class", "gene_".to_owned()+&idx_rcgen.to_string());
                     let txt  = Text::new(&index.name);
                     element.append(txt);
                     element.assign("transform","rotate(90 ".to_owned() + &(index.x - 5.0).to_string()
-                    + "," + &(index.y + 25.0).to_string() + ")" );
+                    + "," + &(index.y + 15.0).to_string() + ")" );
                     g.append(element);
                     },
                 _ => {
