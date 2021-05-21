@@ -932,6 +932,7 @@ pub fn check_for_obsolete( gene_tree:&mut ArenaTree<String>, species_tree:&mut A
     info!("[check_for_obsolete] Final gene tree {:?}",&gene_tree);
 }
 
+#[allow(dead_code)]
 // Set the coordinates of the gene tree according to species tree coordinates
 pub fn map_gene_trees(sp_tree: &mut ArenaTree<String>,
                       gene_trees:&mut std::vec::Vec<ArenaTree<String>>) {
