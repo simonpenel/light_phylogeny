@@ -205,8 +205,21 @@ pub fn draw_sptree_gntrees (
                     g.append(chemin)
                 };
                 if sp_tree.is_leaf(index.idx) {
+                    // Set the y value of the pipe leaf ro the highest value of the y gene leaves
+                    let mut max_gene_y =  index.y;
+                    for (gene_index, gene_node ) in &index.nodes {
+                        let gene_y = gene_trees[*gene_index].arena[*gene_node].y;
+                        if  gene_trees[*gene_index].arena[*gene_node].e != Event::Loss {
+                            if gene_y >  max_gene_y {
+                                max_gene_y = gene_y;
+                            }
+                        }
+                    };
+                    if max_gene_y == index.y {
+                         max_gene_y = max_gene_y +index.height / 2.0;
+                    }
                     let chemin = close_chemin_sp(index.x, index.y,
-                                                 index.width/2.0, index.height/2.0,
+                                                 index.width/2.0, max_gene_y - index.y,
                                                  config.species_color.to_string(),
                                                  config.species_opacity.to_string());
                     g.append(chemin);
@@ -400,13 +413,13 @@ pub fn draw_sptree_gntrees (
             match event {
                 Event::Leaf        => {
                     let mut element = Element::new("text");
-                    element.assign("x", index.x+10.0);
-                    element.assign("y", index.y+0.0);
+                    element.assign("x", index.x - 5.0);
+                    element.assign("y", index.y + 25.0);
                     element.assign("class", "gene_".to_owned()+&idx_rcgen.to_string());
                     let txt  = Text::new(&index.name);
                     element.append(txt);
-                    element.assign("transform","rotate(90 ".to_owned() + &index.x.to_string()
-                    + "," + &index.y.to_string() + ")" );
+                    element.assign("transform","rotate(90 ".to_owned() + &(index.x - 5.0).to_string()
+                    + "," + &(index.y + 25.0).to_string() + ")" );
                     g.append(element);
                     },
                 _ => {
