@@ -11,7 +11,7 @@ use crate::arena::{newick2tree,xml2tree};
 use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,shift_mod_xy,
     set_middle_postorder,real_length,set_leaves_y_values};
 use crate::arena::{map_species_trees,set_species_width,check_vertical_contour_postorder,
-    map_gene_trees,bilan_mappings,center_gene_nodes,move_dupli_mappings};
+    bilan_mappings,center_gene_nodes,move_dupli_mappings};
 use crate::arena::{find_sptree,find_sptrees,find_rgtrees,check_for_obsolete,scale_heigth,scale_width};
 use crate::thirdlevel::{get_gtransfer,optimisation,check_optimisation,classify_transfer,reorder_transfers};
 use crate::drawing::{draw_tree,draw_sptree_gntrees};
@@ -446,10 +446,12 @@ if options.width != 1.0 { scale_width(&mut sp_tree,options.width)};
 // 8ème étape :  mapping des noeuds de genes sur les noeuds
 // d'espèce pour initialiser les coordonées des noeuds des
 // arbres de gènes
+//  ETAPE INUTILE ET SUPPRIMEE
 // ---------------------------------------------------------
-if mapping {
-    map_gene_trees(&mut sp_tree,&mut gene_trees);
-}
+// if mapping {
+//  map_gene_trees(&mut sp_tree,&mut gene_trees);
+// }
+
 // ---------------------------------------------------------
 // 9ème etape : décale les noeuds de gene associés à un
 // noeud d'especes pour éviter qu'ils soit superposés
@@ -458,18 +460,20 @@ bilan_mappings(&mut sp_tree, &mut gene_trees,root, & options);
 // ---------------------------------------------------------
 // 10ème étape : recalcule les coordonnées svg de tous les
 // arbres de gènes
+//  ETAPE INUTILE ET SUPPRIMEE
 // ---------------------------------------------------------
-let  nb_gntree =  gene_trees.len(); // Nombre d'arbres de gene
-info!("map_species_trees: {} gene trees to be processed",nb_gntree);
-let mut idx_rcgen = 0;  // Boucle sur les arbres de genes
-loop {
-    let  groot = gene_trees[idx_rcgen].get_root();
-    shift_mod_xy(&mut gene_trees[idx_rcgen], groot, &mut 0.0, &mut 0.0);
-    idx_rcgen += 1;
-    if idx_rcgen == nb_gntree {
-        break;
-    }
-}
+// let  nb_gntree =  gene_trees.len(); // Nombre d'arbres de gene
+// info!("map_species_trees: {} gene trees to be processed",nb_gntree);
+// let mut idx_rcgen = 0;  // Boucle sur les arbres de genes
+// loop {
+//     let  groot = gene_trees[idx_rcgen].get_root();
+//     // shift_mod_xy(&mut gene_trees[idx_rcgen], groot, &mut 0.0, &mut 0.0);
+//     idx_rcgen += 1;
+//     if idx_rcgen == nb_gntree {
+//         break;
+//     }
+// }
+
 // ---------------------------------------------------------
 // 11eme etape : centre les noeuds de genes dans le noeud de l'espece
 // ---------------------------------------------------------
@@ -478,11 +482,6 @@ center_gene_nodes(&mut sp_tree,&mut gene_trees,root);
 // 12eme etape traite spécifiquement les duplications et les feuilles
 // ---------------------------------------------------------
 move_dupli_mappings(&mut sp_tree, &mut gene_trees,root);
-
-
-// Egalise les feuilles
-let largest_y  = sp_tree.get_largest_y();
-set_leaves_y_values(sp_tree,root,largest_y);
 
 // // ---------------------------------------------------------
 // // Fin: Ecriture du fichier svg
