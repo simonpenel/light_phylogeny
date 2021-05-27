@@ -424,7 +424,7 @@ set_middle_postorder(&mut sp_tree, root);
 // ---------------------------------------------------------
 // 6ème etape : Fixe l'épaisseur de l'arbre d'espèces
 // ---------------------------------------------------------
-set_species_width(&mut sp_tree);
+set_species_width(&mut sp_tree, &mut gene_trees);
 // ---------------------------------------------------------
 // 7ème étape :  Vérifie les conflits verticaux dans
 // l'arbre d'espèces
@@ -482,7 +482,6 @@ center_gene_nodes(&mut sp_tree,&mut gene_trees,root);
 // 12eme etape traite spécifiquement les duplications et les feuilles
 // ---------------------------------------------------------
 move_dupli_mappings(&mut sp_tree, &mut gene_trees,root);
-
 // // ---------------------------------------------------------
 // // Fin: Ecriture du fichier svg
 // // ---------------------------------------------------------

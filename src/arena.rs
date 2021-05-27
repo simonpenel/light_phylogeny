@@ -1011,120 +1011,133 @@ pub fn bilan_mappings(sp_tree: &mut ArenaTree<String>,
     info!("[bilan_mappings] Species Node {}",sp_tree.arena[index].name);
     let ratio = options.ratio ;   // permet de regler l'ecartement entre les noeuds de genes dans
                                   // l'arbre d'espece
-    let  mut shift = 0.0;
-    let  mut shift_x = sp_tree.arena[index].nbg as f32 -1.0 ;
+    // shift_left_x is a shift for x for a left node
+    // shift_right_x is a shift for x for a right node
+    // shift_y is a shift for y for a any node
+    let  mut shift_left_x = 0.0;
+    let  mut shift_y = 0.0;
+    let  mut shift_right_x = sp_tree.arena[index].nbg as f32 -1.0 ;
     let incr = 1.0;
     // TODO classer selon le Y du pere pour eviter les croisement
     // boucle sur m'espeve
     for (index_node, node)  in &sp_tree.arena[index].nodes {
         info!("[bilan_mappings] >>> {:?} {:?}",gene_trees[*index_node].arena[*node].name,
          gene_trees[*index_node].arena[*node].e);
-        // println!("DEBUG {}/{}",shift,&sp_tree.arena[index].nbg);
         let bool_left = sp_tree.is_left(index);
         match  gene_trees[*index_node].arena[*node].e {
             Event::Duplication => {
                 let x = gene_trees[*index_node].arena[*node].x;
                 let x = match bool_left {
-                    true   => x + PIPEBLOCK*shift / ratio,
-                    false  => x + PIPEBLOCK*shift_x / ratio,
+                    true   => x + PIPEBLOCK*shift_left_x / ratio,
+                    false  => x + PIPEBLOCK*shift_right_x / ratio,
                 };
                 gene_trees[*index_node].arena[*node].set_x_noref(x);
                 let y = gene_trees[*index_node].arena[*node].y;
-                let y = y + PIPEBLOCK*shift / ratio;
+                let y = y + PIPEBLOCK*shift_y / ratio;
                 gene_trees[*index_node].arena[*node].set_y_noref(y);
-                shift = shift + incr;
-                shift_x = shift_x - incr;
+                // Do not shift on x  duplicated nodes
+                // shift = shift + incr;
+                shift_y = shift_y + incr;
+                // Do not shift on x  duplicated nodes
+                // shift_x = shift_x - incr;
             },
             Event::Speciation => {
                 let x = gene_trees[*index_node].arena[*node].x;
                 let x = match bool_left {
-                    true   => x + PIPEBLOCK*shift / ratio,
-                    false  => x + PIPEBLOCK*shift_x / ratio,
+                    true   => x + PIPEBLOCK*shift_left_x / ratio,
+                    false  => x + PIPEBLOCK*shift_right_x / ratio,
                 };
                 gene_trees[*index_node].arena[*node].set_x_noref(x);
                 let y = gene_trees[*index_node].arena[*node].y;
-                let y = y + PIPEBLOCK*shift / ratio;
+                let y = y + PIPEBLOCK*shift_y / ratio;
                 gene_trees[*index_node].arena[*node].set_y_noref(y);
-                shift = shift + incr;
-                shift_x = shift_x - incr;
+                shift_left_x = shift_left_x + incr;
+                shift_y = shift_y + incr;
+                shift_right_x = shift_right_x - incr;
             },
             Event::TransferBack => {
                 let x = gene_trees[*index_node].arena[*node].x;
                 let x = match bool_left {
-                    true   => x + PIPEBLOCK*shift / ratio,
-                    false  => x + PIPEBLOCK*shift_x / ratio,
+                    true   => x + PIPEBLOCK*shift_left_x / ratio,
+                    false  => x + PIPEBLOCK*shift_right_x / ratio,
                 };
                 gene_trees[*index_node].arena[*node].set_x_noref(x);
                 let y = gene_trees[*index_node].arena[*node].y;
-                let y = y + PIPEBLOCK*shift / ratio;
+                let y = y + PIPEBLOCK*shift_y / ratio;
                 gene_trees[*index_node].arena[*node].set_y_noref(y);
-                shift = shift + incr;
-                shift_x = shift_x - incr;
+                shift_left_x = shift_left_x + incr;
+                shift_y = shift_y + incr;
+                shift_right_x = shift_right_x - incr;
             },
             Event::BranchingOut => {
                 let x = gene_trees[*index_node].arena[*node].x;
                 let x = match bool_left {
-                    true   => x + PIPEBLOCK*shift / ratio,
-                    false  => x + PIPEBLOCK*shift_x / ratio,
+                    true   => x + PIPEBLOCK*shift_left_x / ratio,
+                    false  => x + PIPEBLOCK*shift_right_x / ratio,
                 };
                 gene_trees[*index_node].arena[*node].set_x_noref(x);
                 let y = gene_trees[*index_node].arena[*node].y;
-                let y = y + PIPEBLOCK*shift / ratio;
+                let y = y + PIPEBLOCK*shift_y / ratio;
                 gene_trees[*index_node].arena[*node].set_y_noref(y);
-                shift = shift + incr;
-                shift_x = shift_x - incr;
+                shift_left_x = shift_left_x + incr;
+                shift_y = shift_y + incr;
+                shift_right_x = shift_right_x - incr;
             },
             Event::Leaf => {
                 let x = gene_trees[*index_node].arena[*node].x;
                 let x = match bool_left {
-                    true   => x + PIPEBLOCK*shift / ratio,
-                    false  => x + PIPEBLOCK*shift_x / ratio,
+                    true   => x + PIPEBLOCK*shift_left_x / ratio,
+                    false  => x + PIPEBLOCK*shift_right_x / ratio,
                 };
                 gene_trees[*index_node].arena[*node].set_x_noref(x);
                 let y = gene_trees[*index_node].arena[*node].y;
-                let y = y + PIPEBLOCK*shift;
+                let y = y + PIPEBLOCK*shift_y;
                 gene_trees[*index_node].arena[*node].set_y_noref(y);
-                shift = shift + incr;
-                shift_x = shift_x - incr;
+                shift_left_x = shift_left_x + incr;
+                shift_y = shift_y + incr;
+                shift_right_x = shift_right_x - incr;
             },
             Event::Loss => {
                 let x = gene_trees[*index_node].arena[*node].x;
                 let x = match bool_left {
-                    true   => x + PIPEBLOCK*shift / ratio,
-                    false  => x + PIPEBLOCK*shift_x / ratio,
+                    true   => x + PIPEBLOCK*shift_left_x / ratio,
+                    false  => x + PIPEBLOCK*shift_right_x / ratio,
                 };
                 gene_trees[*index_node].arena[*node].set_x_noref(x);
                 let y = gene_trees[*index_node].arena[*node].y;
-                let y = y + PIPEBLOCK*shift / ratio;
+                let y = y + PIPEBLOCK*shift_y / ratio;
                 gene_trees[*index_node].arena[*node].set_y_noref(y);
-                shift = shift + incr;
-                shift_x = shift_x - incr;
+                shift_left_x = shift_left_x + incr;
+                shift_y = shift_y + incr;
+                shift_right_x = shift_right_x - incr;
             },
             Event::BifurcationOut => {
                 let x = gene_trees[*index_node].arena[*node].x;
                 let x = match bool_left {
-                    true   => x + PIPEBLOCK*shift / ratio,
-                    false  => x + PIPEBLOCK*shift_x / ratio,
+                    true   => x + PIPEBLOCK*shift_left_x / ratio,
+                    false  => x + PIPEBLOCK*shift_right_x / ratio,
                 };
                 gene_trees[*index_node].arena[*node].set_x_noref(x);
                 let y = gene_trees[*index_node].arena[*node].y;
-                let y = y + PIPEBLOCK*shift / ratio;
+                let y = y + PIPEBLOCK*shift_y / ratio;
                 gene_trees[*index_node].arena[*node].set_y_noref(y);
-                shift = shift + incr;
-                shift_x = shift_x - incr;
+                shift_left_x = shift_left_x + incr;
+                shift_y = shift_y + incr;
+                shift_right_x = shift_right_x - incr;
             },
             Event::ObsoleteSpeciationLoss => {
                 let x = gene_trees[*index_node].arena[*node].x;
                 let x = match bool_left {
-                    true   => x + PIPEBLOCK*shift / ratio,
-                    false  => x + PIPEBLOCK*shift_x / ratio,
+                    true   => x + PIPEBLOCK*shift_left_x / ratio,
+                    false  => x + PIPEBLOCK*shift_right_x / ratio,
                 };
                 gene_trees[*index_node].arena[*node].set_x_noref(x);
                 let y = gene_trees[*index_node].arena[*node].y;
-                let y = y + PIPEBLOCK*shift / ratio;
+                let y = y + PIPEBLOCK*shift_y / ratio;
                 gene_trees[*index_node].arena[*node].set_y_noref(y);
-                shift = shift + incr;
-                shift_x = shift_x - incr;
+                shift_left_x = shift_left_x + incr;
+                shift_y = shift_y + incr;
+                shift_right_x = shift_right_x - incr;
             },
             _=> {},
         }
@@ -1231,12 +1244,21 @@ pub fn center_gene_nodes(sp_tree: &mut ArenaTree<String>,
 }
 
 // Set the width of the species tree pipe.
-pub fn set_species_width(sp_tree: &mut ArenaTree<String>) {
+pub fn set_species_width(sp_tree: &mut ArenaTree<String>,
+                         gene_trees: &mut std::vec::Vec<ArenaTree<String>>) {
     for spindex in  &mut sp_tree.arena {
         let  nbg = spindex.nbg;
+        let nodes = &spindex.nodes;
+        let mut nb_duplication_node = 0;
+        for (index_node,node) in nodes {
+            if gene_trees[*index_node].arena[*node].e == Event::Duplication {
+                nb_duplication_node = nb_duplication_node + 1;
+            }
+        }
+        // nb_duplication_node = 0;
         if nbg > 0 {
-            spindex.width =  nbg as f32 * PIPEBLOCK;
-            spindex.height = nbg as f32 * PIPEBLOCK;
+            spindex.width = ( nbg - nb_duplication_node ) as f32 * PIPEBLOCK;
+            spindex.height = ( nbg - 0 ) as f32 * PIPEBLOCK;
         }
         else {
             spindex.width =   PIPEBLOCK;
