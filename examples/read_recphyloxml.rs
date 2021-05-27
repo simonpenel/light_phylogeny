@@ -41,5 +41,17 @@ fn main() {
          &transfers, "read_recphyloxml_mult.svg".to_string());
     println!("Please open output file 'read_recphyloxml_mult.svg' with your browser");
 
+    // Version pour verifier la gestion des duplication
+    let mut options: Options = Options::new();
+    let config: Config = Config::new();
+
+
+    let mut sp_tree: ArenaTree<String> = ArenaTree::default();
+    let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
+    read_recphyloxml("examples/FAM000297_reconciliated.recphylo".to_string(),
+        &mut sp_tree, &mut gene_trees);
+    recphyloxml_processing(&mut sp_tree, &mut gene_trees, &mut options, &config, true,
+         &transfers, "read_recphyloxml_FAM000297_reconciliated.svg".to_string());
+    println!("Please open output file 'read_recphyloxml_FAM000297_reconciliated' with your browser");
 
 }
