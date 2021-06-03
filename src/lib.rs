@@ -34,6 +34,7 @@ pub use self::arena::lca;
 // pub use self::arena::map_gene_trees;
 // pub use self::arena::map_species_trees;
 pub use self::arena::move_child;
+pub use self::arena::remove_child;
 // pub use self::arena::move_dupli_mappings;
 pub use self::arena::newick2tree;
 // pub use self::arena::node_xpos;

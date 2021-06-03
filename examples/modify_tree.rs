@@ -1,4 +1,4 @@
-use light_phylogeny::{ArenaTree,Options,Config,Event,add_child,move_child,phyloxml_processing,
+use light_phylogeny::{ArenaTree,Options,Config,Event,add_child,move_child,remove_child,phyloxml_processing,
     summary,reset_pos};
 fn main() {
     let mut tree: ArenaTree<String> = ArenaTree::default();
@@ -75,11 +75,20 @@ fn main() {
     move_child(&mut tree, b, add);
     println!("Move  new node to C ");
     add_child(&mut tree, c, add);
-
     println!("Tree after hierarchy modification:");
     summary(&mut tree);
     reset_pos(&mut tree);
     phyloxml_processing(&mut tree, &options, &config,"modify_tree_mod.svg".to_string());
+
+
+
+    println!("Remove tree  Added up to  B");
+    remove_child(&mut tree, add);
+    println!("Tree after suppression:");
+    summary(&mut tree);
+    reset_pos(&mut tree);
+    phyloxml_processing(&mut tree, &options, &config,"modify_tree_removed.svg".to_string());
+
 
     // knuth_layout(&mut tree,root, &mut 1);
     // cladogramme(&mut tree);
@@ -87,6 +96,6 @@ fn main() {
     // shift_mod_xy(&mut tree, root, &mut 0.0, &mut 0.0);
     // set_middle_postorder(&mut tree, root);
     // draw_tree(&mut tree,"modify_tree_mod.svg".to_string(),&options,&config);
-    println!("Please open output files  'modify_tree_ini.svg' and 'modify_tree_mod.svg' with your browser");
+    println!("Please open output files  'modify_tree_ini.svg' 'modify_tree_mod.svg'and 'modify_tree_removed.svg' with your browser");
     println!("OK.");
 }

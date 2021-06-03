@@ -1787,3 +1787,27 @@ pub fn move_child(tree : &mut ArenaTree<String>, child:usize, new_parent:usize) 
     info!("[move_child] new parent node : {:?}",tree.arena[new_parent]);
 
 }
+
+#[allow(dead_code)]
+/// Move a node from a parent node to another node
+pub fn remove_child(tree : &mut ArenaTree<String>, child:usize)  {
+    let parent =  match tree.arena[child].parent {
+        Some(p) => p,
+        None => panic!("Node {:?} has no parent.",child),
+    };
+    info!("[remove_child] remmoving {} from {}",child,parent);
+    let children = tree.arena[child].children.clone();
+    tree.arena[child].children = [].to_vec();
+    if children.len() > 0 {
+        remove_child(tree,children[0]);
+        remove_child(tree,children[1]);
+        tree.arena[children[0]].parent=None;
+        tree.arena[children[1]].parent=None;
+    };
+    // tree.arena[child].parent = Some(new_parent);
+    // tree.arena[new_parent].children.push(child);
+    // tree.arena[parent].children.retain(|&x| x !=  child);
+    // info!("[move_child] parent node : {:?}",tree.arena[parent]);
+    // info!("[move_child] new parent node : {:?}",tree.arena[new_parent]);
+
+}
