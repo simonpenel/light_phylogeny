@@ -1,23 +1,28 @@
 // Display a reconciled tree form recPhyloXML format
 
-use light_phylogeny::{ArenaTree,Options,Config,read_recphyloxml_multi,recphyloxml_processing};
+use light_phylogeny::{ArenaTree,Options,Config,read_recphyloxml_multi,recphyloxml_processing,
+    phyloxml_processing,reset_pos};
 
 fn main() {
 
     let transfers = vec![];
     let mut options: Options = Options::new();
     let config: Config = Config::new();
-    // Version portrait
     let mut sp_tree: ArenaTree<String> = ArenaTree::default();
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
     let mut global_roots: std::vec::Vec<usize> = Vec::new();
     read_recphyloxml_multi("examples/recgs_mult_host_dtl.recphyloxml".to_string(),
         &mut sp_tree, &mut gene_trees, &mut global_roots);
+    // Version recphylo
     recphyloxml_processing(&mut sp_tree, &mut gene_trees, &mut options, &config, true,
          &transfers, "read_recphyloxml_multi.svg".to_string());
-    println!("Please open output file 'read_recphyloxml_multi.svg' with your browser");
+     // Version phylo
+    reset_pos(&mut sp_tree);
+    phyloxml_processing(&mut sp_tree, &mut options, &config,
+        "read_phyloxml_multi.svg".to_string());
 
-
+    println!("Please open output files 'read_recphyloxml_multi.svg' with your browser");
+    println!("Please open output files 'read_phyloxml_multi.svg' with your browser");
 
 
 }
