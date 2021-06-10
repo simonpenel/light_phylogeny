@@ -71,7 +71,9 @@ pub fn draw_tree (
                 false => {get_chemin_carre(index.x,index.y,n.x,n.y,gene_color.to_string(),
                          config.gene_opacity.to_string(),false)},
                 };
-                g.append(chemin);
+                if tree.arena[p].visible  {
+                    g.append(chemin);
+                }
                 0
             },
             None => {-1},
@@ -97,8 +99,8 @@ pub fn draw_tree (
                 g.append(diamond);
             },
 
-            _   =>  g.append(get_circle(index.x,index.y,3.0,gene_color.to_string(),
-                                        config.gene_opacity.to_string())),
+            _   => if index.visible { g.append(get_circle(index.x,index.y,3.0,gene_color.to_string(),
+                                        config.gene_opacity.to_string()))},
         };
         match index.is_a_transfert {
             true => { g.append(get_triangle(index.x,index.y - 6.0,12.0,"yellow".to_string(),
