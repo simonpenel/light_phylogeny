@@ -21,8 +21,23 @@ fn main() {
     phyloxml_processing(&mut sp_tree, &mut options, &config,
         "read_phyloxml_multi.svg".to_string());
 
+    let mut sp_tree: ArenaTree<String> = ArenaTree::default();
+    let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
+    let mut global_roots: std::vec::Vec<usize> = Vec::new();
+    read_recphyloxml_multi("examples/ex2comp.recphyloxml".to_string(),
+        &mut sp_tree, &mut gene_trees, &mut global_roots);
+    // Version recphylo
+    recphyloxml_processing(&mut sp_tree, &mut gene_trees, &mut options, &config, true,
+         &transfers, "read_recphyloxml_multi_2.svg".to_string());
+     // Version phylo
+    reset_pos(&mut sp_tree);
+    phyloxml_processing(&mut sp_tree, &mut options, &config,
+        "read_phyloxml_multi_2.svg".to_string());
+
     println!("Please open output files 'read_recphyloxml_multi.svg' with your browser");
     println!("Please open output files 'read_phyloxml_multi.svg' with your browser");
+    println!("Please open output files 'read_recphyloxml_multi_2.svg' with your browser");
+    println!("Please open output files 'read_phyloxml_multi_2.svg' with your browser");
 
 
 }

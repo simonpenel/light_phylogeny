@@ -3,7 +3,7 @@
 
 use light_phylogeny::{ArenaTree,Options,Config,read_recphyloxml,recphyloxml_processing,
 phyloxml_processing,reset_pos,map_transfer,get_gtransfer,summary,
-map_parasite_g2s,map_parasite_s2g};
+map_parasite_g2s,map_parasite_s2g,map_gene_host};
 use log::{info};
 
 fn main() {
@@ -38,6 +38,12 @@ fn main() {
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
     read_recphyloxml(infile_gene_para,&mut tree_para_pipe,&mut gene_trees);
     let  nb_gntree =  gene_trees.len().clone();
+    // let mut gene_trees_clone:std::vec::Vec<ArenaTree<String>> = Vec::new();
+    // let mut i = 0;
+    // while i < nb_gntree {
+    //  gene_trees_clone.push(gene_trees[i].clone());
+    // i = i + 1;
+    // }
     println!("Number of gene trees : {}",nb_gntree);
     info!("List of gene trees : {:?}",gene_trees);
     recphyloxml_processing(&mut tree_para_pipe,&mut  gene_trees, &mut options, &config,true,
@@ -102,7 +108,7 @@ fn main() {
 
     // attention on ne remape pas
     recphyloxml_processing(&mut tree_para_pipe, &mut gene_trees, &mut options, &config, false,
-        &transfers,"test_mapped.svg".to_string());
+        &transfers,"visu_3levels_1.svg".to_string());
 
     // Generation des svg hote parsite  +transfert gene
 
@@ -125,5 +131,17 @@ fn main() {
     reset_pos(&mut para_trees[0]);
     // attention on ne remape pas
     recphyloxml_processing(&mut tree_host_pipe, &mut para_trees, &mut options, &config,
-        false, &mapped_gene_transfers,"test_mapped_2levels.svg".to_string());
+        false, &mapped_gene_transfers,"visu_3levels_2.svg".to_string());
+
+
+    // mapping des gene sur les hotes via les parasites
+    map_gene_host(&mut gene_trees, &mut para_trees[0], &mut tree_host_pipe);
+    reset_pos(&mut tree_host_pipe);
+    let mut i = 0;
+    while i < nb_gntree {
+        reset_pos(&mut gene_trees[i]);
+        i = i + 1;
+    }
+    recphyloxml_processing(&mut tree_host_pipe, &mut gene_trees, &mut options, &config,
+        true, &vec![],"visu_3levels_3.svg".to_string());
 }
