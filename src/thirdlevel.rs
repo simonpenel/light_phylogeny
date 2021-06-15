@@ -5,6 +5,7 @@
 use log::{info};
 use crate::arena::ArenaTree;
 use crate::arena::Event;
+use crate::arena::PIPEBLOCK;
 use crate::arena::{lca};
 
 /// Map a transfert in gene  tree to the species tree
@@ -348,6 +349,98 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
 
             },
         }
+    }
+}
+
+pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipe: &mut ArenaTree<String>, tree_host_pipe:&mut ArenaTree<String>) {
+    // unmap the host tree
+    let mut j = 0;
+    let nb_nodes = tree_host_pipe.arena.len();
+    while j < nb_nodes {
+        tree_host_pipe.arena[j].nbg = 0;
+        tree_host_pipe.arena[j].nodes  = vec![];
+        tree_host_pipe.arena[j].width =  PIPEBLOCK;
+        tree_host_pipe.arena[j].height =  PIPEBLOCK;
+        j = j + 1 ;
+    }
+
+
+    let mut i = 0;
+    let nb_genes = gene_trees.len();
+    while i < nb_genes {
+        // let  mut gene_tree = &gene_trees[i];
+        // for &mut node in  gene_tree {
+        //     println!("debug NODE {:?}",&node);
+        let mut j = 0;
+        let nb_nodes = gene_trees[i].arena.len();
+        let mut amodifier:std::vec::Vec<(usize,String)> = Vec::new(); // a cause des noeuds de
+                                                                      // de genes ajoutes pour
+                                                                      // matcher avec l'arbre
+                                                                      // d'espèces
+        while j < nb_nodes {
+            // println!("debug NODE {:?}",gene_trees[i].arena[j].location);
+            // cherche l'espce dans l'arbre du parasite
+            let espece = gene_trees[i].arena[j].location.clone();
+            let espece_index = tree_para_pipe.get_index(espece);
+            let espece_index = match espece_index {
+                Ok(n) => n,
+                Err(_e) => {
+                    panic!("[map_gene_host] Unable to match species {} in parasite tree",
+                    gene_trees[i].arena[j].location.clone());
+                },
+            };
+            // println!("debug ESPECE {:?}",espece_index);
+            // println!("debug ESPECE {:?}",tree_para_pipe.arena[espece_index]);
+            gene_trees[i].arena[j].location =  tree_para_pipe.arena[espece_index].location.clone();
+            if  tree_para_pipe.arena[espece_index].is_a_transfert {
+                gene_trees[i].arena[j].is_a_transfert = true;
+                let parent = gene_trees[i].arena[j].parent;
+                match parent {
+                    None => panic!("[map_gene_host] Node has no parent"),
+                    Some(p) => gene_trees[i].arena[p].e = Event::BifurcationOut,
+                };
+            }
+            if  gene_trees[i].arena[j].e == Event::Loss {
+                let species_parent = tree_para_pipe.arena[espece_index].parent;
+                match species_parent {
+                    None => panic!("[map_gene_host] Node has no parent"),
+                    Some(sp) => {
+                        gene_trees[i].arena[j].location =  tree_para_pipe.arena[sp].location.clone();
+                        let parent = gene_trees[i].arena[j].parent;
+                        match parent {
+                            None => panic!("[map_gene_host] Node has no parent"),
+                            Some(p) => {
+                                amodifier.push((p,tree_para_pipe.arena[sp].location.clone()));
+                                let fils = &gene_trees[i].arena[p].children;
+                                amodifier.push((fils[0],tree_para_pipe.arena[sp].location.clone()));
+                                amodifier.push((fils[1],tree_para_pipe.arena[sp].location.clone()));
+                            },
+                        };
+                    },
+                };
+
+            }
+            // On s'attend pas a des files de speciation de gene dans un meme tuyeau -> bug d'Affichage
+            // Solution pourrie : remplacer les spec par des dupl
+            // if  (gene_trees[i].arena[j].e == Event::Speciation)  && (tree_para_pipe.arena[espece_index].e == Event::Duplication) {
+            //     gene_trees[i].arena[j].e =  Event::Duplication;
+            // }
+            // gene_trees[i].arena[j].is_a_transfert =  tree_para_pipe.arena[espece_index].is_a_transfert;
+            // gene_trees[i].arena[j].e =  tree_para_pipe.arena[espece_index].e;
+            j = j + 1;
+        }
+        for (j,spec) in amodifier {
+            gene_trees[i].arena[j].location = spec;
+        }
+        // for index in &mut gene_trees[i].arena {
+        //      println!("debug NODE {:?} {:?}",&index.idx,&index.location);
+        //      let idx = &index.idx;
+        //      // &index.location = "lolo".to_string();
+        //      gene_trees[i].arena[*idx].location =  "lolo".to_string();
+        // }
+        // }
+        i = i + 1;
+        // for &mut node in  &gene_trees[i]
     }
 }
 
