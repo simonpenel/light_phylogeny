@@ -353,13 +353,13 @@ pub fn draw_sptree_gntrees (
                                         gene_color.to_string(),
                                         transfer_opacity,
                                         config.bezier.to_string().parse::<f32>().unwrap(),
-                                        true),
+                                        1),
                                 Event::BifurcationOut => get_chemin_transfer(index.x,index.y,
                                         n.x,n.y,
                                         gene_color.to_string(),
                                         transfer_opacity,
                                         config.bezier.to_string().parse::<f32>().unwrap(),
-                                        true),
+                                        2),
                                 _ => panic!("Wrong recPhyloXML feature.
                                 The father node should be BranchingOut or
                                 BifurcationOut, but I found a {:?}\n{:?}",n.e,n),
@@ -491,7 +491,7 @@ pub fn draw_sptree_gntrees (
               "red".to_string(),
               opacity,
               config.bezier.to_string().parse::<f32>().unwrap(),
-              false
+              0
           );
           g.append(chemin);
 
@@ -634,7 +634,7 @@ pub fn get_chemin_carre (x1: f32, y1:f32,x2: f32, y2:f32, c:String, o:String, st
 
 // Draw a transfer path between x1,y1 ad x2,y2
 pub fn get_chemin_transfer (x1: f32, y1:f32,x2: f32, y2:f32, c:String, o:String,b:f32,
-    stroke:bool) -> Path {
+    stroke:i32) -> Path {
     // Arrivee du point: un peu avant pour dessiner la fleche
     let initial_y1 = y1 ;
     let y1 = y1 - PIPEBLOCK;
@@ -666,8 +666,10 @@ pub fn get_chemin_transfer (x1: f32, y1:f32,x2: f32, y2:f32, c:String, o:String,
     .set("opacity", o)
     .set("stroke-width", GTHICKNESS);
     let path = match stroke {
-        true => path.set("stroke-dasharray","1, 1"),
-        false => path,
+        2 => path.set("stroke-dasharray","4, 1"),
+        1 => path.set("stroke-dasharray","1, 1"),
+        0 => path,
+        _ => path.set("stroke-dasharray","1, 1"),
     };
     let path  = path.set("d", data);
     path
