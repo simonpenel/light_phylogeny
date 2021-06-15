@@ -75,6 +75,7 @@ pub use self::thirdlevel::map_transfer_mul;
 pub use self::thirdlevel::get_gtransfer;
 pub use self::thirdlevel::map_parasite_s2g;
 pub use self::thirdlevel::map_parasite_g2s;
+pub use self::thirdlevel::map_gene_host;
 #[cfg(test)]
 mod tests {
     use super::*;
