@@ -1187,6 +1187,72 @@ pub fn move_dupli_mappings(sp_tree: &mut ArenaTree<String>,
     }
 }
 
+// Move species father when necessary
+pub fn move_species_mappings(sp_tree: &mut ArenaTree<String>,
+                           gene_trees: &mut std::vec::Vec<ArenaTree<String>>, index: usize) {
+                               // let mut nodes = &mut sp_tree.arena[index].nodes;
+                               // nodes.reverse();
+    for (index_node, node) in &sp_tree.arena[index].nodes {
+        info!("[move_dupli_mappings] >>> {:?} {:?}",gene_trees[*index_node].arena[*node].name,
+         gene_trees[*index_node].arena[*node].e);
+        match  gene_trees[*index_node].arena[*node].e {
+            Event::Speciation => {
+                // println!("ARGGFAGFAGFGEFGEFEGFEGEFG {:?}",gene_trees[*index_node].arena[*node]);
+                // on a une speciation
+                let species_children =  &mut  gene_trees[*index_node].arena[*node].children;
+                let mut left = species_children[0];
+                let mut right = species_children[1];
+                // println!("ARGNODeS  {:?}",sp_tree.arena[index].nodes);
+                // verifi si les enfant sont dans le meme noeud
+                if (sp_tree.arena[index].nodes.contains(&(*index_node,left))) &&
+                   (sp_tree.arena[index].nodes.contains(&(*index_node,right))) {
+                    println!("ARGGFAGFAGFGEFGEFEGFEGEFGEFEG");
+                    let mut left_x = gene_trees[*index_node].arena[left].x;
+                    let mut right_x = gene_trees[*index_node].arena[right].x;
+                    if left_x > right_x {
+                        println!("IBERSION");
+                        let buf = left;
+                        left = right;
+                        right = buf;
+                        left_x = gene_trees[*index_node].arena[left].x;
+                        right_x = gene_trees[*index_node].arena[right].x;
+
+                    };
+                    let parent_x = gene_trees[*index_node].arena[*node].x;
+                    if left_x > parent_x {
+                        println!("INVERTING LEFT at {:?}",gene_trees[*index_node].arena[*node]);
+                    // gene_trees[*index_node].arena[*node].set_x_noref(left_x);
+                    // gene_trees[*index_node].arena[left].set_x_noref(parent_x);
+                     gene_trees[*index_node].arena[*node].set_x_noref((left_x + right_x) /2.0 );
+                }
+
+                if parent_x > right_x {
+                        println!("INVERTING RIGHT at {:?}",gene_trees[*index_node].arena[*node]);
+                    // gene_trees[*index_node].arena[*node].set_x_noref(right_x);
+                    // gene_trees[*index_node].arena[right].set_x_noref(parent_x);
+                    gene_trees[*index_node].arena[*node].set_x_noref((left_x + right_x) /2.0 );
+                }
+
+                }
+                // let dupli_son = match bool_left {
+                //     true => dupli_children[0],
+                //     false => dupli_children[1],
+                // };
+                // let x = gene_trees[*index_node].arena[dupli_son].x;
+                // gene_trees[*index_node].arena[*node].set_x_noref(x);
+            },
+            _=> {},
+        }
+    }
+    let children =  &mut  sp_tree.arena[index].children;
+    if children.len() > 0 {
+        let son_left = children[0];
+        let son_right = children[1];
+        move_species_mappings( sp_tree, gene_trees,son_left);
+        move_species_mappings( sp_tree, gene_trees,son_right);
+    }
+}
+
 // Center the gene nodes into a  specie snode
 pub fn center_gene_nodes(sp_tree: &mut ArenaTree<String>,
                          gene_trees: &mut std::vec::Vec<ArenaTree<String>>, index: usize) {
