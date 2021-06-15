@@ -11,7 +11,7 @@ use crate::arena::{newick2tree,xml2tree};
 use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,shift_mod_xy,
     set_middle_postorder,real_length,set_leaves_y_values};
 use crate::arena::{map_species_trees,set_species_width,check_vertical_contour_postorder,
-    bilan_mappings,center_gene_nodes,move_dupli_mappings};
+    bilan_mappings,center_gene_nodes,move_dupli_mappings,move_species_mappings};
 use crate::arena::{find_sptree,find_sptrees,find_rgtrees,check_for_obsolete,scale_heigth,scale_width};
 use crate::thirdlevel::{get_gtransfer,optimisation,check_optimisation,classify_transfer,reorder_transfers};
 use crate::drawing::{draw_tree,draw_sptree_gntrees};
@@ -482,6 +482,14 @@ center_gene_nodes(&mut sp_tree,&mut gene_trees,root);
 // 12eme etape traite spécifiquement les duplications et les feuilles
 // ---------------------------------------------------------
 move_dupli_mappings(&mut sp_tree, &mut gene_trees,root);
+
+// 13eme etape : Ca des speciations dont les fils sont
+// dans le meme noeud "tuyeau" que le pere
+// Cela n'arrice que quand on mappe des genes sur des hotes
+// via les parasites (thirdlevel)
+
+// ---------------------------------------------------------
+move_species_mappings(&mut sp_tree, &mut gene_trees,root);
 // // ---------------------------------------------------------
 // // Fin: Ecriture du fichier svg
 // // ---------------------------------------------------------
