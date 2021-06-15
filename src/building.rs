@@ -202,7 +202,7 @@ pub fn read_recphyloxml_multi(filename:String, global_pipe: &mut ArenaTree<Strin
             if node.has_tag_name("clade"){
                 let globalroot = "G".to_owned()+&index.to_string();
                 // Create the node, get its associated index and store it in root again
-                println!("Create {}","G".to_owned()+&index.to_string());
+                info!("Create {}","G".to_owned()+&index.to_string());
                 let globalroot =global_pipe.new_node(globalroot.to_string());
                 global_roots.push(globalroot);
                 // Call xlm2tree on the root
@@ -212,8 +212,8 @@ pub fn read_recphyloxml_multi(filename:String, global_pipe: &mut ArenaTree<Strin
         }
     }
     if global_roots.len() > 1 {
-    println!("Racine gauche = {}",global_roots[0]);
-    println!("Racine droite = {}",global_roots[1]);
+    info!("Racine gauche = {}",global_roots[0]);
+    info!("Racine droite = {}",global_roots[1]);
 
     let super_root = global_pipe.new_node("SUPER_ROOT".to_string());
     global_pipe.arena[super_root].name="SUPER ROOT".to_string();
