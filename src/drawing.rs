@@ -224,7 +224,9 @@ pub fn draw_sptree_gntrees (
                                                  index.width/2.0, max_gene_y - index.y,
                                                  config.species_color.to_string(),
                                                  config.species_opacity.to_string());
-                    g.append(chemin);
+                    if sp_tree.arena[p].visible {
+                        g.append(chemin)
+                    };
                 }
                 match  index.e {
                     Event::Loss => {
@@ -287,7 +289,9 @@ pub fn draw_sptree_gntrees (
                 element.append(txt);
                 element.assign("transform","rotate(90 ".to_owned() + &index.x.to_string()
                 + "," + &index.y.to_string() + ")" );
-                g.append(element);
+                if index.visible {
+                    g.append(element);
+                }
             },
             false => {
                 match options.species_internal {
@@ -299,7 +303,9 @@ pub fn draw_sptree_gntrees (
                         element.append(txt);
                         element.assign("transform","rotate(90 ".to_owned()+&index.x.to_string()
                         + "," + &index.y.to_string() + ")" );
-                        g.append(element);
+                        if index.visible {
+                            g.append(element);
+                        }
                     },
                     false => {},
                 };
