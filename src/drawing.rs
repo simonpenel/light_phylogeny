@@ -108,38 +108,40 @@ pub fn draw_tree (
             false => {},
         };
         // Display name
-        let mut element = Element::new("text");
-        element.assign("x", index.x-5.0);
-        element.assign("y", index.y+10.0);
-        element.assign("class", "gene");
-        let txt  = Text::new(&index.name);
-        element.append(txt);
-        element.assign("transform","rotate(90 ".to_owned()+&(index.x - 5.0).to_string()
-        + ","+&(index.y + 10.0).to_string()+")");
-        match tree.is_leaf(index.idx) {
-            true => g.append(element),
-            _   =>  match options.gene_internal {
-                        true =>  g.append(element),
-                        false => {},
-                    },
-        };
+        if index.visible {
+            let mut element = Element::new("text");
+            element.assign("x", index.x-5.0);
+            element.assign("y", index.y+10.0);
+            element.assign("class", "gene");
+            let txt  = Text::new(&index.name);
+            element.append(txt);
+            element.assign("transform","rotate(90 ".to_owned()+&(index.x - 5.0).to_string()
+            + ","+&(index.y + 10.0).to_string()+")");
+            match tree.is_leaf(index.idx) {
+                true => g.append(element),
+                _   =>  match options.gene_internal {
+                            true =>  g.append(element),
+                            false => {},
+                        },
+            };
 
-        // Display support
-        let mut element = Element::new("text");
-        element.assign("x", index.x-15.0);
-        element.assign("y", index.y+10.0);
-        element.assign("class", "support");
-        let txt  = Text::new(&index.support);
-        element.append(txt);
-        element.assign("transform","rotate(90 ".to_owned()+&(index.x - 15.0).to_string()
-        + ","+&(index.y + 10.0).to_string()+")");
-        match tree.is_leaf(index.idx) {
-            true => {},
-            _   =>  match options.support {
-                        true =>  g.append(element),
-                        false => {},
-                    },
-        };
+            // Display support
+            let mut element = Element::new("text");
+            element.assign("x", index.x-15.0);
+            element.assign("y", index.y+10.0);
+            element.assign("class", "support");
+            let txt  = Text::new(&index.support);
+            element.append(txt);
+            element.assign("transform","rotate(90 ".to_owned()+&(index.x - 15.0).to_string()
+            + ","+&(index.y + 10.0).to_string()+")");
+            match tree.is_leaf(index.idx) {
+                true => {},
+                _   =>  match options.support {
+                            true =>  g.append(element),
+                            false => {},
+                        },
+            };
+        }
     }
     let mut transfo: String = "translate(  ".to_owned();
     transfo.push_str(&( x_viewbox).to_string());
@@ -224,7 +226,9 @@ pub fn draw_sptree_gntrees (
                                                  index.width/2.0, max_gene_y - index.y,
                                                  config.species_color.to_string(),
                                                  config.species_opacity.to_string());
-                    g.append(chemin);
+                    if sp_tree.arena[p].visible {
+                        g.append(chemin)
+                    };
                 }
                 match  index.e {
                     Event::Loss => {
@@ -287,7 +291,9 @@ pub fn draw_sptree_gntrees (
                 element.append(txt);
                 element.assign("transform","rotate(90 ".to_owned() + &index.x.to_string()
                 + "," + &index.y.to_string() + ")" );
-                g.append(element);
+                if index.visible {
+                    g.append(element);
+                }
             },
             false => {
                 match options.species_internal {
@@ -299,7 +305,9 @@ pub fn draw_sptree_gntrees (
                         element.append(txt);
                         element.assign("transform","rotate(90 ".to_owned()+&index.x.to_string()
                         + "," + &index.y.to_string() + ")" );
-                        g.append(element);
+                        if index.visible {
+                            g.append(element);
+                        }
                     },
                     false => {},
                 };
