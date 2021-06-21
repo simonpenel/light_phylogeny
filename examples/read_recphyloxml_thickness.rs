@@ -1,6 +1,6 @@
 // Display a reconciled tree form recPhyloXML format
 
-use light_phylogeny::{ArenaTree,Options,Config,read_recphyloxml,recphyloxml_processing,
+use light_phylogeny::{ArenaTree,Options,Config,read_recphyloxml_multi,recphyloxml_processing,
     get_gtransfer};
 
 fn main() {
@@ -15,8 +15,9 @@ fn main() {
     // Version de base
     let mut sp_tree: ArenaTree<String> = ArenaTree::default();
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
-    read_recphyloxml("examples/concat.xml".to_string(),
-        &mut sp_tree, &mut gene_trees);
+    let mut global_roots: std::vec::Vec<usize> = Vec::new();
+    read_recphyloxml_multi("examples/concat.xml".to_string(),
+        &mut sp_tree, &mut gene_trees, &mut global_roots);
 
     //  Recupere les transferts
     let  nb_gntree =  gene_trees.len().clone();
@@ -41,8 +42,9 @@ fn main() {
     // Version opacite
     let mut sp_tree: ArenaTree<String> = ArenaTree::default();
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
-    read_recphyloxml("examples/concat.xml".to_string(),
-        &mut sp_tree, &mut gene_trees);
+    let mut global_roots: std::vec::Vec<usize> = Vec::new();
+    read_recphyloxml_multi("examples/concat.xml".to_string(),
+        &mut sp_tree, &mut gene_trees, &mut global_roots);
     options.thickness_flag = true;
     recphyloxml_processing(&mut sp_tree, &mut selected_gene_trees, &mut options, &config, true,
          &gene_transfers, "read_recphyloxml_threshold_2.svg".to_string());
@@ -51,8 +53,9 @@ fn main() {
     // Version opacite et seuil
     let mut sp_tree: ArenaTree<String> = ArenaTree::default();
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
-    read_recphyloxml("examples/concat.xml".to_string(),
-        &mut sp_tree, &mut gene_trees);
+    let mut global_roots: std::vec::Vec<usize> = Vec::new();
+    read_recphyloxml_multi("examples/concat.xml".to_string(),
+        &mut sp_tree, &mut gene_trees, &mut global_roots);
     options.thickness_flag = true;
     options.thickness_thresh = 1;
     options.thickness_disp_score = true;

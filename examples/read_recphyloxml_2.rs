@@ -1,6 +1,6 @@
 // Visualisation  of  3 levels reconciliation
 //  Case there is only 1 gene tree
-use light_phylogeny::{ArenaTree,Options,Config,read_recphyloxml,recphyloxml_processing,
+use light_phylogeny::{ArenaTree,Options,Config,read_recphyloxml_multi,recphyloxml_processing,
 phyloxml_processing,reset_pos,map_transfer,get_gtransfer,summary,
 map_parasite_g2s,map_parasite_s2g};
 use log::{info};
@@ -29,7 +29,8 @@ fn main() {
     // Creation du vecteur de structure ArenaTree pour les genes
     // ---------------------------------------------------------
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
-    read_recphyloxml(infile_gene_para,&mut tree_para_pipe,&mut gene_trees);
+    let mut global_roots: std::vec::Vec<usize> = Vec::new();
+    read_recphyloxml_multi(infile_gene_para,&mut tree_para_pipe,&mut gene_trees, &mut global_roots);
     let  nb_gntree =  gene_trees.len().clone();
     println!("Number of gene trees : {}",nb_gntree);
     info!("List of gene trees : {:?}",gene_trees);
@@ -47,8 +48,9 @@ fn main() {
     // Creation du vecteur de structure ArenaTree pour les genes
     // ---------------------------------------------------------
     let mut para_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
+    let mut global_roots: std::vec::Vec<usize> = Vec::new();
+    read_recphyloxml_multi(infile_para_host,&mut tree_host_pipe,&mut para_trees, &mut  global_roots);
     let  nb_paratree =  para_trees.len().clone();
-    read_recphyloxml(infile_para_host,&mut tree_host_pipe,&mut para_trees);
     println!("Number of gene trees : {}",nb_paratree);
     info!("List of gene trees : {:?}",para_trees);
     recphyloxml_processing(&mut tree_host_pipe,&mut  para_trees, &mut options, &config,
