@@ -34,6 +34,8 @@ jobs:
       run: cargo run --example  read_recphyloxml_2
     - name: read_recphyloxml_3
       run: cargo run --example  read_recphyloxml_3
+    - name: read_recphyloxml_big
+      run: cargo run --example  read_recphyloxml_big
     - name: read_recphyloxml_multi
       run: cargo run --example  read_recphyloxml_multi
     - name: read_recphyloxml_switch
