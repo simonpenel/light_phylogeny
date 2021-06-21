@@ -274,7 +274,9 @@ pub fn read_recphyloxml_multi(filename:String, global_pipe: &mut ArenaTree<Strin
         }
     }
 
-    add_virtual_roots(&mut global_root_names, &mut 0, &mut 0,  global_pipe);
+    if global_roots.len() > 1 {
+        add_virtual_roots(&mut global_root_names, &mut 0, &mut 0,  global_pipe);
+    }
     let  nb_sptree =  global_roots.len().clone();
     println!("Number of species trees : {}",nb_sptree);
     info!("List of species roots : {:?}",global_roots);
