@@ -1,12 +1,13 @@
-use light_phylogeny::{ArenaTree,Options,read_recphyloxml,lca};
+use light_phylogeny::{ArenaTree,Options,read_recphyloxml_multi,lca};
 use std::env;
 
 fn main() {
     let mut options: Options = Options::new();
     let mut sp_tree: ArenaTree<String> = ArenaTree::default();
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
-    read_recphyloxml("examples/gene_parasite_page4.recphylo".to_string(),
-        &mut sp_tree, &mut gene_trees);
+    let mut global_roots: std::vec::Vec<usize> = Vec::new();
+    read_recphyloxml_multi("examples/gene_parasite_page4.recphylo".to_string(),
+        &mut sp_tree, &mut gene_trees, &mut global_roots);
     options.verbose = true;
     env::set_var("RUST_LOG", "info");
     env_logger::init();

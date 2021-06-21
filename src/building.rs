@@ -66,6 +66,7 @@ pub fn read_phyloxml(filename:String, tree: &mut ArenaTree<String>) {
     info!("Tree : {:?}",tree);
 }
 /// Read a recphyloxml file and store the species and gene trees into several ArenaTree structures
+/// THIS FUNCTION IS OBSOLETE. USE read_recphyloxml INSTEAD
 //  ==============================================================================================
 pub fn read_recphyloxml(filename:String, sp_tree: &mut ArenaTree<String>,
     gene_trees: &mut std::vec::Vec<ArenaTree<String>>) {
