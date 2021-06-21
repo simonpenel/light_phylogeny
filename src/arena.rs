@@ -1335,16 +1335,17 @@ pub fn set_species_width(sp_tree: &mut ArenaTree<String>,
 
 
 /// Get the id of the first "spTree" tag.
-pub fn find_sptree( doc: &mut roxmltree::Document) -> Result < roxmltree::NodeId, usize> {
-    let descendants = doc.root().descendants();
-    // Search for the first occurnce of clade spTree
-    for  node in descendants {
-        if node.has_tag_name("spTree"){
-            return Ok(node.id())
-        }
-    }
-    Err(0)
-}
+// Obsolete
+// pub fn find_sptree( doc: &mut roxmltree::Document) -> Result < roxmltree::NodeId, usize> {
+//     let descendants = doc.root().descendants();
+//     // Search for the first occurnce of clade spTree
+//     for  node in descendants {
+//         if node.has_tag_name("spTree"){
+//             return Ok(node.id())
+//         }
+//     }
+//     Err(0)
+// }
 /// Get the list of ids of all the "spTree" tag in a xml document.
 pub fn find_sptrees( doc: &mut roxmltree::Document) -> Result < Vec<roxmltree::NodeId>, usize> {
     let descendants = doc.root().descendants();
