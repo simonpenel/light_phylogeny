@@ -352,7 +352,8 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
     }
 }
 
-pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipe: &mut ArenaTree<String>, tree_host_pipe:&mut ArenaTree<String>) {
+
+pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipes:  &mut Vec<ArenaTree<String>>, tree_host_pipe:&mut ArenaTree<String>) {
     // unmap the host tree
     let mut j = 0;
     let nb_nodes = tree_host_pipe.arena.len();
@@ -367,10 +368,13 @@ pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipe: &m
 
     let mut i = 0;
     let nb_genes = gene_trees.len();
+    let nb_par = tree_para_pipes.len();
+    println!("Boucle sur les {} genes",nb_genes);
+    // println!("Parasite tree to be explored : {:?}",tree_para_pipe);
     while i < nb_genes {
+        println!("==> Gene n° {}",i);
         // let  mut gene_tree = &gene_trees[i];
         // for &mut node in  gene_tree {
-        //     println!("debug NODE {:?}",&node);
         let mut j = 0;
         let nb_nodes = gene_trees[i].arena.len();
         let mut amodifier:std::vec::Vec<(usize,String)> = Vec::new(); // a cause des noeuds de
@@ -378,21 +382,32 @@ pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipe: &m
                                                                       // matcher avec l'arbre
                                                                       // d'espèces
         while j < nb_nodes {
-            // println!("debug NODE {:?}",gene_trees[i].arena[j].location);
+            println!("=> NODE {:?} in {:?}",gene_trees[i].arena[j].name,gene_trees[i].arena[j].location);
             // cherche l'espce dans l'arbre du parasite
+            let  mut k = 0;
+            while k < nb_par {
             let espece = gene_trees[i].arena[j].location.clone();
-            let espece_index = tree_para_pipe.get_index(espece);
+            let espece_index = tree_para_pipes[k].get_index(espece);
+            let mut find_spec = false;
             let espece_index = match espece_index {
-                Ok(n) => n,
+                Ok(n) => {
+                    find_spec = true;
+                    n
+                },
                 Err(_e) => {
-                    panic!("[map_gene_host] Unable to match species {} in parasite tree",
-                    gene_trees[i].arena[j].location.clone());
+                    println!("species {} not found in parasite tree number {}", gene_trees[i].arena[j].location.clone(),k);
+                    0
+                    // panic!("[map_gene_host] Unable to match species {} in parasite tree",
+                    // gene_trees[i].arena[j].location.clone());
                 },
             };
+            if find_spec {
+                // espece_index = test_index;
+
             // println!("debug ESPECE {:?}",espece_index);
             // println!("debug ESPECE {:?}",tree_para_pipe.arena[espece_index]);
-            gene_trees[i].arena[j].location =  tree_para_pipe.arena[espece_index].location.clone();
-            if  tree_para_pipe.arena[espece_index].is_a_transfert {
+            gene_trees[i].arena[j].location =  tree_para_pipes[k].arena[espece_index].location.clone();
+            if  tree_para_pipes[k].arena[espece_index].is_a_transfert {
                 gene_trees[i].arena[j].is_a_transfert = true;
                 let parent = gene_trees[i].arena[j].parent;
                 match parent {
@@ -401,25 +416,28 @@ pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipe: &m
                 };
             }
             if  gene_trees[i].arena[j].e == Event::Loss {
-                let species_parent = tree_para_pipe.arena[espece_index].parent;
+                let species_parent = tree_para_pipes[k].arena[espece_index].parent;
                 match species_parent {
                     None => panic!("[map_gene_host] Node has no parent"),
                     Some(sp) => {
-                        gene_trees[i].arena[j].location =  tree_para_pipe.arena[sp].location.clone();
+                        gene_trees[i].arena[j].location =  tree_para_pipes[k].arena[sp].location.clone();
                         let parent = gene_trees[i].arena[j].parent;
                         match parent {
                             None => panic!("[map_gene_host] Node has no parent"),
                             Some(p) => {
-                                amodifier.push((p,tree_para_pipe.arena[sp].location.clone()));
+                                amodifier.push((p,tree_para_pipes[k].arena[sp].location.clone()));
                                 let fils = &gene_trees[i].arena[p].children;
-                                amodifier.push((fils[0],tree_para_pipe.arena[sp].location.clone()));
-                                amodifier.push((fils[1],tree_para_pipe.arena[sp].location.clone()));
+                                amodifier.push((fils[0],tree_para_pipes[k].arena[sp].location.clone()));
+                                amodifier.push((fils[1],tree_para_pipes[k].arena[sp].location.clone()));
                             },
                         };
                     },
                 };
 
             }
+        }
+        k = k + 1;
+    }
             // On s'attend pas a des files de speciation de gene dans un meme tuyeau -> bug d'Affichage
             // Solution pourrie : remplacer les spec par des dupl
             // if  (gene_trees[i].arena[j].e == Event::Speciation)  && (tree_para_pipe.arena[espece_index].e == Event::Duplication) {
@@ -443,6 +461,8 @@ pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipe: &m
         // for &mut node in  &gene_trees[i]
     }
 }
+
+
 
 //  get the trasnsfers in a gene tree
 #[allow(dead_code)]
