@@ -1197,20 +1197,16 @@ pub fn move_species_mappings(sp_tree: &mut ArenaTree<String>,
          gene_trees[*index_node].arena[*node].e);
         match  gene_trees[*index_node].arena[*node].e {
             Event::Speciation => {
-                // println!("ARGGFAGFAGFGEFGEFEGFEGEFG {:?}",gene_trees[*index_node].arena[*node]);
                 // on a une speciation
                 let species_children =  &mut  gene_trees[*index_node].arena[*node].children;
                 let mut left = species_children[0];
                 let mut right = species_children[1];
-                // println!("ARGNODeS  {:?}",sp_tree.arena[index].nodes);
                 // verifi si les enfant sont dans le meme noeud
                 if (sp_tree.arena[index].nodes.contains(&(*index_node,left))) &&
                    (sp_tree.arena[index].nodes.contains(&(*index_node,right))) {
-                    println!("ARGGFAGFAGFGEFGEFEGFEGEFGEFEG");
                     let mut left_x = gene_trees[*index_node].arena[left].x;
                     let mut right_x = gene_trees[*index_node].arena[right].x;
                     if left_x > right_x {
-                        println!("IBERSION");
                         let buf = left;
                         left = right;
                         right = buf;
@@ -1220,14 +1216,12 @@ pub fn move_species_mappings(sp_tree: &mut ArenaTree<String>,
                     };
                     let parent_x = gene_trees[*index_node].arena[*node].x;
                     if left_x > parent_x {
-                        println!("INVERTING LEFT at {:?}",gene_trees[*index_node].arena[*node]);
                     // gene_trees[*index_node].arena[*node].set_x_noref(left_x);
                     // gene_trees[*index_node].arena[left].set_x_noref(parent_x);
                      gene_trees[*index_node].arena[*node].set_x_noref((left_x + right_x) /2.0 );
                 }
 
                 if parent_x > right_x {
-                        println!("INVERTING RIGHT at {:?}",gene_trees[*index_node].arena[*node]);
                     // gene_trees[*index_node].arena[*node].set_x_noref(right_x);
                     // gene_trees[*index_node].arena[right].set_x_noref(parent_x);
                     gene_trees[*index_node].arena[*node].set_x_noref((left_x + right_x) /2.0 );
