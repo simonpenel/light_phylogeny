@@ -137,7 +137,7 @@ fn main() {
 
 
     // mapping des gene sur les hotes via les parasites
-    map_gene_host(&mut gene_trees, &mut para_trees[0], &mut tree_host_pipe);
+    map_gene_host(&mut gene_trees, &mut para_trees, &mut tree_host_pipe);
     reset_pos(&mut tree_host_pipe);
     let mut i = 0;
     while i < nb_gntree {
