@@ -374,6 +374,7 @@ pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipes:  
                                                                       // de genes ajoutes pour
                                                                       // matcher avec l'arbre
                                                                       // d'espèces
+        let mut virtual_nodes:std::vec::Vec<usize> = Vec::new();
         while j < nb_nodes {
             // cherche l'espce dans les arbres du parasite
             let mut global_find_spec = false;
@@ -384,18 +385,21 @@ pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipes:  
                 let mut find_spec = false;
                 let espece_index = match espece_index {
                     Ok(n) => {
+                        if find_spec { panic!("[map_gene_host] Multiple species matches") }
                         find_spec = true;
                         global_find_spec = true;
                         n
                     },
                     Err(_e) => {
-                        println!("species {} not found in parasite tree number {}", gene_trees[i].arena[j].location.clone(),k);
+                        info!("species {} not found in parasite tree number {}", gene_trees[i].arena[j].location.clone(),k);
                         0
                     },
                 };
                 // location of gene node is found in parasite tree
                 if find_spec {
+                    // println!("debug AVANT {:?}",gene_trees[i].arena[j]);
                     gene_trees[i].arena[j].location =  tree_para_pipes[k].arena[espece_index].location.clone();
+                    // println!("debug APRES {:?}",gene_trees[i].arena[j]);
                     if  tree_para_pipes[k].arena[espece_index].is_a_transfert {
                         gene_trees[i].arena[j].is_a_transfert = true;
                         let parent = gene_trees[i].arena[j].parent;
@@ -424,35 +428,11 @@ pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipes:  
                         };
                     }
 
-                    // if  gene_trees[i].arena[j].e == Event::Undef {
-                    //     if gene_trees[i].arena[j].children.len() > 0 {
-                    //         println!("DEBUG NODE {:?}",  gene_trees[i].arena[j]);
-                    //     let species_parent = tree_para_pipes[k].arena[espece_index].parent;
-                    //     match species_parent {
-                    //         None => panic!("[map_gene_host] Node has no parent"),
-                    //         Some(sp) => {
-                    //
-                    //             println!("Current location in symbionte = {}",gene_trees[i].arena[j].location);
-                    //             println!("Location of the parent of this symbionte in the host = {}",tree_para_pipes[k].arena[sp].location.clone());
-                    //
-                    //             gene_trees[i].arena[j].location =  tree_para_pipes[k].arena[sp].location.clone();
-                    //             let tmpsepc = tree_para_pipes[k].arena[sp].location.clone();
-                    //             let host_index =  tree_host_pipe.get_index(tmpsepc);
-                    //             match host_index {
-                    //                 Ok(n) => {
-                    //                     tree_host_pipe.arena[n].nodes.push((i,j));
-                    //                     let nbg = tree_host_pipe.arena[n].nbg + 1;
-                    //                     tree_host_pipe.arena[n].nbg = nbg;
-                    //                 },
-                    //                 Err(_e) => {
-                    //                     panic!("error")
-                    //                 },
-                    //
-                    //             }
-                    //         },
-                    //     };
-                    // };
-                    // }
+                    if  gene_trees[i].arena[j].e == Event::Undef {
+                        if gene_trees[i].arena[j].children.len() > 0 {
+                            virtual_nodes.push(j);
+                        }
+                    }
                 }
                 k = k + 1;
             }
@@ -468,11 +448,41 @@ pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipes:  
             // gene_trees[i].arena[j].e =  tree_para_pipe.arena[espece_index].e;
             j = j + 1;
         }
+        for j in virtual_nodes {
+            // println!("DEBUG NODE {:?}",  gene_trees[i].arena[j]);
+            let espece =  gene_trees[i].arena[j].location.clone();
+            // println!("=======> location =  {}",  espece);
+            let espece_index = tree_host_pipe.get_index(espece);
+            let espece_index = match espece_index {
+                Ok(n) => {
+                    n
+                },
+                Err(_e) => {
+                    panic!("[map_gene_host] species not found in host tree");
+                },
+            };
+            // println!("=======> Node in  host  =  {:?}", tree_host_pipe.arena[espece_index] );
+            let parent =  tree_host_pipe.arena[espece_index].parent;
+            let parent = match parent {
+                Some(p) => p,
+                None => panic!("[map_gene_host] species has no parent in host tree"),
+            };
+            let espece = &tree_host_pipe.arena[parent].name;
+            // println!("Upper species = {}",espece.clone());
+            gene_trees[i].arena[j].location = espece.to_string();
+            // tree_host_pipe.arena[parent].nodes.push((i,j));
+            // let children =  &gene_trees[i].arena[j].children;
+            // let left = children[0];
+            // let right = children[1];
+            // println!("   LEFT  => {:?}",  gene_trees[i].arena[left]);
+            // println!("   RIGHT => {:?}",  gene_trees[i].arena[right]);
+        }
         for (j,spec) in amodifier {
             gene_trees[i].arena[j].location = spec;
         }
         i = i + 1;
     }
+    // println!("DEBUG  [map_gene_host] FINAL HOST = {:?}",tree_host_pipe)
 }
 
 //  get the trasnsfers in a gene tree
