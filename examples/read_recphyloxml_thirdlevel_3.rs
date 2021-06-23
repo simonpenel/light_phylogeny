@@ -10,6 +10,8 @@ fn main() {
 
 
     let mut options: Options = Options::new();
+    options.gene_internal = true;
+    options.species_internal = true;
     let mut config: Config = Config::new();
     config.species_opacity = "0.7".to_string();
     config.gene_opacity = "0.9".to_string();
@@ -179,6 +181,8 @@ while i < nb_gntree {
 reset_pos(&mut path_genes[i]);
 i = i + 1;
 }
+
+// println!("DEBUG {:?}",path_genes[0]);
 recphyloxml_processing(&mut tree_host_pipe, &mut path_genes, &mut options, &config,
 true, &vec![],"mapped_3.svg".to_string());
 // lmlmlmlm

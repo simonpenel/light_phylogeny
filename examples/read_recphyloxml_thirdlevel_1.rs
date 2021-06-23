@@ -10,6 +10,8 @@ fn main() {
 
 
     let mut options: Options = Options::new();
+    options.gene_internal = true;
+    options.species_internal = true;
     let mut config: Config = Config::new();
     config.species_opacity = "0.7".to_string();
     config.gene_opacity = "0.9".to_string();
@@ -178,6 +180,7 @@ i = i + 1;
 }
 recphyloxml_processing(&mut tree_host_pipe, &mut path_genes, &mut options, &config,
 true, &vec![],"mapped_3.svg".to_string());
+// println!("DEBUG  FINAL HOST = {:?}",tree_host_pipe);
 // lmlmlmlm
 
 println!("Output files:");

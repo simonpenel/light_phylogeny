@@ -192,9 +192,10 @@ while i < nb_gntree {
 reset_pos(&mut path_genes[i]);
 i = i + 1;
 }
-println!("DEBUG {:?}",path_genes[2]);
+// println!("DEBUG {:?}",path_genes[2]);
 recphyloxml_processing(&mut tree_host_pipe, &mut path_genes, &mut options, &config,
 true, &vec![],"mapped_3.svg".to_string());
+// println!("DEBUG  FINAL HOST = {:?}",tree_host_pipe);
 // lmlmlmlm
 
 println!("Output files:");
