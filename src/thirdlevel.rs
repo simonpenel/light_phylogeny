@@ -370,7 +370,7 @@ pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipes:  
     while i < nb_genes {
         let mut j = 0;
         let nb_nodes = gene_trees[i].arena.len();
-        let mut amodifier:std::vec::Vec<(usize,String)> = Vec::new(); // a cause des noeuds de
+        // let mut amodifier:std::vec::Vec<(usize,String)> = Vec::new(); // a cause des noeuds de
                                                                       // de genes ajoutes pour
                                                                       // matcher avec l'arbre
                                                                       // d'espèces
@@ -408,25 +408,25 @@ pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipes:  
                             Some(p) => gene_trees[i].arena[p].e = Event::BifurcationOut,
                         };
                     }
-                    if  gene_trees[i].arena[j].e == Event::Loss {
-                        let species_parent = tree_para_pipes[k].arena[espece_index].parent;
-                        match species_parent {
-                            None => panic!("[map_gene_host] Node has no parent"),
-                            Some(sp) => {
-                                gene_trees[i].arena[j].location =  tree_para_pipes[k].arena[sp].location.clone();
-                                let parent = gene_trees[i].arena[j].parent;
-                                match parent {
-                                    None => panic!("[map_gene_host] Node has no parent"),
-                                    Some(p) => {
-                                        amodifier.push((p,tree_para_pipes[k].arena[sp].location.clone()));
-                                        let fils = &gene_trees[i].arena[p].children;
-                                        amodifier.push((fils[0],tree_para_pipes[k].arena[sp].location.clone()));
-                                        amodifier.push((fils[1],tree_para_pipes[k].arena[sp].location.clone()));
-                                    },
-                                };
-                            },
-                        };
-                    }
+                    // if  gene_trees[i].arena[j].e == Event::Loss {
+                    //     let species_parent = tree_para_pipes[k].arena[espece_index].parent;
+                    //     match species_parent {
+                    //         None => panic!("[map_gene_host] Node has no parent"),
+                    //         Some(sp) => {
+                    //             // gene_trees[i].arena[j].location =  tree_para_pipes[k].arena[sp].location.clone();
+                    //             let parent = gene_trees[i].arena[j].parent;
+                    //             match parent {
+                    //                 None => panic!("[map_gene_host] Node has no parent"),
+                    //                 Some(p) => {
+                    //                     amodifier.push((p,tree_para_pipes[k].arena[sp].location.clone()));
+                    //                     let fils = &gene_trees[i].arena[p].children;
+                    //                     amodifier.push((fils[0],tree_para_pipes[k].arena[sp].location.clone()));
+                    //                     amodifier.push((fils[1],tree_para_pipes[k].arena[sp].location.clone()));
+                    //                 },
+                    //             };
+                    //         },
+                    //     };
+                    // }
 
                     if  gene_trees[i].arena[j].e == Event::Undef {
                         if gene_trees[i].arena[j].children.len() > 0 {
@@ -449,9 +449,7 @@ pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipes:  
             j = j + 1;
         }
         for j in virtual_nodes {
-            // println!("DEBUG NODE {:?}",  gene_trees[i].arena[j]);
             let espece =  gene_trees[i].arena[j].location.clone();
-            // println!("=======> location =  {}",  espece);
             let espece_index = tree_host_pipe.get_index(espece);
             let espece_index = match espece_index {
                 Ok(n) => {
@@ -461,24 +459,13 @@ pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipes:  
                     panic!("[map_gene_host] species not found in host tree");
                 },
             };
-            // println!("=======> Node in  host  =  {:?}", tree_host_pipe.arena[espece_index] );
             let parent =  tree_host_pipe.arena[espece_index].parent;
             let parent = match parent {
                 Some(p) => p,
                 None => panic!("[map_gene_host] species has no parent in host tree"),
             };
             let espece = &tree_host_pipe.arena[parent].name;
-            // println!("Upper species = {}",espece.clone());
             gene_trees[i].arena[j].location = espece.to_string();
-            // tree_host_pipe.arena[parent].nodes.push((i,j));
-            // let children =  &gene_trees[i].arena[j].children;
-            // let left = children[0];
-            // let right = children[1];
-            // println!("   LEFT  => {:?}",  gene_trees[i].arena[left]);
-            // println!("   RIGHT => {:?}",  gene_trees[i].arena[right]);
-        }
-        for (j,spec) in amodifier {
-            gene_trees[i].arena[j].location = spec;
         }
         i = i + 1;
     }
