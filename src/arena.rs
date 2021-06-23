@@ -1139,7 +1139,20 @@ pub fn bilan_mappings(sp_tree: &mut ArenaTree<String>,
                 shift_y = shift_y + incr;
                 shift_right_x = shift_right_x - incr;
             },
-            _=> {},
+            _=> { //Any other event
+                let x = gene_trees[*index_node].arena[*node].x;
+                let x = match bool_left {
+                    true   => x + PIPEBLOCK*shift_left_x / ratio,
+                    false  => x + PIPEBLOCK*shift_right_x / ratio,
+                };
+                gene_trees[*index_node].arena[*node].set_x_noref(x);
+                let y = gene_trees[*index_node].arena[*node].y;
+                let y = y + PIPEBLOCK*shift_y / ratio;
+                gene_trees[*index_node].arena[*node].set_y_noref(y);
+                shift_left_x = shift_left_x + incr;
+                shift_y = shift_y + incr;
+                shift_right_x = shift_right_x - incr;
+            },
         }
     }
     let children =  &mut  sp_tree.arena[index].children;
@@ -1193,7 +1206,7 @@ pub fn move_species_mappings(sp_tree: &mut ArenaTree<String>,
                                // let mut nodes = &mut sp_tree.arena[index].nodes;
                                // nodes.reverse();
     for (index_node, node) in &sp_tree.arena[index].nodes {
-        info!("[move_dupli_mappings] >>> {:?} {:?}",gene_trees[*index_node].arena[*node].name,
+        info!("[move_species_mappings] >>> {:?} {:?}",gene_trees[*index_node].arena[*node].name,
          gene_trees[*index_node].arena[*node].e);
         match  gene_trees[*index_node].arena[*node].e {
             Event::Speciation => {
