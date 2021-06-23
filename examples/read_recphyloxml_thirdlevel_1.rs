@@ -168,7 +168,7 @@ i = i + 1;
 
 //llmlmlmlmlmlm
 // mapping des gene sur les hotes via les parasites
-
+println!("Building svg 3: gene  tree within host pipe tree");
 map_gene_host(&mut path_genes, &mut path_para_trees, &mut tree_host_pipe);
 
 // map_gene_host(&mut path_genes, &mut path_para_trees[1], &mut tree_host_pipe);
@@ -178,6 +178,7 @@ while i < nb_gntree {
 reset_pos(&mut path_genes[i]);
 i = i + 1;
 }
+
 recphyloxml_processing(&mut tree_host_pipe, &mut path_genes, &mut options, &config,
 true, &vec![],"mapped_3.svg".to_string());
 // println!("DEBUG  FINAL HOST = {:?}",tree_host_pipe);

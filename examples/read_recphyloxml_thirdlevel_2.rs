@@ -10,6 +10,8 @@ fn main() {
 
 
     let mut options: Options = Options::new();
+    options.gene_internal = true;
+    options.species_internal = true;
     let mut config: Config = Config::new();
     config.species_opacity = "0.7".to_string();
     config.gene_opacity = "0.9".to_string();
@@ -164,6 +166,7 @@ i = i + 1;
 }
 
 //llmlmlmlmlmlm
+println!("Building svg 3: gene  tree within host pipe tree");
 // mapping des gene sur les hotes via les parasites
 // let mut i = 0;
 // while i < nb_parasite_pipe {
