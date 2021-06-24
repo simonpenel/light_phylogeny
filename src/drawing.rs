@@ -376,7 +376,9 @@ pub fn draw_sptree_gntrees (
                         false => get_chemin_carre(index.x,index.y,n.x,n.y ,gene_color.to_string(),
                                     config.gene_opacity.to_string(),false),
                      };
-                     g.append(chemin);
+                     if index.visible {
+                         g.append(chemin);
+                    }
                  },
                  None => {
                     // C'est la racine
