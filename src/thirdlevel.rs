@@ -236,6 +236,7 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                                 gene_trees[*ng].arena[*nn].parent=Some(new_svgnode);
                                 //  le noeud bis a comme parent le nouveau noeud
                                 gene_trees[*ng].arena[new_svgnode_bis].parent=Some(new_svgnode);
+                                gene_trees[*ng].arena[new_svgnode_bis].visible = false;
                                 gene_trees[*ng].arena[new_svgnode].children.push(new_svgnode_bis);
                                 gene_trees[*ng].arena[new_svgnode].children.push(*nn);
                                 gene_trees[*ng].arena[parent].children.push(new_svgnode);
@@ -329,6 +330,7 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                                 gene_trees[*ng].arena[*nn].parent=Some(new_svgnode);
                                 //  le noeud bis a comme parent le nouveau noeud
                                 gene_trees[*ng].arena[new_svgnode_bis].parent=Some(new_svgnode);
+                                gene_trees[*ng].arena[new_svgnode_bis].visible = false;
                                 gene_trees[*ng].arena[new_svgnode].children.push(new_svgnode_bis);
                                 gene_trees[*ng].arena[new_svgnode].children.push(*nn);
                                 gene_trees[*ng].arena[parent].children.push(new_svgnode);
