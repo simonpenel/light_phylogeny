@@ -310,6 +310,8 @@ pub struct Options{
     pub width:f32,
     /// display support
     pub support:bool,
+    /// free free_living
+    pub free_living:bool,
 }
 impl Options {
     pub fn new() -> Self {
@@ -334,6 +336,7 @@ impl Options {
             height:1.0,
             width:1.0,
             support:false,
+            free_living:false,
 
         }
     }
