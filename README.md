@@ -5,17 +5,23 @@
 [![light_phylogeny at docs.rs](https://github.com/simonpenel/light_phylogeny/actions/workflows/example.yml/badge.svg)](https://github.com/simonpenel/light_phylogeny/actions/workflows/example.yml)
 
 
-Read, build,modify and displays as svg and manipulates reconciled phylogenetic trees.
+"light_phylogeny" is a rust library dedicated to phylogeny.
 
-Trees must be rooted.
+You may :
 
-Build a svg representation of a phylogenetic reconciled (or not) tree with events (loss, duplication, speciation, transfer).
+- Read, build, modify and displays as svg reconciled phylogenetic trees.
 
-Read a recphyloxml file:  create a svg representation of the  gene tree(s) and the associated species tree.
+- Drawing reconciled phylogenetic trees allowing 1, 2 or 3 reconciliation levels
 
-Read a newick or phyloxml file: create a svg representation of the gene tree only.
+- Build a svg representation of a phylogenetic reconciled (or not) tree with events (loss, duplication, speciation, transfer).
+
+- Read a recphyloxml file:  create a svg representation of the  gene tree(s) and the associated species tree.
+
+- Read a newick or phyloxml file: create a svg representation of the gene tree only.
 
 You may use light_phylogeny functions and methods to build, manipulate, modify or draw phylogenetic trees.
+
+You may use the "thirdkind" software  https://github.com/simonpenel/thirdkind  based on 'light_phylogeny' to represent  trees with 1, 2 or 3 reconciliation levels
 
 Keywords:  phylogeny, reconciled trees, phylogenetic trees
 
@@ -177,6 +183,11 @@ https://github.com/simonpenel/light_phylogeny/blob/master/examples/read_recphylo
 # Source documentation
 
 See Rust documentation : https://docs.rs/light_phylogeny/
+
+# The "thirdkind" software
+
+https://github.com/simonpenel/thirdkind
+
 
 # recPhyloXML documentation
 
