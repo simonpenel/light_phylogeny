@@ -410,12 +410,14 @@ pub fn recphyloxml_processing(
 //  Option : ajout d'une branche free_living
 
 let initial_root = sp_tree.get_root();
+let mut free_root = 0;
 if options.free_living {
 
     let left = sp_tree.get_root();
     println!("left = {:?}",left);
     let  right = sp_tree.new_node("free_living".to_string());
     sp_tree.arena[right].name="FREE_LIVING".to_string();
+    free_root = right;
     let  fl_root = sp_tree.new_node("free_living_root".to_string());
     sp_tree.arena[fl_root].name="FREE_LIVING_ROOT".to_string();
     sp_tree.arena[fl_root].visible=false;
@@ -565,9 +567,14 @@ move_dupli_mappings(&mut sp_tree, &mut gene_trees,root);
 // dans le meme noeud "tuyeau" que le pere
 // Cela n'arrice que quand on mappe des genes sur des hotes
 // via les parasites (thirdlevel)
-
 // ---------------------------------------------------------
 move_species_mappings(&mut sp_tree, &mut gene_trees,initial_root);
+
+if options.free_living {
+
+move_species_mappings(&mut sp_tree, &mut gene_trees,free_root);
+
+}
 // // ---------------------------------------------------------
 // // Fin: Ecriture du fichier svg
 // // ---------------------------------------------------------
