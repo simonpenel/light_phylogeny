@@ -406,6 +406,29 @@ pub fn recphyloxml_processing(
 // Au depart l'arbre est orienté du haut vers le bas (i.e. selon Y)
 // Le svg sera tourné de -90 a la fin.
 //
+
+//  Option : ajout d'une branche free_living
+
+if options.free_living {
+
+    let left = sp_tree.get_root();
+    println!("left = {:?}",left);
+    let  right = sp_tree.new_node("free_living".to_string());
+    sp_tree.arena[right].name="FREE_LIVING".to_string();
+    let  fl_root = sp_tree.new_node("free_living_root".to_string());
+    sp_tree.arena[fl_root].name="FREE_LIVING_ROOT".to_string();
+    sp_tree.arena[fl_root].visible=false;
+    sp_tree.arena[fl_root].children.push(left);
+    sp_tree.arena[fl_root].children.push(right);
+    sp_tree.arena[right].parent=Some(fl_root);
+    sp_tree.arena[left].parent=Some(fl_root);
+
+    // global_pipe.arena[node_pere].name=nom_pere;
+    // global_pipe.arena[node_pere].visible = false;
+
+
+    // panic!("arrgl")
+}
 //----------------------------------------------------------
 // 1ere étape :initialisation des x,y de l'arbre d'espèces :
 // profondeur => Y, left => X= 0, right X=1
