@@ -409,6 +409,7 @@ pub fn recphyloxml_processing(
 
 //  Option : ajout d'une branche free_living
 
+let initial_root = sp_tree.get_root();
 if options.free_living {
 
     let left = sp_tree.get_root();
@@ -566,7 +567,7 @@ move_dupli_mappings(&mut sp_tree, &mut gene_trees,root);
 // via les parasites (thirdlevel)
 
 // ---------------------------------------------------------
-move_species_mappings(&mut sp_tree, &mut gene_trees,root);
+move_species_mappings(&mut sp_tree, &mut gene_trees,initial_root);
 // // ---------------------------------------------------------
 // // Fin: Ecriture du fichier svg
 // // ---------------------------------------------------------
