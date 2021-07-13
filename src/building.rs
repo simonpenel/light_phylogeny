@@ -11,7 +11,7 @@ use crate::arena::{newick2tree,xml2tree};
 use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,shift_mod_xy,
     set_middle_postorder,real_length,set_leaves_y_values};
 use crate::arena::{map_species_trees,set_species_width,check_vertical_contour_postorder,
-    bilan_mappings,center_gene_nodes,move_dupli_mappings,move_species_mappings};
+    bilan_mappings,center_gene_nodes,move_dupli_mappings,move_species_mappings,move_species_mappings_fl};
 use crate::arena::{find_sptrees,find_rgtrees,check_for_obsolete,scale_heigth,scale_width};
 use crate::thirdlevel::{get_gtransfer,optimisation,check_optimisation,classify_transfer,reorder_transfers};
 use crate::drawing::{draw_tree,draw_sptree_gntrees};
@@ -557,11 +557,11 @@ bilan_mappings(&mut sp_tree, &mut gene_trees,root, & options);
 // ---------------------------------------------------------
 // 11eme etape : centre les noeuds de genes dans le noeud de l'espece
 // ---------------------------------------------------------
-center_gene_nodes(&mut sp_tree,&mut gene_trees,root);
+center_gene_nodes(&mut sp_tree,&mut gene_trees,initial_root);
 // ---------------------------------------------------------
 // 12eme etape traite spécifiquement les duplications et les feuilles
 // ---------------------------------------------------------
-move_dupli_mappings(&mut sp_tree, &mut gene_trees,root);
+move_dupli_mappings(&mut sp_tree, &mut gene_trees,initial_root);
 
 // 13eme etape : Ca des speciations dont les fils sont
 // dans le meme noeud "tuyeau" que le pere
@@ -571,8 +571,9 @@ move_dupli_mappings(&mut sp_tree, &mut gene_trees,root);
 move_species_mappings(&mut sp_tree, &mut gene_trees,initial_root);
 
 if options.free_living {
-
-move_species_mappings(&mut sp_tree, &mut gene_trees,free_root);
+    center_gene_nodes(&mut sp_tree,&mut gene_trees,free_root);
+    move_dupli_mappings(&mut sp_tree, &mut gene_trees,free_root);
+    move_species_mappings_fl(&mut sp_tree, &mut gene_trees,free_root);
 
 }
 // // ---------------------------------------------------------
