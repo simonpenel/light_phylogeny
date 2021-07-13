@@ -373,8 +373,18 @@ pub fn draw_sptree_gntrees (
                                 BifurcationOut, but I found a {:?}\n{:?}",n.e,n),
                             }
                         },
-                        false => get_chemin_carre(index.x,index.y,n.x,n.y ,gene_color.to_string(),
-                                    config.gene_opacity.to_string(),false),
+                        false => {
+                            if index.location != "FREE_LIVING".to_string()
+                                {
+                                    get_chemin_carre(index.x,index.y,n.x,n.y ,gene_color.to_string(),
+                                    config.gene_opacity.to_string(),false)
+                                }
+                            else {
+                                get_chemin_carre(index.x,index.y,n.x,n.y ,gene_color.to_string(),
+                                "0.2".to_string(),false)
+
+                            }
+                                    },
                      };
                      if index.visible {
                          g.append(chemin);
