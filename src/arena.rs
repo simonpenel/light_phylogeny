@@ -1267,6 +1267,56 @@ pub fn move_species_mappings(sp_tree: &mut ArenaTree<String>,
     }
 }
 
+
+// Move species father when necessary
+pub fn move_species_mappings_fl(sp_tree: &mut ArenaTree<String>,
+                           gene_trees: &mut std::vec::Vec<ArenaTree<String>>, index: usize) {
+                               // let mut nodes = &mut sp_tree.arena[index].nodes;
+                               // nodes.reverse();
+    println!("[move_species_mappings] Processing {}",index);
+    //  Recupere les feuilles des arbres de gene
+    let mut  genes = vec![];
+    let mut  feuilles = vec![];
+    for (index_node, node) in &sp_tree.arena[index].nodes {
+        println!("[move_species_mappings] >>> {:?} {:?}",gene_trees[*index_node].arena[*node].name,
+         gene_trees[*index_node].arena[*node].e);
+        if gene_trees[*index_node].arena[*node].e == Event::Leaf {
+            if !genes.contains(index_node) {
+                genes.push(*index_node);
+                feuilles.push((index_node,node));
+            }
+        };
+
+    }
+        println!("genes= {:?}",genes);
+    println!("Feuilles= {:?}",feuilles);
+    //  recherche parent
+    for (index_node, node) in feuilles {
+        let mut _parent = *node;
+        let mut parent = gene_trees[*index_node].arena[*node].parent.expect("[move_species_mappings] ERROR Unexpected root");
+            println!("{} {} {:?}",index_node,node,parent);
+
+            while gene_trees[*index_node].arena[*node].location == gene_trees[*index_node].arena[parent].location
+             {
+                 _parent = parent;
+                 parent = gene_trees[*index_node].arena[parent].parent.expect("[move_species_mappings] ERROR Unexpected root");
+                 println!("{} {} {:?}",index_node,node,parent);
+             }
+        println!("Ancestor of the gene {} in this species node is {:?}",index_node,gene_trees[*index_node].arena[parent]);
+        set_middle_postorder(&mut gene_trees[*index_node], _parent);
+
+    }
+    // let mut parent = gene_trees[*index_node].arena[*node]
+
+    let children =  &mut  sp_tree.arena[index].children;
+    if children.len() > 0 {
+        let son_left = children[0];
+        let son_right = children[1];
+        move_species_mappings_fl( sp_tree, gene_trees,son_left);
+        move_species_mappings_fl( sp_tree, gene_trees,son_right);
+    }
+}
+
 // Center the gene nodes into a  specie snode
 pub fn center_gene_nodes(sp_tree: &mut ArenaTree<String>,
                          gene_trees: &mut std::vec::Vec<ArenaTree<String>>, index: usize) {
