@@ -38,7 +38,9 @@ pub fn draw_tree (
     let smallest_y = tree.get_smallest_y() * 1.0 + 0.0 ;
     let width_svg = largest_x - smallest_x + 0.0;
     let width_svg = width_svg * 1.0;
-    let height_svg = largest_y - smallest_y + 2.0 * BLOCK;  // Because of leaves
+    let longest_name = get_longest_name(tree) as f32;
+    let height_svg = largest_y - smallest_y + longest_name *
+        config.gene_police_size.parse::<f32>().unwrap();
     let height_svg = height_svg * 1.0;
     let x_viewbox = smallest_x - 0.0 ;
     let y_viewbox = smallest_y - 0.0;
@@ -156,6 +158,25 @@ pub fn draw_tree (
     svg::save(name, &document).unwrap();
 }
 
+pub fn get_longest_name_mul(gene_trees:&mut std::vec::Vec<ArenaTree<String>>) -> usize {
+    let mut max = 0;
+    for tree in gene_trees {
+        let gene_max = get_longest_name(tree);
+        if gene_max > max {
+            max = gene_max;
+        }
+    }
+    max
+}
+pub fn get_longest_name(gene_tree:&ArenaTree<String>) -> usize {
+    let mut max = 0;
+    for node in &gene_tree.arena {
+        if node.name.len() > max {
+            max = node.name.len();
+        }
+    }
+    max
+}
 /// Draw a svg pipe species tree and  several gene trees inside it
 pub fn draw_sptree_gntrees (
     sp_tree: &mut ArenaTree<String>,                    // species tree
@@ -171,9 +192,14 @@ pub fn draw_sptree_gntrees (
     let smallest_y = sp_tree.get_smallest_y() * 1.0 + 0.0 ;
     let width_svg = largest_x - smallest_x+ 1.0 * BLOCK;
     let width_svg = width_svg * 1.0;
-    let height_svg = largest_y - smallest_y + 2.0 * BLOCK;  // Ajout car les fuielles de l'espece
-                                                            // sont allongées lors de la creation
-                                                            // du  path . A ameliorer
+    let mut longest_name = get_longest_name_mul(gene_trees) as f32;
+    let species_longest_name = get_longest_name(sp_tree) as f32;
+    if species_longest_name > longest_name {
+        longest_name = species_longest_name;
+    }
+    let height_svg = largest_y - smallest_y + longest_name *
+        config.gene_police_size.parse::<f32>().unwrap();
+
     let height_svg = height_svg * 1.0;
     let x_viewbox = smallest_x - 0.0 ;
     let y_viewbox = smallest_y - 0.0;
