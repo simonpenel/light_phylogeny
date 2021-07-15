@@ -3,6 +3,7 @@
 /// authors = ["Simon Penel <simon.penel@univ-lyon1.fr>"]
 /// license = "CECILL-2.1"
 use log::{info};
+use std::process;
 use crate::arena::ArenaTree;
 use crate::arena::Event;
 use crate::arena::PIPEBLOCK;
@@ -143,7 +144,17 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                 let p = &index.parent;
                 let p = match p {
                     Some(p) => p,
-                    None => panic!("[map_parasite_s2g] Error: node has not parent"),
+                    None => {
+                        println!("\n[map_parasite_s2g] ERROR:");
+                        println!("Unable to map the reconciled recGeneTree from '-f' file with the SpTree from '-g' file");
+                        println!("");
+                        println!("The following node in the 'path' reconciled tree was not found \
+                        in the 'pipe' tree:\n{:?} ",index);
+                        println!("\nThis may happen when a transfer or a loss is represented by \
+                        'virtual' node in the reconciled tree, and the program will create \
+                        a new node to deal with this. But the current missing node is a root \
+                        it can not be a virtual node, so it seems it is actually not possible to map.");
+                        process::exit(1);},
                 };
                 // p is the parent of the node in the rec species which is not found
                 // in the pipe species
