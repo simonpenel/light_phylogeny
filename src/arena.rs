@@ -997,9 +997,9 @@ pub fn map_species_trees(sp_tree: &mut ArenaTree<String>,
             }
             if !mapped {
 
-                println!("\nERROR: Unable to map Node {:?}",index);
-                println!("\nThe species '{}' was not found in species tree", index.location);
-                println!("\nMaybe you should use the 'free_living' option.");
+                eprintln!("\nERROR: Unable to map Node {:?}",index);
+                eprintln!("\nThe species '{}' was not found in species tree", index.location);
+                eprintln!("\nMaybe you should use the 'free_living' option.");
                 process::exit(1)
             }
         }
