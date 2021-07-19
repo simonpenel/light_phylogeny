@@ -57,7 +57,7 @@ fn main() {
     read_recphyloxml_multi("examples/concat.xml".to_string(),
         &mut sp_tree, &mut gene_trees, &mut global_roots);
     options.thickness_flag = true;
-    options.thickness_thresh = 1;
+    options.thickness_thresh = 0;
     options.thickness_disp_score = true;
     options.rotate = false;
     let mut selected_gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
