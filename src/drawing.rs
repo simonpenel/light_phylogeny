@@ -370,8 +370,7 @@ pub fn draw_sptree_gntrees (
                      // La forme du chemin depend de l'evenement
                      let chemin = match index.is_a_transfert {
                         true => {
-
-                            // If flga thickness, the transfers will  draw later according to
+                            // If flag thickness, the transfers will  draw later according to
                             // redundancy
                             // if !options.thikness_flag
                             let transfer_opacity = match options.thickness_flag {
