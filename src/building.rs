@@ -412,9 +412,7 @@ pub fn recphyloxml_processing(
 let initial_root = sp_tree.get_root();
 let mut free_root = 0;
 if options.free_living {
-
     let left = sp_tree.get_root();
-    println!("left = {:?}",left);
     let  right = sp_tree.new_node("free_living".to_string());
     sp_tree.arena[right].name="FREE_LIVING".to_string();
     free_root = right;
@@ -425,12 +423,6 @@ if options.free_living {
     sp_tree.arena[fl_root].children.push(right);
     sp_tree.arena[right].parent=Some(fl_root);
     sp_tree.arena[left].parent=Some(fl_root);
-
-    // global_pipe.arena[node_pere].name=nom_pere;
-    // global_pipe.arena[node_pere].visible = false;
-
-
-    // panic!("arrgl")
 }
 //----------------------------------------------------------
 // 1ere étape :initialisation des x,y de l'arbre d'espèces :

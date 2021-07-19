@@ -1268,17 +1268,17 @@ pub fn move_species_mappings(sp_tree: &mut ArenaTree<String>,
 }
 
 
-// Move species father when necessary
+// Move species father when necessary in free living tree
 pub fn move_species_mappings_fl(sp_tree: &mut ArenaTree<String>,
                            gene_trees: &mut std::vec::Vec<ArenaTree<String>>, index: usize) {
                                // let mut nodes = &mut sp_tree.arena[index].nodes;
                                // nodes.reverse();
-    println!("[move_species_mappings] Processing {}",index);
+    info!("[move_species_mappings_fl] Processing {}",index);
     //  Recupere les feuilles des arbres de gene
     let mut  genes = vec![];
     let mut  feuilles = vec![];
     for (index_node, node) in &sp_tree.arena[index].nodes {
-        println!("[move_species_mappings] >>> {:?} {:?}",gene_trees[*index_node].arena[*node].name,
+        info!("[move_species_mappings_fl] >>> {:?} {:?}",gene_trees[*index_node].arena[*node].name,
          gene_trees[*index_node].arena[*node].e);
         if gene_trees[*index_node].arena[*node].e == Event::Leaf {
             if !genes.contains(index_node) {
@@ -1288,26 +1288,23 @@ pub fn move_species_mappings_fl(sp_tree: &mut ArenaTree<String>,
         };
 
     }
-        println!("genes= {:?}",genes);
-    println!("Feuilles= {:?}",feuilles);
     //  recherche parent
     for (index_node, node) in feuilles {
         let mut _parent = *node;
-        let mut parent = gene_trees[*index_node].arena[*node].parent.expect("[move_species_mappings] ERROR Unexpected root");
-            println!("{} {} {:?}",index_node,node,parent);
+        let mut parent = gene_trees[*index_node].arena[*node].parent.expect("[move_species_mappings_fl] ERROR Unexpected root");
+            info!("[move_species_mappings_fl] {} {} {:?}",index_node,node,parent);
 
             while gene_trees[*index_node].arena[*node].location == gene_trees[*index_node].arena[parent].location
              {
                  _parent = parent;
                  parent = gene_trees[*index_node].arena[parent].parent.expect("[move_species_mappings] ERROR Unexpected root");
-                 println!("{} {} {:?}",index_node,node,parent);
+                 info!("[move_species_mappings_fl] {} {} {:?}",index_node,node,parent);
              }
-        println!("Ancestor of the gene {} in this species node is {:?}",index_node,gene_trees[*index_node].arena[parent]);
+        info!("[move_species_mappings_fl] Ancestor of the gene {} in this species node is {:?}",index_node,gene_trees[*index_node].arena[parent]);
         set_middle_postorder(&mut gene_trees[*index_node], _parent);
 
     }
-    // let mut parent = gene_trees[*index_node].arena[*node]
-
+    // Normalement cette etape n'est pas necessaire:
     let children =  &mut  sp_tree.arena[index].children;
     if children.len() > 0 {
         let son_left = children[0];
