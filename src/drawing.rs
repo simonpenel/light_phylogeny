@@ -370,9 +370,8 @@ pub fn draw_sptree_gntrees (
                      // La forme du chemin depend de l'evenement
                      let chemin = match index.is_a_transfert {
                         true => {
-                            // If flag thickness, the transfers will  draw later according to
-                            // redundancy
-                            // if !options.thikness_flag
+                            // Si  flag thickness, les transfers sont affiches plus tard,
+                            // selon leur redondance
                             let transfer_opacity = match options.thickness_flag {
                                     true => "0.0".to_string(),
                                     false => config.gene_opacity.to_string(),
@@ -397,31 +396,33 @@ pub fn draw_sptree_gntrees (
                             }
                         },
                         false => {
-                            if index.location != "FREE_LIVING".to_string()
-                                {
-                                    get_chemin_carre(index.x,index.y,n.x,n.y ,gene_color.to_string(),
-                                    config.gene_opacity.to_string(),false)
-                                }
+                            // Vérifie que le noeud n'est pas associé à FREE_LIVING
+                            if index.location != "FREE_LIVING".to_string() {
+                                get_chemin_carre(index.x,index.y,n.x,n.y ,gene_color.to_string(),
+                                config.gene_opacity.to_string(),false)
+                            }
                             else {
+                                // Le noeud est  associé à FREE_LIVING
+                                // Calcule l'opacite de l'arbre free living
                                 let free_opacity =
                                     config.gene_opacity.parse::<f32>().unwrap() / 2.0 ;
-                                if n.location == "FREE_LIVING".to_string()
-                                {
-                                get_chemin_carre(index.x,index.y,n.x,n.y ,gene_color.to_string(),
-                                free_opacity.to_string(),false)
+                                if n.location == "FREE_LIVING".to_string() {
+                                    // La branche est dans l'arbre free living
+                                    get_chemin_carre(index.x,index.y,n.x,n.y,
+                                        gene_color.to_string(),free_opacity.to_string(),false)
                                 }
-                                else
-                                {
+                                else {
+                                    // La branche  est entre la racine de l'arbre free living
+                                    // et le reste
                                     get_chemin_transfer(index.x,index.y,
-                                            n.x,n.y,
-                                            gene_color.to_string(),
-                                            free_opacity.to_string(),
-                                            config.bezier.to_string().parse::<f32>().unwrap(),
-                                            0)
+                                        n.x,n.y,
+                                        gene_color.to_string(),
+                                        free_opacity.to_string(),
+                                        config.bezier.to_string().parse::<f32>().unwrap(),
+                                        0)
                                 }
-
                             }
-                                    },
+                        },
                      };
                      if index.visible {
                          g.append(chemin);
