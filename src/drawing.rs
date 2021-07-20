@@ -212,7 +212,7 @@ pub fn draw_sptree_gntrees (
         false => Document::new()
                 .set("width",width_svg  )
                 .set("height",height_svg  )
-                .set("viewBox", (y_viewbox,x_viewbox,width_svg + 2.0 *BLOCK ,height_svg + 2.0 *BLOCK )),
+                .set("viewBox", (y_viewbox,x_viewbox,width_svg + 0.5 *BLOCK ,height_svg + 2.0 *BLOCK )),
     };
     let style = Style::new(".species { font: italic ".to_owned()
         + &config.species_police_size.to_string()+"px serif; fill: "
