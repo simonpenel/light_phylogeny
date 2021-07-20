@@ -141,7 +141,8 @@ where
 }
 impl<T> ArenaTree<T>
 where
-    T: PartialEq
+    T: PartialEq + std::default::Default
+
 {
     #[allow(dead_code)]
     /// Add a node and send its new index. If the
@@ -264,6 +265,48 @@ where
              }
             }
         min
+    }
+    /// Copy
+    pub fn copie(&mut self) -> ArenaTree<String> {
+        let  mut new: ArenaTree<String> = ArenaTree::default();
+        let mut i = 0;
+        for node in &self.arena {
+            let  idx = new.new_node(i.to_string());
+            new.arena[idx].name = node.name.clone();
+            new.arena[idx].support = node.support.clone();
+            new.arena[idx].parent = node.parent;
+            new.arena[idx].children = node.children.clone();
+            new.arena[idx].x = node.x;
+            new.arena[idx].y = node.y;
+            new.arena[idx].xmod = node.xmod;
+            new.arena[idx].ymod = node.ymod;
+            new.arena[idx].l = node.l;
+            new.arena[idx].e = match node.e {
+                Event::Speciation => Event::Speciation,
+                Event::Duplication => Event::Duplication,
+                Event::Loss => Event::Loss,
+                Event::BranchingOut => Event::BranchingOut,
+                Event::TransferBack => Event::TransferBack,
+                Event::BifurcationOut => Event::BifurcationOut,
+                Event::Leaf => Event::Leaf,
+                Event::ObsoleteSpeciationLoss => Event::ObsoleteSpeciationLoss,
+                Event::Undef => Event::Undef,
+            };
+            new.arena[idx].location = node.location.clone();
+            new.arena[idx].width = node.width;
+            new.arena[idx].height = node.height;
+            new.arena[idx].nbg = node.nbg;
+            new.arena[idx].nodes = node.nodes.clone();
+            new.arena[idx].is_a_transfert = node.is_a_transfert;
+            new.arena[idx].go_left = node.go_left;
+            new.arena[idx].go_right = node.go_right;
+            new.arena[idx].fixed = node.fixed;
+            new.arena[idx].transfers = node.transfers.clone();
+            new.arena[idx].visible = node.visible;
+
+            i = i + 1 ;
+            }
+        new
     }
 }
 
