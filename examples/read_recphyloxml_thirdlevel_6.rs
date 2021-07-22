@@ -19,7 +19,7 @@ fn main() {
     config.gene_opacity = "0.9".to_string();
     let transfers = vec![];
 
-    let infile_gs = "examples/rec0.2.recphyloxml".to_string();
+    let infile_gs = "examples/rec0.simple.recphyloxml".to_string();
     let infile_sh = "examples/rec0upper.recphyloxml".to_string();
     // Traitement de 2 fichier fichiers recPhyloXML
     println!("Two reconciled files => displaying 3-levels reconciliations. ");

@@ -409,12 +409,6 @@ pub fn draw_sptree_gntrees (
                                         transfer_opacity,
                                         config.bezier.to_string().parse::<f32>().unwrap(),
                                         2),
-                                // Event::Undef => get_chemin_transfer(index.x,index.y,
-                                //                 n.x,n.y,
-                                //                 gene_color.to_string(),
-                                //                 transfer_opacity,
-                                //                 config.bezier.to_string().parse::<f32>().unwrap(),
-                                //                 1),
                                 _ => {
                                     println!("DEBUG 3 ====> IS VIRTUAL  {:?}",n.virtualsvg);
                                     if n.virtualsvg {
