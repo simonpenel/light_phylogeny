@@ -5,18 +5,21 @@ use light_phylogeny::{ArenaTree,Options,Config,read_recphyloxml_multi,recphyloxm
 phyloxml_processing,reset_pos,map_transfer,map_transfer_mul,get_gtransfer,map_parasite_g2s,
 map_parasite_s2g,map_gene_host};
 use log::{info};
+use std::env;
 
 fn main() {
-
+    // env::set_var("RUST_LOG", "info");
+    // env_logger::init();
 
     let mut options: Options = Options::new();
-    options.species_internal = true;
     options.gene_internal = true;
+    options.species_internal = true;
     let mut config: Config = Config::new();
     config.species_opacity = "0.7".to_string();
     config.gene_opacity = "0.9".to_string();
     let transfers = vec![];
-    let infile_gs = "examples/rec0.recphyloxml".to_string();
+
+    let infile_gs = "examples/rec0.2.recphyloxml".to_string();
     let infile_sh = "examples/rec0upper.recphyloxml".to_string();
     // Traitement de 2 fichier fichiers recPhyloXML
     println!("Two reconciled files => displaying 3-levels reconciliations. ");
@@ -167,11 +170,7 @@ i = i + 1;
 
 //llmlmlmlmlmlm
 // mapping des gene sur les hotes via les parasites
-// let mut i = 0;
-// while i < nb_parasite_pipe {
-// map_gene_host(&mut path_genes, &mut path_para_trees[i], &mut tree_host_pipe);
-// i = i + 1;
-// }
+println!("Building svg 3: gene  tree within host pipe tree");
 map_gene_host(&mut path_genes, &mut path_para_trees, &mut tree_host_pipe);
 
 // map_gene_host(&mut path_genes, &mut path_para_trees[1], &mut tree_host_pipe);
@@ -181,8 +180,10 @@ while i < nb_gntree {
 reset_pos(&mut path_genes[i]);
 i = i + 1;
 }
+
 recphyloxml_processing(&mut tree_host_pipe, &mut path_genes, &mut options, &config,
 true, &vec![],"mapped_3.svg".to_string());
+// println!("DEBUG  FINAL HOST = {:?}",tree_host_pipe);
 // lmlmlmlm
 
 println!("Output files:");
