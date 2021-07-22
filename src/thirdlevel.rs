@@ -140,17 +140,19 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
             Err(_err) => {
                 // We need to define a new node in the pipe species tree
                 info!("[map_parasite_s2g] Unable to map {} {:?}, new node needed",name,&index.e);
+                eprintln!("[map_parasite_s2g] Unable to map {} {:?}, new node needed",name,&index.e);
+                eprintln!("[map_parasite_s2g] Unable to map {:?}",&index);
                 // To do that we nee the parent of the missing node
                 let p = &index.parent;
                 let p = match p {
                     Some(p) => p,
                     None => {
-                        println!("\n[map_parasite_s2g] ERROR:");
-                        println!("Unable to map the reconciled recGeneTree from '-f' file with the SpTree from '-g' file");
-                        println!("");
-                        println!("The following node in the 'path' reconciled tree was not found \
+                        eprintln!("\n[map_parasite_s2g] ERROR:");
+                        eprintln!("Unable to map the reconciled recGeneTree from '-f' file with the SpTree from '-g' file");
+                        eprintln!("");
+                        eprintln!("The following node in the 'path' reconciled tree was not found \
                         in the 'pipe' tree:\n{:?} ",index);
-                        println!("\nThis may happen when a transfer or a loss is represented by \
+                        eprintln!("\nThis may happen when a transfer or a loss is represented by \
                         'virtual' node in the reconciled tree, and the program will create \
                         a new node to deal with this. But the current missing node is a root \
                         it can not be a virtual node, so it seems it is actually not possible to map.");
@@ -161,6 +163,8 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                 let parent_name = para_as_gene.arena[*p].name.clone();
                 info!("[map_parasite_s2g]  => parent of the node in the reconciled species tree is {}({})",
                     p,parent_name);
+                eprintln!("[map_parasite_s2g]  => parent of the node in the reconciled species tree is {}({})",
+                        p,parent_name);
                 // let's find this node in the pipe species tree
                 let j = para_as_species.get_index(parent_name.to_string());
                 let j = match j {
@@ -169,6 +173,8 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                 };
                 // j is the mapping of p  in the spec tree
                 info!("[map_parasite_s2g]  => Mapping of parent {} OK",parent_name);
+                eprintln!("[map_parasite_s2g]  => Mapping of parent {} OK",parent_name);
+                eprintln!("[map_parasite_s2g]  => Mapping of parent => {:?}",para_as_species.arena[j]);
                 match index.e {
                     // the missing node is a loss, I add it to the parent j
                     // (which have 3 children now)
@@ -183,7 +189,9 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                         info!("[map_parasite_s2g]  => parent is now : {:?}",para_as_species.arena[j]);
                     },
                     Event::Leaf => {
+                        // panic!("lol");
                         info!("[map_parasite_s2g]  => missing node is a Leaf, I add it to parent");
+                        println!("[map_parasite_s2g]  => missing node is a Leaf, I add it to parent");
                         //  New pipe species node with the name find in the rec species tree
                         let new_leaf = para_as_species.new_node(name.to_string());
                         para_as_species.arena[new_leaf].name = name.to_string();
@@ -205,9 +213,14 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                         // We may have to add  a node in  the gene tree for j
                         // gene nodes associated to the new rec species node:
                         let new_gnodes = &para_as_species.arena[new_leaf].nodes;
+                        println!("DEBUG 2 ====>  new_gnodes {:?}",new_gnodes);
                         // Array of gene nodes we will have to deal with  afterrwawrds
                         let mut add_gnodes = [].to_vec();
                         for (ng,nn) in new_gnodes { // ng is the tree number, nn the index of node
+                        // if 0 == 1 {
+                        //     let mut ng = &0;
+                        //     let mut nn = &0;
+                            // ng is the tree number, nn the index of node
                             info!("[map_parasite_s2g] Modify gene tree number {}",*ng);
                             info!("[map_parasite_s2g] Redefine location of the node.");
                             info!("[map_parasite_s2g] Previous {:?}:", &gene_trees[*ng].arena[*nn]);
@@ -227,18 +240,25 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                                     Some(p) => p,
                                     None => panic!("[map_parasite_s2g] Unable to find parent"),
                                 };
+                                println!("DEBUG 2 ====>  Create virtual nodes ");
                                 // nouveau noeud 1
                                 let new_svgnode = gene_trees[*ng].new_node("virtualsvg_".to_string()
-                                + &virt_svg.to_string());
+                                    + &virt_svg.to_string());
+                                gene_trees[*ng].arena[new_svgnode].name   = "virtualsvg_".to_string()
+                                    + &virt_svg.to_string();
                                 virt_svg = virt_svg + 1 ;
                                 // A verifier
                                 gene_trees[*ng].arena[new_svgnode].location = index.name.clone();
+                                gene_trees[*ng].arena[new_svgnode].virtualsvg = true;
                                 // nouveau noeud 2
                                 let new_svgnode_bis = gene_trees[*ng].new_node("virtualsvg_".to_string()
                                 + &virt_svg.to_string());
+                                gene_trees[*ng].arena[new_svgnode_bis].name   = "virtualsvg_".to_string()
+                                    + &virt_svg.to_string();
                                 virt_svg = virt_svg + 1 ;
                                 // A verifier
                                 gene_trees[*ng].arena[new_svgnode_bis].location = index.name.clone();
+                                gene_trees[*ng].arena[new_svgnode_bis].virtualsvg = true;
                                 add_gnodes.push((j,*ng,(new_svgnode_bis,new_svgnode)));
                                 // para_as_species.arena[j].nodes.push = [].to_vec();
                                 //  le nouveau noeud a comme parent le parent du noeud traité
@@ -252,6 +272,8 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                                 gene_trees[*ng].arena[new_svgnode].children.push(*nn);
                                 gene_trees[*ng].arena[parent].children.push(new_svgnode);
                                 gene_trees[*ng].arena[parent].children.retain(|&x| x !=  *nn);
+                                println!("DEBUG 2 ====>  {:?}",gene_trees[*ng].arena[new_svgnode]);
+                                println!("DEBUG 2 ====>  {:?}",gene_trees[*ng].arena[new_svgnode_bis]);
                                 info!("[map_parasite_s2g] new gene added.");
                             }
                         }
@@ -324,15 +346,22 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                                 // nouveau noeud 1
                                 let new_svgnode = gene_trees[*ng].new_node("virtualsvg_".to_string()
                                     + &virt_svg.to_string());
+                                gene_trees[*ng].arena[new_svgnode].name   = "virtualsvg_".to_string()
+                                        + &virt_svg.to_string();
+                                println!("DEBUG 1 ====>  Create virtual nodes ");
                                 virt_svg = virt_svg + 1 ;
                                 // A verifier
                                 gene_trees[*ng].arena[new_svgnode].location = index.name.clone();
+                                gene_trees[*ng].arena[new_svgnode].virtualsvg = true;
                                 // nouveau noeud 2
                                 let new_svgnode_bis = gene_trees[*ng].new_node("virtualsvg_".to_string()
                                     + &virt_svg.to_string());
+                                gene_trees[*ng].arena[new_svgnode_bis].name   = "virtualsvg_".to_string()
+                                        + &virt_svg.to_string();
                                 virt_svg = virt_svg + 1 ;
                                 // A verifier
                                 gene_trees[*ng].arena[new_svgnode_bis].location = index.name.clone();
+                                gene_trees[*ng].arena[new_svgnode_bis].virtualsvg = true;
                                 add_gnodes.push((j,*ng,(new_svgnode_bis,new_svgnode)));
                                 // para_as_species.arena[j].nodes.push = [].to_vec();
                                 //  le nouveau noeud a comme parent le parent du noeud traité
@@ -346,6 +375,8 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                                 gene_trees[*ng].arena[new_svgnode].children.push(*nn);
                                 gene_trees[*ng].arena[parent].children.push(new_svgnode);
                                 gene_trees[*ng].arena[parent].children.retain(|&x| x !=  *nn);
+                                println!("DEBUG 1 ====>  {:?}",gene_trees[*ng].arena[new_svgnode]);
+                                println!("DEBUG 1 ====>  {:?}",gene_trees[*ng].arena[new_svgnode_bis]);
                                 info!("[map_parasite_s2g] new gene added.");
                             }
                         }

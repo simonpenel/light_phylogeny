@@ -366,16 +366,35 @@ pub fn draw_sptree_gntrees (
             // Dessine le chemin du noeud a son pere
             match index.parent {
                  Some(p) => {
-                     let n = &gene_trees[idx_rcgen].arena[p];
+                     // Attention ici je verifie que le noeud parent n'est pas virtuel.
+                     // Si c'est le cas, le vrai parent n'est pas le noeud virtuel
+                     // mais le pere de celui ci
+
+                     // let n = &gene_trees[idx_rcgen].arena[p];
+                     let n = match gene_trees[idx_rcgen].arena[p].virtualsvg {
+                         true =>  {
+                             let real_p =  gene_trees[idx_rcgen].arena[p].parent;
+                             match real_p {
+                                 Some(r_p) =>  &gene_trees[idx_rcgen].arena[r_p],
+                                  None => {panic!("lol")},
+                             }
+                             // &gene_trees[idx_rcgen].arena[p]
+                         },
+                         false => &gene_trees[idx_rcgen].arena[p],
+                     };
+                     // debug : ca ca marche
+                    let n = &gene_trees[idx_rcgen].arena[p];
                      // La forme du chemin depend de l'evenement
                      let chemin = match index.is_a_transfert {
                         true => {
+                            // println!("DEBUG 3 ====> TRANSFERT  {:?}",index);
                             // Si  flag thickness, les transfers sont affiches plus tard,
                             // selon leur redondance
                             let transfer_opacity = match options.thickness_flag {
                                     true => "0.0".to_string(),
                                     false => config.gene_opacity.to_string(),
                             };
+
                             // Verifie que le parent est bien un branchingout
                             match n.e {
                                 Event::BranchingOut => get_chemin_transfer(index.x,index.y,
@@ -390,9 +409,30 @@ pub fn draw_sptree_gntrees (
                                         transfer_opacity,
                                         config.bezier.to_string().parse::<f32>().unwrap(),
                                         2),
-                                _ => panic!("Wrong recPhyloXML feature.
-                                The father node should be BranchingOut or
-                                BifurcationOut, but I found a {:?}\n{:?}",n.e,n),
+                                // Event::Undef => get_chemin_transfer(index.x,index.y,
+                                //                 n.x,n.y,
+                                //                 gene_color.to_string(),
+                                //                 transfer_opacity,
+                                //                 config.bezier.to_string().parse::<f32>().unwrap(),
+                                //                 1),
+                                _ => {
+                                    println!("DEBUG 3 ====> IS VIRTUAL  {:?}",n.virtualsvg);
+                                    if n.virtualsvg {
+                                        let ppp = n.parent.expect("ERROR");
+                                        let nnn = &gene_trees[idx_rcgen].arena[ppp];
+
+                                        get_chemin_transfer(index.x,index.y,
+                                                nnn.x,nnn.y,
+                                                gene_color.to_string(),
+                                                0.0.to_string(),
+                                                config.bezier.to_string().parse::<f32>().unwrap(),
+                                                1)
+                                        // panic!("lol");
+                                    }
+                                    else {
+                                        panic!("Wrong recPhyloXML feature in tree # {}.The father node should be BranchingOut or BifurcationOut, but I found a {:?} Father node: {:?}\nCurrent node: {:?}",idx_rcgen,n.e,n,index);
+                                    }
+                                },
                             }
                         },
                         false => {
