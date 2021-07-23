@@ -418,7 +418,7 @@ pub fn draw_sptree_gntrees (
                                         get_chemin_transfer(index.x,index.y,
                                                 nnn.x,nnn.y,
                                                 gene_color.to_string(),
-                                                0.0.to_string(),
+                                                1.0.to_string(),
                                                 config.bezier.to_string().parse::<f32>().unwrap(),
                                                 1)
                                         // panic!("lol");
