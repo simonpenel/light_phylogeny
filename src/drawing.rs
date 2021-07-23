@@ -371,17 +371,17 @@ pub fn draw_sptree_gntrees (
                      // mais le pere de celui ci
 
                      // let n = &gene_trees[idx_rcgen].arena[p];
-                     let n = match gene_trees[idx_rcgen].arena[p].virtualsvg {
-                         true =>  {
-                             let real_p =  gene_trees[idx_rcgen].arena[p].parent;
-                             match real_p {
-                                 Some(r_p) =>  &gene_trees[idx_rcgen].arena[r_p],
-                                  None => {panic!("lol")},
-                             }
-                             // &gene_trees[idx_rcgen].arena[p]
-                         },
-                         false => &gene_trees[idx_rcgen].arena[p],
-                     };
+                     // let n = match gene_trees[idx_rcgen].arena[p].virtualsvg {
+                     //     true =>  {
+                     //         let real_p =  gene_trees[idx_rcgen].arena[p].parent;
+                     //         match real_p {
+                     //             Some(r_p) =>  &gene_trees[idx_rcgen].arena[r_p],
+                     //              None => {panic!("lol")},
+                     //         }
+                     //         // &gene_trees[idx_rcgen].arena[p]
+                     //     },
+                     //     false => &gene_trees[idx_rcgen].arena[p],
+                     // };
                      // debug : ca ca marche
                     let n = &gene_trees[idx_rcgen].arena[p];
                      // La forme du chemin depend de l'evenement
@@ -403,6 +403,13 @@ pub fn draw_sptree_gntrees (
                                         transfer_opacity,
                                         config.bezier.to_string().parse::<f32>().unwrap(),
                                         1),
+                                        // Ultracrade : ok si virtal nide seulement
+                                // Event::Undef => get_chemin_transfer(index.x,index.y,
+                                //                 n.x,n.y,
+                                //                 gene_color.to_string(),
+                                //                 transfer_opacity,
+                                //                 config.bezier.to_string().parse::<f32>().unwrap(),
+                                //                 1),
                                 Event::BifurcationOut => get_chemin_transfer(index.x,index.y,
                                         n.x,n.y,
                                         gene_color.to_string(),
@@ -410,21 +417,50 @@ pub fn draw_sptree_gntrees (
                                         config.bezier.to_string().parse::<f32>().unwrap(),
                                         2),
                                 _ => {
-                                    println!("DEBUG 3 ====> IS VIRTUAL  {:?}",n.virtualsvg);
-                                    if n.virtualsvg {
-                                        let ppp = n.parent.expect("ERROR");
-                                        let nnn = &gene_trees[idx_rcgen].arena[ppp];
-
+                                    println!("DEBUG 3 ====> IS VIRTUAL  {:?}",index.virtualsvg);
+                                    // Si le noaud courant est vituel, je peux tracer
+                                    if index.virtualsvg {
                                         get_chemin_transfer(index.x,index.y,
-                                                nnn.x,nnn.y,
-                                                gene_color.to_string(),
-                                                1.0.to_string(),
+                                                n.x,n.y,
+                                                // gene_color.to_string(),
+                                                "orange".to_string(),
+                                                transfer_opacity,
                                                 config.bezier.to_string().parse::<f32>().unwrap(),
                                                 1)
+
+                                        // let ppp = n.parent.expect("ERROR");
+                                        // let nnn = &gene_trees[idx_rcgen].arena[ppp];
+                                        //
+                                        // get_chemin_transfer(index.x,index.y,
+                                        //         nnn.x,nnn.y,
+                                        //         gene_color.to_string(),
+                                        //         1.0.to_string(),
+                                        //         config.bezier.to_string().parse::<f32>().unwrap(),
+                                        //         1)
                                         // panic!("lol");
                                     }
                                     else {
-                                        panic!("Wrong recPhyloXML feature in tree # {}.The father node should be BranchingOut or BifurcationOut, but I found a {:?} Father node: {:?}\nCurrent node: {:?}",idx_rcgen,n.e,n,index);
+                                        // Si c'est le pere qui est virtuel on va vaoir le grand PERE
+                                        if n.virtualsvg {
+                                            let ppp = n.parent.expect("ERROR");
+                                            let nnn = &gene_trees[idx_rcgen].arena[ppp];
+                                            //
+                                            println!("PUTAIN DE MERDE {:?}",nnn.e);
+                                            if nnn.e != Event::BranchingOut && nnn.e != Event::BifurcationOut {
+                                                panic!("Wrong recPhyloXML feature in tree # {}.The (grand)father node should be BranchingOut or BifurcationOut, but I found a {:?} Father node: {:?}\nCurrent node: {:?}",
+                                                idx_rcgen,nnn.e,nnn,index);
+                                            }
+                                            get_chemin_transfer(index.x,index.y,
+                                                    nnn.x,nnn.y,
+                                                    // gene_color.to_string(),
+                                                    "red".to_string(),
+                                                    1.0.to_string(),
+                                                    config.bezier.to_string().parse::<f32>().unwrap(),
+                                                    1)
+                                        }else {
+
+                                        panic!("Wrong recPhyloXML feature in tree # {}.The father node should be BranchingOut or BifurcationOut, but I found a {:?} Father node: {:?}\nCurrent node: {:?}",
+                                        idx_rcgen,n.e,n,index);}
                                     }
                                 },
                             }
