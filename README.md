@@ -27,26 +27,34 @@ Keywords:  phylogeny, reconciled trees, phylogenetic trees
 
 # Formats:
 
-phyloXML, recPhyloXML, rooted newick ( NHX balises will not be considered ).
+phyloXML, recPhyloXML, rooted newick (NHX balises will not be considered).
 
 # Output examples
 
-multiple genes reconciliation recphyloxml:
+single gene reconciliation with species tree:
 
-https://raw.githubusercontent.com/simonpenel/rectree2svg/684e2ecccf04408cf15815e3fb71bbeebfa19d12/tree2svg.example.svg
+https://raw.githubusercontent.com/simonpenel/thirdkind/74b9c84a5b2ed84ff5230fc3a52af856b9aba53d/output_examples/thirdkind_example1.svg
 
-single gene reconciliation in recphyloxml:
 
-https://raw.githubusercontent.com/simonpenel/rectree2svg/5e23e92396d44a68337b33c579f2d9d372d18b4d/FAM000696_reconciliated_recphyloxml.svg
+the same gene reconciliation without the species tree:
 
-the same gene reconciliation in phyloxml:
+https://raw.githubusercontent.com/simonpenel/thirdkind/74b9c84a5b2ed84ff5230fc3a52af856b9aba53d/output_examples/thirdkind_example1_bis.svg
 
-https://raw.githubusercontent.com/simonpenel/rectree2svg/9244f3136961f909fd7b33818f0a220e3f32c880/FAM000696_reconciliated_xml.svg
 
-multiple gene trees with redundant transfers. Display only 1 gene tree and the transfers according to the abundance of the transfer:
+multiple genes reconciliation:
 
-https://raw.githubusercontent.com/simonpenel/rectree2svg/f9ee031fa23b815ff7cc7298fd0dc4fb45707d53/transfers_abundance.svg
+https://raw.githubusercontent.com/simonpenel/thirdkind/70a7a11aa89eda61926c5cabf221f47bb44e3409/output_examples/thirdkind_example4.svg
 
+example with "free living" species:
+
+https://raw.githubusercontent.com/simonpenel/thirdkind/9eb47ce644998164ff56cc68eb765c0c8a24d389/output_examples/thirdkind_fl_example.svg
+
+multiple gene trees reconciliation with redundant transfers. Display only 1 gene tree and the transfers in red with an opacity according to the abundance of the transfer:
+
+https://raw.githubusercontent.com/simonpenel/thirdkind/70a7a11aa89eda61926c5cabf221f47bb44e3409/output_examples/thirdkind_example2.svg
+
+
+For  more examples, see the "thirdkind" software  https://github.com/simonpenel/thirdkind.
 
 
 # Using the API:
