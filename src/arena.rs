@@ -1338,13 +1338,18 @@ pub fn move_species_mappings_fl(sp_tree: &mut ArenaTree<String>,
     //  recherche parent
     for (index_node, node) in feuilles {
         let mut _parent = *node;
-        let mut parent = gene_trees[*index_node].arena[*node].parent.expect("[move_species_mappings_fl] ERROR Unexpected root");
+        let mut parent = gene_trees[*index_node].arena[*node].parent.expect("[move_species_mappings_fl] ERROR Unexpected root (1)");
             info!("[move_species_mappings_fl] {} {} {:?}",index_node,node,parent);
 
             while gene_trees[*index_node].arena[*node].location == gene_trees[*index_node].arena[parent].location
              {
                  _parent = parent;
-                 parent = gene_trees[*index_node].arena[parent].parent.expect("[move_species_mappings] ERROR Unexpected root");
+                 parent = match gene_trees[*index_node].arena[parent].parent {
+                     Some(p) => p,
+                     None =>    {
+                         break
+                     },
+                 };
                  info!("[move_species_mappings_fl] {} {} {:?}",index_node,node,parent);
              }
         info!("[move_species_mappings_fl] Ancestor of the gene {} in this species node is {:?}",index_node,gene_trees[*index_node].arena[parent]);
