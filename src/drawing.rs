@@ -387,7 +387,6 @@ pub fn draw_sptree_gntrees (
                      // La forme du chemin depend de l'evenement
                      let chemin = match index.is_a_transfert {
                         true => {
-                            // println!("DEBUG 3 ====> TRANSFERT  {:?}",index);
                             // Si  flag thickness, les transfers sont affiches plus tard,
                             // selon leur redondance
                             let transfer_opacity = match options.thickness_flag {
@@ -403,13 +402,6 @@ pub fn draw_sptree_gntrees (
                                         transfer_opacity,
                                         config.bezier.to_string().parse::<f32>().unwrap(),
                                         1),
-                                        // Ultracrade : ok si virtal nide seulement
-                                // Event::Undef => get_chemin_transfer(index.x,index.y,
-                                //                 n.x,n.y,
-                                //                 gene_color.to_string(),
-                                //                 transfer_opacity,
-                                //                 config.bezier.to_string().parse::<f32>().unwrap(),
-                                //                 1),
                                 Event::BifurcationOut => get_chemin_transfer(index.x,index.y,
                                         n.x,n.y,
                                         gene_color.to_string(),
@@ -417,44 +409,28 @@ pub fn draw_sptree_gntrees (
                                         config.bezier.to_string().parse::<f32>().unwrap(),
                                         2),
                                 _ => {
-                                    println!("DEBUG 3 ====> IS VIRTUAL  {:?}",index.virtualsvg);
                                     // Si le noaud courant est vrituel,je peux tracer quand  meme
                                     // ( a verfier)
                                     if index.virtualsvg {
                                         get_chemin_transfer(index.x,index.y,
                                                 n.x,n.y,
-                                                // gene_color.to_string(),
-                                                "orange".to_string(),
+                                                gene_color.to_string(),
                                                 transfer_opacity,
                                                 config.bezier.to_string().parse::<f32>().unwrap(),
                                                 1)
-
-                                        // let ppp = n.parent.expect("ERROR");
-                                        // let nnn = &gene_trees[idx_rcgen].arena[ppp];
-                                        //
-                                        // get_chemin_transfer(index.x,index.y,
-                                        //         nnn.x,nnn.y,
-                                        //         gene_color.to_string(),
-                                        //         1.0.to_string(),
-                                        //         config.bezier.to_string().parse::<f32>().unwrap(),
-                                        //         1)
-                                        // panic!("lol");
                                     }
                                     else {
                                         // Si c'est le pere qui est virtuel on va voir le grand PERE
                                         if n.virtualsvg {
                                             let ppp = n.parent.expect("ERROR");
                                             let nnn = &gene_trees[idx_rcgen].arena[ppp];
-                                            //
-                                            println!("PUTAIN DE MERDE {:?}",nnn.e);
                                             if nnn.e != Event::BranchingOut && nnn.e != Event::BifurcationOut {
                                                 panic!("Wrong recPhyloXML feature in tree # {}.The (grand)father node should be BranchingOut or BifurcationOut, but I found a {:?} Father node: {:?}\nCurrent node: {:?}",
                                                 idx_rcgen,nnn.e,nnn,index);
                                             }
                                             get_chemin_transfer(index.x,index.y,
                                                     nnn.x,nnn.y,
-                                                    // gene_color.to_string(),
-                                                    "red".to_string(),
+                                                    gene_color.to_string(),
                                                     1.0.to_string(),
                                                     config.bezier.to_string().parse::<f32>().unwrap(),
                                                     1)
