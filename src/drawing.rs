@@ -366,23 +366,6 @@ pub fn draw_sptree_gntrees (
             // Dessine le chemin du noeud a son pere
             match index.parent {
                  Some(p) => {
-                     // Attention ici je verifie que le noeud parent n'est pas virtuel.
-                     // Si c'est le cas, le vrai parent n'est pas le noeud virtuel
-                     // mais le pere de celui ci
-
-                     // let n = &gene_trees[idx_rcgen].arena[p];
-                     // let n = match gene_trees[idx_rcgen].arena[p].virtualsvg {
-                     //     true =>  {
-                     //         let real_p =  gene_trees[idx_rcgen].arena[p].parent;
-                     //         match real_p {
-                     //             Some(r_p) =>  &gene_trees[idx_rcgen].arena[r_p],
-                     //              None => {panic!("lol")},
-                     //         }
-                     //         // &gene_trees[idx_rcgen].arena[p]
-                     //     },
-                     //     false => &gene_trees[idx_rcgen].arena[p],
-                     // };
-                     // debug : ca ca marche
                     let n = &gene_trees[idx_rcgen].arena[p];
                      // La forme du chemin depend de l'evenement
                      let chemin = match index.is_a_transfert {
@@ -422,7 +405,7 @@ pub fn draw_sptree_gntrees (
                                     else {
                                         // Si c'est le pere qui est virtuel on va voir le grand PERE
                                         if n.virtualsvg {
-                                            let ppp = n.parent.expect("ERROR");
+                                            let ppp = n.parent.expect("[draw_sptree_gntrees] ERROR: Unable to get the father of the node");
                                             let nnn = &gene_trees[idx_rcgen].arena[ppp];
                                             if nnn.e != Event::BranchingOut && nnn.e != Event::BifurcationOut {
                                                 panic!("Wrong recPhyloXML feature in tree # {}.The (grand)father node should be BranchingOut or BifurcationOut, but I found a {:?} Father node: {:?}\nCurrent node: {:?}",
@@ -434,10 +417,11 @@ pub fn draw_sptree_gntrees (
                                                     1.0.to_string(),
                                                     config.bezier.to_string().parse::<f32>().unwrap(),
                                                     1)
-                                        }else {
-
-                                        panic!("Wrong recPhyloXML feature in tree # {}.The father node should be BranchingOut or BifurcationOut, but I found a {:?} Father node: {:?}\nCurrent node: {:?}",
-                                        idx_rcgen,n.e,n,index);}
+                                        }
+                                        else {
+                                            panic!("Wrong recPhyloXML feature in tree # {}.The father node should be BranchingOut or BifurcationOut, but I found a {:?} Father node: {:?}\nCurrent node: {:?}",
+                                            idx_rcgen,n.e,n,index);
+                                        }
                                     }
                                 },
                             }
