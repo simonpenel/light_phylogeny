@@ -5,6 +5,7 @@ use light_phylogeny::{ArenaTree,Options,Config,read_recphyloxml_multi,recphyloxm
 phyloxml_processing,reset_pos,map_transfer,map_transfer_mul,get_gtransfer,map_parasite_g2s,
 map_parasite_s2g,map_gene_host};
 use log::{info};
+use std::env;
 
 fn main() {
     // env::set_var("RUST_LOG", "info");
@@ -18,8 +19,8 @@ fn main() {
     config.gene_opacity = "0.9".to_string();
     let transfers = vec![];
 
-    let infile_gs = "examples/rec0.simple.recphyloxml".to_string();
-    let infile_sh = "examples/rec0upper.recphyloxml".to_string();
+    let infile_gs = "examples/rec0.bug.recphyloxml".to_string();
+    let infile_sh = "examples/rec0upper.bug.recphyloxml".to_string();
     // Traitement de 2 fichier fichiers recPhyloXML
     println!("Two reconciled files => displaying 3-levels reconciliations. ");
     let  outfile_gene_para = String::from("gene_para.svg");

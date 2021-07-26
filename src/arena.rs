@@ -67,6 +67,8 @@ where
     pub transfers: Vec<usize>,      // transfer associes (dans le cas d'arbre d'espece)
     /// will be displayed
     pub visible: bool,
+    /// is a virtual node created for the svg only
+    pub virtualsvg: bool,
 
 }
 impl<T> Noeud<T>
@@ -98,6 +100,7 @@ where
             fixed:false,
             transfers: vec![],
             visible:true,
+            virtualsvg:false,
         }
     }
     /// Set node event
@@ -303,6 +306,7 @@ where
             new.arena[idx].fixed = node.fixed;
             new.arena[idx].transfers = node.transfers.clone();
             new.arena[idx].visible = node.visible;
+            new.arena[idx].virtualsvg = node.virtualsvg;
 
             i = i + 1 ;
             }
