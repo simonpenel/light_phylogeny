@@ -418,7 +418,8 @@ pub fn draw_sptree_gntrees (
                                         2),
                                 _ => {
                                     println!("DEBUG 3 ====> IS VIRTUAL  {:?}",index.virtualsvg);
-                                    // Si le noaud courant est vituel, je peux tracer
+                                    // Si le noaud courant est vrituel,je peux tracer quand  meme
+                                    // ( a verfier)
                                     if index.virtualsvg {
                                         get_chemin_transfer(index.x,index.y,
                                                 n.x,n.y,
@@ -440,7 +441,7 @@ pub fn draw_sptree_gntrees (
                                         // panic!("lol");
                                     }
                                     else {
-                                        // Si c'est le pere qui est virtuel on va vaoir le grand PERE
+                                        // Si c'est le pere qui est virtuel on va voir le grand PERE
                                         if n.virtualsvg {
                                             let ppp = n.parent.expect("ERROR");
                                             let nnn = &gene_trees[idx_rcgen].arena[ppp];
