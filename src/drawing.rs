@@ -190,7 +190,7 @@ pub fn draw_sptree_gntrees (
     let largest_y = sp_tree.get_largest_y() * 1.0 + 0.0 ;
     let smallest_x = sp_tree.get_smallest_x() * 1.0 + 0.0 ;
     let smallest_y = sp_tree.get_smallest_y() * 1.0 + 0.0 ;
-    let width_svg = largest_x - smallest_x+ 1.0 * BLOCK;
+    let width_svg = largest_x - smallest_x + 1.0 * BLOCK;
     let width_svg = width_svg * 1.0;
     let mut longest_name = get_longest_name_mul(gene_trees) as f32;
     let species_longest_name = get_longest_name(sp_tree) as f32;
@@ -208,11 +208,11 @@ pub fn draw_sptree_gntrees (
                 .set("width",height_svg  )
                 .set("height",width_svg  )
                 .set("viewBox", (x_viewbox,y_viewbox,
-                    height_svg + 2.0 *BLOCK ,width_svg + 2.0 *BLOCK )),
+                    height_svg *1.1 + 2.0 *BLOCK ,width_svg + 2.0 *BLOCK )),
         false => Document::new()
                 .set("width",width_svg  )
                 .set("height",height_svg  )
-                .set("viewBox", (y_viewbox,x_viewbox,width_svg + 0.5 *BLOCK ,height_svg + 2.0 *BLOCK )),
+                .set("viewBox", (y_viewbox,x_viewbox,width_svg + 0.5 *BLOCK ,height_svg *1.1 + 2.0 *BLOCK )),
     };
     let style = Style::new(".species { font: italic ".to_owned()
         + &config.species_police_size.to_string()+"px serif; fill: "
