@@ -12,13 +12,12 @@ fn main() {
 
     let mut options: Options = Options::new();
     options.gene_internal = true;
-    options.species_internal = true;
     let mut config: Config = Config::new();
     config.species_opacity = "0.7".to_string();
     config.gene_opacity = "0.9".to_string();
     let transfers = vec![];
 
-    let infile_gs = "examples/rec0.simple.recphyloxml".to_string();
+    let infile_gs = "examples/rec0.recphyloxml".to_string();
     let infile_sh = "examples/rec0upper.recphyloxml".to_string();
     // Traitement de 2 fichier fichiers recPhyloXML
     println!("Two reconciled files => displaying 3-levels reconciliations. ");
