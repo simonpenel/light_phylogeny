@@ -551,7 +551,14 @@ pub fn find_left_right(arbre:String)-> (String,String,String){
     if &arbre[len..] == "\n" {
         len -= 1;
     }
-    assert_eq!(&arbre[..1],"(");
+    // assert_eq!(&arbre[..1],"(");
+    if &arbre[..1] != "(" {
+        eprintln!("\nERROR:");
+        eprintln!("It seems the input file is not in a correct newick format.");
+        eprintln!("You may use another format (phyloxml or recphyloxml) to read the file.");
+        process::exit(1)
+
+    }
     let mut num_par = 0;
     let mut i = 0;
     for char in arbre.chars() {
