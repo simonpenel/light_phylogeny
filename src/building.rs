@@ -23,7 +23,7 @@ pub fn read_newick(filename:String, tree: &mut ArenaTree<String>) {
     let contents = match contents {
         Ok(contents) => contents,
         Err(err) => {
-            eprintln!("Error! Something went wrong reading the newick file.");
+            eprintln!("\nERROR:\nSomething went wrong when reading the newick file.");
             eprintln!("{}",err);
             eprintln!("Please check file name and path.");
             std::process::exit(1);
@@ -40,13 +40,23 @@ pub fn read_phyloxml(filename:String, tree: &mut ArenaTree<String>) {
     let contents = match contents {
         Ok(contents) => contents,
         Err(err) => {
-            eprintln!("Error! Something went wrong reading the phyloxml file.");
+            eprintln!("\nERROR:\nSomething went wrong when reading the phyloxml file.");
             eprintln!("{}",err);
             eprintln!("Please check file name and path.");
             std::process::exit(1);
         },
     };
-    let doc = roxmltree::Document::parse(&contents).unwrap();
+
+    let doc = roxmltree::Document::parse(&contents);
+    let doc = match doc {
+        Ok(xml) => xml,
+        Err(_err) => {
+            eprintln!("\nERROR:\nSomething went wrong when parsing the input file.");
+            eprintln!("It seems this is not a xml file");
+            std::process::exit(1);
+        },
+    };
+
     let descendants = doc.root().descendants();
     // Search for the first occurence of the "clade" tag
     for node in descendants {
@@ -227,13 +237,22 @@ pub fn read_recphyloxml_multi(filename:String, global_pipe: &mut ArenaTree<Strin
     let contents = match contents {
         Ok(contents) => contents,
         Err(err) => {
-            eprintln!("Error! Something went wrong reading the recPhyloXML file.");
+            eprintln!("\nERROR:\nSomething went wrong when reading the recPhyloXML file.");
             eprintln!("{}",err);
             eprintln!("Please check file name and path.");
             std::process::exit(1);
         },
     };
-    let doc = &mut roxmltree::Document::parse(&contents).unwrap();
+    // let doc = &mut roxmltree::Document::parse(&contents).unwrap();
+    let doc = roxmltree::Document::parse(&contents);
+    let doc = &mut match doc {
+        Ok(contents) => contents,
+        Err(_err) => {
+            eprintln!("\nERROR:\nSomething went wrong when parsing the input file.");
+            eprintln!("It seems this is not a xml file");
+            std::process::exit(1);
+        },
+    };
     // Get the species trees:
     // Get the list of nodes associated to  the "spTree" tag
     // let spnodes = find_sptrees(doc).expect("No clade spTree has been found in xml");
@@ -241,7 +260,7 @@ pub fn read_recphyloxml_multi(filename:String, global_pipe: &mut ArenaTree<Strin
     let spnodes = match spnodes {
         Ok(indexes) => indexes,
         Err(_err) => {
-            eprintln!("\nError: No clade spTree has been found in xml.\
+            eprintln!("\nERROR:\nNo clade spTree has been found in xml.\
             \nIt seems that the input file is not a recPhyloXML file.\
             \nUse option -F to force to use phyloXML or newick format.");
              std::process::exit(1);
@@ -288,7 +307,7 @@ pub fn read_recphyloxml_multi(filename:String, global_pipe: &mut ArenaTree<Strin
     let rgnodes = match rgnodes {
         Ok(indexes) => indexes,
         Err(_err) => {
-            eprintln!("\nError: No clade recGeneTree has been found in xml.\
+            eprintln!("\nERROR:\nNo clade recGeneTree has been found in xml.\
             \nIt seems that the input file is not a recPhyloXML file.\
             \nUse option -F to force to use phyloXML or newick format.");
              std::process::exit(1);
