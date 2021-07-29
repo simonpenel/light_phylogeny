@@ -470,7 +470,12 @@ if mapping {
 if options.uniform {
     species_uniformisation(&mut sp_tree);
 }
-
+// ---------------------------------------------------------
+// Option : real_length
+// ---------------------------------------------------------
+if options.real_length_flag {
+    real_length(&mut sp_tree, root, &mut 0.0, & options);
+}
 // ---------------------------------------------------------
 // OPTIONAL Optimisation if needed
 // ---------------------------------------------------------
@@ -529,10 +534,18 @@ set_species_width(&mut sp_tree, &mut gene_trees);
 // 7ème étape :  Vérifie les conflits verticaux dans
 // l'arbre d'espèces
 // ---------------------------------------------------------
-check_vertical_contour_postorder(&mut sp_tree, root, 0.0);
+if ! options.real_length_flag {
+    check_vertical_contour_postorder(&mut sp_tree, root, 0.0);
+}
+// ---------------------------------------------------------
 // Egalise les feuilles
-let largest_y  = sp_tree.get_largest_y();
-set_leaves_y_values(sp_tree,root,largest_y);
+// ---------------------------------------------------------
+if ! options.real_length_flag {
+    // Egalise les feuilles
+    let largest_y  = sp_tree.get_largest_y();
+    set_leaves_y_values(sp_tree,root,largest_y);
+
+}
 // ---------------------------------------------------------
 // OPTIONAL Scale the heigt if needed
 // ---------------------------------------------------------
