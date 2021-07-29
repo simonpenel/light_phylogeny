@@ -541,8 +541,11 @@ if p + 1 == c  {
     process::exit(0);
 }
 else {
-    println!("Unable to determine if tree is rooted, file is incorrect.");
-    process::exit(1);
+    eprintln!("\nERROR:");
+    println!("Unable to determine if tree is rooted.");
+    eprintln!("It seems the input file is not in a correct newick format.");
+    eprintln!("You may use another format (phyloxml or recphyloxml) to read the file.");
+    process::exit(1)
 }
 }
 // Split a parenthesed tree into  left and right  parenthsed trees and trailing  string
