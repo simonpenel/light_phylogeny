@@ -359,6 +359,8 @@ pub struct Options{
     pub support:bool,
     /// free free_living
     pub free_living:bool,
+    /// uniformise the specuis tree nodes
+    pub uniform:bool,
 }
 impl Options {
     pub fn new() -> Self {
@@ -384,7 +386,7 @@ impl Options {
             width:1.0,
             support:false,
             free_living:false,
-
+            uniform:false,
         }
     }
 }
@@ -1634,6 +1636,17 @@ pub fn scale_width( tree: &mut ArenaTree<String>, scale: f32) {
 
     };
 }
+
+pub fn species_uniformisation( tree: &mut ArenaTree<String>) {
+    let mut max = 0;
+    for spindex in  &mut tree.arena {
+        if spindex.nbg > max {max = spindex.nbg};
+    };
+    for spindex in  &mut tree.arena {
+        spindex.nbg = max;
+    };
+}
+
 
 #[allow(dead_code)]
 // Traverse the tree using post-order traversal starting from a given node

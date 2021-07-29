@@ -11,7 +11,8 @@ use crate::arena::{newick2tree,xml2tree};
 use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,shift_mod_xy,
     set_middle_postorder,real_length,set_leaves_y_values};
 use crate::arena::{map_species_trees,set_species_width,check_vertical_contour_postorder,
-    bilan_mappings,center_gene_nodes,move_dupli_mappings,move_species_mappings,move_species_mappings_fl};
+    bilan_mappings,center_gene_nodes,move_dupli_mappings,move_species_mappings,
+    species_uniformisation,move_species_mappings_fl};
 use crate::arena::{find_sptrees,find_rgtrees,check_for_obsolete,scale_heigth,scale_width};
 use crate::thirdlevel::{get_gtransfer,optimisation,check_optimisation,classify_transfer,reorder_transfers};
 use crate::drawing::{draw_tree,draw_sptree_gntrees};
@@ -464,6 +465,12 @@ if mapping {
     map_species_trees(&mut sp_tree,&mut gene_trees);
     info!("Species tree after mapping : {:?}",sp_tree);
 }
+
+//  Option: uniformise les noeuds de l'arbre d'espece
+if options.uniform {
+    species_uniformisation(&mut sp_tree);
+}
+
 // ---------------------------------------------------------
 // OPTIONAL Optimisation if needed
 // ---------------------------------------------------------
@@ -497,6 +504,7 @@ if options.optimisation {
         check_optimisation(&selected_transfers[numt], &mut sp_tree, tr_root);
     }
 }
+
 // ---------------------------------------------------------
 // 3eme étape : Vérifie les conflits dans l'arbre d'espèces
 // au niveau horizontal -> valeurs xmod
@@ -516,6 +524,7 @@ set_middle_postorder(&mut sp_tree, root);
 // 6ème etape : Fixe l'épaisseur de l'arbre d'espèces
 // ---------------------------------------------------------
 set_species_width(&mut sp_tree, &mut gene_trees);
+
 // ---------------------------------------------------------
 // 7ème étape :  Vérifie les conflits verticaux dans
 // l'arbre d'espèces
