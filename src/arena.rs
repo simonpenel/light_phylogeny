@@ -269,6 +269,16 @@ where
             }
         min
     }
+    /// Get the smallest l value of a tree.
+    pub fn get_smallest_l(&mut self) -> f32 {
+        let mut min = 1000000.0;
+        for node in &self.arena {
+            if node.l    < min {
+                min = node.l;
+             }
+            }
+        min
+    }
     /// Copy
     pub fn copie(&mut self) -> ArenaTree<String> {
         let  mut new: ArenaTree<String> = ArenaTree::default();
@@ -1561,7 +1571,7 @@ pub fn get_maxdepth( tree: &mut ArenaTree<String>, index:usize, max :&mut usize)
     *max
 }
 
-// Set the y values of the leaves of the node index to  max value
+/// Set the y values of the leaves of the node index to  max value
 pub fn set_leaves_to_bottom( tree: &mut ArenaTree<String>, index: usize, max:&mut  usize) {
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
@@ -1578,7 +1588,7 @@ pub fn set_leaves_to_bottom( tree: &mut ArenaTree<String>, index: usize, max:&mu
     }
 }
 
-// Set the y values of the leaves
+/// Set the y values of the leaves
 pub fn set_leaves_y_values( tree: &mut ArenaTree<String>, index: usize, y:  f32) {
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
@@ -1595,8 +1605,20 @@ pub fn set_leaves_y_values( tree: &mut ArenaTree<String>, index: usize, y:  f32)
     }
 }
 
+/// Shift the y values of the nodes
+pub fn shift_nodes_y_values( tree: &mut ArenaTree<String>, index: usize, y:  f32) {
+    let val = tree.arena[index].y + y ;
+    tree.arena[index].set_y_noref(val);
+    let children  = &mut  tree.arena[index].children;
+    if children.len() > 0 {
+        let son_left = children[0];
+        let son_right = children[1];
+        shift_nodes_y_values(tree,son_left,y);
+        shift_nodes_y_values(tree,son_right,y);
+    }
+}
 
-// Shift the  x values  of a node and its children according to the cumulated xmod values
+/// Shift the  x values  of a node and its children according to the cumulated xmod values
 pub fn shift_mod_xy( tree: &mut ArenaTree<String>, index: usize, xmod: &mut f32, ymod: &mut f32) {
     info!("[shift_mod_xy] shifting {:?} xmod={} ymod={}",tree.arena[index],xmod,ymod);
     let x_father = tree.arena[index].x;
@@ -1637,6 +1659,7 @@ pub fn scale_width( tree: &mut ArenaTree<String>, scale: f32) {
     };
 }
 
+/// Uniformise the size the the pipe tree nodes (by uniformising nbg)
 pub fn species_uniformisation( tree: &mut ArenaTree<String>) {
     let mut max = 0;
     for spindex in  &mut tree.arena {
@@ -1646,7 +1669,6 @@ pub fn species_uniformisation( tree: &mut ArenaTree<String>) {
         spindex.nbg = max;
     };
 }
-
 
 #[allow(dead_code)]
 // Traverse the tree using post-order traversal starting from a given node
