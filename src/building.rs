@@ -7,9 +7,10 @@ use std::fs;
 use crate::arena::Options;
 use crate::arena::ArenaTree;
 use crate::arena::Config;
+use crate::arena::PIPEBLOCK;
 use crate::arena::{newick2tree,xml2tree};
 use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,shift_mod_xy,
-    set_middle_postorder,real_length,set_leaves_y_values};
+    set_middle_postorder,real_length,set_leaves_y_values,shift_nodes_y_values};
 use crate::arena::{map_species_trees,set_species_width,check_vertical_contour_postorder,
     bilan_mappings,center_gene_nodes,move_dupli_mappings,move_species_mappings,
     species_uniformisation,move_species_mappings_fl};
@@ -469,12 +470,32 @@ if mapping {
 //  Option: uniformise les noeuds de l'arbre d'espece
 if options.uniform {
     species_uniformisation(&mut sp_tree);
+    // Il fait decaler le tout (mais je ne comprend pas pourquoi?)
+    let smallest_y = sp_tree.get_smallest_y();
+    let root_width = sp_tree.arena[root].nbg as f32 * PIPEBLOCK ;
+    shift_nodes_y_values(sp_tree,root,-smallest_y + root_width);
 }
 // ---------------------------------------------------------
-// Option : real_length
+// Option : utilise les longueurs de branches
 // ---------------------------------------------------------
 if options.real_length_flag {
+    //  Tout d'abord il faut uniformiser
+    species_uniformisation(&mut sp_tree);
+    let min_dist = sp_tree.get_smallest_l();
+    if min_dist == 0.0 {
+        eprintln!("\nERROR:\nFound a branch with a distance equal to 0.0 in the 'pipe' tree.");
+        eprintln!("It is not possible create a pipe tree presenting branches of zero length.");
+        std::process::exit(1);
+    }
+    // On veut que la longueur minimum soit un peu superieure a la moitie de l'epaisser des noods
+    // On utilise le nombre de gene , qui a etet uniformise precedemment
+    options.scale = (sp_tree.arena[root].nbg as f32 / 2.0  + 0.25)  / min_dist ;
     real_length(&mut sp_tree, root, &mut 0.0, & options);
+    // Il fait decaler le tout (mais je ne comprend pas pourquoi?)
+    let smallest_y = sp_tree.get_smallest_y();
+    let root_width = sp_tree.arena[root].nbg as f32 * PIPEBLOCK ;
+    shift_nodes_y_values(sp_tree,root,-smallest_y + root_width);
+
 }
 // ---------------------------------------------------------
 // OPTIONAL Optimisation if needed
