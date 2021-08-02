@@ -450,7 +450,7 @@ pub fn draw_sptree_gntrees (
                                         gene_color.to_string(),
                                         free_opacity.to_string(),
                                         config.bezier.to_string().parse::<f32>().unwrap(),
-                                        0)
+                                        3)
                                 }
                             }
                         },
@@ -734,19 +734,21 @@ pub fn get_chemin_transfer (x1: f32, y1:f32,x2: f32, y2:f32, c:String, o:String,
     let controle_x = (x1 + x2) / 2.0 ;
     let controle_y = (y1 + y2) / 2.0 - bez_y ;
     // ligne horizontale
-    let data = "M".to_owned() + &x1.to_string() +" " + &initial_y1.to_string()
+    let mut data = "M".to_owned() + &x1.to_string() +" " + &initial_y1.to_string()
              +" L "+ &x1.to_string() + " " + &y1.to_string();
-    // fleche
-    let data = data.to_owned()+ "M" + &x1.to_string() + " "
+    // fleche : pas de fleche si stroke = 3
+    if stroke != 3 {
+        data = data.to_owned()+ "M" + &x1.to_string() + " "
               + &(initial_y1- PIPEBLOCK / 4.0).to_string() + "L "
               + &(x1 - PIPEBLOCK / 4.0 ).to_string() + " "
               + &(initial_y1 - PIPEBLOCK / 2.0 ).to_string();
-    let data = data.to_owned()+ "M"+&x1.to_string() + " "
+        data = data.to_owned()+ "M"+&x1.to_string() + " "
                + &(initial_y1- PIPEBLOCK / 4.0).to_string() + "L "
                + &(x1 + PIPEBLOCK / 4.0 ).to_string() + " "
                + &(initial_y1 - PIPEBLOCK / 2.0 ).to_string();
+    }
     // bezier
-    let data = data.to_owned() + "M" + &x1.to_string() + " " + &y1.to_string()
+    data = data.to_owned() + "M" + &x1.to_string() + " " + &y1.to_string()
                + " Q " + &controle_x.to_string() + " " + &controle_y.to_string()
                + " " + &x2.to_string() + " " + &y2.to_string();
     let path = Path::new()
@@ -754,7 +756,9 @@ pub fn get_chemin_transfer (x1: f32, y1:f32,x2: f32, y2:f32, c:String, o:String,
     .set("stroke", c)
     .set("opacity", o)
     .set("stroke-width", GTHICKNESS);
+    // choix du pointille
     let path = match stroke {
+        3 => path,
         2 => path.set("stroke-dasharray","4, 1"),
         1 => path.set("stroke-dasharray","1, 1"),
         0 => path,
