@@ -1427,16 +1427,16 @@ pub fn process_fl(sp_tree: &mut ArenaTree<String>,
         println!("[process_fl] Ancestor of the gene {} in this species node is {:?}",index_node,gene_trees[*index_node].arena[_parent]);
         // gene_trees[*index_node].arena[_parent].set_x_noref(x_species);
         // gene_trees[*index_node].arena[_parent].set_y_noref(y_species);
-        gene_trees[*index_node].arena[_parent].set_xmod_noref(x_species);
+        gene_trees[*index_node].arena[_parent].set_xmod_noref(x_species/2.0);
         // gene_trees[*index_node].arena[_parent].set_ymod_noref(y_species);
         // knuth_layout_fl(&mut gene_trees[*index_node],_parent,x_species, &mut 5);
                 knuth_layout_fl(&mut gene_trees[*index_node],_parent,0.0, &mut 5);
-        env::set_var("RUST_LOG", "info");
-        env_logger::init();
-        info!("Verbosity set to Info");
+        // env::set_var("RUST_LOG", "info");
+        // env_logger::init();
+        // info!("Verbosity set to Info");
         check_contour_postorder_fl(&mut gene_trees[*index_node],_parent);
-        env::set_var("RUST_LOG", "error");
-        info!("Verbosity set to Error");
+        // env::set_var("RUST_LOG", "error");
+        // info!("Verbosity set to Error");
         shift_mod_xy_fl(&mut gene_trees[*index_node],_parent, &mut 0.0, &mut 0.0);
         set_middle_postorder(&mut gene_trees[*index_node],_parent);
     }
@@ -1905,7 +1905,10 @@ pub fn  get_contour_left(tree: &mut ArenaTree<String>,index:usize,depth:usize,
 
 pub fn  get_contour_left_fl(tree: &mut ArenaTree<String>,index:usize,depth:usize,
                          contour_left: &mut Vec<f32>,parent_xmod: f32)  {
-    info!("[get_contour_left] >>> {:?}",tree.arena[index]);
+    if tree.arena[index].e != Event::BranchingOut && !tree.arena[index].is_a_transfert  {
+    info!("[get_contour_left_fl] >>> {:?}",tree.arena[index]);
+    println!("[get_contour_left_fl] process node {:?} {} {}",tree.arena[index].e,
+        tree.arena[index].location,tree.arena[index].is_a_transfert);
     let local_depth = tree.depth(index)-depth; // Profondeur du noeud pa rapport a noeud de depart
     let node_left_pos = node_xpos(tree,index,parent_xmod,-1);
     if contour_left.len() <= local_depth {
@@ -1932,6 +1935,7 @@ pub fn  get_contour_left_fl(tree: &mut ArenaTree<String>,index:usize,depth:usize
             get_contour_left_fl(tree,left,depth,contour_left,tree.arena[index].xmod + parent_xmod );
     }
     }
+}
 }
 
 
@@ -1965,7 +1969,9 @@ pub fn  get_contour_right(tree: &mut ArenaTree<String>,index:usize,depth:usize,
 // Get the right 'contour' of a sub tree
 pub fn  get_contour_right_fl(tree: &mut ArenaTree<String>,index:usize,depth:usize,
                           contour_right: &mut Vec<f32>,parent_xmod: f32)  {
-    info!("[get_contour_right_fl] process node {:?}",tree.arena[index]);
+    println!("[get_contour_right_fl] process node {:?} {} {}",tree.arena[index].e,
+        tree.arena[index].location,tree.arena[index].is_a_transfert);
+    if tree.arena[index].e != Event::BranchingOut && !tree.arena[index].is_a_transfert {
     let local_depth = tree.depth(index)-depth; // Profondeur du noeud pa rapport a noeud de depart
     let node_right_pos = node_xpos(tree,index,parent_xmod,1);
     if contour_right.len() <= local_depth {
@@ -1992,6 +1998,7 @@ pub fn  get_contour_right_fl(tree: &mut ArenaTree<String>,index:usize,depth:usiz
         get_contour_right_fl(tree,right,depth,contour_right,tree.arena[index].xmod + parent_xmod );
 }
     }
+}
 }
 
 
@@ -2083,25 +2090,25 @@ pub fn  push_right_fl(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:us
         left_co_of_right_tr.extend(last_vals.iter().copied());
         info!("[push_right] complete left contour with last value {}", last_val);
     }
-    info!("[push_right] comparing  right cont. of left tree: {:?}",right_co_of_left_tr);
-    info!("[push_right] with left cont. of right tree:       {:?} ",left_co_of_right_tr);
+    println!("[push_right_fl] comparing  right cont. of left tree: {:?}",right_co_of_left_tr);
+    println!("[push_right_fl] with left cont. of right tree:       {:?} ",left_co_of_right_tr);
 
     let iter = left_co_of_right_tr.iter().zip(right_co_of_left_tr).map(|(x, y )| (x-y));
     let shift = iter.min_by(|x, y| (*x as i64) .cmp(&(*y as i64 )));
     info!("[push_right] distance max  = {:?}",shift);
     match shift {
         Some(val) => {
-            info!("[push_right] distance max  = {:?}",shift);
+            println!("[push_right_fl] distance max  = {:?}",val);
             if val <= 0.0 {// bidouilel
-                info!("[push_right] ================CONFLIT==========");
-                info!("[push_right] Modify node {:?}",tree.arena[right_tree]);
+                println!("[push_right_fl] ================CONFLIT==========");
+                println!("[push_right_fl] Modify node {:?}",tree.arena[right_tree]);
                 let x_mod =  tree.arena[right_tree].xmod;
-                info!("[push_right] initial x_mod = {}",x_mod);
+                println!("[push_right_fl] initial x_mod = {}",x_mod);
                 let x_mod =  x_mod -1.0 *val + BLOCK ;//bidouille
-                info!("[push_right] new x_mod = {}",x_mod);
+                println!("[push_right_fl] new x_mod = {}",x_mod);
                 tree.arena[right_tree].set_xmod_noref(x_mod);
-                info!("[push_right] updated node {:?}",tree.arena[right_tree]);
-                info!("[push_right] ================CONFLIT==========");
+                println!("[push_right_fl] updated node {:?}",tree.arena[right_tree]);
+                println!("[push_right_fl] ================CONFLIT==========");
             }
         },
         None => {}
