@@ -10,7 +10,7 @@ fn main() {
 
     options.free_living = true;
     // options.gene_internal = true;
-    // options.species_internal = true;
+    options.species_internal = true;
 
 
     let mut sp_tree: ArenaTree<String> = ArenaTree::default();

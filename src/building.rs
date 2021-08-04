@@ -13,7 +13,7 @@ use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,shift_mod_xy
     set_middle_postorder,real_length,set_leaves_y_values,shift_nodes_y_values};
 use crate::arena::{map_species_trees,set_species_width,check_vertical_contour_postorder,
     bilan_mappings,center_gene_nodes,move_dupli_mappings,move_species_mappings,
-    species_uniformisation,move_species_mappings_fl};
+    species_uniformisation,move_species_mappings_fl,bilan_mappings_fl};
 use crate::arena::{find_sptrees,find_rgtrees,check_for_obsolete,scale_heigth,scale_width};
 use crate::thirdlevel::{get_gtransfer,optimisation,check_optimisation,classify_transfer,reorder_transfers};
 use crate::drawing::{draw_tree,draw_sptree_gntrees};
@@ -439,7 +439,7 @@ if options.free_living {
     free_root = right;
     let  fl_root = sp_tree.new_node("free_living_root".to_string());
     sp_tree.arena[fl_root].name="FREE_LIVING_ROOT".to_string();
-    sp_tree.arena[fl_root].visible=false;
+    // sp_tree.arena[fl_root].visible=false;
     sp_tree.arena[fl_root].children.push(left);
     sp_tree.arena[fl_root].children.push(right);
     sp_tree.arena[right].parent=Some(fl_root);
@@ -590,7 +590,7 @@ if options.width != 1.0 { scale_width(&mut sp_tree,options.width)};
 // 9ème etape : décale les noeuds de gene associés à un
 // noeud d'especes pour éviter qu'ils soit superposés
 // ---------------------------------------------------------
-bilan_mappings(&mut sp_tree, &mut gene_trees,root, & options);
+bilan_mappings(&mut sp_tree, &mut gene_trees,initial_root, & options);
 // ---------------------------------------------------------
 // 10ème étape : recalcule les coordonnées svg de tous les
 // arbres de gènes
@@ -625,9 +625,11 @@ move_dupli_mappings(&mut sp_tree, &mut gene_trees,initial_root);
 move_species_mappings(&mut sp_tree, &mut gene_trees,initial_root);
 
 if options.free_living {
-    center_gene_nodes(&mut sp_tree,&mut gene_trees,free_root);
-    move_dupli_mappings(&mut sp_tree, &mut gene_trees,free_root);
+    bilan_mappings_fl(&mut sp_tree, &mut gene_trees,free_root, & options);
+    // center_gene_nodes(&mut sp_tree,&mut gene_trees,free_root);
+    // move_dupli_mappings(&mut sp_tree, &mut gene_trees,free_root);
     move_species_mappings_fl(&mut sp_tree, &mut gene_trees,free_root);
+    // center_gene_nodes(&mut sp_tree,&mut gene_trees,free_root);
 
 }
 // // ---------------------------------------------------------

@@ -1094,12 +1094,13 @@ pub fn bilan_mappings(sp_tree: &mut ArenaTree<String>,
     let  mut shift_y = 0.0;
     let  mut shift_right_x = sp_tree.arena[index].nbg as f32 -1.0 ;
     let incr = 1.0;
+    let bool_left = sp_tree.is_left(index);
     // TODO classer selon le Y du pere pour eviter les croisement
     // boucle sur m'espeve
     for (index_node, node)  in &sp_tree.arena[index].nodes {
         info!("[bilan_mappings] >>> {:?} {:?}",gene_trees[*index_node].arena[*node].name,
          gene_trees[*index_node].arena[*node].e);
-        let bool_left = sp_tree.is_left(index);
+        // let bool_left = sp_tree.is_left(index);
         match  gene_trees[*index_node].arena[*node].e {
             Event::Duplication => {
                 let x = gene_trees[*index_node].arena[*node].x;
@@ -1240,6 +1241,162 @@ pub fn bilan_mappings(sp_tree: &mut ArenaTree<String>,
     }
 }
 
+
+// Shift the gene nodes in a given species node to avoid superposition.
+pub fn bilan_mappings_fl(sp_tree: &mut ArenaTree<String>,
+                      gene_trees: &mut std::vec::Vec<ArenaTree<String>>,
+                      index: usize, options: &Options) {
+    info!("[bilan_mappings_fl] Species Node {}",sp_tree.arena[index].name);
+    let ratio = options.ratio ;   // permet de regler l'ecartement entre les noeuds de genes dans
+                                  // l'arbre d'espece
+    // shift_left_x is a shift for x for a left node
+    // shift_right_x is a shift for x for a right node
+    // shift_y is a shift for y for a any node
+    let  mut shift_left_x = 0.0;
+    let  mut shift_y = 0.0;
+    let  mut shift_right_x = sp_tree.arena[index].nbg as f32 -1.0 ;
+    let incr = 1.0;
+    let bool_left = sp_tree.is_left(index);
+    println!("debug left {} {:?}",sp_tree.arena[index].name,bool_left);
+    // TODO classer selon le Y du pere pour eviter les croisement
+    // boucle sur m'espeve
+    for (index_node, node)  in &sp_tree.arena[index].nodes {
+        info!("[bilan_mapping_fl] >>> {:?} {:?}",gene_trees[*index_node].arena[*node].name,
+         gene_trees[*index_node].arena[*node].e);
+        // let bool_left = sp_tree.is_left(index);
+        match  gene_trees[*index_node].arena[*node].e {
+            // Event::Duplication => {
+            //     let x = gene_trees[*index_node].arena[*node].x;
+            //     let x = match bool_left {
+            //         true   => x + PIPEBLOCK*shift_left_x / ratio,
+            //         false  => x + PIPEBLOCK*shift_right_x / ratio,
+            //     };
+            //     gene_trees[*index_node].arena[*node].set_x_noref(x);
+            //     let y = gene_trees[*index_node].arena[*node].y;
+            //     let y = y + PIPEBLOCK*shift_y / ratio;
+            //     gene_trees[*index_node].arena[*node].set_y_noref(y);
+            //     // Do not shift on x  duplicated nodes
+            //     // shift = shift + incr;
+            //     shift_y = shift_y + incr;
+            //     // Do not shift on x  duplicated nodes
+            //     // shift_x = shift_x - incr;
+            // },
+            // Event::Speciation => {
+            //     let x = gene_trees[*index_node].arena[*node].x;
+            //     let x = match bool_left {
+            //         true   => x + PIPEBLOCK*shift_left_x / ratio,
+            //         false  => x + PIPEBLOCK*shift_right_x / ratio,
+            //     };
+            //     gene_trees[*index_node].arena[*node].set_x_noref(x);
+            //     let y = gene_trees[*index_node].arena[*node].y;
+            //     let y = y + PIPEBLOCK*shift_y / ratio;
+            //     gene_trees[*index_node].arena[*node].set_y_noref(y);
+            //     shift_left_x = shift_left_x + incr;
+            //     shift_y = shift_y + incr;
+            //     shift_right_x = shift_right_x - incr;
+            // },
+            // Event::TransferBack => {
+            //     let x = gene_trees[*index_node].arena[*node].x;
+            //     let x = match bool_left {
+            //         true   => x + PIPEBLOCK*shift_left_x / ratio,
+            //         false  => x + PIPEBLOCK*shift_right_x / ratio,
+            //     };
+            //     gene_trees[*index_node].arena[*node].set_x_noref(x);
+            //     let y = gene_trees[*index_node].arena[*node].y;
+            //     let y = y + PIPEBLOCK*shift_y / ratio;
+            //     gene_trees[*index_node].arena[*node].set_y_noref(y);
+            //     shift_left_x = shift_left_x + incr;
+            //     shift_y = shift_y + incr;
+            //     shift_right_x = shift_right_x - incr;
+            // },
+            // Event::BranchingOut => {
+            //     let x = gene_trees[*index_node].arena[*node].x;
+            //     let x = match bool_left {
+            //         true   => x + PIPEBLOCK*shift_left_x / ratio,
+            //         false  => x + PIPEBLOCK*shift_right_x / ratio,
+            //     };
+            //     gene_trees[*index_node].arena[*node].set_x_noref(x);
+            //     let y = gene_trees[*index_node].arena[*node].y;
+            //     let y = y + PIPEBLOCK*shift_y / ratio;
+            //     gene_trees[*index_node].arena[*node].set_y_noref(y);
+            //     shift_left_x = shift_left_x + incr;
+            //     shift_y = shift_y + incr;
+            //     shift_right_x = shift_right_x - incr;
+            // },
+            // Event::Leaf => {
+            //     let x = gene_trees[*index_node].arena[*node].x;
+            //     let x = match bool_left {
+            //         true   => x + PIPEBLOCK*shift_left_x / ratio,
+            //         false  => x + PIPEBLOCK*shift_right_x / ratio,
+            //     };
+            //     gene_trees[*index_node].arena[*node].set_x_noref(x);
+            //     let y = gene_trees[*index_node].arena[*node].y;
+            //     let y = y + PIPEBLOCK*shift_y;
+            //     gene_trees[*index_node].arena[*node].set_y_noref(y);
+            //     shift_left_x = shift_left_x + incr;
+            //     shift_y = shift_y + incr;
+            //     shift_right_x = shift_right_x - incr;
+            // },
+            // Event::Loss => {
+            //     let x = gene_trees[*index_node].arena[*node].x;
+            //     let x = match bool_left {
+            //         true   => x + PIPEBLOCK*shift_left_x / ratio,
+            //         false  => x + PIPEBLOCK*shift_right_x / ratio,
+            //     };
+            //     gene_trees[*index_node].arena[*node].set_x_noref(x);
+            //     let y = gene_trees[*index_node].arena[*node].y;
+            //     let y = y + PIPEBLOCK*shift_y / ratio;
+            //     gene_trees[*index_node].arena[*node].set_y_noref(y);
+            //     shift_left_x = shift_left_x + incr;
+            //     shift_y = shift_y + incr;
+            //     shift_right_x = shift_right_x - incr;
+            // },
+            // Event::BifurcationOut => {
+            //     let x = gene_trees[*index_node].arena[*node].x;
+            //     let x = match bool_left {
+            //         true   => x + PIPEBLOCK*shift_left_x / ratio,
+            //         false  => x + PIPEBLOCK*shift_right_x / ratio,
+            //     };
+            //     gene_trees[*index_node].arena[*node].set_x_noref(x);
+            //     let y = gene_trees[*index_node].arena[*node].y;
+            //     let y = y + PIPEBLOCK*shift_y / ratio;
+            //     gene_trees[*index_node].arena[*node].set_y_noref(y);
+            //     shift_left_x = shift_left_x + incr;
+            //     shift_y = shift_y + incr;
+            //     shift_right_x = shift_right_x - incr;
+            // },
+            // Event::ObsoleteSpeciationLoss => {
+            //     let x = gene_trees[*index_node].arena[*node].x;
+            //     let x = match bool_left {
+            //         true   => x + PIPEBLOCK*shift_left_x / ratio,
+            //         false  => x + PIPEBLOCK*shift_right_x / ratio,
+            //     };
+            //     gene_trees[*index_node].arena[*node].set_x_noref(x);
+            //     let y = gene_trees[*index_node].arena[*node].y;
+            //     let y = y + PIPEBLOCK*shift_y / ratio;
+            //     gene_trees[*index_node].arena[*node].set_y_noref(y);
+            //     shift_left_x = shift_left_x + incr;
+            //     shift_y = shift_y + incr;
+            //     shift_right_x = shift_right_x - incr;
+            // },
+            _=> { //Any other event
+                let x = gene_trees[*index_node].arena[*node].x;
+                let x = match bool_left {
+                    true   => x + PIPEBLOCK*shift_left_x / ratio,
+                    false  => x + PIPEBLOCK*shift_right_x / ratio,
+                };
+                gene_trees[*index_node].arena[*node].set_x_noref(x);
+                let y = gene_trees[*index_node].arena[*node].y;
+                let y = y + PIPEBLOCK*shift_y / ratio;
+                gene_trees[*index_node].arena[*node].set_y_noref(y);
+                shift_left_x = shift_left_x + incr;
+                shift_y = shift_y + incr;
+                shift_right_x = shift_right_x - incr;
+            },
+        }
+    }
+}
+
 // Shift again the previously shifted gene nodes in case of a duplication node or a leaf
 pub fn move_dupli_mappings(sp_tree: &mut ArenaTree<String>,
                            gene_trees: &mut std::vec::Vec<ArenaTree<String>>, index: usize) {
@@ -1375,18 +1532,123 @@ pub fn move_species_mappings_fl(sp_tree: &mut ArenaTree<String>,
                  info!("[move_species_mappings_fl] {} {} {:?}",index_node,node,parent);
              }
         info!("[move_species_mappings_fl] Ancestor of the gene {} in this species node is {:?}",index_node,gene_trees[*index_node].arena[parent]);
-        set_middle_postorder(&mut gene_trees[*index_node], _parent);
+        println!("[move_species_mappings_fl] Ancestor of the gene {} in this species node is {:?}",index_node,gene_trees[*index_node].arena[_parent]);
+
+        let children  =    &gene_trees[*index_node].arena[_parent].children;
+        let left = children[0];
+        let right = children[1];
+        println!("LEFT = {:?}",gene_trees[*index_node].arena[left].e);
+        println!("RIGHT = {:?}",gene_trees[*index_node].arena[right].e);
+        // if  gene_trees[*index_node].arena[left].location != "FREE_LIVING" {
+        //     panic!("lolo");
+        // }
+        let mut parent_x =  gene_trees[*index_node].arena[_parent].x *2.0;
+        let mut parent_y =  gene_trees[*index_node].arena[_parent].y;
+
+        merde(&mut gene_trees[*index_node], _parent);
+        // knuth_layout(&mut gene_trees[*index_node],_parent, &mut 1);
+            knuth_layout_fl(&mut gene_trees[*index_node],_parent, &mut 1);
+        // ---------------------------------------------------------
+         check_contour_postorder_fl(&mut gene_trees[*index_node],_parent);
+        // ---------------------------------------------------------
+        // 3eme etape : Decale toutes les valeurs de x en fonction
+        // de xmod
+        // ---------------------------------------------------------
+                shift_mod_xy_fl(&mut gene_trees[*index_node],_parent, &mut parent_x, &mut parent_y);
+        // ---------------------------------------------------------
+        // 4ème étape : Place le parent entre les enfants
+        // ---------------------------------------------------------
+        set_middle_postorder_fl(&mut gene_trees[*index_node],_parent);
 
     }
-    // Normalement cette etape n'est pas necessaire:
-    let children =  &mut  sp_tree.arena[index].children;
-    if children.len() > 0 {
-        let son_left = children[0];
-        let son_right = children[1];
-        move_species_mappings_fl( sp_tree, gene_trees,son_left);
-        move_species_mappings_fl( sp_tree, gene_trees,son_right);
-    }
 }
+
+pub fn merde  (tree: &mut ArenaTree<String>,index:usize) {
+    println!("DEBUG MERDEE TEST  : {} {}",tree.arena[index].name,tree.arena[index].location);
+    if tree.arena[index].location == "FREE_LIVING" {
+    // if tree.arena[index].location != "FREE_LIVING" {
+    //     panic!("YARG")
+    // }
+    // if tree.arena[index].is_a_transfert  {
+    //     panic!("YARG")
+    // }
+    // if tree.arena[index].e == Event::BranchingOut  {
+    //     panic!("YARG")
+    // }
+    println!("DEBUG MERDEE SET TO 0 : {} {}",tree.arena[index].name,tree.arena[index].location);
+    &tree.arena[index].set_x_noref(0.0);
+    &tree.arena[index].set_y_noref(0.0);
+
+    let children  =   &tree.arena[index].children;
+    println!("merde  : {:?}", &tree.arena[index]);
+    if children.len() == 2 {
+        let left = children[0];
+        let right = children[1];
+        println!("MERDE==>LEFT = {:?}",tree.arena[left].name);
+        println!("MERDE==>RIGHT = {:?}",tree.arena[right].name);
+        // &tree.arena[right].set_x_noref(0.0);
+        // &tree.arena[right].set_y_noref(0.0);
+
+        // if tree.arena[left].location == "FREE_LIVING" {
+            merde(tree, left);
+            merde(tree, right);
+            // &tree.arena[left].set_x_noref(0.0);
+            // &tree.arena[left].set_y_noref(0.0);
+
+        }
+    }
+
+}
+// Move species father when necessary in free living tree
+// pub fn move_species_mappings_fl(sp_tree: &mut ArenaTree<String>,
+//                            gene_trees: &mut std::vec::Vec<ArenaTree<String>>, index: usize) {
+//                                // let mut nodes = &mut sp_tree.arena[index].nodes;
+//                                // nodes.reverse();
+//     info!("[move_species_mappings_fl] Processing {}",index);
+//     //  Recupere les feuilles des arbres de gene
+//     let mut  genes = vec![];
+//     let mut  feuilles = vec![];
+//     for (index_node, node) in &sp_tree.arena[index].nodes {
+//         info!("[move_species_mappings_fl] >>> {:?} {:?}",gene_trees[*index_node].arena[*node].name,
+//          gene_trees[*index_node].arena[*node].e);
+//         if gene_trees[*index_node].arena[*node].e == Event::Leaf {
+//             if !genes.contains(index_node) {
+//                 genes.push(*index_node);
+//                 feuilles.push((index_node,node));
+//             }
+//         };
+//
+//     }
+//     //  recherche parent
+//     for (index_node, node) in feuilles {
+//         let mut _parent = *node;
+//         let mut parent = gene_trees[*index_node].arena[*node].parent.expect("[move_species_mappings_fl] ERROR Unexpected root (1)");
+//             info!("[move_species_mappings_fl] {} {} {:?}",index_node,node,parent);
+//
+//             while gene_trees[*index_node].arena[*node].location == gene_trees[*index_node].arena[parent].location
+//              {
+//                  _parent = parent;
+//                  parent = match gene_trees[*index_node].arena[parent].parent {
+//                      Some(p) => p,
+//                      None =>    {
+//                          break
+//                      },
+//                  };
+//                  info!("[move_species_mappings_fl] {} {} {:?}",index_node,node,parent);
+//              }
+//         info!("[move_species_mappings_fl] Ancestor of the gene {} in this species node is {:?}",index_node,gene_trees[*index_node].arena[parent]);
+//         set_middle_postorder(&mut gene_trees[*index_node], _parent);
+//
+//     }
+//     // Normalement cette etape n'est pas necessaire:
+//     let children =  &mut  sp_tree.arena[index].children;
+//     if children.len() > 0 {
+//         let son_left = children[0];
+//         let son_right = children[1];
+//         move_species_mappings_fl( sp_tree, gene_trees,son_left);
+//         move_species_mappings_fl( sp_tree, gene_trees,son_right);
+//     }
+// }
 
 // Center the gene nodes into a  specie snode
 pub fn center_gene_nodes(sp_tree: &mut ArenaTree<String>,
@@ -1531,6 +1793,33 @@ pub fn  knuth_layout(tree: &mut ArenaTree<String>,index: usize,depth: &mut usize
     }
 }
 
+/// Initial set x and y of nodes :  left son x is 0;  right son x is 1; y is depth
+pub fn  knuth_layout_fl(tree: &mut ArenaTree<String>,index: usize,depth: &mut usize){
+    if tree.arena[index].location == "FREE_LIVING" {
+    tree.arena[index].set_y_noref(BLOCK* (*depth as f32));
+    let children  = &mut  tree.arena[index].children;
+    if children.len() > 2 {
+        panic!("The tree must be binary.")
+    }
+    if children.len() > 0 {
+        let son_left = children[0];
+        let son_right = children[1];
+        if tree.arena[son_left].location == "FREE_LIVING" {
+            tree.arena[son_left].set_x_noref(0.0);
+        }
+        if tree.arena[son_right].location == "FREE_LIVING" {
+            tree.arena[son_right].set_x_noref(BLOCK/10.0);
+        }
+        // if tree.arena[son_left].location == "FREE_LIVING" {
+            knuth_layout_fl(tree,son_left,&mut(*depth+1));
+        // }
+        // if tree.arena[son_right].location == "FREE_LIVING" {
+            knuth_layout_fl(tree,son_right,&mut(*depth+1));
+        // }
+    }
+}
+}
+
 /// Transforms the tree into cladogram
 pub fn cladogramme( tree: &mut ArenaTree<String>) {
     let root = tree.get_root();
@@ -1642,6 +1931,33 @@ pub fn shift_mod_xy( tree: &mut ArenaTree<String>, index: usize, xmod: &mut f32,
 
 }
 
+/// Shift the  x values  of a node and its children according to the cumulated xmod values
+pub fn shift_mod_xy_fl( tree: &mut ArenaTree<String>, index: usize, xmod: &mut f32, ymod: &mut f32) {
+    info!("[shift_mod_xy_fl] shifting {:?} xmod={} ymod={}",tree.arena[index],xmod,ymod);
+    println!("SHIFT {:?}",tree.arena[index].location);
+    if tree.arena[index].location == "FREE_LIVING" {
+    let x_father = tree.arena[index].x;
+    let  xmod_father = tree.arena[index].xmod;
+    let mut xmod = *xmod + xmod_father;
+    tree.arena[index].set_x_noref(x_father+xmod);
+    let y_father = tree.arena[index].y;
+    let  ymod_father = tree.arena[index].ymod;
+    let mut ymod = *ymod + ymod_father;
+    tree.arena[index].set_y_noref(y_father+ymod);
+        // if tree.arena[index].location == "FREE_LIVING" {
+    let children  = &mut  tree.arena[index].children;
+    if children.len() > 2 {
+        panic!("The tree must be binary")
+    }
+    if children.len() > 1 {
+        let son_left = children[0];
+        let son_right = children[1];
+        shift_mod_xy_fl( tree, son_left, &mut xmod, &mut ymod);
+        shift_mod_xy_fl( tree, son_right, &mut xmod, &mut ymod);
+    }
+}
+
+}
 /// Scaling tree height
 pub fn scale_heigth( tree: &mut ArenaTree<String>, scale: f32) {
     for spindex in  &mut tree.arena {
@@ -1746,6 +2062,28 @@ pub fn  check_contour_postorder(tree: &mut ArenaTree<String>,index:usize) {
     else{
     }
 }
+// Solve the conflicts between the left subtree and the right subtree
+pub fn  check_contour_postorder_fl(tree: &mut ArenaTree<String>,index:usize) {
+    if tree.arena[index].location == "FREE_LIVING" && ! tree.arena[index].is_a_transfert  {
+    let children  = &mut  tree.arena[index].children;
+    if children.len() > 0 {
+        let left = children[0];
+        let right = children[1];
+        println!("DEBUG CHECCONTOUT LEFT  {:?} {}",tree.arena[left].e,tree.arena[left].is_a_transfert);
+        println!("DEBUG CHECCONTOUT RIGHT  {:?} {}",tree.arena[right].e,tree.arena[right].is_a_transfert);
+        if ! tree.arena[left].is_a_transfert {
+            check_contour_postorder_fl(tree,left);
+        }
+        if ! tree.arena[right].is_a_transfert {
+                    check_contour_postorder_fl(tree,right);
+        }
+        push_right_fl(tree,left,right);
+    }
+    else{
+    }
+}
+}
+
 // Get the leftest  or rightest x value of a node
 pub fn node_xpos(tree: &mut ArenaTree<String>, index: usize, xmod: f32, operator : i32) -> f32 {
     tree.arena[index].x + tree.arena[index].xmod
@@ -1810,6 +2148,66 @@ pub fn  get_contour_right(tree: &mut ArenaTree<String>,index:usize,depth:usize,
     }
 }
 
+
+// Get the left 'contour' of a sub tree
+pub fn  get_contour_left_fl(tree: &mut ArenaTree<String>,index:usize,depth:usize,
+                         contour_left: &mut Vec<f32>,parent_xmod: f32)  {
+    info!("[get_contour_left] >>> {:?}",tree.arena[index]);
+    let local_depth = tree.depth(index)-depth; // Profondeur du noeud pa rapport a noeud de depart
+    let node_left_pos = node_xpos(tree,index,parent_xmod,-1);
+    if contour_left.len() <= local_depth {
+        if tree.arena[index].xmod < 0.0 {
+            panic!("Error: negative xmod.");
+        }
+        contour_left.push(node_left_pos);
+        info!("[get_contour_left] increment contour is now {:?}",contour_left);
+    }
+    if tree.arena[index].xmod < 0.0 {
+        panic!("Error: negative  xmod.");
+    }
+    if node_left_pos <= contour_left[local_depth] {
+        contour_left[local_depth] = node_left_pos;
+        info!("[get_contour_left]: contour is now {:?}",contour_left);
+    }
+    let children  = &mut  tree.arena[index].children;
+    if children.len() > 0 {
+        let left = children[0];
+        if tree.arena[left].location == "FREE_LIVING" {
+        get_contour_left_fl(tree,left,depth,contour_left,tree.arena[index].xmod + parent_xmod );
+    }
+    }
+}
+
+// Get the right 'contour' of a sub tree
+pub fn  get_contour_right_fl(tree: &mut ArenaTree<String>,index:usize,depth:usize,
+                          contour_right: &mut Vec<f32>,parent_xmod: f32)  {
+    info!("[get_contour_right] process node {:?}",tree.arena[index]);
+    let local_depth = tree.depth(index)-depth; // Profondeur du noeud pa rapport a noeud de depart
+    let node_right_pos = node_xpos(tree,index,parent_xmod,1);
+    if contour_right.len() <= local_depth {
+        if tree.arena[index].xmod < 0.0 {
+            panic!("Error: negative xmod");
+        }
+        contour_right.push(node_right_pos);
+            info!("[get_contour_right] increment contour is now {:?}",contour_right);
+    }
+    if tree.arena[index].xmod < 0.0 {
+        panic!("Error: negative xmod");
+    }
+    if node_right_pos >= contour_right[local_depth] {
+        contour_right[local_depth] = node_right_pos ;
+            info!("[get_contour_right] contour is now {:?}",contour_right);
+    }
+    let children  = &mut  tree.arena[index].children;
+    if children.len() > 0 {
+        let right = children[1];
+        if tree.arena[right].location == "FREE_LIVING" {
+        get_contour_right_fl(tree,right,depth,contour_right,tree.arena[index].xmod + parent_xmod );
+        }
+    }
+}
+
+
 // Check for conficts between subtrees and shift conflicting right-hand subtrees to the right
 // in order to solve detected  conflicts.
 pub fn  push_right(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize) -> f32 {
@@ -1867,6 +2265,65 @@ pub fn  push_right(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize
     0.0
 }
 
+// Check for conficts between subtrees and shift conflicting right-hand subtrees to the right
+// in order to solve detected  conflicts.
+pub fn  push_right_fl(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize) -> f32 {
+    info!("[push_right] compare right contour of {} and left contour of {}",left_tree, right_tree);
+    println!("[DBUGHGHpush_right]  {} ",tree.arena[left_tree].location);
+    if tree.arena[left_tree].location != "FREE_LIVING" { return 0.0};
+    if tree.arena[right_tree].location != "FREE_LIVING" { return 0.0};
+    let mut right_co_of_left_tr  = vec![tree.arena[left_tree].x
+        + tree.arena[left_tree].xmod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK ];
+    let depth_left_tr  = tree.depth(left_tree);
+    get_contour_right_fl(tree,left_tree,depth_left_tr,&mut right_co_of_left_tr,0.0);
+    info!("[push_right] right contour of {} = {:?}",left_tree,right_co_of_left_tr);
+    let mut left_co_of_right_tr  = vec![tree.arena[right_tree].x
+        + tree.arena[right_tree].xmod - tree.arena[right_tree].nbg as f32 *PIPEBLOCK  ];
+    let depth_right_tr  = tree.depth(right_tree);
+    get_contour_left_fl(tree,right_tree,depth_right_tr,&mut left_co_of_right_tr,0.0);
+    info!("[push_right] left contour of {} = {:?}",right_tree,left_co_of_right_tr);
+    // Si on   a pas le meme longeur de contour on complete le plus petit
+    // en remplissant ce qui manque avec la derniere valeur, pour eviter
+    // qu'un sous arbre vosin se place sous une feuille
+    let right_len = right_co_of_left_tr.len();
+    let left_len = left_co_of_right_tr.len();
+    if left_len > right_len {
+        let last_val =  right_co_of_left_tr[right_len-1];
+        let last_vals =  vec![last_val;left_len-right_len];
+        right_co_of_left_tr.extend(last_vals.iter().copied());
+        info!("[push_right] complete right contour with last value {}", last_val);
+    }
+    if left_len < right_len {
+        let last_val =  left_co_of_right_tr[left_len-1];
+        let last_vals =  vec![last_val;right_len - left_len];
+        left_co_of_right_tr.extend(last_vals.iter().copied());
+        info!("[push_right] complete left contour with last value {}", last_val);
+    }
+    info!("[push_right] comparing  right cont. of left tree: {:?}",right_co_of_left_tr);
+    info!("[push_right] with left cont. of right tree:       {:?} ",left_co_of_right_tr);
+
+    let iter = left_co_of_right_tr.iter().zip(right_co_of_left_tr).map(|(x, y )| (x-y));
+    let shift = iter.min_by(|x, y| (*x as i64) .cmp(&(*y as i64 )));
+    info!("[push_right] distance max  = {:?}",shift);
+    match shift {
+        Some(val) => {
+            info!("[push_right] distance max  = {:?}",shift);
+            if val <= 0.0 {// bidouilel
+                info!("[push_right] ================CONFLIT==========");
+                info!("[push_right] Modify node {:?}",tree.arena[right_tree]);
+                let x_mod =  tree.arena[right_tree].xmod;
+                info!("[push_right] initial x_mod = {}",x_mod);
+                let x_mod =  x_mod -1.0 *val + BLOCK / 4.0 ;//bidouille
+                info!("[push_right] new x_mod = {}",x_mod);
+                tree.arena[right_tree].set_xmod_noref(x_mod);
+                info!("[push_right] updated node {:?}",tree.arena[right_tree]);
+                info!("[push_right] ================CONFLIT==========");
+            }
+        },
+        None => {}
+    }
+    0.0
+}
 // Set the x of the father between its children
 pub fn  set_middle_postorder(tree: &mut ArenaTree<String>,index:usize) {
     let children  = &mut  tree.arena[index].children;
@@ -1887,6 +2344,30 @@ pub fn  set_middle_postorder(tree: &mut ArenaTree<String>,index:usize) {
         tree.arena[index].set_xmod_noref(x_mod);
     }
 }
+
+// Set the x of the father between its children
+pub fn  set_middle_postorder_fl(tree: &mut ArenaTree<String>,index:usize) {
+    if tree.arena[index].location == "FREE_LIVING" {
+    let children  = &mut  tree.arena[index].children;
+    if children.len() > 0 {
+        let left = children[0];
+        let right = children[1];
+        set_middle_postorder_fl(tree,left);
+        set_middle_postorder_fl(tree,right);
+        info!("[set_middle_postorder] node {:?}",index);
+        let x_left = tree.arena[left].x;
+        let x_right = tree.arena[right].x;
+        let x = tree.arena[index].x;
+        let x_middle = ( x_right + x_left ) / 2.0 ;
+        info!("[set_middle_postorder] x father set from {} to {}",x,x_middle);
+        tree.arena[index].set_x_noref(x_middle);
+        let x_mod =  tree.arena[right].xmod;
+        let x_mod =  x_mod + x_middle - x;
+        tree.arena[index].set_xmod_noref(x_mod);
+    }
+}
+}
+
 
 /// Send the index of the last common ancestor of 2 nodes
 #[allow(dead_code)]
