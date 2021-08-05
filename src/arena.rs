@@ -1604,6 +1604,7 @@ pub fn  knuth_layout_fl(tree: &mut ArenaTree<String>,index: usize,xspec:f32,dept
             tree.arena[son_right].set_x_noref(xspec + BLOCK);
             knuth_layout_fl(tree,son_left,xspec,&mut(*depth+1));
             knuth_layout_fl(tree,son_right,xspec,&mut(*depth+1));
+
         }
     }
 }
@@ -1852,13 +1853,19 @@ pub fn  check_contour_postorder(tree: &mut ArenaTree<String>,index:usize) {
 
 // Solve the conflicts between the left subtree and the right subtree
 pub fn  check_contour_postorder_fl(tree: &mut ArenaTree<String>,index:usize) {
+    println!("DEBUGCHECKCONTOUR Parent ={} {} {}",tree.arena[index].name,tree.arena[index].location,tree.arena[index].is_a_transfert);
     if tree.arena[index].location == "FREE_LIVING" {
     let children  = &mut  tree.arena[index].children;
-    if children.len() > 0 {
+        if children.len() > 0 {
         let left = children[0];
         let right = children[1];
+        println!("DEBUGCHECKCONTOUR Left={} {} {} Rigth={} {} {}",tree.arena[left].name,
+        tree.arena[left].location,tree.arena[left].is_a_transfert,tree.arena[right].name,
+        tree.arena[right].location,tree.arena[right].is_a_transfert,);
+
         check_contour_postorder_fl(tree,left);
         check_contour_postorder_fl(tree,right);
+        println!("DEBUGCHECKCONTOUR ==> PUSH");
         push_right_fl(tree,left,right);
     }
     else{
@@ -1905,12 +1912,28 @@ pub fn  get_contour_left(tree: &mut ArenaTree<String>,index:usize,depth:usize,
 
 pub fn  get_contour_left_fl(tree: &mut ArenaTree<String>,index:usize,depth:usize,
                          contour_left: &mut Vec<f32>,parent_xmod: f32)  {
-    if tree.arena[index].e != Event::BranchingOut && !tree.arena[index].is_a_transfert  {
+    // if tree.arena[index].e != Event::BranchingOut && !tree.arena[index].is_a_transfert  {
     info!("[get_contour_left_fl] >>> {:?}",tree.arena[index]);
-    println!("[get_contour_left_fl] process node {:?} {} {}",tree.arena[index].e,
+    println!("[get_contour_left_fl] DEBUG process node {:?} {} {}",tree.arena[index].e,
         tree.arena[index].location,tree.arena[index].is_a_transfert);
     let local_depth = tree.depth(index)-depth; // Profondeur du noeud pa rapport a noeud de depart
-    let node_left_pos = node_xpos(tree,index,parent_xmod,-1);
+    let mut node_left_pos = node_xpos(tree,index,parent_xmod,-1);
+    // if tree.arena[index].e == Event::BranchingOut || tree.arena[index].is_a_transfert {
+    if  tree.arena[index].is_a_transfert {
+        // if tree.arena[index].e == Event::BranchingOut  {
+            println!("DEBUG ZAP LEFT {:?}",tree.arena[index]);
+            println!("DEBUG ZAP LEFT {:?}",contour_left);
+        // let _parent_of_index =  tree.arena[index].parent.expect("[get_contour_right_fl] Node has no parent");
+        // // println("DZBUG ")
+        // let _len =  contour_left.len();
+        //  node_left_pos =contour_left[_len-1];
+        // node_left_pos = node_xpos(tree,_parent_of_index,parent_xmod,1);
+        //
+        //  node_left_pos = 0.0;
+        //  // println!("DEBUG3 KLAKJAKA {:?} ",contour_left);
+        return
+
+    }
     if contour_left.len() <= local_depth {
         if tree.arena[index].xmod < 0.0 {
             panic!("Error: negative xmod.");
@@ -1935,7 +1958,7 @@ pub fn  get_contour_left_fl(tree: &mut ArenaTree<String>,index:usize,depth:usize
             get_contour_left_fl(tree,left,depth,contour_left,tree.arena[index].xmod + parent_xmod );
     }
     }
-}
+// }
 }
 
 
@@ -1969,11 +1992,27 @@ pub fn  get_contour_right(tree: &mut ArenaTree<String>,index:usize,depth:usize,
 // Get the right 'contour' of a sub tree
 pub fn  get_contour_right_fl(tree: &mut ArenaTree<String>,index:usize,depth:usize,
                           contour_right: &mut Vec<f32>,parent_xmod: f32)  {
-    println!("[get_contour_right_fl] process node {:?} {} {}",tree.arena[index].e,
+    println!("[get_contour_right_fl] DEBUG process node {:?} {} {}",tree.arena[index].e,
         tree.arena[index].location,tree.arena[index].is_a_transfert);
-    if tree.arena[index].e != Event::BranchingOut && !tree.arena[index].is_a_transfert {
+    // if tree.arena[index].e != Event::BranchingOut && !tree.arena[index].is_a_transfert {
     let local_depth = tree.depth(index)-depth; // Profondeur du noeud pa rapport a noeud de depart
-    let node_right_pos = node_xpos(tree,index,parent_xmod,1);
+    let mut node_right_pos = node_xpos(tree,index,parent_xmod,1);
+    // if tree.arena[index].e == Event::BranchingOut || tree.arena[index].is_a_transfert {
+    // if tree.arena[index].e == Event::BranchingOut {
+
+            if  tree.arena[index].is_a_transfert {
+        println!("DEBUG ZAP RIGHT {:?}",tree.arena[index]);
+        println!("DEBUG ZAP RIGHT {:?}",contour_right);
+        //
+        // let _parent_of_index =  tree.arena[index].parent.expect("[get_contour_right_fl] Node has no parent");
+        // // println("DZBUG ")
+        // let _len =  contour_right.len();
+        //  node_right_pos =contour_right[_len-1];
+        // node_right_pos = node_xpos(tree,_parent_of_index,parent_xmod,1);
+        // node_right_pos = 0.0;
+        return
+    }
+
     if contour_right.len() <= local_depth {
         if tree.arena[index].xmod < 0.0 {
             panic!("Error: negative xmod");
@@ -1997,7 +2036,7 @@ pub fn  get_contour_right_fl(tree: &mut ArenaTree<String>,index:usize,depth:usiz
         else {println!("WWWWWWAAAAAAAAAAAAAAAAAAA {:?}",tree.arena[right]);
         get_contour_right_fl(tree,right,depth,contour_right,tree.arena[index].xmod + parent_xmod );
 }
-    }
+    // }
 }
 }
 
@@ -2060,19 +2099,21 @@ pub fn  push_right(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize
 }
 
 pub fn  push_right_fl(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize) -> f32 {
-    info!("[push_right] compare right contour of {} and left contour of {}",left_tree, right_tree);
+    println!("[push_right_fl] DEBUG compare right contour of {} {} and left contour of {} {}",left_tree,tree.arena[left_tree].name,right_tree,tree.arena[right_tree].name);
     // if tree.arena[left_tree].location != "FREE_LIVING" {return 0.0};
     // if tree.arena[right_tree].location != "FREE_LIVING" {return 0.0};
     let mut right_co_of_left_tr  = vec![tree.arena[left_tree].x
         + tree.arena[left_tree].xmod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK];
     let depth_left_tr  = tree.depth(left_tree);
+    println!("[push_right_fl] DEBUG AVANT right contour of {} = {:?}",left_tree,right_co_of_left_tr);
     get_contour_right_fl(tree,left_tree,depth_left_tr,&mut right_co_of_left_tr,0.0);
-    info!("[push_right] right contour of {} = {:?}",left_tree,right_co_of_left_tr);
+    println!("[push_right_fl] DEBUG APRES right contour of {} = {:?}",left_tree,right_co_of_left_tr);
     let mut left_co_of_right_tr  = vec![tree.arena[right_tree].x
         + tree.arena[right_tree].xmod - tree.arena[right_tree].nbg as f32 *PIPEBLOCK];
     let depth_right_tr  = tree.depth(right_tree);
+    println!("[push_right_fl] DEBUG AVANT left contour of {} = {:?}",right_tree,left_co_of_right_tr);
     get_contour_left_fl(tree,right_tree,depth_right_tr,&mut left_co_of_right_tr,0.0);
-    info!("[push_right] left contour of {} = {:?}",right_tree,left_co_of_right_tr);
+    println!("[push_right_fl] DEBUG APRES left contour of {} = {:?}",right_tree,left_co_of_right_tr);
     // Si on   a pas le meme longeur de contour on complete le plus petit
     // en remplissant ce qui manque avec la derniere valeur, pour eviter
     // qu'un sous arbre vosin se place sous une feuille
@@ -2082,20 +2123,20 @@ pub fn  push_right_fl(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:us
         let last_val =  right_co_of_left_tr[right_len-1];
         let last_vals =  vec![last_val;left_len-right_len];
         right_co_of_left_tr.extend(last_vals.iter().copied());
-        info!("[push_right] complete right contour with last value {}", last_val);
+        println!("[push_right_fl] DEBUG complete right contour with last value {}", last_val);
     }
     if left_len < right_len {
         let last_val =  left_co_of_right_tr[left_len-1];
         let last_vals =  vec![last_val;right_len - left_len];
         left_co_of_right_tr.extend(last_vals.iter().copied());
-        info!("[push_right] complete left contour with last value {}", last_val);
+        info!("[push_right_fl] DEBUG complete left contour with last value {}", last_val);
     }
-    println!("[push_right_fl] comparing  right cont. of left tree: {:?}",right_co_of_left_tr);
-    println!("[push_right_fl] with left cont. of right tree:       {:?} ",left_co_of_right_tr);
+    println!("[push_right_fl] DEBUG comparing  right cont. of left tree: {:?}",right_co_of_left_tr);
+    println!("[push_right_fl] DEBUG with left cont. of right tree:       {:?} ",left_co_of_right_tr);
 
     let iter = left_co_of_right_tr.iter().zip(right_co_of_left_tr).map(|(x, y )| (x-y));
     let shift = iter.min_by(|x, y| (*x as i64) .cmp(&(*y as i64 )));
-    info!("[push_right] distance max  = {:?}",shift);
+    println!("[push_right_fl] DEBUG distance max  = {:?}",shift);
     match shift {
         Some(val) => {
             println!("[push_right_fl] distance max  = {:?}",val);
