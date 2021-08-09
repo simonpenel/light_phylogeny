@@ -5,7 +5,6 @@ use light_phylogeny::{ArenaTree,Options,Config,read_recphyloxml_multi,recphyloxm
 phyloxml_processing,reset_pos,map_transfer,map_transfer_mul,get_gtransfer,map_parasite_g2s,
 map_parasite_s2g,map_gene_host};
 use log::{info};
-use std::env;
 
 fn main() {
     // env::set_var("RUST_LOG", "info");
