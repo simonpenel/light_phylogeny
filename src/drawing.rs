@@ -158,6 +158,20 @@ pub fn draw_tree (
     svg::save(name, &document).unwrap();
 }
 
+
+pub fn get_longest_x_mul(gene_trees:&mut std::vec::Vec<ArenaTree<String>>) -> f32 {
+    let mut max = 0.0;
+    for tree in gene_trees {
+        let gene_max = tree.get_largest_x();
+        if gene_max > max {
+            max = gene_max;
+        }
+    }
+    max
+}
+
+
+
 pub fn get_longest_name_mul(gene_trees:&mut std::vec::Vec<ArenaTree<String>>) -> usize {
     let mut max = 0;
     for tree in gene_trees {
@@ -186,7 +200,11 @@ pub fn draw_sptree_gntrees (
     config: &Config,                                    // svg configuration
     transfers: &std::vec::Vec<(String,String)>          // additional transfers
     ) {
-    let largest_x = sp_tree.get_largest_x() * 1.0 + 0.0 ;
+    let mut largest_x = sp_tree.get_largest_x() * 1.0 + 0.0 ;
+    let largest_x_genes = get_longest_x_mul(gene_trees);//Gestion des genes free living qio peuvent depasser de l'arbre d'espece
+    if  largest_x_genes > largest_x {
+        largest_x = largest_x_genes;
+    }
     let largest_y = sp_tree.get_largest_y() * 1.0 + 0.0 ;
     let smallest_x = sp_tree.get_smallest_x() * 1.0 + 0.0 ;
     let smallest_y = sp_tree.get_smallest_y() * 1.0 + 0.0 ;
