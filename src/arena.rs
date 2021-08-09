@@ -177,6 +177,16 @@ where
         // Ok(idx)
         idx
     }
+    pub fn get_node(&mut self, val: T) -> usize {
+        // first see if it exists
+        for node in &self.arena {
+            if node.val == val {
+                return node.idx;
+            }
+        }
+        panic!("Node does not  exist.");
+    }
+    ///
     ///  Get index of a node from its name
     pub fn get_index(&mut self, name: String) -> Result <usize, usize> {
         for node in &self.arena {
@@ -1274,7 +1284,15 @@ pub fn move_dupli_mappings(sp_tree: &mut ArenaTree<String>,
         move_dupli_mappings( sp_tree, gene_trees,son_left);
         move_dupli_mappings( sp_tree, gene_trees,son_right);
     }
-}
+}       // let children =  &gene_trees[*index_node].arena[lf_branch].children;
+       // if children.len() > 0 {
+       //     let left = children[0];
+       //     let right = children[1];
+       //      remplace_fl(&mut fl_tree,&mut gene_trees[*index_node], left);
+       //      remplace_fl(&mut fl_tree,&mut gene_trees[*index_node], right);
+       //
+       //
+       // }
 
 // Move species father when necessary
 pub fn move_species_mappings(sp_tree: &mut ArenaTree<String>,
@@ -1337,17 +1355,15 @@ pub fn move_species_mappings(sp_tree: &mut ArenaTree<String>,
 }
 
 
-// Move species father when necessary in free living tree
-pub fn move_species_mappings_fl(sp_tree: &mut ArenaTree<String>,
-                           gene_trees: &mut std::vec::Vec<ArenaTree<String>>, index: usize) {
-                               // let mut nodes = &mut sp_tree.arena[index].nodes;
-                               // nodes.reverse();
-    info!("[move_species_mappings_fl] Processing {}",index);
+/// Specific  processinf of free living gene trees
+pub fn process_fl(sp_tree: &mut ArenaTree<String>,
+                           gene_trees: &mut std::vec::Vec<ArenaTree<String>>, index: usize,
+                       ) {
     //  Recupere les feuilles des arbres de gene
     let mut  genes = vec![];
     let mut  feuilles = vec![];
     for (index_node, node) in &sp_tree.arena[index].nodes {
-        info!("[move_species_mappings_fl] >>> {:?} {:?}",gene_trees[*index_node].arena[*node].name,
+        info!("[process_fl] >>> {:?} {:?}",gene_trees[*index_node].arena[*node].name,
          gene_trees[*index_node].arena[*node].e);
         if gene_trees[*index_node].arena[*node].e == Event::Leaf {
             if !genes.contains(index_node) {
@@ -1357,12 +1373,10 @@ pub fn move_species_mappings_fl(sp_tree: &mut ArenaTree<String>,
         };
 
     }
-    //  recherche parent
+    //  recherche l'ancetre des genes dans FREE_LIVING
     for (index_node, node) in feuilles {
         let mut _parent = *node;
-        let mut parent = gene_trees[*index_node].arena[*node].parent.expect("[move_species_mappings_fl] ERROR Unexpected root (1)");
-            info!("[move_species_mappings_fl] {} {} {:?}",index_node,node,parent);
-
+        let mut parent = gene_trees[*index_node].arena[*node].parent.expect("[process_fl] ERROR Unexpected root (1)");
             while gene_trees[*index_node].arena[*node].location == gene_trees[*index_node].arena[parent].location
              {
                  _parent = parent;
@@ -1372,19 +1386,114 @@ pub fn move_species_mappings_fl(sp_tree: &mut ArenaTree<String>,
                          break
                      },
                  };
-                 info!("[move_species_mappings_fl] {} {} {:?}",index_node,node,parent);
              }
-        info!("[move_species_mappings_fl] Ancestor of the gene {} in this species node is {:?}",index_node,gene_trees[*index_node].arena[parent]);
-        set_middle_postorder(&mut gene_trees[*index_node], _parent);
-
+        info!("[process_fl] Ancestor of the gene {} in this species node is {:?}",index_node,gene_trees[*index_node].arena[_parent]);
+        // Cree l'arbre de gene qui servira a afficher le free living
+        let mut fl_tree: ArenaTree<String> = ArenaTree::default();
+        let mut parent_xmod = sp_tree.arena[index].x-sp_tree.arena[index].width;
+        let mut parent_ymod = sp_tree.arena[index].y / 2.0 ;
+        // Copie une de l'arbre de   genes dans le free living
+        copie_fl(&mut fl_tree,&mut gene_trees[*index_node], _parent);
+        // Traitement habituel d'un arbre
+        knuth_layout(&mut fl_tree,0, &mut 1);
+        check_contour_postorder(&mut fl_tree, 0);
+        shift_mod_xy(&mut fl_tree, 0, &mut parent_xmod, &mut parent_ymod);
+        set_middle_postorder(&mut fl_tree, 0);
+       let mut compteur = 0 ;
+       while compteur < fl_tree.arena.len() {
+           remplace_fl_inv(&mut fl_tree,&mut gene_trees[*index_node], compteur);
+           compteur = compteur + 1;
+       }
     }
-    // Normalement cette etape n'est pas necessaire:
-    let children =  &mut  sp_tree.arena[index].children;
-    if children.len() > 0 {
-        let son_left = children[0];
-        let son_right = children[1];
-        move_species_mappings_fl( sp_tree, gene_trees,son_left);
-        move_species_mappings_fl( sp_tree, gene_trees,son_right);
+}
+
+// Copie a part of gene trees into the fl tree
+pub fn copie_fl(fl_tree: &mut ArenaTree<String>,gn_tree: &mut ArenaTree<String>, index: usize) {
+    // Keep onmy gene associated to FREE_LIVING and skip tranferts
+    if gn_tree.arena[index].location == "FREE_LIVING" && gn_tree.arena[index].e != Event::BranchingOut {
+        let fl_root_val = gn_tree.arena[index].val.clone();
+        let fl_root_name = gn_tree.arena[index].name.clone();
+        let new_index = fl_tree.node(fl_root_val.to_string());
+        fl_tree.arena[new_index].name = fl_root_name;
+        let children = &gn_tree.arena[index].children;
+        if children.len() > 0 {
+            let left = children[0];
+            let right = children[1];
+            let fl_left_val = gn_tree.arena[left].val.clone();
+            let fl_left_name = gn_tree.arena[left].name.clone();
+            let new_left_index = fl_tree.new_node(fl_left_val.to_string());
+            fl_tree.arena[new_left_index].name = fl_left_name;
+            fl_tree.arena[new_left_index].parent = Some(new_index);
+            let fl_right_val = gn_tree.arena[right].val.clone();
+            let fl_right_name = gn_tree.arena[right].name.clone();
+            let new_right_index = fl_tree.new_node(fl_right_val.to_string());
+            fl_tree.arena[new_right_index].name = fl_right_name;
+            fl_tree.arena[new_right_index].parent = Some(new_index);
+            fl_tree.arena[new_index].children.push(new_left_index);
+            fl_tree.arena[new_index].children.push(new_right_index);
+            copie_fl(fl_tree,gn_tree, left);
+            copie_fl(fl_tree,gn_tree, right);
+        }
+    }
+    // Handling transfert
+    if gn_tree.arena[index].location == "FREE_LIVING" && gn_tree.arena[index].e == Event::BranchingOut {
+        // on veut traiter le fils de Branchinout qui reste dans free living, pas celui part (cad le transfert)
+        let children = &gn_tree.arena[index].children;
+        if children.len() > 0 {
+            let left = children[0];
+            let right = children[1];
+            // Le neoud a conserver
+            let fl_child  = match gn_tree.arena[right].location == "FREE_LIVING" {
+                true => right,
+                false => left,
+            };
+            // le noeud a ne pas conserver
+            let tr_child  = match gn_tree.arena[right].location == "FREE_LIVING" {
+                true => left,
+                false => right,
+            };
+
+            let fl_root_val = gn_tree.arena[index].val.clone();
+            let fl_root_name = gn_tree.arena[index].name.clone();
+            let new_index = fl_tree.node(fl_root_val.to_string());
+            fl_tree.arena[new_index].name = fl_root_name;
+
+            // let fl_left_val = gn_tree.arena[left].val.clone();
+            let fl_left_val = gn_tree.arena[tr_child].val.clone();
+            let fl_left_name = gn_tree.arena[tr_child].name.clone();
+
+            let new_left_index = fl_tree.new_node(fl_left_val.to_string());
+            fl_tree.arena[new_left_index].name = fl_left_name;
+            fl_tree.arena[new_left_index].parent = Some(new_index);
+            // Ce noeuf est conserve pour gader la binarite, mais on ne l'utilsera pas
+            // Tag this node as virtual, this will be useful later
+            fl_tree.arena[new_left_index].virtualsvg = true;
+
+            // let fl_right_val = gn_tree.arena[right].val.clone();
+            let fl_right_val = gn_tree.arena[fl_child].val.clone();
+            let fl_right_name = gn_tree.arena[fl_child].name.clone();
+
+            let new_right_index = fl_tree.new_node(fl_right_val.to_string());
+            fl_tree.arena[new_right_index].name = fl_right_name;
+            fl_tree.arena[new_right_index].parent = Some(new_index);
+
+            fl_tree.arena[new_index].children.push(new_left_index);
+            fl_tree.arena[new_index].children.push(new_right_index);
+
+            // On ne relance que se le noeud qui est dans free livong
+            copie_fl(fl_tree,gn_tree, fl_child);
+        }
+    }
+}
+
+pub fn remplace_fl_inv(fl_tree: &mut ArenaTree<String>,gn_tree: &mut ArenaTree<String>, index: usize) {
+    if ! fl_tree.arena[index].virtualsvg {
+        let fl_val = fl_tree.arena[index].val.clone();
+        let gn_index = gn_tree.get_node(fl_val.to_string());
+        gn_tree.arena[gn_index].set_x_noref(fl_tree.arena[index].x);
+        gn_tree.arena[gn_index].set_xmod_noref(fl_tree.arena[index].xmod);
+        gn_tree.arena[gn_index].set_y_noref(fl_tree.arena[index].y);
+        gn_tree.arena[gn_index].set_ymod_noref(fl_tree.arena[index].ymod);
     }
 }
 
@@ -1468,19 +1577,6 @@ pub fn set_species_width(sp_tree: &mut ArenaTree<String>,
     }
 }
 
-
-/// Get the id of the first "spTree" tag.
-// Obsolete
-// pub fn find_sptree( doc: &mut roxmltree::Document) -> Result < roxmltree::NodeId, usize> {
-//     let descendants = doc.root().descendants();
-//     // Search for the first occurnce of clade spTree
-//     for  node in descendants {
-//         if node.has_tag_name("spTree"){
-//             return Ok(node.id())
-//         }
-//     }
-//     Err(0)
-// }
 /// Get the list of ids of all the "spTree" tag in a xml document.
 pub fn find_sptrees( doc: &mut roxmltree::Document) -> Result < Vec<roxmltree::NodeId>, usize> {
     let descendants = doc.root().descendants();
