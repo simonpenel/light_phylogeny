@@ -1376,6 +1376,11 @@ pub fn process_fl(sp_tree: &mut ArenaTree<String>,
     //  recherche l'ancetre des genes dans FREE_LIVING
     for (index_node, node) in feuilles {
         let mut _parent = *node;
+        let shift = genes.iter().position(|x| x  == index_node);
+        let shift = match shift {
+            Some(val) => val as f32,
+            None => panic!("Unexpected error in process_fl"),
+        };
         let mut parent = gene_trees[*index_node].arena[*node].parent.expect("[process_fl] ERROR Unexpected root (1)");
             while gene_trees[*index_node].arena[*node].location == gene_trees[*index_node].arena[parent].location
              {
@@ -1390,8 +1395,8 @@ pub fn process_fl(sp_tree: &mut ArenaTree<String>,
         info!("[process_fl] Ancestor of the gene {} in this species node is {:?}",index_node,gene_trees[*index_node].arena[_parent]);
         // Cree l'arbre de gene qui servira a afficher le free living
         let mut fl_tree: ArenaTree<String> = ArenaTree::default();
-        let mut parent_xmod = sp_tree.arena[index].x-sp_tree.arena[index].width;
-        let mut parent_ymod = sp_tree.arena[index].y / 2.0 ;
+        let mut parent_xmod = sp_tree.arena[index].x-sp_tree.arena[index].width + shift * PIPEBLOCK;
+        let mut parent_ymod = sp_tree.arena[index].y / 2.0 + shift * PIPEBLOCK;
         // Copie une de l'arbre de   genes dans le free living
         copie_fl(&mut fl_tree,&mut gene_trees[*index_node], _parent);
         // Traitement habituel d'un arbre
