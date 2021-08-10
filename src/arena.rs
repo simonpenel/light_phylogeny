@@ -379,6 +379,8 @@ pub struct Options{
     pub support:bool,
     /// free free_living
     pub free_living:bool,
+    /// free free_living : shifting  trees
+    pub free_living_shift:bool,
     /// uniformise the specuis tree nodes
     pub uniform:bool,
 }
@@ -406,6 +408,7 @@ impl Options {
             width:1.0,
             support:false,
             free_living:false,
+            free_living_shift:false,
             uniform:false,
         }
     }
@@ -1358,7 +1361,7 @@ pub fn move_species_mappings(sp_tree: &mut ArenaTree<String>,
 /// Specific  processinf of free living gene trees
 pub fn process_fl(sp_tree: &mut ArenaTree<String>,
                            gene_trees: &mut std::vec::Vec<ArenaTree<String>>, index: usize,
-                       ) {
+                       options: &Options) {
     //  Recupere les feuilles des arbres de gene
     let mut  genes = vec![];
     let mut  feuilles = vec![];
@@ -1374,11 +1377,12 @@ pub fn process_fl(sp_tree: &mut ArenaTree<String>,
 
     }
     //  recherche l'ancetre des genes dans FREE_LIVING
+    let mut max_x_in_lf = 0.0;
     for (index_node, node) in feuilles {
         let mut _parent = *node;
         let shift = genes.iter().position(|x| x  == index_node);
         let shift = match shift {
-            Some(val) => val as f32,
+            Some(val) => val  as f32  ,
             None => panic!("Unexpected error in process_fl"),
         };
         let mut parent = gene_trees[*index_node].arena[*node].parent.expect("[process_fl] ERROR Unexpected root (1)");
@@ -1395,7 +1399,12 @@ pub fn process_fl(sp_tree: &mut ArenaTree<String>,
         info!("[process_fl] Ancestor of the gene {} in this species node is {:?}",index_node,gene_trees[*index_node].arena[_parent]);
         // Cree l'arbre de gene qui servira a afficher le free living
         let mut fl_tree: ArenaTree<String> = ArenaTree::default();
-        let mut parent_xmod = sp_tree.arena[index].x-sp_tree.arena[index].width + shift * PIPEBLOCK;
+        let mut parent_xmod = sp_tree.arena[index].x-sp_tree.arena[index].width + shift * PIPEBLOCK ;
+        if options.free_living_shift {
+            parent_xmod = parent_xmod + max_x_in_lf ;
+        }
+        // let mut parent_xmod = sp_tree.arena[index].x-sp_tree.arena[index].width + shift * PIPEBLOCK ;
+
         let mut parent_ymod = sp_tree.arena[index].y / 2.0 + shift * PIPEBLOCK;
         // Copie une de l'arbre de   genes dans le free living
         copie_fl(&mut fl_tree,&mut gene_trees[*index_node], _parent);
@@ -1404,6 +1413,7 @@ pub fn process_fl(sp_tree: &mut ArenaTree<String>,
         check_contour_postorder(&mut fl_tree, 0);
         shift_mod_xy(&mut fl_tree, 0, &mut parent_xmod, &mut parent_ymod);
         set_middle_postorder(&mut fl_tree, 0);
+        max_x_in_lf = max_x_in_lf + fl_tree.get_largest_x() - parent_xmod;
        let mut compteur = 0 ;
        while compteur < fl_tree.arena.len() {
            remplace_fl_inv(&mut fl_tree,&mut gene_trees[*index_node], compteur);

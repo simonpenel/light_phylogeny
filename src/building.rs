@@ -627,7 +627,7 @@ move_species_mappings(&mut sp_tree, &mut gene_trees,initial_root);
 // Option : traitement specifique des gene "free living"
 
 if options.free_living {
-    process_fl(&mut sp_tree, &mut gene_trees,free_root);
+    process_fl(&mut sp_tree, &mut gene_trees,free_root, &options);
 }
 // // ---------------------------------------------------------
 // // Fin: Ecriture du fichier svg
