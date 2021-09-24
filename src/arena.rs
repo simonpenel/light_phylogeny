@@ -144,7 +144,7 @@ where
 }
 impl<T> ArenaTree<T>
 where
-    T: PartialEq + std::default::Default
+    T: PartialEq + std::default::Default + std::fmt::Debug
 
 {
     #[allow(dead_code)]
@@ -168,7 +168,7 @@ where
         //first see if it exists
         for node in &self.arena {
             if node.val == val {
-                    panic!("Node already exists.");
+                    panic!("Node already exists.{:?}",node);
             }
         }
         // Otherwise, add new node
