@@ -1,0 +1,439 @@
+<recPhylo>
+<spTree>
+<phylogeny>
+<clade>
+ <name>s0_32</name>
+<clade>
+ <name>s0_33</name>
+<clade>
+ <name>s0_34</name>
+<clade>
+ <name>s0_35</name>
+<clade>
+ <name>Escherichia_coli_K12_MG1655</name>
+</clade>
+<clade>
+ <name>s0_36</name>
+<clade>
+ <name>s0_37</name>
+<clade>
+ <name>s0_38</name>
+<clade>
+ <name>s0_39</name>
+<clade>
+ <name>s0_40</name>
+<clade>
+ <name>s0_41</name>
+<clade>
+ <name>s0_45</name>
+<clade>
+ <name>ECUMA</name>
+</clade>
+<clade>
+ <name>s0_47</name>
+<clade>
+ <name>EKOCA</name>
+</clade>
+<clade>
+ <name>ELAFE</name>
+</clade>
+</clade>
+</clade>
+<clade>
+ <name>s0_43</name>
+<clade>
+ <name>s0_46</name>
+<clade>
+ <name>EPSPA</name>
+</clade>
+<clade>
+ <name>s0_48</name>
+<clade>
+ <name>ESPPA</name>
+</clade>
+<clade>
+ <name>ESPPS</name>
+</clade>
+</clade>
+</clade>
+<clade>
+ <name>EPSTX</name>
+</clade>
+</clade>
+</clade>
+<clade>
+ <name>s0_49</name>
+<clade>
+ <name>ECURT</name>
+</clade>
+<clade>
+ <name>ECURV</name>
+</clade>
+</clade>
+</clade>
+<clade>
+ <name>EwAmC</name>
+</clade>
+</clade>
+<clade>
+ <name>s0_50</name>
+<clade>
+ <name>EwApS</name>
+</clade>
+<clade>
+ <name>EwDaI</name>
+</clade>
+</clade>
+</clade>
+<clade>
+ <name>EwBiE</name>
+</clade>
+</clade>
+<clade>
+ <name>s0_51</name>
+<clade>
+ <name>Pantoea_gaviniae_DSM_22758</name>
+</clade>
+<clade>
+ <name>Pantoea_calida_DSM_22759</name>
+</clade>
+</clade>
+</clade>
+</clade>
+<clade>
+ <name>s0_42</name>
+<clade>
+ <name>s0_44</name>
+<clade>
+ <name>s0_52</name>
+<clade>
+ <name>HCURT</name>
+</clade>
+<clade>
+ <name>HCURV</name>
+</clade>
+</clade>
+<clade>
+ <name>s0_53</name>
+<clade>
+ <name>Hamiltonella_defensa_ZA17</name>
+</clade>
+<clade>
+ <name>Hamiltonella_defensa_5AT</name>
+</clade>
+</clade>
+</clade>
+<clade>
+ <name>Yersinia_pestis_CO92</name>
+</clade>
+</clade>
+</clade>
+<clade>
+ <name>s0_54</name>
+<clade>
+ <name>Sodalis_praecaptivus_HS1</name>
+</clade>
+<clade>
+ <name>Sodalis_pierantonius_SOPE</name>
+</clade>
+</clade>
+</clade>
+<clade>
+ <name>s0_55</name>
+<clade>
+ <name>Photorhabdus_luminescens_TTO1</name>
+</clade>
+<clade>
+ <name>Photorhabdus_asymbiotica_ATCC43949</name>
+</clade>
+</clade>
+</clade>
+</phylogeny>
+</spTree>
+
+<recGeneTree>
+<phylogeny rooted="true"><id>1</id><clade>
+ <name>g0_56</name>
+<eventsRec>
+<speciation speciesLocation="s0_32"/>
+</eventsRec>
+<clade>
+ <name>g0_79</name>
+<eventsRec>
+<branchingOut speciesLocation="s0_33"/>
+</eventsRec>
+<clade>
+ <name>Yersinia_pestis_CO92</name>
+<eventsRec>
+<transferBack destinationSpecies="s0_33"/><leaf speciesLocation="Yersinia_pestis_CO92"/>
+</eventsRec>
+</clade>
+<clade>
+ <name>g0_85</name>
+<eventsRec>
+<speciation speciesLocation="s0_33"/>
+</eventsRec>
+<clade>
+ <name>g0_95</name>
+<eventsRec>
+<speciation speciesLocation="s0_34"/>
+</eventsRec>
+<clade>
+ <name>g0_95LOSS</name>
+<eventsRec>
+<loss speciesLocation="s0_42"/></eventsRec>
+</clade>
+<clade>
+ <name>g0_95.l</name>
+<eventsRec>
+
+<branchingOut speciesLocation="s0_35"/>
+</eventsRec>
+<clade>
+ <name>g0_103</name>
+<eventsRec>
+<transferBack destinationSpecies="s0_35"/><speciation speciesLocation="s0_37"/>
+</eventsRec>
+<clade>
+ <name>EwApS</name>
+<eventsRec>
+<speciation speciesLocation="s0_38"/>
+</eventsRec>
+<clade>
+ <name>EwApSLOSS</name>
+<eventsRec>
+<loss speciesLocation="s0_39"/></eventsRec>
+</clade>
+<clade>
+ <name>EwApS.l</name>
+<eventsRec>
+
+<speciation speciesLocation="s0_50"/>
+</eventsRec>
+<clade>
+ <name>EwApS.lLOSS</name>
+<eventsRec>
+<loss speciesLocation="EwDaI"/></eventsRec>
+</clade>
+<clade>
+ <name>EwApS.l.l</name>
+<eventsRec>
+
+<leaf speciesLocation="EwApS"/>
+</eventsRec>
+</clade>
+</clade>
+</clade>
+<clade>
+ <name>EwBiE</name>
+<eventsRec>
+<leaf speciesLocation="EwBiE"/>
+</eventsRec>
+</clade>
+</clade>
+<clade>
+ <name>g0_97</name>
+<eventsRec>
+<speciation speciesLocation="s0_35"/>
+</eventsRec>
+<clade>
+ <name>Escherichia_coli_K12_MG1655</name>
+<eventsRec>
+<leaf speciesLocation="Escherichia_coli_K12_MG1655"/>
+</eventsRec>
+</clade>
+<clade>
+ <name>g0_102</name>
+<eventsRec>
+<speciation speciesLocation="s0_36"/>
+</eventsRec>
+<clade>
+ <name>g0_102LOSS</name>
+<eventsRec>
+<loss speciesLocation="s0_37"/></eventsRec>
+</clade>
+<clade>
+ <name>g0_102.l</name>
+<eventsRec>
+
+<speciation speciesLocation="s0_51"/>
+</eventsRec>
+<clade>
+ <name>Pantoea_gaviniae_DSM_22758</name>
+<eventsRec>
+<leaf speciesLocation="Pantoea_gaviniae_DSM_22758"/>
+</eventsRec>
+</clade>
+<clade>
+ <name>Pantoea_calida_DSM_22759</name>
+<eventsRec>
+<leaf speciesLocation="Pantoea_calida_DSM_22759"/>
+</eventsRec>
+</clade>
+</clade>
+</clade>
+</clade>
+</clade>
+</clade>
+<clade>
+ <name>g0_90</name>
+<eventsRec>
+<branchingOut speciesLocation="s0_54"/>
+</eventsRec>
+<clade>
+ <name>g0_92</name>
+<eventsRec>
+<transferBack destinationSpecies="s0_54"/><speciation speciesLocation="s0_40"/>
+</eventsRec>
+<clade>
+ <name>g0_94</name>
+<eventsRec>
+<speciation speciesLocation="s0_41"/>
+</eventsRec>
+<clade>
+ <name>g0_100</name>
+<eventsRec>
+<speciation speciesLocation="s0_45"/>
+</eventsRec>
+<clade>
+ <name>ECUMA</name>
+<eventsRec>
+<leaf speciesLocation="ECUMA"/>
+</eventsRec>
+</clade>
+<clade>
+ <name>g0_107</name>
+<eventsRec>
+<speciation speciesLocation="s0_47"/>
+</eventsRec>
+<clade>
+ <name>EKOCA</name>
+<eventsRec>
+<leaf speciesLocation="EKOCA"/>
+</eventsRec>
+</clade>
+<clade>
+ <name>ELAFE</name>
+<eventsRec>
+<leaf speciesLocation="ELAFE"/>
+</eventsRec>
+</clade>
+</clade>
+</clade>
+<clade>
+ <name>g0_96</name>
+<eventsRec>
+<speciation speciesLocation="s0_43"/>
+</eventsRec>
+<clade>
+ <name>g0_99</name>
+<eventsRec>
+<speciation speciesLocation="s0_46"/>
+</eventsRec>
+<clade>
+ <name>EPSPA</name>
+<eventsRec>
+<leaf speciesLocation="EPSPA"/>
+</eventsRec>
+</clade>
+<clade>
+ <name>g0_106</name>
+<eventsRec>
+<speciation speciesLocation="s0_48"/>
+</eventsRec>
+<clade>
+ <name>ESPPA</name>
+<eventsRec>
+<leaf speciesLocation="ESPPA"/>
+</eventsRec>
+</clade>
+<clade>
+ <name>ESPPS</name>
+<eventsRec>
+<leaf speciesLocation="ESPPS"/>
+</eventsRec>
+</clade>
+</clade>
+</clade>
+<clade>
+ <name>EPSTX</name>
+<eventsRec>
+<leaf speciesLocation="EPSTX"/>
+</eventsRec>
+</clade>
+</clade>
+</clade>
+<clade>
+ <name>g0_101</name>
+<eventsRec>
+<branchingOut speciesLocation="s0_49"/>
+</eventsRec>
+<clade>
+ <name>g0_101LOSS</name>
+<eventsRec>
+<loss speciesLocation="s0_49"/></eventsRec>
+</clade>
+<clade>
+ <name>g0_101.l</name>
+<eventsRec>
+<transferBack destinationSpecies="s0_52"/>
+<speciation speciesLocation="s0_52"/>
+</eventsRec>
+<clade>
+ <name>HCURT</name>
+<eventsRec>
+<leaf speciesLocation="HCURT"/>
+</eventsRec>
+</clade>
+<clade>
+ <name>HCURV</name>
+<eventsRec>
+<leaf speciesLocation="HCURV"/>
+</eventsRec>
+</clade>
+</clade>
+</clade>
+</clade>
+<clade>
+ <name>g0_105</name>
+<eventsRec>
+<speciation speciesLocation="s0_54"/>
+</eventsRec>
+<clade>
+ <name>Sodalis_praecaptivus_HS1</name>
+<eventsRec>
+<leaf speciesLocation="Sodalis_praecaptivus_HS1"/>
+</eventsRec>
+</clade>
+<clade>
+ <name>Sodalis_pierantonius_SOPE</name>
+<eventsRec>
+<leaf speciesLocation="Sodalis_pierantonius_SOPE"/>
+</eventsRec>
+</clade>
+</clade>
+</clade>
+</clade>
+</clade>
+<clade>
+ <name>g0_104</name>
+<eventsRec>
+<speciation speciesLocation="s0_55"/>
+</eventsRec>
+<clade>
+ <name>Photorhabdus_luminescens_TTO1</name>
+<eventsRec>
+<leaf speciesLocation="Photorhabdus_luminescens_TTO1"/>
+</eventsRec>
+</clade>
+<clade>
+ <name>Photorhabdus_asymbiotica_ATCC43949</name>
+<eventsRec>
+<leaf speciesLocation="Photorhabdus_asymbiotica_ATCC43949"/>
+</eventsRec>
+</clade>
+</clade>
+</clade>
+</phylogeny>
+</recGeneTree>
+</recPhylo>
