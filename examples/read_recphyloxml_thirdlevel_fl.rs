@@ -12,7 +12,6 @@ fn main() {
     let mut options: Options = Options::new();
     options.gene_internal = true;
     options.species_internal = true;
-    options.free_living = true;
     let mut config: Config = Config::new();
     config.species_opacity = "0.7".to_string();
     config.gene_opacity = "0.9".to_string();
@@ -49,6 +48,8 @@ info!("Global parasite pipe tree : {:?}",global_pipe_parasite);
 // Generate svg of the lobal parasite pipe tree and  path
 // genes trees
 // ---------------------------------------------------------
+// Setting options.free_living to false for parasite/gene processing
+options.free_living = false;
 recphyloxml_processing(&mut global_pipe_parasite,&mut  path_genes, &mut options, &config,true,
     &transfers,outfile_gene_para);
 // ---------------------------------------------------------
@@ -76,6 +77,8 @@ println!();
 // ---------------------------------------------------------
 // Generate svg of the host pipe tree and path parasite trees
 // ---------------------------------------------------------
+// Setting options.free_living to true for host/parasite processing
+options.free_living = true;
 recphyloxml_processing(&mut tree_host_pipe,&mut  path_para_trees, &mut options, &config,
 true, &transfers,outfile_para_host);
 // ---------------------------------------------------------
@@ -121,7 +124,9 @@ while i < nb_gntree {
 reset_pos(&mut path_genes[i]);
 i = i + 1;
 }
+// options.free_living = false;
 // attention on ne remape pas
+options.free_living = false;
 recphyloxml_processing(&mut global_pipe_parasite,&mut  path_genes, &mut options, &config,false,
     &transfers,outfile_mapped_1);
 // ---------------------------------------------------------
@@ -152,9 +157,9 @@ i = i + 1;
 println!("Building svg 2:  parasite tree within host pipe tree and mapped tarnsfers {}",
 outfile_mapped_2);
 // attention on ne remape pas
+options.free_living = true;
 recphyloxml_processing(&mut tree_host_pipe, &mut path_para_trees, &mut options, &config,
 false, &mapped_gene_transfers,outfile_mapped_2);
-
 reset_pos(&mut global_pipe_parasite);
 phyloxml_processing(&mut global_pipe_parasite, &mut options, &config,"para_simple.svg".to_string());
 reset_pos(&mut tree_host_pipe);
@@ -178,7 +183,7 @@ while i < nb_gntree {
 reset_pos(&mut path_genes[i]);
 i = i + 1;
 }
-
+options.free_living = false;
 recphyloxml_processing(&mut tree_host_pipe, &mut path_genes, &mut options, &config,
 true, &vec![],"mapped_3.svg".to_string());
 // println!("DEBUG  FINAL HOST = {:?}",tree_host_pipe);

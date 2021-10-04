@@ -433,17 +433,31 @@ pub fn recphyloxml_processing(
 let initial_root = sp_tree.get_root();
 let mut free_root = 0;
 if options.free_living {
+    // Check if a free_living is already in the data
+    let test_root = sp_tree.get_index("FREE_LIVING_ROOT".to_string());
+    match test_root {
+    Ok(root) => {
+    info!("[recphyloxml_processing] FREE_LIVING_ROOT already in the tree.");
+    let free_children = & sp_tree.arena[root].children;
+    free_root = free_children[1];
+    info!("FREE_LIVING_ROOT : {}",free_root);
+    },
+    Err(_err) => {
+    info!("[recphyloxml_processing] No FREE_LIVING_ROOT  in the tree, I create one.");
     let left = sp_tree.get_root();
-    let  right = sp_tree.new_node("free_living".to_string());
-    sp_tree.arena[right].name="FREE_LIVING".to_string();
-    free_root = right;
-    let  fl_root = sp_tree.new_node("free_living_root".to_string());
-    sp_tree.arena[fl_root].name="FREE_LIVING_ROOT".to_string();
-    sp_tree.arena[fl_root].visible=false;
-    sp_tree.arena[fl_root].children.push(left);
-    sp_tree.arena[fl_root].children.push(right);
-    sp_tree.arena[right].parent=Some(fl_root);
-    sp_tree.arena[left].parent=Some(fl_root);
+        let  right = sp_tree.new_node("free_living".to_string());
+        sp_tree.arena[right].name="FREE_LIVING".to_string();
+        free_root = right;
+        let  fl_root = sp_tree.new_node("free_living_root".to_string());
+        sp_tree.arena[fl_root].name="FREE_LIVING_ROOT".to_string();
+        sp_tree.arena[fl_root].visible=false;
+        sp_tree.arena[fl_root].children.push(left);
+        sp_tree.arena[fl_root].children.push(right);
+        sp_tree.arena[right].parent=Some(fl_root);
+        sp_tree.arena[left].parent=Some(fl_root);
+    info!("[recphyloxml_processing] FREE_LIVING_ROOT : {}",free_root);
+    },
+    };
 }
 //----------------------------------------------------------
 // 1ere étape :initialisation des x,y de l'arbre d'espèces :
@@ -627,8 +641,33 @@ move_species_mappings(&mut sp_tree, &mut gene_trees,initial_root);
 // Option : traitement specifique des gene "free living"
 
 if options.free_living {
+    // println!("DEBUG AVANT PROCESS {:?}",gene_trees);
     process_fl(&mut sp_tree, &mut gene_trees,free_root, &options);
+    // println!("DEBUG APRES PROCESS {:?}",gene_trees);
 }
+ // else {
+
+    // Check if a free_living is already in the data
+    // let test_root = sp_tree.get_index("FREE_LIVING_ROOT".to_string());
+    // println!("DEBUG ====> {:?}",test_root);
+    // match test_root {
+    // 		Ok(root) => {
+    // 		for fl_node in &mut sp_tree.arena {
+    // 			println!("{}",fl_node.name);
+    // 			if fl_node.name == "FREE_LIVING" || fl_node.name == "FREE_LIVING_ROOT" {
+    // 				println!("lol {}",fl_node.x);
+    // 				fl_node.x=0.0;
+    // println!("lol {}",fl_node.x);
+    // 				fl_node.y=0.0;
+    // 				fl_node.xmod=0.0;
+    // 				fl_node.ymod=0.0;
+    // 				}
+    // 			}
+    // process_fl(&mut sp_tree, &mut gene_trees,root, &options);
+    // },
+    // Err(_err) => info!("No FREE_LIVING_ROOT  in the tree"),
+    // };
+// }
 // // ---------------------------------------------------------
 // // Fin: Ecriture du fichier svg
 // // ---------------------------------------------------------
