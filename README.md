@@ -17,6 +17,8 @@ You may :
 
 - Read a recphyloxml file:  create a svg representation of the  gene tree(s) and the associated species tree.
 
+- Read 2 nested recphyloxml files:  create svg representations of the  gene tree(s), the associated symbiot tree(s) and the associated species tree. 
+
 - Read a newick or phyloxml file: create a svg representation of the gene tree only.
 
 You may use light_phylogeny functions and methods to build, manipulate, modify or draw phylogenetic trees.
