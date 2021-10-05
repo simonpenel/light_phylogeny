@@ -9,7 +9,7 @@ use crate::arena::Event;
 use crate::arena::PIPEBLOCK;
 use crate::arena::{lca};
 
-/// Map a transfert in gene  tree to the species tree
+/// Map a transfer in gene  tree to the species tree.
 pub fn map_transfer(transfers: Vec<(String,String)> , parasite_tree: &mut ArenaTree<String>) -> Vec<(String,String)> {
         let mut  map_transfers = vec![];
         for (start, end) in transfers {
@@ -23,8 +23,7 @@ pub fn map_transfer(transfers: Vec<(String,String)> , parasite_tree: &mut ArenaT
         }
         map_transfers
 }
-
-// map a transfert in gene  tree to the species trees
+/// Map a transfer from a gene tree to the species trees.
 pub fn map_transfer_mul(transfers: Vec<(String,String)> ,
     parasite_trees: &mut  Vec<ArenaTree<String>>) -> Vec<(String,String)> {
     let mut  map_transfers = vec![];
@@ -73,8 +72,7 @@ pub fn map_transfer_mul(transfers: Vec<(String,String)> ,
         }
     map_transfers
 }
-
-///  Get the transfers in a gene tree
+///  Get the transfers in a gene tree.
 pub fn get_gtransfer(gene_tree: &mut ArenaTree<String>) -> Vec<(String,String)> {
     let mut  transfers = vec![];
     for index in  &gene_tree.arena {
@@ -91,8 +89,7 @@ pub fn get_gtransfer(gene_tree: &mut ArenaTree<String>) -> Vec<(String,String)> 
     };
     transfers
 }
-
-/// Map a reconciled species tree to a pipe species tree
+/// Map a reconciled species tree to a pipe species tree.
 pub fn map_parasite_g2s(para_as_species: &mut ArenaTree<String>,para_as_gene: &mut ArenaTree<String>,) {
     // Explore pipe species tree
     for index in  &mut para_as_species.arena {
@@ -122,8 +119,7 @@ pub fn map_parasite_g2s(para_as_species: &mut ArenaTree<String>,para_as_gene: &m
         }
     }
 }
-
-/// Map a pipe species tree to a reconciled species tree
+/// Map a pipe species tree to a reconciled species tree.
 pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
     para_as_gene: &mut ArenaTree<String>,
     gene_trees : &mut std::vec::Vec<ArenaTree<String>>) {
@@ -419,14 +415,11 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                         }
                     },
                 };
-
-
             },
         }
     }
 }
-
-/// Map gene trees to  host tree
+/// Map gene trees to a host tree.
 pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipes:  &mut Vec<ArenaTree<String>>, tree_host_pipe:&mut ArenaTree<String>) {
     // unmap the host tree
     let mut j = 0;
@@ -545,24 +538,21 @@ pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipes:  
     }
     // println!("DEBUG  [map_gene_host] FINAL HOST = {:?}",tree_host_pipe)
 }
-
-//  get the trasnsfers in a gene tree
+/// Get the transfers in a gene tree.
 #[allow(dead_code)]
 pub fn select_transfer(transfers: & Vec<(String,String)>,species_tree: &mut ArenaTree<String>) -> Vec<(String,String)> {
-let mut  selected = vec![];
-for (start,end) in transfers {
+	let mut  selected = vec![];
+	for (start,end) in transfers {
     let s = species_tree.get_index(start.to_string()).expect("[select_transfer] Unable fo find start");
-    let e = species_tree.get_index(end.to_string()).expect("[select_transfer] Unable fo find start");
-    let ancestor = lca(species_tree,s,e);
-    if (ancestor != s) && (ancestor != e) {
-        selected.push((start.clone(),end.clone()));
+        let e = species_tree.get_index(end.to_string()).expect("[select_transfer] Unable fo find start");
+        let ancestor = lca(species_tree,s,e);
+        if (ancestor != s) && (ancestor != e) {
+            selected.push((start.clone(),end.clone()));
+        }
     }
+    selected
 }
-selected
-
-}
-
-//  get the trasnsfers in a gene tree
+//  Under development
 pub fn optimisation(transfer: & (String,String),species_tree: &mut ArenaTree<String>) -> usize {
     info!("[optimisation]");
     let  (start,end) = transfer;
@@ -680,7 +670,7 @@ pub fn optimisation(transfer: & (String,String),species_tree: &mut ArenaTree<Str
     }
     ancestor
 }
-
+// Under development.
 pub fn check_optimisation(transfer: & (String,String), species_tree: &mut ArenaTree<String>,node: usize) {
     let  (start,end) = transfer;
     info!("[check_optimisation]");
@@ -738,7 +728,7 @@ pub fn check_optimisation(transfer: & (String,String), species_tree: &mut ArenaT
         }
     }
 }
-
+// Under development.
 pub fn classify_transfer(transfer: & (String,String),species_tree: &mut ArenaTree<String>, index: & usize)  {
     let  (start,end) = transfer;
     info!("[classify_transfer] Transfer {}->{}",start,end);
@@ -765,7 +755,7 @@ pub fn classify_transfer(transfer: & (String,String),species_tree: &mut ArenaTre
     parent = species_tree.arena[p].parent;
     };
 }
-
+// Under development.
 pub fn reorder_transfers(species_tree: &mut ArenaTree<String>, node:  usize, ordered: &mut Vec<usize> ) {
     let tr = &species_tree.arena[node].transfers;
     info!("[reorder_transfers_transfer] Transfers at {} =  {:?}", &species_tree.arena[node].name,tr);

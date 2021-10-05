@@ -3,6 +3,7 @@
 //! `light_phylogeny` is a set of structures and functions dedicated to reading, building,
 //! manipulating and displaying phylogenic trees, especially reconciled trees  with speciation,
 //! duplication, loss and horizontal transfer events. Read newick, phyloXML and recPhyloXML files.
+//! For more information, visit https://github.com/simonpenel/light_phylogeny/wiki
 /// name = "light_phylogeny"
 /// version = "0.19.0"
 /// authors = ["Simon Penel <simon.penel@univ-lyon1.fr>"]
@@ -16,66 +17,79 @@ pub use self::arena::Noeud;
 pub use self::arena::ArenaTree;
 
 pub use self::arena::add_child;
-// pub use self::arena::bilan_mappings;
-// pub use self::arena::center_gene_nodes;
-// pub use self::arena::check_contour_postorder;
-// pub use self::arena::check_for_obsolete;
+pub use self::arena::bilan_mappings;
+pub use self::arena::center_gene_nodes;
+pub use self::arena::check_contour_postorder;
+pub use self::arena::check_vertical_contour_postorder;
+pub use self::arena::check_for_obsolete;
 pub use self::arena::check_is_rooted;
-// pub use self::arena::check_vertical_contour_postorder;
-// pub use self::arena::cladogramme;
-// pub use self::arena::find_left_right;
-// pub use self::arena::find_rgtrees;
-// pub use self::arena::find_sptree;
-// pub use self::arena::get_contour_left;
-// pub use self::arena::get_contour_right;
-// pub use self::arena::get_maxdepth;
-// pub use self::arena::knuth_layout;
+pub use self::arena::cladogramme;
+pub use self::arena::copie_fl;
+pub use self::arena::find_left_right;
+pub use self::arena::find_rgtrees;
+pub use self::arena::find_sptrees;
+pub use self::arena::get_contour_left;
+pub use self::arena::get_contour_right;
+pub use self::arena::get_maxdepth;
+pub use self::arena::knuth_layout;
 pub use self::arena::lca;
-// pub use self::arena::map_gene_trees;
-// pub use self::arena::map_species_trees;
+pub use self::arena::map_gene_trees;
+pub use self::arena::map_species_trees;
 pub use self::arena::move_child;
-// pub use self::arena::move_dupli_mappings;
+pub use self::arena::move_dupli_mappings;
+pub use self::arena::move_species_mappings;
 pub use self::arena::newick2tree;
-// pub use self::arena::node_xpos;
-// pub use self::arena::node_ypos;
-// pub use self::arena::push_down;
-// pub use self::arena::push_right;
+pub use self::arena::node_xpos;
+pub use self::arena::node_ypos;
+pub use self::arena::process_fl;
+pub use self::arena::push_down;
+pub use self::arena::push_right;
 pub use self::arena::real_length;
+pub use self::arena::remplace_fl_inv;
 pub use self::arena::reset_pos;
 pub use self::arena::scale_heigth;
 pub use self::arena::scale_width;
-// pub use self::arena::set_leaves_to_bottom;
-// pub use self::arena::set_middle_postorder;
-// pub use self::arena::set_species_width;
-// pub use self::arena::shift_mod_xy;
+pub use self::arena::set_leaves_to_bottom;
+pub use self::arena::set_leaves_y_values;
+pub use self::arena::set_middle_postorder;
+pub use self::arena::set_species_width;
+pub use self::arena::shift_mod_xy;
+pub use self::arena::shift_nodes_y_values;
+pub use self::arena::species_uniformisation;
 pub use self::arena::summary;
-// pub use self::arena::xml2tree;
-//
+pub use self::arena::xml2tree;
+
 mod drawing;
-// pub use self::drawing::close_chemin_sp;
+pub use self::drawing::close_chemin_sp;
 pub use self::drawing::draw_sptree_gntrees;
 pub use self::drawing::draw_tree;
-// pub use self::drawing::get_carre;
-// pub use self::drawing::get_circle;
-// pub use self::drawing::get_chemin_carre;
-// pub use self::drawing::get_chemin_sp;
-// pub use self::drawing::get_chemin_transfer;
-// pub use self::drawing::get_cross;
-// pub use self::drawing::get_triangle;
+pub use self::drawing::get_cadre;
+pub use self::drawing::get_carre;
+pub use self::drawing::get_circle;
+pub use self::drawing::get_chemin_carre;
+pub use self::drawing::get_chemin_sp;
+pub use self::drawing::get_chemin_transfer;
+pub use self::drawing::get_cross;
+pub use self::drawing::get_longest_name;
+pub use self::drawing::get_longest_name_mul;
+pub use self::drawing::get_longest_x_mul;
+pub use self::drawing::get_triangle;
+
 mod building;
 pub use self::building::phyloxml_processing;
 pub use self::building::recphyloxml_processing;
 pub use self::building::read_newick;
 pub use self::building::read_phyloxml;
-// pub use self::building::read_recphyloxml;
 pub use self::building::read_recphyloxml_multi;
+
 mod thirdlevel;
+pub use self::thirdlevel::get_gtransfer;
 pub use self::thirdlevel::map_transfer;
 pub use self::thirdlevel::map_transfer_mul;
-pub use self::thirdlevel::get_gtransfer;
 pub use self::thirdlevel::map_parasite_s2g;
 pub use self::thirdlevel::map_parasite_g2s;
 pub use self::thirdlevel::map_gene_host;
+pub use self::thirdlevel::select_transfer;
 #[cfg(test)]
 mod tests {
     use super::*;

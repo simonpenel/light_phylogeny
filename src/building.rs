@@ -18,8 +18,7 @@ use crate::arena::{find_sptrees,find_rgtrees,check_for_obsolete,scale_heigth,sca
 use crate::thirdlevel::{get_gtransfer,optimisation,check_optimisation,classify_transfer,reorder_transfers};
 use crate::drawing::{draw_tree,draw_sptree_gntrees};
 
-/// Read a newick file and store the tree into ArenaTree structure
-//  ===============================================================
+/// Read a newick file and store the tree into ArenaTree structure.
 pub fn read_newick(filename:String, tree: &mut ArenaTree<String>) {
     let contents = fs::read_to_string(filename);
     let contents = match contents {
@@ -34,9 +33,7 @@ pub fn read_newick(filename:String, tree: &mut ArenaTree<String>) {
     let root = tree.new_node("Root".to_string());
     newick2tree(contents, tree, root, &mut 0);
 }
-
-/// Read a phyloxml file and store the tree into a ArenaTree structure
-//  ===============================================================
+/// Read a phyloxml file and store the tree into a ArenaTree structure.
 pub fn read_phyloxml(filename:String, tree: &mut ArenaTree<String>) {
     let contents = fs::read_to_string(filename);
     let contents = match contents {
@@ -77,100 +74,7 @@ pub fn read_phyloxml(filename:String, tree: &mut ArenaTree<String>) {
     }
     info!("Tree : {:?}",tree);
 }
-/// Read a recphyloxml file and store the species and gene trees into several ArenaTree structures
-/// THIS FUNCTION IS OBSOLETE. USE read_recphyloxml INSTEAD
-//  ==============================================================================================
-// pub fn read_recphyloxml(filename:String, sp_tree: &mut ArenaTree<String>,
-//     gene_trees: &mut std::vec::Vec<ArenaTree<String>>) {
-//     let contents = fs::read_to_string(filename);
-//     let contents = match contents {
-//         Ok(contents) => contents,
-//         Err(err) => {
-//             eprintln!("Error! Something went wrong reading the recPhyloXML file.");
-//             eprintln!("{}",err);
-//             eprintln!("Please check file name and path.");
-//             std::process::exit(1);
-//         },
-//     };
-//     let doc = &mut roxmltree::Document::parse(&contents).unwrap();
-//     // Get the  species tree:
-//     // Get the  NodeId associated to the first element with the "spTree" tag
-//     let spnode = find_sptree(doc);
-//     let spnode = match spnode {
-//         Ok(index) => index,
-//         Err(_err) => {
-//             eprintln!("\nError: No clade spTree has been found in xml.\
-//             \nIt seems that the input file is not a recPhyloXML file.\
-//             \nUse option -F to force to use phyloXML or newick format.");
-//              std::process::exit(1);
-//         },
-//     };
-//     // Get the  Node associated  to the NodeId
-//     let spnode = doc.get_node(spnode).expect("Unable to get the Node associated to this nodeId");
-//     info!("spTree Id: {:?}",spnode);
-//     let descendants = spnode.descendants();
-//     // Search for the first occurence of the "clade" tag
-//     for node in descendants {
-//         if node.has_tag_name("clade"){
-//             // The first clade is the root
-//             // Initialize the index used for defining the value
-//             let mut index  = &mut 0;
-//             // Val of the root
-//             let root = "N".to_owned()+&index.to_string();
-//             // Create the node, get its associated index and store it in root again
-//             let root = sp_tree.new_node(root.to_string());
-//             // Call xlm2tree on the root
-//             xml2tree(node, root, &mut index,  sp_tree);
-//             break;
-//         }
-//     }
-//     info!("Species tree : {:?}",sp_tree);
-//     // Get the gene trees:
-//     // Get the list of nodes associated to  the "recGeneTree" tag
-//      let rgnodes = find_rgtrees(doc);
-//      let rgnodes = match rgnodes {
-//          Ok(indexes) => indexes,
-//          Err(_err) => {
-//              eprintln!("\nError: No clade recGeneTree has been found in xml.\
-//              \nIt seems that the input file is not a recPhyloXML file.\
-//              \nUse option -F to force to use phyloXML or newick format.");
-//               std::process::exit(1);
-//          },
-//      };
-//     for rgnode in rgnodes {
-//         let mut gene_tree: ArenaTree<String> = ArenaTree::default();
-//         info!("Search recGeneTree node {:?}",rgnode);
-//         let rgnode = doc.get_node(rgnode).expect("Unable to get the Node associated to this nodeId");
-//         info!("Associated recGeneTree  : {:?}",rgnode);
-//         // Analyse the gene tree
-//         let descendants = rgnode.descendants();
-//         // Search for the first occurence of the "clade" tag
-//         for node in descendants {
-//             if node.has_tag_name("clade"){
-//                 // The first clade is the root
-//                 // Initialize the index used for defining the value
-//                 let mut index  = &mut 0;
-//                 // Val of the root
-//                 let root = "N".to_owned()+&index.to_string();
-//                 // Create the node, get its associated index and store it in root again
-//                 let root = gene_tree.new_node(root.to_string());
-//                 // Call xlm2tree on the root
-//                 xml2tree(node, root, &mut index, &mut gene_tree);
-//                 break;
-//             }
-//         }
-//         // Traitement des balises obsoletes potentielles (ancien format recPhyloXML)
-//         check_for_obsolete(&mut gene_tree,sp_tree);
-//         // Ajoute l'arbre de gene
-//         gene_trees.push(gene_tree);
-//     }
-//     let  nb_gntree =  gene_trees.len().clone();
-//     println!("Number of gene trees : {}",nb_gntree);
-//     info!("List of gene trees : {:?}",gene_trees);
-// }
-
-// Ajout des noeuds parents invisibles pour l'affichage mutliple d'arbre d'especes
-// -------------------------------------------------------------------------------
+/// Adding invisible parent nodes in order to display multiple species trees.
 pub fn add_virtual_roots(global_roots: &mut std::vec::Vec<String>, pere: &mut usize, level: &mut usize,
     global_pipe: &mut ArenaTree<String>) {
     if global_roots.len() == 1 {
@@ -229,9 +133,7 @@ pub fn add_virtual_roots(global_roots: &mut std::vec::Vec<String>, pere: &mut us
         add_virtual_roots( &mut queue_clone, pere,level, global_pipe);
     }
 }
-
-/// Read a recphyloxml file and store the species and gene trees into several ArenaTree structures
-//  ==============================================================================================
+/// Read a recphyloxml file and store the species and gene trees into several ArenaTree structures.
 pub fn read_recphyloxml_multi(filename:String, global_pipe: &mut ArenaTree<String>,
     gene_trees: &mut std::vec::Vec<ArenaTree<String>>,
     global_roots:  &mut std::vec::Vec<usize>) {
@@ -348,9 +250,7 @@ pub fn read_recphyloxml_multi(filename:String, global_pipe: &mut ArenaTree<Strin
     println!("Number of gene trees : {}",nb_gntree);
     info!("List of gene trees : {:?}",gene_trees);
 }
-
-/// Create a svg of the tree in phyloxml context
-// =============================================
+/// Create a svg of the tree in phyloxml context.
 pub fn phyloxml_processing(
     mut tree: &mut ArenaTree<String>, // tree
     options: &Options,                // display options
@@ -409,9 +309,7 @@ pub fn phyloxml_processing(
     println!("Output filename is {}",outfile);
     draw_tree(&mut tree, outfile, & options, & config);
 }
-
-/// Create a svg of the tree in recphyloxml context
-// =============================================
+/// Create a svg of the tree in recphyloxml context.
 pub fn recphyloxml_processing(
     mut sp_tree: &mut ArenaTree<String>,                    // species tree
     mut gene_trees: &mut std::vec::Vec<ArenaTree<String>>,  // gene trees
@@ -429,7 +327,6 @@ pub fn recphyloxml_processing(
 //
 
 //  Option : ajout d'une branche free_living
-
 let initial_root = sp_tree.get_root();
 let mut free_root = 0;
 if options.free_living {

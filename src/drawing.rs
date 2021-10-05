@@ -23,7 +23,7 @@ const GTHICKNESS: usize = 3; // Epaisseur trait gene_
 const STHICKNESS: usize = 6; // Epaisseur trait species
 const SQUARESIZE: f32 = 6.0; // taille carre dupli
 
-/// Draw a svg simple tree
+/// Draw the svg of a simple tree.
 pub fn draw_tree (
     tree: &mut ArenaTree<String>, // tree
     name: String,                 // output file
@@ -157,8 +157,7 @@ pub fn draw_tree (
     document.append(g);
     svg::save(name, &document).unwrap();
 }
-
-
+/// Get the largest x in set of trees.
 pub fn get_longest_x_mul(gene_trees:&mut std::vec::Vec<ArenaTree<String>>) -> f32 {
     let mut max = 0.0;
     for tree in gene_trees {
@@ -169,9 +168,7 @@ pub fn get_longest_x_mul(gene_trees:&mut std::vec::Vec<ArenaTree<String>>) -> f3
     }
     max
 }
-
-
-
+/// Get the longest node name in a set of trees.
 pub fn get_longest_name_mul(gene_trees:&mut std::vec::Vec<ArenaTree<String>>) -> usize {
     let mut max = 0;
     for tree in gene_trees {
@@ -182,6 +179,7 @@ pub fn get_longest_name_mul(gene_trees:&mut std::vec::Vec<ArenaTree<String>>) ->
     }
     max
 }
+/// Get the longest node name in a tree.
 pub fn get_longest_name(gene_tree:&ArenaTree<String>) -> usize {
     let mut max = 0;
     for node in &gene_tree.arena {
@@ -191,7 +189,7 @@ pub fn get_longest_name(gene_tree:&ArenaTree<String>) -> usize {
     }
     max
 }
-/// Draw a svg pipe species tree and  several gene trees inside it
+/// Draw a svg pipe species tree and  several gene trees inside it.
 pub fn draw_sptree_gntrees (
     sp_tree: &mut ArenaTree<String>,                    // species tree
     gene_trees:&mut std::vec::Vec<ArenaTree<String>>,   // gene trees
@@ -636,9 +634,8 @@ pub fn draw_sptree_gntrees (
   document.append(g);
   svg::save(name, &document).unwrap();
 }
-
 #[allow(dead_code)]
-// Draw a frame
+/// Draw a frame.
 pub fn get_cadre (x: f32, y:f32,w:f32,h:f32, c:String) -> Path {
     let data = Data::new()
     .move_to((x , y))
@@ -653,8 +650,7 @@ pub fn get_cadre (x: f32, y:f32,w:f32,h:f32, c:String) -> Path {
     .set("d", data);
     path
 }
-
-// Draw a square  of size s at x,y
+/// Draw a square of size s at x,y.
 pub fn get_carre (x: f32, y:f32, s:f32, c:String, o:String) -> Path {
     let data = Data::new()
     .move_to((x*1.0 -s*0.5 , y*1.0 -s*0.5))
@@ -671,8 +667,7 @@ pub fn get_carre (x: f32, y:f32, s:f32, c:String, o:String) -> Path {
     .set("d", data);
     path
 }
-
-// Draw a triangle  of size s at x,y
+/// Draw a triangle of size s at x,y.
 pub fn get_triangle (x: f32, y:f32, s:f32, c:String, o:String) -> Path {
     let data = Data::new()
     .move_to((x*1.0, y*1.0))
@@ -688,8 +683,7 @@ pub fn get_triangle (x: f32, y:f32, s:f32, c:String, o:String) -> Path {
     .set("d", data);
     path
 }
-
-// Draw a circle  of size s at x,y
+/// Draw a circle  of size s at x,y.
 pub fn get_circle (x: f32, y:f32, r:f32, c:String, o:String) -> Circle {
     let fill = c.clone();
     let circle = Circle::new()
@@ -702,8 +696,7 @@ pub fn get_circle (x: f32, y:f32, r:f32, c:String, o:String) -> Circle {
     .set("stroke-width", 1);
     circle
 }
-
-// Draw a cross  of size s at x,y
+/// Draw a cross  of size s at x,y.
 pub fn get_cross (x: f32, y:f32, s:f32, c:String, o:String) -> Path {
     let data = Data::new()
     .move_to((x*1.0 , y*1.0 -s*2.0))
@@ -719,8 +712,7 @@ pub fn get_cross (x: f32, y:f32, s:f32, c:String, o:String) -> Path {
     .set("d", data);
     path
 }
-
-// Draw a square path between x1,y1 ad x2,y2
+/// Draw a square path between x1,y1 and x2,y2.
 pub fn get_chemin_carre (x1: f32, y1:f32,x2: f32, y2:f32, c:String, o:String, stroke:bool)-> Path {
     let data = Data::new()
     .move_to((x1*1.0, y1*1.0))
@@ -738,8 +730,7 @@ pub fn get_chemin_carre (x1: f32, y1:f32,x2: f32, y2:f32, c:String, o:String, st
     let path  = path.set("d", data);
     path
 }
-
-// Draw a transfer path between x1,y1 ad x2,y2
+/// Draw a transfer path between x1,y1 and x2,y2.
 pub fn get_chemin_transfer (x1: f32, y1:f32,x2: f32, y2:f32, c:String, o:String,b:f32,
     stroke:i32) -> Path {
     // Arrivee du point: un peu avant pour dessiner la fleche
@@ -785,8 +776,7 @@ pub fn get_chemin_transfer (x1: f32, y1:f32,x2: f32, y2:f32, c:String, o:String,
     let path  = path.set("d", data);
     path
 }
-
-// Draw a square pipe path between x1,y1 ad x2,y2
+/// Draw a square pipe path between x1,y1 ad x2,y2
 pub fn get_chemin_sp (x1: f32, y1:f32, width1:f32, height1:f32, x2: f32, y2:f32,
                       width2:f32, height2:f32, c:String, o:String ) -> Path {
     if x1 < x2 {
@@ -822,8 +812,7 @@ pub fn get_chemin_sp (x1: f32, y1:f32, width1:f32, height1:f32, x2: f32, y2:f32,
         path
     }
 }
-
-// Finish  the drawing of species tree at the leaves level.
+/// Finish  the drawing of species tree at the leaves level.
 pub fn close_chemin_sp (x1: f32, y1:f32, width1:f32, height1:f32, c:String, o:String ) -> Path {
         let data = Data::new()
         .move_to((x1 - width1, y1 - height1))
