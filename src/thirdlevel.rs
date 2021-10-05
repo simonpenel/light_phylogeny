@@ -9,19 +9,23 @@ use crate::arena::Event;
 use crate::arena::PIPEBLOCK;
 use crate::arena::{lca};
 
+// Functions
+// =========
+
 /// Map a transfer in gene  tree to the species tree.
-pub fn map_transfer(transfers: Vec<(String,String)> , parasite_tree: &mut ArenaTree<String>) -> Vec<(String,String)> {
-        let mut  map_transfers = vec![];
-        for (start, end) in transfers {
-            let map_start = parasite_tree.get_index(start.to_string())
-                .expect("[map_transfer] unable to find start node");
-            let map_start = parasite_tree.arena[map_start].location.to_string();
-            let map_end = parasite_tree.get_index(end.to_string())
-                .expect("[map_transfer] unable to find end node");
-            let map_end = parasite_tree.arena[map_end].location.to_string();
-            map_transfers.push((map_start,map_end));
-        }
-        map_transfers
+pub fn map_transfer(transfers: Vec<(String,String)> ,
+    parasite_tree: &mut ArenaTree<String>) -> Vec<(String,String)> {
+    let mut  map_transfers = vec![];
+    for (start, end) in transfers {
+        let map_start = parasite_tree.get_index(start.to_string())
+            .expect("[map_transfer] unable to find start node");
+        let map_start = parasite_tree.arena[map_start].location.to_string();
+        let map_end = parasite_tree.get_index(end.to_string())
+            .expect("[map_transfer] unable to find end node");
+        let map_end = parasite_tree.arena[map_end].location.to_string();
+        map_transfers.push((map_start,map_end));
+    }
+    map_transfers
 }
 /// Map a transfer from a gene tree to the species trees.
 pub fn map_transfer_mul(transfers: Vec<(String,String)> ,
@@ -109,8 +113,10 @@ pub fn map_parasite_g2s(para_as_species: &mut ArenaTree<String>,para_as_gene: &m
                     &Event::BifurcationOut => Event::BifurcationOut,
                     &Event::Loss => Event::Loss,
                     &Event::Leaf => Event::Leaf,
-                    _ => {eprintln!("Event {:?} not selected",e);
-                         Event::Undef},
+                    _ => {
+                        eprintln!("Event {:?} not selected",e);
+                        Event::Undef
+                        },
                 };
             },
             Err(_err) => {
@@ -208,11 +214,9 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                         para_as_species.arena[new_leaf].nbg = nbg;
                         para_as_species.arena[j].nbg = 0;
                         para_as_species.arena[j].nodes = [].to_vec();
-
                         info!("[map_parasite_s2g] parent species node is now #{} {:?}",j,para_as_species.arena[j]);
                         info!("[map_parasite_s2g] added species leave is now #{} {:?}",new_leaf,para_as_species.arena[new_leaf]);
                         info!("[map_parasite_s2g] the reconciled species node is still {:?}",index);
-
                         // Now we modify the location of  the gene nodes (gene species maping)
                         // We may have to add  a node in  the gene tree for j
                         // gene nodes associated to the new rec species node:
@@ -237,7 +241,6 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                             info!("[map_parasite_s2g] Modify gene tree number {}",*ng);
                             info!("[map_parasite_s2g] Redefine location of the node {}.",nn);
                             info!("[map_parasite_s2g] Previous {:?}:", &gene_trees[*ng].arena[*nn]);
-
                             gene_trees[*ng].arena[*nn].location = para_as_species.arena[new_leaf].name.to_string();
                             info!("[map_parasite_s2g] New {:?}:", &gene_trees[*ng].arena[*nn]);
                             // In case the node is not a root (I expect index 0 is root, maybe this
@@ -311,7 +314,6 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                             para_as_species.arena[node].nbg = para_as_species.arena[node].nbg + 1;
                             para_as_species.arena[node].nodes.push((ng,node2)) ;
                             info!("[map_parasite_s2g] Species node is now {:?}",para_as_species.arena[node]);
-
                         }
                     },
                     _ => {

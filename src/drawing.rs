@@ -23,6 +23,9 @@ const GTHICKNESS: usize = 3; // Epaisseur trait gene_
 const STHICKNESS: usize = 6; // Epaisseur trait species
 const SQUARESIZE: f32 = 6.0; // taille carre dupli
 
+// Functions
+// =========
+
 /// Draw the svg of a simple tree.
 pub fn draw_tree (
     tree: &mut ArenaTree<String>, // tree
@@ -126,7 +129,6 @@ pub fn draw_tree (
                             false => {},
                         },
             };
-
             // Display support
             let mut element = Element::new("text");
             element.assign("x", index.x-15.0);
@@ -215,7 +217,6 @@ pub fn draw_sptree_gntrees (
     }
     let height_svg = largest_y - smallest_y + longest_name *
         config.gene_police_size.parse::<f32>().unwrap();
-
     let height_svg = height_svg * 1.0;
     let x_viewbox = smallest_x - 0.0 ;
     let y_viewbox = smallest_y - 0.0;
@@ -286,14 +287,12 @@ pub fn draw_sptree_gntrees (
                                                      "black".to_string(),
                                                      config.species_opacity.to_string());
                         g.append(chemin);
-
                     }
                     Event::Duplication => {
                         // println!("Duplication!!");
                         let carre = get_carre(index.x,index.y,1.5 * index.width,
                             config.species_color.to_string(),config.species_opacity.to_string());
                         g.append(carre);
-
                     }
                     _=> {},
                 }
@@ -313,9 +312,6 @@ pub fn draw_sptree_gntrees (
                                                          config.species_opacity.to_string());
                             g.append(chemin);
                         }
-
-
-
                     },
                     false => {},
                 }
@@ -392,7 +388,6 @@ pub fn draw_sptree_gntrees (
                                     true => "0.0".to_string(),
                                     false => config.gene_opacity.to_string(),
                             };
-
                             // Verifie que le parent est bien un branchingout
                             match n.e {
                                 Event::BranchingOut => get_chemin_transfer(index.x,index.y,
@@ -485,18 +480,18 @@ pub fn draw_sptree_gntrees (
              // Dessine le symbole associe au noeud
              let  event = &index.e;
              match event {
-                 Event::Leaf        =>  g.append(get_carre(index.x,index.y,1.0,"red".to_string(),
+                Event::Leaf        =>  g.append(get_carre(index.x,index.y,1.0,"red".to_string(),
                                                             config.gene_opacity.to_string())),
-                 Event::Duplication =>  g.append(get_carre(index.x,index.y,SQUARESIZE,
+                Event::Duplication =>  g.append(get_carre(index.x,index.y,SQUARESIZE,
                                                  gene_color.to_string(),
                                                  config.gene_opacity.to_string())),
-                 Event::Loss => {
+                Event::Loss => {
                      let mut cross = get_cross(index.x,index.y,2.0,gene_color.to_string(),
                                                 config.gene_opacity.to_string());
                      cross.assign("transform","rotate(45 ".to_owned() + &index.x.to_string()
                      + " " + &index.y.to_string() + ")" );
                      g.append(cross);
-                 },
+                },
                 // Normalement il ny' a pas d event transferBack : comme il est toujour associé
                 // a un autre event,c'est ce dernier qui est stocké dans le champs "e"
                 // Par contre le champs "is_a_transfert" indique si le noeud prvient d'un transfer
@@ -546,93 +541,92 @@ pub fn draw_sptree_gntrees (
                     }
                 },
             }
-      }
-      idx_rcgen += 1;
-      if idx_rcgen == nb_gntree {
-          break;
-      }
-  }
-  // Ajoute les Transfers surnumeraire
-  // Analyse l'abondance des transferts
-  let mut unique_transfers: std::vec::Vec<(String,String)> =  vec![];
-  let mut scores: std::vec::Vec<usize> =  vec![];
-  let mut score_max = 1;
-  if options.thickness_disp_score {
-      let style = Style::new(".rouge { font: ".to_owned()+ &config.gene_police_size.to_string()+"px serif; fill:red ; }" );
-      document.append(style);
-  }
-  for transfer in transfers {
-      let index = unique_transfers.iter().position(|r| r == transfer);
-      match index {
-          None => {
-              unique_transfers.push(transfer.clone());
-              scores.push(1)},
-          Some(i) => {
-              scores[i] = scores[i]+ 1;
-              if scores[i] > score_max {
-                  score_max = scores[i];
-              }
-          },
-      }
-  }
-  let mut  i_trans = 0;
-  while i_trans < unique_transfers.len() {
-      let (end,start) = &unique_transfers[i_trans];
-      let score = scores[i_trans];
-      info!("[draw_sptree_gntrees] Additional transfer {}: {}=>{} Score = {}",i_trans,start,end,score);
-      i_trans = i_trans + 1;
-      if score > options.thickness_thresh {
-          info!("[draw_sptree_gntrees] Selecting additional transfer {:?} {:?}",start,end);
-          let start_node = sp_tree.get_index(start.to_string()).expect("arg");
-          let end_node = sp_tree.get_index(end.to_string()).expect("arg");
-          let opacity = score * 100/ score_max ;
-          let opacity = opacity as f32 / 100.0 ;
-          let opacity = opacity.to_string();
-          info!("[draw_sptree_gntrees] Adding additional transfer {:?} {:?} with opacity {}",start,end,opacity);
-          let chemin = get_chemin_transfer(sp_tree.arena[start_node].x,
-              sp_tree.arena[start_node].y,
-              sp_tree.arena[end_node].x,
-              sp_tree.arena[end_node].y,
-              "red".to_string(),
-              opacity,
-              config.bezier.to_string().parse::<f32>().unwrap(),
-              0
-          );
-          g.append(chemin);
-
-          // Affichage du score
-          if options.thickness_disp_score {
-              let bez_y = config.bezier.to_string().parse::<f32>().unwrap()  * BLOCK;
-              // Point de controle de la courbe de Bezier
-              let controle_x = (sp_tree.arena[start_node].x + sp_tree.arena[end_node].x) / 2.0  ;
-              let controle_y = (sp_tree.arena[start_node].y + sp_tree.arena[end_node].y) / 2.0
-                - bez_y - ( score.to_string().len() as f32 * &config.gene_police_size.parse::<f32>().unwrap()) ;
-              let mut element = Element::new("text");
-              element.assign("x", controle_x - 0.0);
-              element.assign("y", controle_y + 0.0);
-              element.assign("class", "rouge");
-              let txt  = Text::new(score.to_string());
-              element.append(txt);
-              match options.rotate {
-                  false => {}
-                  true => element.assign("transform","rotate(90 ".to_owned()+ &controle_x.to_string() + "," +
-                                 &controle_y.to_string()+")"),
-              };
-              g.append(element);
-           }
-      }
-  }
-  let mut transfo: String = "translate(  ".to_owned();
-  transfo.push_str(&( x_viewbox).to_string());
-  transfo.push_str(" ");
-  transfo.push_str(&((width_svg  + y_viewbox)).to_string());
-  transfo.push_str(") rotate(-90 0 0 ) ");
-  match options.rotate {
-      true => g.assign("transform",transfo),
-      false => {}
-  };
-  document.append(g);
-  svg::save(name, &document).unwrap();
+        }
+        idx_rcgen += 1;
+        if idx_rcgen == nb_gntree {
+            break;
+        }
+    }
+    // Ajoute les Transfers surnumeraire
+    // Analyse l'abondance des transferts
+    let mut unique_transfers: std::vec::Vec<(String,String)> =  vec![];
+    let mut scores: std::vec::Vec<usize> =  vec![];
+    let mut score_max = 1;
+    if options.thickness_disp_score {
+        let style = Style::new(".rouge { font: ".to_owned()+ &config.gene_police_size.to_string()+"px serif; fill:red ; }" );
+        document.append(style);
+    }
+    for transfer in transfers {
+        let index = unique_transfers.iter().position(|r| r == transfer);
+        match index {
+            None => {
+                unique_transfers.push(transfer.clone());
+                scores.push(1)},
+            Some(i) => {
+                scores[i] = scores[i]+ 1;
+                if scores[i] > score_max {
+                    score_max = scores[i];
+                }
+            },
+        }
+    }
+    let mut  i_trans = 0;
+    while i_trans < unique_transfers.len() {
+        let (end,start) = &unique_transfers[i_trans];
+        let score = scores[i_trans];
+        info!("[draw_sptree_gntrees] Additional transfer {}: {}=>{} Score = {}",i_trans,start,end,score);
+        i_trans = i_trans + 1;
+        if score > options.thickness_thresh {
+            info!("[draw_sptree_gntrees] Selecting additional transfer {:?} {:?}",start,end);
+            let start_node = sp_tree.get_index(start.to_string()).expect("arg");
+            let end_node = sp_tree.get_index(end.to_string()).expect("arg");
+            let opacity = score * 100/ score_max ;
+            let opacity = opacity as f32 / 100.0 ;
+            let opacity = opacity.to_string();
+            info!("[draw_sptree_gntrees] Adding additional transfer {:?} {:?} with opacity {}",start,end,opacity);
+            let chemin = get_chemin_transfer(sp_tree.arena[start_node].x,
+                sp_tree.arena[start_node].y,
+                sp_tree.arena[end_node].x,
+                sp_tree.arena[end_node].y,
+                "red".to_string(),
+                opacity,
+                config.bezier.to_string().parse::<f32>().unwrap(),
+                0
+            );
+            g.append(chemin);
+            // Affichage du score
+            if options.thickness_disp_score {
+                let bez_y = config.bezier.to_string().parse::<f32>().unwrap()  * BLOCK;
+                // Point de controle de la courbe de Bezier
+                let controle_x = (sp_tree.arena[start_node].x + sp_tree.arena[end_node].x) / 2.0  ;
+                let controle_y = (sp_tree.arena[start_node].y + sp_tree.arena[end_node].y) / 2.0
+                    - bez_y - ( score.to_string().len() as f32 * &config.gene_police_size.parse::<f32>().unwrap()) ;
+                let mut element = Element::new("text");
+                element.assign("x", controle_x - 0.0);
+                element.assign("y", controle_y + 0.0);
+                element.assign("class", "rouge");
+                let txt  = Text::new(score.to_string());
+                element.append(txt);
+                match options.rotate {
+                    false => {}
+                    true => element.assign("transform","rotate(90 ".to_owned()+ &controle_x.to_string() + "," +
+                        &controle_y.to_string()+")"),
+                };
+                g.append(element);
+            }
+        }
+    }
+    let mut transfo: String = "translate(  ".to_owned();
+    transfo.push_str(&( x_viewbox).to_string());
+    transfo.push_str(" ");
+    transfo.push_str(&((width_svg  + y_viewbox)).to_string());
+    transfo.push_str(") rotate(-90 0 0 ) ");
+    match options.rotate {
+        true => g.assign("transform",transfo),
+        false => {}
+    };
+    document.append(g);
+    svg::save(name, &document).unwrap();
 }
 #[allow(dead_code)]
 /// Draw a frame.
@@ -644,7 +638,7 @@ pub fn get_cadre (x: f32, y:f32,w:f32,h:f32, c:String) -> Path {
     .line_by((-w, 0.0))
     .close();
     let path = Path::new()
-     .set("fill", "none")
+    .set("fill", "none")
     .set("stroke", c)
     .set("stroke-width", 3)
     .set("d", data);
@@ -778,7 +772,7 @@ pub fn get_chemin_transfer (x1: f32, y1:f32,x2: f32, y2:f32, c:String, o:String,
 }
 /// Draw a square pipe path between x1,y1 ad x2,y2
 pub fn get_chemin_sp (x1: f32, y1:f32, width1:f32, height1:f32, x2: f32, y2:f32,
-                      width2:f32, height2:f32, c:String, o:String ) -> Path {
+    width2:f32, height2:f32, c:String, o:String ) -> Path {
     if x1 < x2 {
         let data = Data::new()
         .move_to((x1 - width1, y1 - height1 + (STHICKNESS / 2)  as f32))
