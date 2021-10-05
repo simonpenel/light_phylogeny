@@ -44,3 +44,27 @@ jobs:
       run: cargo run --example  read_recphyloxml_thickness
     - name: read_recphyloxml_width_height
       run: cargo run --example  read_recphyloxml_width_height
+    - name: read_recphyloxml_copie
+      run: cargo run --example  read_recphyloxml_copie
+    - name: read_recphyloxml_free_living
+      run: cargo run --example  read_recphyloxml_free_living
+    - name: read_recphyloxml_free_living_2
+      run: cargo run --example  read_recphyloxml_free_living_2
+    - name: read_recphyloxml_free_living_3
+      run: cargo run --example  read_recphyloxml_free_living_3
+    - name: read_recphyloxml_free_living_double
+      run: cargo run --example  read_recphyloxml_free_living_double
+    - name: read_recphyloxml_free_living_quadruple
+      run: cargo run --example  read_recphyloxml_free_living_quadruple
+    - name: read_recphyloxml_thirdlevel_1
+      run: cargo run --example  read_recphyloxml_thirdlevel_1
+    - name: read_recphyloxml_thirdlevel_2
+      run: cargo run --example  read_recphyloxml_thirdlevel_2
+    - name: read_recphyloxml_thirdlevel_3
+      run: cargo run --example  read_recphyloxml_thirdlevel_3
+    - name: read_recphyloxml_thirdlevel_4
+      run: cargo run --example  read_recphyloxml_thirdlevel_4
+    - name: read_recphyloxml_thirdlevel_6
+      run: cargo run --example  read_recphyloxml_thirdlevel_6
+    - name: read_recphyloxml_thirdlevel_fl
+      run: cargo run --example  read_recphyloxml_thirdlevel_fl
