@@ -1631,7 +1631,7 @@ pub fn set_leaves_to_bottom( tree: &mut ArenaTree<String>, index: usize, max:&mu
     }
     else {
         match tree.arena[index].e {
-            Event::Loss => tree.arena[index].set_y_noref(BLOCK* (*max as f32 )),
+            Event::Loss => tree.arena[index].set_y_noref(BLOCK* (*max as f32 + 0.5 )),
             _ => tree.arena[index].set_y_noref(BLOCK* (*max as f32 + 1.0)),
         };
     }

@@ -1,6 +1,6 @@
 // Display a reconciled tree form recPhyloXML format
 
-use light_phylogeny::{ArenaTree,Options,Config,read_recphyloxml_multi,recphyloxml_processing};
+use light_phylogeny::{ArenaTree,Options,Config,read_recphyloxml_multi,recphyloxml_processing,phyloxml_processing};
 
 fn main() {
 
@@ -34,6 +34,40 @@ fn main() {
     recphyloxml_processing(&mut sp_tree, &mut gene_trees, &mut options, &config, true,
          &transfers, "read_recphyloxml_landscape.svg".to_string());
     println!("Please open output file 'read_recphyloxml_landscape.svg' with your browser");
+
+
+	// ============================================================================================
+    // Version phyloxml (1 gene)
+    let mut options: Options = Options::new();
+    let mut config: Config = Config::new();
+    let mut sp_tree: ArenaTree<String> = ArenaTree::default();
+    let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
+    let mut global_roots: std::vec::Vec<usize> = Vec::new();
+    read_recphyloxml_multi("examples/FAM000715_reconciliated_2genes.recphylo".to_string(),
+        &mut sp_tree, &mut gene_trees, &mut global_roots);
+    config.species_opacity = "0.3".to_string();
+    config.gene_opacity = "0.6".to_string();
+    phyloxml_processing(&mut gene_trees[0], &mut options, &config,"read_recphyloxml_1gene.svg".to_string());
+    println!("Please open output file 'read_recphyloxml_1gene.svg' with your browser");
+
+
+	// ============================================================================================
+    // Version phyloxml (1 gene) avec un autre fichier
+    let mut options: Options = Options::new();
+    let mut config: Config = Config::new();
+    let mut sp_tree: ArenaTree<String> = ArenaTree::default();
+    let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
+    let mut global_roots: std::vec::Vec<usize> = Vec::new();
+    read_recphyloxml_multi("examples/gene_parasite.recphylo".to_string(),
+        &mut sp_tree, &mut gene_trees, &mut global_roots);
+    config.species_opacity = "0.3".to_string();
+    config.gene_opacity = "0.6".to_string();
+    phyloxml_processing(&mut gene_trees[0], &mut options, &config,"read_recphyloxml_1gene_bis.svg".to_string());
+    println!("Please open output file 'read_recphyloxml_1gene_bis.svg' with your browser");
+
+
+
+
 
     // ============================================================================================
     // Version multiple
