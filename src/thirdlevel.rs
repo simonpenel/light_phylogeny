@@ -473,7 +473,14 @@ pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipes:  
                         gene_trees[i].arena[j].is_a_transfert = true;
                         let parent = gene_trees[i].arena[j].parent;
                         match parent {
-                            None => panic!("[map_gene_host] Node has no parent"),
+                            None => {
+                            eprintln!("Note: Gene node {:?} has no parent",gene_trees[i].arena[j].name);
+                            eprintln!("      but it is associated to host  node {:?}",gene_trees[i].arena[j].location);
+                            eprintln!("      via species node {:?} which is a transfer.",tree_para_pipes[k].arena[espece_index].name);
+                            info!("[map_gene_host] Node {:?} has no parent",gene_trees[i].arena[j]);
+                            info!("[map_gene_host] but it is associated to {:?} which is a transfer",gene_trees[i].arena[j].location);
+                            info!("[map_gene_host] ({:?})",tree_para_pipes[k].arena[espece_index]);
+                            },
                             Some(p) => gene_trees[i].arena[p].e = Event::BifurcationOut,
                         };
                     }
