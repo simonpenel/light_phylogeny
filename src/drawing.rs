@@ -2,6 +2,9 @@
 /// version = "0.19.0"
 /// authors = ["Simon Penel <simon.penel@univ-lyon1.fr>"]
 /// license = "CECILL-2.1"
+
+// Convention: "pipe" trees are equivalent to "upper" trees, "path" trees are equivalenet to "lower" trees
+
 use log::{info};
 use crate::arena::Options;
 use crate::arena::ArenaTree;

@@ -2,6 +2,10 @@
 /// version = "0.20.0"
 /// authors = ["Simon Penel <simon.penel@univ-lyon1.fr>"]
 /// license = "CECILL-2.1"
+
+// Convention: "pipe" trees are equivalent to "upper" trees, "path" trees are equivalenet to "lower" trees
+
+
 use log::{info};
 use std::fs;
 use crate::arena::Options;
@@ -389,7 +393,7 @@ pub fn recphyloxml_processing(
         let min_dist = sp_tree.get_smallest_l();
         if min_dist == 0.0 {
             eprintln!("\nERROR:\nFound a branch with a distance equal to 0.0 in the 'pipe' tree.");
-            eprintln!("It is not possible create a pipe tree presenting branches of zero length.");
+            eprintln!("It is not possible create an 'upper' tree presenting branches of zero length.");
             std::process::exit(1);
         }
         // On veut que la longueur minimum soit un peu superieure a la moitie de l'epaisser des noods

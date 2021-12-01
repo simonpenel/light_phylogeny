@@ -7,6 +7,8 @@ use log::{info};
 pub const BLOCK: f32 = 60.0;
 pub const PIPEBLOCK: f32 = BLOCK / 4.0;
 
+// Convention: "pipe" trees are equivalent to "upper" trees, "path" trees are equivalenet to "lower" trees
+
 // Structures
 // ==========
 

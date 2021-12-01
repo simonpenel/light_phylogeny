@@ -2,6 +2,9 @@
 /// version = "0.19.0"
 /// authors = ["Simon Penel <simon.penel@univ-lyon1.fr>"]
 /// license = "CECILL-2.1"
+
+// Convention: "pipe" trees are equivalent to "upper" trees, "path" trees are equivalenet to "lower" trees
+
 use log::{info};
 use std::process;
 use crate::arena::ArenaTree;
@@ -154,8 +157,8 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                         eprintln!("\n[map_parasite_s2g] ERROR:");
                         eprintln!("Unable to map the reconciled recGeneTree from '-f' file with the SpTree from '-g' file");
                         eprintln!("");
-                        eprintln!("The following node in the 'path' reconciled tree was not found \
-                        in the 'pipe' tree:\n{:?} ",index);
+                        eprintln!("The following node in the  reconciled 'lower' tree was not found \
+                        in the 'upper' tree:\n{:?} ",index);
                         eprintln!("\nThis may happen when a loss is represented by \
                         'virtual' node in the reconciled tree, and the program will create \
                         a new node to deal with this. But the current missing node is a root \
@@ -165,7 +168,7 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                 // p is the parent of the node in the path parasite tree which is not found
                 // in the pipe parsite tree
                 let parent_name = para_as_gene.arena[*p].name.clone();
-                info!("[map_parasite_s2g] parent of the node in the path parasite tree \
+                info!("[map_parasite_s2g] parent of the node in the  parasite 'lower' tree \
                 (i.e. recGeneTree from -f file) is {}({})",
                     p,parent_name);
                 // let's find this node in the pipe species tree
@@ -175,7 +178,7 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                     Err(_e) =>
                         {
                             eprintln!("\n[map_parasite_s2g] ERROR:");
-                            eprintln!("Unable to find {} in the pipe parasite tree \
+                            eprintln!("Unable to find {} in the 'upper' parasite tree \
                             (i.e. specTree from -g file)", parent_name);
                             process::exit(1);
                         },
@@ -183,7 +186,7 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                 // j is the mapping of p  in the pipe parasite tree
                 info!("[map_parasite_s2g] Mapping of parent {} OK",parent_name);
                 info!("[map_parasite_s2g] Parents: {:?} <=> {:?}",para_as_species.arena[j],para_as_gene.arena[*p]);
-                info!("[map_parasite_s2g]  Event of the current path parasite tree node is {:?}",index.e );
+                info!("[map_parasite_s2g]  Event of the current parasite 'lower' tree node is {:?}",index.e );
                 match index.e {
                     // the missing node is a loss, I add it to the parent j
                     // (which will have 3 children now)
@@ -305,7 +308,7 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                             }
                         }
                         info!("[map_parasite_s2g] End of the loop.");
-                        info!("[map_parasite_s2g] Associates the new virtual gene nodes to the pipe parasite tree.");
+                        info!("[map_parasite_s2g] Associates the new virtual gene nodes to the 'upper' parasite tree.");
                         for (node,ng,(node1,node2))  in add_gnodes {
                             info!("[map_parasite_s2g] Adding gene nodes of tree number {} to species node {} ({},{})",ng,node,node1,node2);
                             info!("[map_parasite_s2g] Species  node  was {:?}",para_as_species.arena[node]);
