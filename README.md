@@ -5,7 +5,9 @@
 [![light_phylogeny at docs.rs](https://github.com/simonpenel/light_phylogeny/actions/workflows/example.yml/badge.svg)](https://github.com/simonpenel/light_phylogeny/actions/workflows/example.yml)
 
 
-"light_phylogeny" is a rust library dedicated to phylogeny.
+# "light_phylogeny" is a rust library dedicated to phylogeny.
+
+Homepage : https://github.com/simonpenel/light_phylogeny/wiki
 
 You may :
 
