@@ -7,7 +7,7 @@
 
 # light_phylogeny is a rust library dedicated to phylogeny.
 
-Homepage : https://github.com/simonpenel/light_phylogeny/wiki
+[Homepage](https://github.com/simonpenel/light_phylogeny/wiki)
 
 You may :
 
