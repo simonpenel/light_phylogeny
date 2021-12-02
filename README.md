@@ -7,8 +7,6 @@
 
 # light_phylogeny is a rust library dedicated to phylogeny.
 
-[Homepage](https://github.com/simonpenel/light_phylogeny/wiki)
-
 You may :
 
 - Read, build, modify and displays as svg reconciled phylogenetic trees.
@@ -28,6 +26,8 @@ You may use light_phylogeny functions and methods to build, manipulate, modify o
 You may use the "thirdkind" software  https://github.com/simonpenel/thirdkind  based on 'light_phylogeny' to represent  trees with 1, 2 or 3 reconciliation levels
 
 Keywords:  phylogeny, reconciled trees, phylogenetic trees
+
+[Homepage](https://github.com/simonpenel/light_phylogeny/wiki)
 
 # Formats:
 
