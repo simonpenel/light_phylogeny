@@ -31,7 +31,7 @@ Keywords:  phylogeny, reconciled trees, phylogenetic trees
 
 # Formats:
 
-phyloXML, recPhyloXML, rooted newick (NHX balises will not be considered).
+phyloXML, recPhyloXML, rooted newick (NHX tags will not be considered).
 
 # Output examples
 
