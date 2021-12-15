@@ -3,6 +3,7 @@
 [![light_phylogeny at docs.rs](https://docs.rs/light_phylogeny/badge.svg)](https://docs.rs/light_phylogeny)
 [![light_phylogeny at docs.rs](https://github.com/simonpenel/light_phylogeny/actions/workflows/rust.yml/badge.svg)](https://github.com/simonpenel/light_phylogeny/actions/workflows/rust.yml)
 [![light_phylogeny at docs.rs](https://github.com/simonpenel/light_phylogeny/actions/workflows/example.yml/badge.svg)](https://github.com/simonpenel/light_phylogeny/actions/workflows/example.yml)
+[![License: GPL v2](https://img.shields.io/badge/License-GPL_v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
 
 # light_phylogeny is a rust library dedicated to phylogeny.
