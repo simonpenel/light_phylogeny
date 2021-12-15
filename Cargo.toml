@@ -1,6 +1,6 @@
 [package]
 name = "light_phylogeny"
-version = "0.34.1"
+version = "1.0.0"
 authors = ["Simon Penel <simon.penel@univ-lyon1.fr>"]
 edition = "2018"
 description ="Methods and functions for phylogeny."
