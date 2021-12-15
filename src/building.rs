@@ -398,7 +398,10 @@ pub fn recphyloxml_processing(
         }
         // On veut que la longueur minimum soit un peu superieure a la moitie de l'epaisser des noods
         // On utilise le nombre de gene , qui a etet uniformise precedemment
-        options.scale = (sp_tree.arena[root].nbg as f32 / 2.0  + 0.25)  / min_dist ;
+        // options.scale = (sp_tree.arena[root].nbg as f32 / 2.0  + 0.25)  / min_dist ;
+        let optimised_factor = (sp_tree.arena[root].nbg as f32 / 2.0  + 0.25)  / min_dist ;
+        options.scale = optimised_factor  * options.scale ; 
+
         real_length(&mut sp_tree, root, &mut 0.0, & options);
         // Il faut decaler le tout (mais je ne comprend pas pourquoi?)
         let smallest_y = sp_tree.get_smallest_y();
