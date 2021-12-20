@@ -338,6 +338,8 @@ where
 ///  Structure Options: these are the drawing options for the svg. Concerning recPhyloXML file, we assume in the documentation that it describes a gene/species reconciliation.
 #[derive(Debug)]
 pub struct Options{
+    ///Display branch length
+    pub branch:bool,
     /// Display internal gene nodes.
     pub gene_internal: bool,
     /// Display internal species nodes (recPhyloXML).
@@ -388,6 +390,7 @@ pub struct Options{
 impl Options {
     pub fn new() -> Self {
         Self {
+            branch:false,
             gene_internal:false,
             species_internal:false,
             clado_flag:true,
