@@ -26,6 +26,30 @@ fn main() {
     phyloxml_processing(&mut tree, &options, &config,"read_newick_220_real_landscape.svg".to_string());
     println!("Please open output file 'read_newick_220_real_landscape.svg' with your browser");
 
+
+
+    let mut tree: ArenaTree<String> = ArenaTree::default();
+    let mut options: Options = Options::new();
+    options.real_length_flag = true;
+    options.scale = 5.0;
+    options.support = true;
+    let config: Config = Config::new();
+    read_newick("examples/newick.220.txt".to_string(), &mut tree);
+    phyloxml_processing(&mut tree, &options, &config,"read_newick_220_real_by5_support.svg".to_string());
+    println!("Please open output file 'read_newick_220_real_by5_support.svg' with your browser");
+
+
+    let mut tree: ArenaTree<String> = ArenaTree::default();
+    let mut options: Options = Options::new();
+    options.real_length_flag = true;
+    options.scale = 5.0;
+    let config: Config = Config::new();
+    read_newick("examples/newick.220.txt".to_string(), &mut tree);
+    phyloxml_processing(&mut tree, &options, &config,"read_newick_220_real_by5.svg".to_string());
+    println!("Please open output file 'read_newick_220_real_by5.svg' with your browser");
+
+
+
     let mut tree: ArenaTree<String> = ArenaTree::default();
     let mut options: Options = Options::new();
     options.rotate = false;
