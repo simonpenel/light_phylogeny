@@ -382,7 +382,34 @@ pub fn draw_sptree_gntrees (
                 };
             },
         };
+
+        // Display branch length
+        match options.branch {
+            true => {
+                // only if  the node has a parent
+                match index.parent {
+                    Some(p)=> {
+                        let mut element = Element::new("text");
+                        let n = &sp_tree.arena[p];
+                        let x_dist = index.x + index.width/2.0 + 5.0;
+                        // Display in the furst quarter of the branch lenght
+                        let y_dist = n.y + (index.y - n.y)/4.0  + index.height/2.0 ;
+                        element.assign("x", x_dist);
+                        element.assign("y", y_dist);
+                        element.assign("class", "branch");
+                        let txt  = Text::new(&index.l.to_string());
+                        element.append(txt);
+                        element.assign("transform","rotate(90 ".to_owned()+&(x_dist).to_string()
+                        + ","+&(y_dist).to_string()+")");
+                        g.append(element);
+                    },
+                    None => {},
+                }
+            },
+            false => {},
+        }
      }
+
      let  nb_gntree =  gene_trees.len(); // Nombre d'arbres de gene
      let mut idx_rcgen = 0;
      // Boucle sur les arbres de genes

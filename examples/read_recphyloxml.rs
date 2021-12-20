@@ -163,6 +163,7 @@ fn main() {
     let mut options: Options = Options::new();
     options.real_length_flag = true;
     options.species_internal = true;
+    options.branch = true;
     let config: Config = Config::new();
     let mut sp_tree: ArenaTree<String> = ArenaTree::default();
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
@@ -179,6 +180,7 @@ fn main() {
     options.real_length_flag = true;
     options.scale = 5.0;
     options.species_internal = true;
+    options.branch = true;
     let config: Config = Config::new();
     let mut sp_tree: ArenaTree<String> = ArenaTree::default();
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
@@ -213,6 +215,7 @@ fn main() {
     let mut options: Options = Options::new();
     options.real_length_flag = true;
     options.species_internal = true;
+    options.branch = true;
     let config: Config = Config::new();
     let mut sp_tree: ArenaTree<String> = ArenaTree::default();
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
