@@ -68,6 +68,9 @@ pub fn draw_tree (
     let style = Style::new(".support { font:  ".to_owned()
         + &config.gene_police_size.to_string()+"px serif; fill: red; }" );
     document.append(style);
+    let style = Style::new(".branch { font:  ".to_owned()
+        + &config.gene_police_size.to_string()+"px serif; fill: black; }" );
+    document.append(style);
     let mut g = Element::new("g");
     for  index in &tree.arena {
         let _parent =  match index.parent {
@@ -148,6 +151,31 @@ pub fn draw_tree (
                             false => {},
                         },
             };
+            // Display branch length
+            match options.branch {
+                true => {
+                    // only if  the node has a parent
+                    match index.parent {
+                        Some(p)=> {
+                            let mut element = Element::new("text");
+                            let n = &tree.arena[p];
+                            let x_dist = index.x +5.0;
+                            // Display in the furst quarter of the branch lenght
+                            let y_dist = n.y + (index.y - n.y)/4.0 ;
+                            element.assign("x", x_dist);
+                            element.assign("y", y_dist);
+                            element.assign("class", "branch");
+                            let txt  = Text::new(&index.l.to_string());
+                            element.append(txt);
+                            element.assign("transform","rotate(90 ".to_owned()+&(x_dist).to_string()
+                            + ","+&(y_dist).to_string()+")");
+                            g.append(element);
+                        },
+                        None => {},
+                    }
+                },
+                false => {},
+            }
         }
     }
     let mut transfo: String = "translate(  ".to_owned();
