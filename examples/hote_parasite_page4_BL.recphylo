@@ -78,4 +78,25 @@
 </clade>
 </phylogeny>
 </recGeneTree>
+<recGeneTree>
+<phylogeny rooted="true"><id>2</id><clade>
+ <name>p6r</name>
+<eventsRec>
+<speciation speciesLocation="C"/>
+</eventsRec>
+<clade>
+ <name>p6a</name>
+<eventsRec>
+<leaf speciesLocation="A"/>
+</eventsRec>
+</clade>
+<clade>
+ <name>p6b</name>
+<eventsRec>
+<leaf speciesLocation="B"/>
+</eventsRec>
+</clade>
+</clade>
+</phylogeny>
+</recGeneTree>
 </recPhylo>
