@@ -283,9 +283,6 @@ pub fn draw_sptree_gntrees (
                         // max_gene_y = max_gene_y + largest_height / 2.0;
                     }
                     if ! options.real_length_flag && index.e != Event::Loss {
-                    // if index.nbg  == 0 {
-                    //      max_gene_y = largest_y ;
-                    // }
                     max_gene_y = largest_y_nofl ;
                     }
                     let chemin = close_chemin_sp(index.x, index.y,
