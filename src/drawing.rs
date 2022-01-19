@@ -209,6 +209,7 @@ pub fn draw_sptree_gntrees (
         largest_x = largest_x_genes;
     }
     let largest_y = sp_tree.get_largest_y() * 1.0 + 0.0 ;
+    let largest_y_nofl = sp_tree.get_largest_y_nofl() * 1.0 + 0.0 ; // y le plus large sans compte le free living
     let smallest_x = sp_tree.get_smallest_x() * 1.0 + 0.0 ;
     let smallest_y = sp_tree.get_smallest_y() * 1.0 + 0.0 ;
     let width_svg = largest_x - smallest_x + 1.0 * BLOCK;
@@ -245,11 +246,16 @@ pub fn draw_sptree_gntrees (
         match index.parent {
             Some(p) => {
                 let n = &sp_tree.arena[p];
+                let color_branch_species = match index.e {
+                    Event::Loss => {"black".to_string()},
+                    _ => {config.species_color.to_string()},
+                };
                 let chemin = get_chemin_sp(index.x, index.y,
                                            index.width/2.0, index.height/2.0,
                                            n.x, n.y,
                                            n.width/2.0, n.height/2.0,
-                                           config.species_color.to_string(),
+                                           // config.species_color.to_string(),
+                                           color_branch_species.clone(),
                                            config.species_opacity.to_string());
                 if sp_tree.arena[p].visible {
                     g.append(chemin)
@@ -266,31 +272,44 @@ pub fn draw_sptree_gntrees (
                         }
                     };
                     if max_gene_y == index.y {
+                        // Dans le cas ou la fauille espece ne contient pas de gene ou seulement
+                         // des loss (un peu tordu)
                          max_gene_y = max_gene_y +index.height / 2.0;
+                        // max_gene_y = max_gene_y + largest_height / 2.0;
+                    }
+                    if ! options.real_length_flag && index.e != Event::Loss {
+                    // if index.nbg  == 0 {
+                    //      max_gene_y = largest_y ;
+                    // }
+                    max_gene_y = largest_y_nofl ;
                     }
                     let chemin = close_chemin_sp(index.x, index.y,
                                                  index.width/2.0, max_gene_y - index.y,
-                                                 config.species_color.to_string(),
+                                                 // index.width/2.0, largest_height/2.0 -index.y,
+                                                 // config.species_color.to_string(),
+                                                 color_branch_species,
                                                  config.species_opacity.to_string());
                     if sp_tree.arena[p].visible {
                         g.append(chemin)
                     };
                 }
                 match  index.e {
-                    Event::Loss => {
-                        let chemin = get_chemin_sp(index.x, index.y,
-                                                   index.width/2.0, index.height/2.0,
-                                                   n.x, n.y,
-                                                   n.width/2.0, n.height/2.0,
-                                                   "black".to_string(),
-                                                   config.species_opacity.to_string());
-                        g.append(chemin);
-                        let chemin = close_chemin_sp(index.x, index.y,
-                                                     index.width/2.0, index.height/2.0,
-                                                     "black".to_string(),
-                                                     config.species_opacity.to_string());
-                        g.append(chemin);
-                    }
+                    // Event::Loss => {
+                    //     let chemin = get_chemin_sp(index.x, index.y,
+                    //                                index.width/2.0, index.height/2.0,
+                    //                                n.x, n.y,
+                    //                                n.width/2.0, n.height/2.0,
+                    //                                "black".to_string(),
+                    //                                config.species_opacity.to_string());
+                    //     g.append(chemin);
+                    //     let chemin = close_chemin_sp(index.x, index.y,
+                    //                                  // index.width/2.0, index.height/2.0,
+                    //                                 index.width/2.0, largest_height/2.0,
+                    //                                  // index.width/2.0, max_gene_y - index.y,
+                    //                                  "black".to_string(),
+                    //                                  config.species_opacity.to_string());
+                    //     g.append(chemin);
+                    // }
                     Event::Duplication => {
                         // println!("Duplication!!");
                         let carre = get_carre(index.x,index.y,1.5 * index.width,
