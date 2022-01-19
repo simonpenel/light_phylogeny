@@ -1538,6 +1538,34 @@ pub fn set_species_width(sp_tree: &mut ArenaTree<String>,
         }
     }
 }
+
+/// Give to the y val of gene leaves the same value in order to align species leaves
+pub fn uniformise_gene_leaves_y_values(sp_tree: &mut ArenaTree<String>,
+    gene_trees: &mut std::vec::Vec<ArenaTree<String>>) {
+    let mut leave_y_max = 0.0;
+    for spindex in  & sp_tree.arena {
+        // if the species node is a leaf
+        if spindex.children.len() == 0 {
+            for (index_node, node) in &sp_tree.arena[spindex.idx].nodes {
+                if gene_trees[*index_node].arena[*node].y > leave_y_max {
+                    leave_y_max = gene_trees[*index_node].arena[*node].y;
+                }
+            }
+        }
+    }
+    for spindex in  & sp_tree.arena {
+        // if the species node is a leaf
+        if spindex.children.len() == 0 {
+            for (index_node, node) in &sp_tree.arena[spindex.idx].nodes {
+                // Change y for gene leaves only
+                if gene_trees[*index_node].arena[*node].e == Event::Leaf {
+                    gene_trees[*index_node].arena[*node].set_y_noref(leave_y_max);
+                }
+            }
+        }
+    }
+}
+
 /// Get the list of ids of all the "spTree" tag in a xml document.
 pub fn find_sptrees( doc: &mut roxmltree::Document) -> Result < Vec<roxmltree::NodeId>, usize> {
     let descendants = doc.root().descendants();
