@@ -267,7 +267,6 @@ where
         for node in &self.arena {
             if node.y  + node.height / 2.0  > max && node.location != "FREE_LIVING".to_string()
             && node.name != "FREE_LIVING".to_string() {
-                println!("DEBUG {:?}",node);
                 max = node.y  + node.height / 2.0  ;
              }
             }
