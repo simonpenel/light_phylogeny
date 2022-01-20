@@ -62,11 +62,11 @@ pub fn draw_tree (
                 .set("viewBox", (y_viewbox,x_viewbox,width_svg + 0.5 *BLOCK ,height_svg + 2.0 *BLOCK )),
     };
     let style = Style::new(".gene { font:  ".to_owned()
-        + &config.gene_police_size.to_string()+"px serif; fill:"
+        + &config.gene_police_size.to_string()+"px; fill:"
         + &gene_color.to_string() + "; }" );
     document.append(style);
     let style = Style::new(".support { font:  ".to_owned()
-        + &config.gene_police_size.to_string()+"px serif; fill: red; }" );
+        + &config.gene_police_size.to_string()+"px; fill: red; }" );
     document.append(style);
     let mut g = Element::new("g");
     for  index in &tree.arena {
@@ -236,7 +236,7 @@ pub fn draw_sptree_gntrees (
                 .set("viewBox", (y_viewbox,x_viewbox,width_svg + 0.5 *BLOCK ,height_svg *1.1 + 2.0 *BLOCK )),
     };
     let style = Style::new(".species { font: italic ".to_owned()
-        + &config.species_police_size.to_string()+"px serif; fill: "
+        + &config.species_police_size.to_string()+"px; fill: "
         + &config.species_police_color.to_string()+"; }");
     document.append(style);
     let mut g = Element::new("g");
@@ -361,7 +361,7 @@ pub fn draw_sptree_gntrees (
             .alpha(1.0) // Optional
             .to_rgb_string(); //
         let style = Style::new(".gene_".to_owned()+&idx_rcgen.to_string()
-            + " { font: "+ &config.gene_police_size.to_string()+"px serif; fill:"
+            + " { font: "+ &config.gene_police_size.to_string()+"px; fill:"
             + &gene_color.to_string() + "; }" );
         document.append(style);
         for  index in &gene_trees[idx_rcgen].arena {
@@ -543,7 +543,7 @@ pub fn draw_sptree_gntrees (
     let mut scores: std::vec::Vec<usize> =  vec![];
     let mut score_max = 1;
     if options.thickness_disp_score {
-        let style = Style::new(".rouge { font: ".to_owned()+ &config.gene_police_size.to_string()+"px serif; fill:red ; }" );
+        let style = Style::new(".rouge { font: ".to_owned()+ &config.gene_police_size.to_string()+"px; fill:red ; }" );
         document.append(style);
     }
     for transfer in transfers {
