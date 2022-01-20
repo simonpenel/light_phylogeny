@@ -255,6 +255,7 @@ pub fn draw_sptree_gntrees (
                         }
                     },
                 };
+                // if !sp_tree.is_leaf(index.idx) {
                 let chemin = get_chemin_sp(index.x, index.y,
                                            index.width/2.0, index.height/2.0,
                                            n.x, n.y,
@@ -265,6 +266,7 @@ pub fn draw_sptree_gntrees (
                 if sp_tree.arena[p].visible {
                     g.append(chemin)
                 };
+                // };
                 if sp_tree.is_leaf(index.idx) {
                     // Set the y value of the pipe leaf ro the highest value of the y gene leaves
                     let mut max_gene_y =  index.y;
@@ -278,17 +280,27 @@ pub fn draw_sptree_gntrees (
                     };
                     if max_gene_y == index.y {
                         // Dans le cas ou la fauille espece ne contient pas de gene ou seulement
-                         // des loss (un peu tordu)
+                        // des loss (un peu tordu et surement inutile vu que l'on modifie
+                        // cette valeur ensuite.)
                          max_gene_y = max_gene_y +index.height / 2.0;
                         // max_gene_y = max_gene_y + largest_height / 2.0;
                     }
                     if ! options.real_length_flag && index.e != Event::Loss {
                     max_gene_y = largest_y_nofl ;
                     }
+                    // // TEST ON DEFACTORISE EST CE UTILE ?
+                    // let chemin = get_chemin_sp(index.x, index.y,
+                    //                            index.width/2.0, index.height/2.0,
+                    //                            n.x, n.y,
+                    //                            n.width/2.0, n.height/2.0,
+                    //                            // config.species_color.to_string(),
+                    //                            color_branch_species.clone(),
+                    //                            config.species_opacity.to_string());
+                    // if sp_tree.arena[p].visible {
+                    //     g.append(chemin)
+                    // };
                     let chemin = close_chemin_sp(index.x, index.y,
-                                                 index.width/2.0, max_gene_y - index.y,
-                                                 // index.width/2.0, largest_height/2.0 -index.y,
-                                                 // config.species_color.to_string(),
+                                                 index.width/2.0, index.height/2.0,max_gene_y - index.y,
                                                  color_branch_species,
                                                  config.species_opacity.to_string());
                     if sp_tree.arena[p].visible {
@@ -831,12 +843,12 @@ pub fn get_chemin_sp (x1: f32, y1:f32, width1:f32, height1:f32, x2: f32, y2:f32,
     }
 }
 /// Finish  the drawing of species tree at the leaves level.
-pub fn close_chemin_sp (x1: f32, y1:f32, width1:f32, height1:f32, c:String, o:String ) -> Path {
+pub fn close_chemin_sp (x1: f32, y1:f32, width1:f32, height1:f32, height2:f32,c:String, o:String ) -> Path {
         let data = Data::new()
-        .move_to((x1 - width1, y1 - height1))
-        .line_to((x1 - width1, y1 + 1.0 * height1))
-        .line_to((x1 + width1, y1 + 1.0 * height1))
-        .line_to((x1 + width1, y1 - height1));
+        .move_to((x1 - width1, y1 - height1 + (STHICKNESS / 2)  as f32  ))
+        .line_to((x1 - width1, y1 + 1.0 * height2))
+        .line_to((x1 + width1, y1 + 1.0 * height2))
+        .line_to((x1 + width1, y1 - height1 + (STHICKNESS / 2)  as f32  ));
         let path = Path::new()
         .set("fill", "none")
         .set("stroke", c)
