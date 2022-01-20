@@ -288,17 +288,6 @@ pub fn draw_sptree_gntrees (
                     if ! options.real_length_flag && index.e != Event::Loss {
                     max_gene_y = largest_y_nofl ;
                     }
-                    // // TEST ON DEFACTORISE EST CE UTILE ?
-                    // let chemin = get_chemin_sp(index.x, index.y,
-                    //                            index.width/2.0, index.height/2.0,
-                    //                            n.x, n.y,
-                    //                            n.width/2.0, n.height/2.0,
-                    //                            // config.species_color.to_string(),
-                    //                            color_branch_species.clone(),
-                    //                            config.species_opacity.to_string());
-                    // if sp_tree.arena[p].visible {
-                    //     g.append(chemin)
-                    // };
                     let chemin = close_chemin_sp(index.x, index.y,
                                                  index.width/2.0, index.height/2.0,max_gene_y - index.y,
                                                  color_branch_species,
@@ -308,22 +297,6 @@ pub fn draw_sptree_gntrees (
                     };
                 }
                 match  index.e {
-                    // Event::Loss => {
-                    //     let chemin = get_chemin_sp(index.x, index.y,
-                    //                                index.width/2.0, index.height/2.0,
-                    //                                n.x, n.y,
-                    //                                n.width/2.0, n.height/2.0,
-                    //                                "black".to_string(),
-                    //                                config.species_opacity.to_string());
-                    //     g.append(chemin);
-                    //     let chemin = close_chemin_sp(index.x, index.y,
-                    //                                  // index.width/2.0, index.height/2.0,
-                    //                                 index.width/2.0, largest_height/2.0,
-                    //                                  // index.width/2.0, max_gene_y - index.y,
-                    //                                  "black".to_string(),
-                    //                                  config.species_opacity.to_string());
-                    //     g.append(chemin);
-                    // }
                     Event::Duplication => {
                         // println!("Duplication!!");
                         let carre = get_carre(index.x,index.y,1.5 * index.width,
@@ -332,25 +305,6 @@ pub fn draw_sptree_gntrees (
                     }
                     _=> {},
                 }
-                // match  index.is_a_transfert {
-                //     true => {
-                //         let chemin = get_chemin_sp(index.x, index.y,
-                //                                    index.width/2.0, index.height/2.0,
-                //                                    n.x, n.y,
-                //                                    n.width/2.0, n.height/2.0,
-                //                                    "green".to_string(),
-                //                                    config.species_opacity.to_string());
-                //         g.append(chemin);
-                //         if sp_tree.is_leaf(index.idx) {
-                //             let chemin = close_chemin_sp(index.x, index.y,
-                //                                          index.width/2.0, index.height/2.0,
-                //                                         "green".to_string(),
-                //                                          config.species_opacity.to_string());
-                //             g.append(chemin);
-                //         }
-                //     },
-                //     false => {},
-                // }
             },
             None => {},
         };
