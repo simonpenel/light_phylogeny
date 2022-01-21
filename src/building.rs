@@ -17,7 +17,7 @@ use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,shift_mod_xy
     set_middle_postorder,real_length,set_leaves_y_values,shift_nodes_y_values};
 use crate::arena::{map_species_trees,set_species_width,check_vertical_contour_postorder,
     bilan_mappings,center_gene_nodes,move_dupli_mappings,move_species_mappings,
-    species_uniformisation,process_fl};
+    species_uniformisation,process_fl,uniformise_gene_leaves_y_values};
 use crate::arena::{find_sptrees,find_rgtrees,check_for_obsolete,scale_heigth,scale_width};
 use crate::thirdlevel::{get_gtransfer,optimisation,check_optimisation,classify_transfer,reorder_transfers};
 use crate::drawing::{draw_tree,draw_sptree_gntrees};
@@ -400,7 +400,7 @@ pub fn recphyloxml_processing(
         // On utilise le nombre de gene , qui a etet uniformise precedemment
         // options.scale = (sp_tree.arena[root].nbg as f32 / 2.0  + 0.25)  / min_dist ;
         let optimised_factor = (sp_tree.arena[root].nbg as f32 / 2.0  + 0.25)  / min_dist ;
-        options.scale = optimised_factor  * options.scale ; 
+        options.scale = optimised_factor  * options.scale ;
 
         real_length(&mut sp_tree, root, &mut 0.0, & options);
         // Il faut decaler le tout (mais je ne comprend pas pourquoi?)
@@ -502,6 +502,10 @@ pub fn recphyloxml_processing(
     // Option : traitement specifique des gene "free living"
     if options.free_living {
         process_fl(&mut sp_tree, &mut gene_trees,free_root, &options);
+    }
+    if ! options.real_length_flag {
+        // Egalise les feuilles 2
+        uniformise_gene_leaves_y_values(sp_tree,gene_trees);
     }
     // ---------------------------------------------------------
     // Fin: Ecriture du fichier svg

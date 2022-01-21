@@ -62,11 +62,9 @@ pub fn draw_tree (
                 .set("viewBox", (y_viewbox,x_viewbox,width_svg + 0.5 *BLOCK ,height_svg + 2.0 *BLOCK )),
     };
     let style = Style::new(".gene { font:  ".to_owned()
-        + &config.gene_police_size.to_string()+"px serif; fill:"
-        + &gene_color.to_string() + "; }" );
-    document.append(style);
-    let style = Style::new(".support { font:  ".to_owned()
-        + &config.gene_police_size.to_string()+"px serif; fill: red; }" );
+        + &config.gene_police_size.to_string()+"px; fill:"
+        + &gene_color.to_string() + "; } .support { font: "
+        + &config.gene_police_size.to_string()+"px; fill: red; }" );
     document.append(style);
     let style = Style::new(".branch { font:  ".to_owned()
         + &config.gene_police_size.to_string()+"px serif; fill: black; }" );
@@ -237,6 +235,7 @@ pub fn draw_sptree_gntrees (
         largest_x = largest_x_genes;
     }
     let largest_y = sp_tree.get_largest_y() * 1.0 + 0.0 ;
+    let largest_y_nofl = sp_tree.get_largest_y_nofl() * 1.0 + 0.0 ; // y le plus large sans compte le free living
     let smallest_x = sp_tree.get_smallest_x() * 1.0 + 0.0 ;
     let smallest_y = sp_tree.get_smallest_y() * 1.0 + 0.0 ;
     let width_svg = largest_x - smallest_x + 1.0 * BLOCK;
@@ -262,10 +261,11 @@ pub fn draw_sptree_gntrees (
                 .set("height",height_svg  )
                 .set("viewBox", (y_viewbox,x_viewbox,width_svg + 0.5 *BLOCK ,height_svg *1.1 + 2.0 *BLOCK )),
     };
-    let style = Style::new(".species { font: italic ".to_owned()
-        + &config.species_police_size.to_string()+"px serif; fill: "
-        + &config.species_police_color.to_string()+"; }");
-    document.append(style);
+    // Initialse la chaine de carctere dediee aux styles des fonts : font pour l'espece
+    let mut recphylostyle:String = ".species { font: italic ".to_owned()
+        + &config.species_police_size.to_string()+"px; fill: "
+        + &config.species_police_color.to_string()+"; }";
+
     let mut g = Element::new("g");
     // Dessine l'arbre d'espece
     for index in &sp_tree.arena {
@@ -273,11 +273,21 @@ pub fn draw_sptree_gntrees (
         match index.parent {
             Some(p) => {
                 let n = &sp_tree.arena[p];
+                let color_branch_species = match index.e {
+                    Event::Loss => {"black".to_string()},
+                    _ => {
+                        match index.is_a_transfert {
+                        true => "green".to_string(),
+                        false => config.species_color.to_string(),
+                        }
+                    },
+                };
                 let chemin = get_chemin_sp(index.x, index.y,
                                            index.width/2.0, index.height/2.0,
                                            n.x, n.y,
                                            n.width/2.0, n.height/2.0,
-                                           config.species_color.to_string(),
+                                           // config.species_color.to_string(),
+                                           color_branch_species.clone(),
                                            config.species_opacity.to_string());
                 if sp_tree.arena[p].visible {
                     g.append(chemin)
@@ -294,31 +304,24 @@ pub fn draw_sptree_gntrees (
                         }
                     };
                     if max_gene_y == index.y {
+                        // Dans le cas ou la fauille espece ne contient pas de gene ou seulement
+                        // des loss (un peu tordu et surement inutile vu que l'on modifie
+                        // cette valeur ensuite.)
                          max_gene_y = max_gene_y +index.height / 2.0;
+                        // max_gene_y = max_gene_y + largest_height / 2.0;
+                    }
+                    if ! options.real_length_flag && index.e != Event::Loss {
+                    max_gene_y = largest_y_nofl ;
                     }
                     let chemin = close_chemin_sp(index.x, index.y,
-                                                 index.width/2.0, max_gene_y - index.y,
-                                                 config.species_color.to_string(),
+                                                 index.width/2.0, index.height/2.0,max_gene_y - index.y,
+                                                 color_branch_species,
                                                  config.species_opacity.to_string());
                     if sp_tree.arena[p].visible {
                         g.append(chemin)
                     };
                 }
                 match  index.e {
-                    Event::Loss => {
-                        let chemin = get_chemin_sp(index.x, index.y,
-                                                   index.width/2.0, index.height/2.0,
-                                                   n.x, n.y,
-                                                   n.width/2.0, n.height/2.0,
-                                                   "black".to_string(),
-                                                   config.species_opacity.to_string());
-                        g.append(chemin);
-                        let chemin = close_chemin_sp(index.x, index.y,
-                                                     index.width/2.0, index.height/2.0,
-                                                     "black".to_string(),
-                                                     config.species_opacity.to_string());
-                        g.append(chemin);
-                    }
                     Event::Duplication => {
                         // println!("Duplication!!");
                         let carre = get_carre(index.x,index.y,1.5 * index.width,
@@ -326,25 +329,6 @@ pub fn draw_sptree_gntrees (
                         g.append(carre);
                     }
                     _=> {},
-                }
-                match  index.is_a_transfert {
-                    true => {
-                        let chemin = get_chemin_sp(index.x, index.y,
-                                                   index.width/2.0, index.height/2.0,
-                                                   n.x, n.y,
-                                                   n.width/2.0, n.height/2.0,
-                                                   "green".to_string(),
-                                                   config.species_opacity.to_string());
-                        g.append(chemin);
-                        if sp_tree.is_leaf(index.idx) {
-                            let chemin = close_chemin_sp(index.x, index.y,
-                                                         index.width/2.0, index.height/2.0,
-                                                        "green".to_string(),
-                                                         config.species_opacity.to_string());
-                            g.append(chemin);
-                        }
-                    },
-                    false => {},
                 }
             },
             None => {},
@@ -409,12 +393,17 @@ pub fn draw_sptree_gntrees (
             false => {},
         }
      }
+<<<<<<< HEAD
 
      let  nb_gntree =  gene_trees.len(); // Nombre d'arbres de gene
      let mut idx_rcgen = 0;
+=======
+    let  nb_gntree =  gene_trees.len(); // Nombre d'arbres de gene
+    let mut idx_rcgen = 0;
+>>>>>>> master
      // Boucle sur les arbres de genes
-     loop {
-         let base_couleur = match &idx_rcgen % 6 {
+    loop {
+        let base_couleur = match &idx_rcgen % 6 {
              5 => Color::Orange,
              0 => Color::Blue,
              1 => Color::Purple,
@@ -422,16 +411,20 @@ pub fn draw_sptree_gntrees (
              3 => Color::Red,
              4 => Color::Yellow,
              _ => Color::Monochrome, // Jamais
-         };
+        };
         let gene_color = RandomColor::new()
             .hue(base_couleur)
             .luminosity(Luminosity::Bright) // Optional
             .alpha(1.0) // Optional
             .to_rgb_string(); //
-        let style = Style::new(".gene_".to_owned()+&idx_rcgen.to_string()
-            + " { font: "+ &config.gene_police_size.to_string()+"px serif; fill:"
-            + &gene_color.to_string() + "; }" );
-        document.append(style);
+        // Style de la font pour le gene
+        let added_style = " .gene_".to_owned()+&idx_rcgen.to_string()
+             + " { font: "+ &config.gene_police_size.to_string()+"px; fill:"
+             + &gene_color.to_string() + "; } ";
+        // Je passe en str pour l'ajouter
+        let add_style_str :&str  =     &added_style;
+        recphylostyle.push_str(add_style_str);
+
         for  index in &gene_trees[idx_rcgen].arena {
             // Dessine le chemin du noeud a son pere
             match index.parent {
@@ -611,9 +604,17 @@ pub fn draw_sptree_gntrees (
     let mut scores: std::vec::Vec<usize> =  vec![];
     let mut score_max = 1;
     if options.thickness_disp_score {
-        let style = Style::new(".rouge { font: ".to_owned()+ &config.gene_police_size.to_string()+"px serif; fill:red ; }" );
-        document.append(style);
+        // Style de la font pour affichage du nb de transcr
+         let added_style = " .rouge { font: ".to_owned()+ &config.gene_police_size.to_string()
+            +"px; fill:red ; } ";
+        // Je passe en str pour l'ajouter
+        let add_style_str :&str  =     &added_style;
+        recphylostyle.push_str(add_style_str);
     }
+    // Ajout le style
+    let style = Style::new(recphylostyle);
+    document.append(style);
+
     for transfer in transfers {
         let index = unique_transfers.iter().position(|r| r == transfer);
         match index {
@@ -865,12 +866,12 @@ pub fn get_chemin_sp (x1: f32, y1:f32, width1:f32, height1:f32, x2: f32, y2:f32,
     }
 }
 /// Finish  the drawing of species tree at the leaves level.
-pub fn close_chemin_sp (x1: f32, y1:f32, width1:f32, height1:f32, c:String, o:String ) -> Path {
+pub fn close_chemin_sp (x1: f32, y1:f32, width1:f32, height1:f32, height2:f32,c:String, o:String ) -> Path {
         let data = Data::new()
-        .move_to((x1 - width1, y1 - height1))
-        .line_to((x1 - width1, y1 + 1.0 * height1))
-        .line_to((x1 + width1, y1 + 1.0 * height1))
-        .line_to((x1 + width1, y1 - height1));
+        .move_to((x1 - width1, y1 - height1 + (STHICKNESS / 2)  as f32  ))
+        .line_to((x1 - width1, y1 + 1.0 * height2))
+        .line_to((x1 + width1, y1 + 1.0 * height2))
+        .line_to((x1 + width1, y1 - height1 + (STHICKNESS / 2)  as f32  ));
         let path = Path::new()
         .set("fill", "none")
         .set("stroke", c)
