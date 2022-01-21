@@ -393,14 +393,10 @@ pub fn draw_sptree_gntrees (
             false => {},
         }
      }
-<<<<<<< HEAD
 
-     let  nb_gntree =  gene_trees.len(); // Nombre d'arbres de gene
-     let mut idx_rcgen = 0;
-=======
     let  nb_gntree =  gene_trees.len(); // Nombre d'arbres de gene
     let mut idx_rcgen = 0;
->>>>>>> master
+
      // Boucle sur les arbres de genes
     loop {
         let base_couleur = match &idx_rcgen % 6 {
@@ -607,6 +603,14 @@ pub fn draw_sptree_gntrees (
         // Style de la font pour affichage du nb de transcr
          let added_style = " .rouge { font: ".to_owned()+ &config.gene_police_size.to_string()
             +"px; fill:red ; } ";
+        // Je passe en str pour l'ajouter
+        let add_style_str :&str  =     &added_style;
+        recphylostyle.push_str(add_style_str);
+    }
+    if options.branch {
+        // Style de la font pour affichage du nb de transcr
+         let added_style = " .branch { font: ".to_owned()+ &config.species_police_size.to_string()
+            +"px; fill:black ; } ";
         // Je passe en str pour l'ajouter
         let add_style_str :&str  =     &added_style;
         recphylostyle.push_str(add_style_str);
