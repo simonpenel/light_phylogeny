@@ -61,9 +61,9 @@ pub fn draw_tree (
                 .set("height",height_svg  )
                 .set("viewBox", (y_viewbox,x_viewbox,width_svg + 0.5 *BLOCK ,height_svg + 2.0 *BLOCK )),
     };
-    let style = Style::new(".gene { font:  ".to_owned()
+    let style = Style::new(".gene { font-size:  ".to_owned()
         + &config.gene_police_size.to_string()+"px; fill:"
-        + &gene_color.to_string() + "; } .support { font: "
+        + &gene_color.to_string() + "; } .support { font-size: "
         + &config.gene_police_size.to_string()+"px; fill: red; }" );
     document.append(style);
     let mut g = Element::new("g");
@@ -235,7 +235,7 @@ pub fn draw_sptree_gntrees (
     };
     // Initialse la chaine de carctere dediee aux styles des fonts : font pour l'espece
     let mut recphylostyle:String = ".species { font: italic ".to_owned()
-        + &config.species_police_size.to_string()+"px; fill: "
+        +"; font-size: "+ &config.species_police_size.to_string()+"px; fill: "
         + &config.species_police_color.to_string()+"; }";
 
     let mut g = Element::new("g");
@@ -359,7 +359,7 @@ pub fn draw_sptree_gntrees (
             .to_rgb_string(); //
         // Style de la font pour le gene
         let added_style = " .gene_".to_owned()+&idx_rcgen.to_string()
-             + " { font: "+ &config.gene_police_size.to_string()+"px; fill:"
+             + " { font-size: "+ &config.gene_police_size.to_string()+"px; fill:"
              + &gene_color.to_string() + "; } ";
         // Je passe en str pour l'ajouter
         let add_style_str :&str  =     &added_style;
@@ -545,7 +545,7 @@ pub fn draw_sptree_gntrees (
     let mut score_max = 1;
     if options.thickness_disp_score {
         // Style de la font pour affichage du nb de transcr
-         let added_style = " .rouge { font: ".to_owned()+ &config.gene_police_size.to_string()
+         let added_style = " .rouge { font-size: ".to_owned()+ &config.gene_police_size.to_string()
             +"px; fill:red ; } ";
         // Je passe en str pour l'ajouter
         let add_style_str :&str  =     &added_style;

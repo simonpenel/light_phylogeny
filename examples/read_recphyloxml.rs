@@ -224,6 +224,28 @@ fn main() {
     println!("Please open output file 'hote_parasite_page4_BL_real_2.svg' with your browser");
 
 
+    // Version pour verifier les font
+    let transfers = vec![];
+    let mut options: Options = Options::new();
+    options.real_length_flag = true;
+    options.species_internal = true;
+    let mut config: Config = Config::new();
+    config.species_police_size = 60.to_string();
+    config.gene_police_size = 5.to_string();
+    config.species_police_color = "green".to_string();
+    let mut sp_tree: ArenaTree<String> = ArenaTree::default();
+    let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
+    let mut global_roots: std::vec::Vec<usize> = Vec::new();
+    read_recphyloxml_multi("examples/hote_parasite_page4_BL_2.recphylo".to_string(),
+        &mut sp_tree, &mut gene_trees, &mut global_roots);
+    recphyloxml_processing(&mut sp_tree, &mut gene_trees, &mut options, &config, true,
+         &transfers, "hote_parasite_page4_BL_real_fonts.svg".to_string());
+    println!("Please open output file 'hote_parasite_page4_BL_real_fonts.svg' with your browser");
+
+
+
+
+
     // ============================================================================================
     // Version pour  real_branch avec branche nulles (-> erreur)
     // let transfers = vec![];
