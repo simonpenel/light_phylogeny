@@ -609,7 +609,7 @@ pub fn draw_sptree_gntrees (
     }
     if options.branch {
         // Style de la font pour affichage du nb de transcr
-         let added_style = " .branch { font: ".to_owned()+ &config.species_police_size.to_string()
+         let added_style = " .branch { font-size: ".to_owned()+ &config.species_police_size.to_string()
             +"px; fill:black ; } ";
         // Je passe en str pour l'ajouter
         let add_style_str :&str  =     &added_style;
