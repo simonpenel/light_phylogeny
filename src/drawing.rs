@@ -235,10 +235,11 @@ pub fn draw_sptree_gntrees (
                 .set("height",height_svg  )
                 .set("viewBox", (y_viewbox,x_viewbox,width_svg + 0.5 *BLOCK ,height_svg *1.1 + 2.0 *BLOCK )),
     };
-    let style = Style::new(".species { font: italic ".to_owned()
+    // Initialse la chaine de carctere dediee aux styles des fonts : font pour l'espece
+    let mut recphylostyle:String = ".species { font: italic ".to_owned()
         + &config.species_police_size.to_string()+"px; fill: "
-        + &config.species_police_color.to_string()+"; }");
-    document.append(style);
+        + &config.species_police_color.to_string()+"; }";
+
     let mut g = Element::new("g");
     // Dessine l'arbre d'espece
     for index in &sp_tree.arena {
@@ -342,10 +343,10 @@ pub fn draw_sptree_gntrees (
             },
         };
      }
-     let  nb_gntree =  gene_trees.len(); // Nombre d'arbres de gene
-     let mut idx_rcgen = 0;
+    let  nb_gntree =  gene_trees.len(); // Nombre d'arbres de gene
+    let mut idx_rcgen = 0;
      // Boucle sur les arbres de genes
-     loop {
+    loop {
          let base_couleur = match &idx_rcgen % 6 {
              5 => Color::Orange,
              0 => Color::Blue,
@@ -363,7 +364,14 @@ pub fn draw_sptree_gntrees (
         let style = Style::new(".gene_".to_owned()+&idx_rcgen.to_string()
             + " { font: "+ &config.gene_police_size.to_string()+"px; fill:"
             + &gene_color.to_string() + "; }" );
-        document.append(style);
+        // Style de la font pour le gene
+         let added_style = " .gene_".to_owned()+&idx_rcgen.to_string()
+             + " { font: "+ &config.gene_police_size.to_string()+"px; fill:"
+             + &gene_color.to_string() + "; } ";
+        // Je passe en str pour l'ajouter
+        let add_style_str :&str  =     &added_style;
+        recphylostyle.push_str(add_style_str);
+
         for  index in &gene_trees[idx_rcgen].arena {
             // Dessine le chemin du noeud a son pere
             match index.parent {
@@ -543,9 +551,16 @@ pub fn draw_sptree_gntrees (
     let mut scores: std::vec::Vec<usize> =  vec![];
     let mut score_max = 1;
     if options.thickness_disp_score {
-        let style = Style::new(".rouge { font: ".to_owned()+ &config.gene_police_size.to_string()+"px; fill:red ; }" );
-        document.append(style);
+        // Style de la font pour affichage du nb de transcr
+         let added_style = " .rouge { font: ".to_owned()+ &config.gene_police_size.to_string()
+            +"px; fill:red ; } ";
+        // Je passe en str pour l'ajouter
+        let add_style_str :&str  =     &added_style;
+        recphylostyle.push_str(add_style_str);
     }
+    let style = Style::new(recphylostyle);
+    document.append(style);
+
     for transfer in transfers {
         let index = unique_transfers.iter().position(|r| r == transfer);
         match index {
