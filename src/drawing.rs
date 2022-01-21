@@ -254,7 +254,6 @@ pub fn draw_sptree_gntrees (
                         }
                     },
                 };
-                // if !sp_tree.is_leaf(index.idx) {
                 let chemin = get_chemin_sp(index.x, index.y,
                                            index.width/2.0, index.height/2.0,
                                            n.x, n.y,
@@ -265,7 +264,6 @@ pub fn draw_sptree_gntrees (
                 if sp_tree.arena[p].visible {
                     g.append(chemin)
                 };
-                // };
                 if sp_tree.is_leaf(index.idx) {
                     // Set the y value of the pipe leaf ro the highest value of the y gene leaves
                     let mut max_gene_y =  index.y;
@@ -345,7 +343,7 @@ pub fn draw_sptree_gntrees (
     let mut idx_rcgen = 0;
      // Boucle sur les arbres de genes
     loop {
-         let base_couleur = match &idx_rcgen % 6 {
+        let base_couleur = match &idx_rcgen % 6 {
              5 => Color::Orange,
              0 => Color::Blue,
              1 => Color::Purple,
@@ -353,17 +351,14 @@ pub fn draw_sptree_gntrees (
              3 => Color::Red,
              4 => Color::Yellow,
              _ => Color::Monochrome, // Jamais
-         };
+        };
         let gene_color = RandomColor::new()
             .hue(base_couleur)
             .luminosity(Luminosity::Bright) // Optional
             .alpha(1.0) // Optional
             .to_rgb_string(); //
-        let style = Style::new(".gene_".to_owned()+&idx_rcgen.to_string()
-            + " { font: "+ &config.gene_police_size.to_string()+"px; fill:"
-            + &gene_color.to_string() + "; }" );
         // Style de la font pour le gene
-         let added_style = " .gene_".to_owned()+&idx_rcgen.to_string()
+        let added_style = " .gene_".to_owned()+&idx_rcgen.to_string()
              + " { font: "+ &config.gene_police_size.to_string()+"px; fill:"
              + &gene_color.to_string() + "; } ";
         // Je passe en str pour l'ajouter
@@ -556,6 +551,7 @@ pub fn draw_sptree_gntrees (
         let add_style_str :&str  =     &added_style;
         recphylostyle.push_str(add_style_str);
     }
+    // Ajout le style
     let style = Style::new(recphylostyle);
     document.append(style);
 
