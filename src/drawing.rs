@@ -63,9 +63,7 @@ pub fn draw_tree (
     };
     let style = Style::new(".gene { font:  ".to_owned()
         + &config.gene_police_size.to_string()+"px; fill:"
-        + &gene_color.to_string() + "; }" );
-    document.append(style);
-    let style = Style::new(".support { font:  ".to_owned()
+        + &gene_color.to_string() + "; } .support { font: "
         + &config.gene_police_size.to_string()+"px; fill: red; }" );
     document.append(style);
     let mut g = Element::new("g");
