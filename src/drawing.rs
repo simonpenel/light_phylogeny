@@ -64,10 +64,8 @@ pub fn draw_tree (
     let style = Style::new(".gene { font-size:  ".to_owned()
         + &config.gene_police_size.to_string()+"px; fill:"
         + &gene_color.to_string() + "; } .support { font-size: "
-        + &config.gene_police_size.to_string()+"px; fill: red; }" );
-    document.append(style);
-    let style = Style::new(".branch { font:  ".to_owned()
-        + &config.gene_police_size.to_string()+"px serif; fill: black; }" );
+        + &config.gene_police_size.to_string()+"px; fill: red; } .branch { font-size: "
+        + &config.gene_police_size.to_string()+"px; fill: black; }" );
     document.append(style);
     let mut g = Element::new("g");
     for  index in &tree.arena {
