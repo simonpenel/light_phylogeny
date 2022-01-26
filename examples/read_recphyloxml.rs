@@ -233,6 +233,7 @@ fn main() {
     let mut options: Options = Options::new();
     options.real_length_flag = true;
     options.species_internal = true;
+    options.branch = true;
     let mut config: Config = Config::new();
     config.species_police_size = 60.to_string();
     config.gene_police_size = 5.to_string();
