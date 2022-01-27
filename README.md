@@ -24,7 +24,7 @@ You may :
 
 You may use light_phylogeny functions and methods to build, manipulate, modify or draw phylogenetic trees.
 
-You may use the "thirdkind" software  https://github.com/simonpenel/thirdkind  based on 'light_phylogeny' to represent  trees with 1, 2 or 3 reconciliation levels
+You may use the "thirdkind" software  https://github.com/simonpenel/thirdkind/wiki  based on 'light_phylogeny' to represent  trees with 1, 2 or 3 reconciliation levels
 
 Keywords:  phylogeny, reconciled trees, phylogenetic trees
 
