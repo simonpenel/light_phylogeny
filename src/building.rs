@@ -13,8 +13,9 @@ use crate::arena::ArenaTree;
 use crate::arena::Config;
 use crate::arena::PIPEBLOCK;
 use crate::arena::{newick2tree,xml2tree};
-use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,shift_mod_xy,
-    set_middle_postorder,real_length,set_leaves_y_values,shift_nodes_y_values};
+use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,
+    check_contour_postorder_tidy_tree,shift_mod_xy,set_middle_postorder,real_length,
+    set_leaves_y_values,shift_nodes_y_values};
 use crate::arena::{map_species_trees,set_species_width,check_vertical_contour_postorder,
     bilan_mappings,center_gene_nodes,move_dupli_mappings,move_species_mappings,
     species_uniformisation,process_fl,uniformise_gene_leaves_y_values};
@@ -279,7 +280,8 @@ pub fn phyloxml_processing(
     // ---------------------------------------------------------
     // 2ème étape : Vérifie les contours
     // ---------------------------------------------------------
-     check_contour_postorder(&mut tree, root);
+     // check_contour_postorder(&mut tree, root);
+     check_contour_postorder_tidy_tree(&mut tree, root);
     // ---------------------------------------------------------
     // 3eme etape : Decale toutes les valeurs de x en fonction
     // de xmod

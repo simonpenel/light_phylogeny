@@ -1839,6 +1839,22 @@ pub fn  check_contour_postorder(tree: &mut ArenaTree<String>,index:usize) {
     else{
     }
 }
+
+
+/// Solve the conflicts between the left subtree and the right subtree.
+pub fn  check_contour_postorder_tidy_tree(tree: &mut ArenaTree<String>,index:usize) {
+    let children  = &mut  tree.arena[index].children;
+    if children.len() > 0 {
+        let left = children[0];
+        let right = children[1];
+        check_contour_postorder_tidy_tree(tree,left);
+        check_contour_postorder_tidy_tree(tree,right);
+        push_right_tidy_tree(tree,left,right);
+    }
+    else{
+    }
+}
+
 /// Get the leftest  or rightest x value of a node.
 pub fn node_xpos(tree: &mut ArenaTree<String>, index: usize, xmod: f32, operator : i32) -> f32 {
     tree.arena[index].x + tree.arena[index].xmod
@@ -1956,6 +1972,63 @@ pub fn  push_right(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize
     }
     0.0
 }
+
+/// Check for conficts between subtrees and shift conflicting right-hand subtrees to the right
+/// in order to solve detected conflicts.
+pub fn  push_right_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize) -> f32 {
+    info!("[push_right] compare right contour of {} and left contour of {}",left_tree, right_tree);
+    let mut right_co_of_left_tr  = vec![tree.arena[left_tree].x
+        + tree.arena[left_tree].xmod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK];
+    let depth_left_tr  = tree.depth(left_tree);
+    get_contour_right(tree,left_tree,depth_left_tr,&mut right_co_of_left_tr,0.0);
+    info!("[push_right] right contour of {} = {:?}",left_tree,right_co_of_left_tr);
+    let mut left_co_of_right_tr  = vec![tree.arena[right_tree].x
+        + tree.arena[right_tree].xmod - tree.arena[right_tree].nbg as f32 *PIPEBLOCK];
+    let depth_right_tr  = tree.depth(right_tree);
+    get_contour_left(tree,right_tree,depth_right_tr,&mut left_co_of_right_tr,0.0);
+    info!("[push_right] left contour of {} = {:?}",right_tree,left_co_of_right_tr);
+    // Si on   a pas le meme longeur de contour on complete le plus petit
+    // en remplissant ce qui manque avec la derniere valeur, pour eviter
+    // qu'un sous arbre vosin se place sous une feuille
+    // let right_len = right_co_of_left_tr.len();
+    // let left_len = left_co_of_right_tr.len();
+    // if left_len > right_len {
+    //     let last_val =  right_co_of_left_tr[right_len-1];
+    //     let last_vals =  vec![last_val;left_len-right_len];
+    //     right_co_of_left_tr.extend(last_vals.iter().copied());
+    //     info!("[push_right] complete right contour with last value {}", last_val);
+    // }
+    // if left_len < right_len {
+    //     let last_val =  left_co_of_right_tr[left_len-1];
+    //     let last_vals =  vec![last_val;right_len - left_len];
+    //     left_co_of_right_tr.extend(last_vals.iter().copied());
+    //     info!("[push_right] complete left contour with last value {}", last_val);
+    // }
+    info!("[push_right] comparing  right cont. of left tree: {:?}",right_co_of_left_tr);
+    info!("[push_right] with left cont. of right tree:       {:?} ",left_co_of_right_tr);
+    let iter = left_co_of_right_tr.iter().zip(right_co_of_left_tr).map(|(x, y )| (x-y));
+    let shift = iter.min_by(|x, y| (*x as i64) .cmp(&(*y as i64 )));
+    info!("[push_right] distance max  = {:?}",shift);
+    match shift {
+        Some(val) => {
+            info!("[push_right] distance max  = {:?}",shift);
+            if val <= 0.0 {// bidouilel
+                info!("[push_right] ================CONFLIT==========");
+                info!("[push_right] Modify node {:?}",tree.arena[right_tree]);
+                let x_mod =  tree.arena[right_tree].xmod;
+                info!("[push_right] initial x_mod = {}",x_mod);
+                let x_mod =  x_mod -1.0 *val + BLOCK ;//bidouille
+                info!("[push_right] new x_mod = {}",x_mod);
+                tree.arena[right_tree].set_xmod_noref(x_mod);
+                info!("[push_right] updated node {:?}",tree.arena[right_tree]);
+                info!("[push_right] ================CONFLIT==========");
+            }
+        },
+        None => {}
+    }
+    0.0
+}
+
 /// Set the x of the father between its children.
 pub fn  set_middle_postorder(tree: &mut ArenaTree<String>,index:usize) {
     let children  = &mut  tree.arena[index].children;
