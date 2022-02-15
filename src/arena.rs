@@ -1980,13 +1980,15 @@ pub fn  push_right(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize
 /// in order to solve detected conflicts.
 pub fn  push_right_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize) -> f32 {
     info!("[push_right] compare right contour of {} and left contour of {}",left_tree, right_tree);
-    let mut left_x = tree.arena[left_tree].xmod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK;
+    let mut left_x = tree.arena[left_tree].x + tree.arena[left_tree].xmod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK;
+    let mut left_y = tree.arena[left_tree].y + tree.arena[left_tree].ymod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK;
     let mut right_x = tree.arena[right_tree].xmod - tree.arena[right_tree].nbg as f32 *PIPEBLOCK;
     let mut dmin =  right_x - left_x;
     let left_children = &tree.arena[left_tree].children;
     let right_tree_children = &tree.arena[right_tree].children;
     if left_children.len() > 0 {
-        let rightson_of_left = left_children[1];
+        let right_son_of_left = left_children[1];
+        left_y = tree.arena[right_son_of_left].y + tree.arena[right_son_of_left].ymod + tree.arena[right_son_of_left].nbg as f32 *PIPEBLOCK;
 
     }
 
