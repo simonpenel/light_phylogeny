@@ -280,8 +280,8 @@ pub fn phyloxml_processing(
     // ---------------------------------------------------------
     // 2ème étape : Vérifie les contours
     // ---------------------------------------------------------
-     // check_contour_postorder(&mut tree, root);
-     check_contour_postorder_tidy_tree(&mut tree, root);
+     check_contour_postorder(&mut tree, root);
+
     // ---------------------------------------------------------
     // 3eme etape : Decale toutes les valeurs de x en fonction
     // de xmod
@@ -304,6 +304,7 @@ pub fn phyloxml_processing(
     // ---------------------------------------------------------
     if options.real_length_flag {
         real_length(&mut tree, root, &mut 0.0, & options);
+        check_contour_postorder_tidy_tree(&mut tree, root);
     }
     // ---------------------------------------------------------
     // Fin: Ecriture du fichier svg
