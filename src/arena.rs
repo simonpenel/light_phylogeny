@@ -1975,6 +1975,35 @@ pub fn  push_right(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize
     }
     0.0
 }
+pub fn  dmin_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize, dmin:f32) -> f32 {
+// let  left_x = tree.arena[left_tree].x + tree.arena[left_tree].xmod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK;
+let  left_y = tree.arena[left_tree].y + tree.arena[left_tree].ymod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK;
+let left_children = &tree.arena[left_tree].children;
+let right_children = &tree.arena[right_tree].children;
+match  left_children.len() > 0 {
+    true => {
+            let right_son_of_left = left_children[1];
+            let left_y = tree.arena[right_son_of_left].y + tree.arena[right_son_of_left].ymod + tree.arena[right_son_of_left].nbg as f32 *PIPEBLOCK;
+            let right_y = tree.arena[right_tree].y + tree.arena[right_tree].ymod + tree.arena[right_tree].nbg as f32 *PIPEBLOCK;
+            if left_y < right_y {
+                let  left_x = tree.arena[right_son_of_left].x + tree.arena[right_son_of_left].xmod + tree.arena[right_son_of_left].nbg as f32 *PIPEBLOCK;
+                let  right_x = tree.arena[right_tree].x + tree.arena[right_tree].xmod - tree.arena[right_tree].nbg as f32 *PIPEBLOCK;
+                let new_d = right_x - left_x;
+                match dmin < new_d {
+                    true => dmin_tidy_tree(tree,right_son_of_left,right_tree, dmin),
+                    false => dmin_tidy_tree(tree,right_son_of_left,right_tree, new_d),
+                }
+            }
+            else  {
+
+                // dmin_tidy_tree(tree,right_son_of_left,right_tree:usize, dmin)
+                dmin
+            }
+        },
+    false => dmin,
+
+    }
+}
 
 /// Check for conficts between subtrees and shift conflicting right-hand subtrees to the right
 /// in order to solve detected conflicts.
