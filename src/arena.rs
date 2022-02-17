@@ -1861,12 +1861,14 @@ pub fn  check_contour_postorder_tidy_tree(tree: &mut ArenaTree<String>,index:usi
     if children.len() > 0 {
         let left = children[0];
         let right = children[1];
-        check_contour_postorder_tidy_tree(tree,left);
-        check_contour_postorder_tidy_tree(tree,right);
+        // check_contour_postorder_tidy_tree(tree,left);
+        // check_contour_postorder_tidy_tree(tree,right);
         println!("DEBUG LEFT  = {:?} {:?}" , tree.arena[left].val,tree.arena[left].name);
         println!("DEBUG RIGHT = {:?} {:?}" , tree.arena[right].val,tree.arena[right].name);
 
         push_right_tidy_tree(tree,left,right);
+        check_contour_postorder_tidy_tree(tree,left);
+        check_contour_postorder_tidy_tree(tree,right);
     }
     else{
     }
@@ -2100,22 +2102,25 @@ pub fn  push_right_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_
     let toto = dmin_tidy(right_co_of_left_tr,left_co_of_right_tr,&mut dmin, &mut 0, &mut 0);
     println!("[push_right_tidy_tree] DMIN = {:?}",dmin);
 
-    if dmin > 200.0 {
-        tree.shift_x_subtree(left_tree,dmin -200.0);
+    if dmin >= 10.0 {
+        // tree.shift_x_subtree(left_tree,dmin/2.0 -5.0);
+        tree.shift_x_subtree(left_tree,dmin -10.0);
+        // tree.shift_x_subtree(right_tree,-dmin/2.0 +5.0);
         // let x =  tree.arena[left_tree].x;
         // println!("[push_right_tidy_tree] x = {:?}",x);
         // let x =  x + dmin - 10.0;
         // println!("[push_right_tidy_tree] x = {:?}",x);
         // tree.arena[left_tree].set_x_noref(x);
         }
-    if dmin < -60.0 {
-        // tree.shift_x_subtree(right_tree,dmin + 60.0);
-        // let x =  tree.arena[left_tree].x;
-        // println!("[push_right_tidy_tree] x = {:?}",x);
-        // let x =  x + dmin - 10.0;
-        // println!("[push_right_tidy_tree] x = {:?}",x);
-        // tree.arena[left_tree].set_x_noref(x);
-        }
+    // if dmin > 120.0 {
+    //     tree.shift_x_subtree(left_tree,50.0);
+    //     // let x =  tree.arena[left_tree].x;
+    //     // println!("[push_right_tidy_tree] x = {:?}",x);
+    //     // let x =  x + dmin - 10.0;
+    //     // println!("[push_right_tidy_tree] x = {:?}",x);
+    //     // tree.arena[left_tree].set_x_noref(x);
+    //     }
+
         //
         // if dmin < -10.0 {
         //     let x =  tree.arena[right_tree].x;
