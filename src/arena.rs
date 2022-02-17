@@ -2100,16 +2100,16 @@ pub fn  push_right_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_
     let toto = dmin_tidy(right_co_of_left_tr,left_co_of_right_tr,&mut dmin, &mut 0, &mut 0);
     println!("[push_right_tidy_tree] DMIN = {:?}",dmin);
 
-    if dmin > 10.0 {
-        tree.shift_x_subtree(left_tree,dmin - 10.0);
+    if dmin > 60.0 {
+        tree.shift_x_subtree(left_tree,dmin - 60.0);
         // let x =  tree.arena[left_tree].x;
         // println!("[push_right_tidy_tree] x = {:?}",x);
         // let x =  x + dmin - 10.0;
         // println!("[push_right_tidy_tree] x = {:?}",x);
         // tree.arena[left_tree].set_x_noref(x);
         }
-    if dmin < -10.0 {
-        tree.shift_x_subtree(right_tree,dmin + 10.0);
+    if dmin < -60.0 {
+        tree.shift_x_subtree(right_tree,dmin + 60.0);
         // let x =  tree.arena[left_tree].x;
         // println!("[push_right_tidy_tree] x = {:?}",x);
         // let x =  x + dmin - 10.0;
