@@ -1938,8 +1938,8 @@ pub fn  get_contour_right(tree: &mut ArenaTree<String>,index:usize,depth:usize,
 pub fn  get_contour_tidy_right(tree: &mut ArenaTree<String>,index:usize,depth:usize,
     contour_right: &mut Vec<(f32,f32)>,parent_xmod: f32)  {
     info!("[get_contour_tidy_right] process node {:?}",tree.arena[index]);
-    let x = tree.arena[index].x + tree.arena[index].xmod + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
-    let y = tree.arena[index].y + tree.arena[index].ymod + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
+    let x = tree.arena[index].x  + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
+    let y = tree.arena[index].y  + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
     contour_right.push((x,y));
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
@@ -1951,8 +1951,8 @@ pub fn  get_contour_tidy_right(tree: &mut ArenaTree<String>,index:usize,depth:us
 pub fn  get_contour_tidy_left(tree: &mut ArenaTree<String>,index:usize,depth:usize,
     contour_left: &mut Vec<(f32,f32)>,parent_xmod: f32)  {
     info!("[get_contour_tidy_left] process node {:?}",tree.arena[index]);
-    let x = tree.arena[index].x + tree.arena[index].xmod - tree.arena[index].nbg as f32 *PIPEBLOCK /2.0 ;
-    let y = tree.arena[index].y + tree.arena[index].ymod + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
+    let x = tree.arena[index].x  - tree.arena[index].nbg as f32 *PIPEBLOCK /2.0 ;
+    let y = tree.arena[index].y + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
     contour_left.push((x,y));
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
@@ -2100,8 +2100,8 @@ pub fn  push_right_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_
     let toto = dmin_tidy(right_co_of_left_tr,left_co_of_right_tr,&mut dmin, &mut 0, &mut 0);
     println!("[push_right_tidy_tree] DMIN = {:?}",dmin);
 
-    if dmin > 60.0 {
-        tree.shift_x_subtree(left_tree,dmin - 60.0);
+    if dmin > 200.0 {
+        tree.shift_x_subtree(left_tree,dmin -200.0);
         // let x =  tree.arena[left_tree].x;
         // println!("[push_right_tidy_tree] x = {:?}",x);
         // let x =  x + dmin - 10.0;
@@ -2109,7 +2109,7 @@ pub fn  push_right_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_
         // tree.arena[left_tree].set_x_noref(x);
         }
     if dmin < -60.0 {
-        tree.shift_x_subtree(right_tree,dmin + 60.0);
+        // tree.shift_x_subtree(right_tree,dmin + 60.0);
         // let x =  tree.arena[left_tree].x;
         // println!("[push_right_tidy_tree] x = {:?}",x);
         // let x =  x + dmin - 10.0;
