@@ -312,6 +312,20 @@ where
             }
         max
     }
+    /// Shift subtree on x .
+    pub fn shift_x_subtree(&mut self,idx:usize, shift:f32)  {
+        let mut x = self.arena[idx].x;
+        x = x + shift;
+        &self.arena[idx].set_x_noref(x);
+        let children = &self.arena[idx].children;
+        if children.len() > 0 {
+        let left = children[0];
+        let right = children[1];
+        &self.shift_x_subtree(left, shift);
+        &self.shift_x_subtree(right, shift);
+        }
+
+    }
     /// Copy a whole ArenaTree structure.
     pub fn copie(&mut self) -> ArenaTree<String> {
         let  mut new: ArenaTree<String> = ArenaTree::default();
@@ -1920,6 +1934,32 @@ pub fn  get_contour_right(tree: &mut ArenaTree<String>,index:usize,depth:usize,
         get_contour_right(tree,right,depth,contour_right,tree.arena[index].xmod + parent_xmod );
     }
 }
+/// Get the right 'contour' of a sub tree.
+pub fn  get_contour_tidy_right(tree: &mut ArenaTree<String>,index:usize,depth:usize,
+    contour_right: &mut Vec<(f32,f32)>,parent_xmod: f32)  {
+    info!("[get_contour_tidy_right] process node {:?}",tree.arena[index]);
+    let x = tree.arena[index].x + tree.arena[index].xmod + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
+    let y = tree.arena[index].y + tree.arena[index].ymod + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
+    contour_right.push((x,y));
+    let children  = &mut  tree.arena[index].children;
+    if children.len() > 0 {
+        let right = children[1];
+        get_contour_tidy_right(tree,right,depth,contour_right,tree.arena[index].xmod + parent_xmod );
+    }
+}
+/// Get the left 'contour' of a sub tree.
+pub fn  get_contour_tidy_left(tree: &mut ArenaTree<String>,index:usize,depth:usize,
+    contour_left: &mut Vec<(f32,f32)>,parent_xmod: f32)  {
+    info!("[get_contour_tidy_left] process node {:?}",tree.arena[index]);
+    let x = tree.arena[index].x + tree.arena[index].xmod - tree.arena[index].nbg as f32 *PIPEBLOCK /2.0 ;
+    let y = tree.arena[index].y + tree.arena[index].ymod + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
+    contour_left.push((x,y));
+    let children  = &mut  tree.arena[index].children;
+    if children.len() > 0 {
+        let left = children[0];
+        get_contour_tidy_left(tree,left,depth,contour_left,tree.arena[index].xmod + parent_xmod );
+    }
+}
 /// Check for conficts between subtrees and shift conflicting right-hand subtrees to the right
 /// in order to solve detected conflicts.
 pub fn  push_right(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize) -> f32 {
@@ -1995,35 +2035,109 @@ match  left_children.len() > 0 {
                 }
             }
             else  {
+                //  je prend le fils gauche de l'arbre droit
+                match  right_children.len() > 0 {
+                true => {
+                let left_son_of_right = right_children[0];
+                let  left_x = tree.arena[right_son_of_left].x + tree.arena[right_son_of_left].xmod + tree.arena[right_son_of_left].nbg as f32 *PIPEBLOCK;
+                let  right_x = tree.arena[left_son_of_right].x + tree.arena[left_son_of_right].xmod - tree.arena[left_son_of_right].nbg as f32 *PIPEBLOCK;
+                let new_d = right_x - left_x;
+                match dmin < new_d {
+                    true => dmin_tidy_tree(tree,right_son_of_left,left_son_of_right, dmin),
+                    false => dmin_tidy_tree(tree,right_son_of_left,left_son_of_right, new_d),
+                }
 
+                },
+                false => dmin,
+                }
                 // dmin_tidy_tree(tree,right_son_of_left,right_tree:usize, dmin)
-                dmin
+                // dmin
             }
         },
     false => dmin,
 
     }
 }
-
+pub fn  dmin_tidy(cont_left:Vec<(f32,f32)>,cont_right:Vec<(f32,f32)>, dmin:&mut f32, index_L:&mut usize,index_R:&mut usize) -> f32 {
+let max_L = cont_left.len();
+let max_R = cont_right.len();
+// let mut index_L = 0;
+// let mut index_R = 0;
+let mut d = cont_right[*index_R].0 - cont_left[*index_L].0;
+if d < *dmin {
+    *dmin = d;
+    }
+if cont_right[*index_R].1 > cont_left[*index_L].1 {
+    *index_R = *index_R + 1;
+    if *index_R < max_R {
+        dmin_tidy(cont_left,cont_right,dmin,index_L,index_R);
+    }
+}
+else  {
+    *index_L = *index_L + 1;
+    if *index_L < max_L {
+        dmin_tidy(cont_left,cont_right,dmin,index_L,index_R);
+    }
+}
+// if cont_right[index_R].1 > cont_left[index_L].1
+0.0
+}
 /// Check for conficts between subtrees and shift conflicting right-hand subtrees to the right
 /// in order to solve detected conflicts.
 pub fn  push_right_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize) -> f32 {
-    info!("[push_right] compare right contour of {} and left contour of {}",left_tree, right_tree);
-    let mut left_x = tree.arena[left_tree].x + tree.arena[left_tree].xmod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK;
-    let mut left_y = tree.arena[left_tree].y + tree.arena[left_tree].ymod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK;
-    let mut right_x = tree.arena[right_tree].xmod - tree.arena[right_tree].nbg as f32 *PIPEBLOCK;
-    let mut dmin =  right_x - left_x;
-    let left_children = &tree.arena[left_tree].children;
-    let right_tree_children = &tree.arena[right_tree].children;
-    if left_children.len() > 0 {
-        let right_son_of_left = left_children[1];
-        left_y = tree.arena[right_son_of_left].y + tree.arena[right_son_of_left].ymod + tree.arena[right_son_of_left].nbg as f32 *PIPEBLOCK;
+    println!("[push_right_tidy_tree] compare right contour of {} {} and left contour of {} {}",tree.arena[left_tree].val,tree.arena[left_tree].name,tree.arena[right_tree].val,tree.arena[right_tree].name );
+    let mut  right_co_of_left_tr:std::vec::Vec<(f32,f32)> = Vec::new();
+    let depth_left_tr  = tree.depth(left_tree);
+    get_contour_tidy_right(tree,left_tree,depth_left_tr,&mut right_co_of_left_tr,0.0);
+    println!("[push_right_tidy_tree] Contour right = {:?}",right_co_of_left_tr);
+    let mut  left_co_of_right_tr:std::vec::Vec<(f32,f32)> = Vec::new();
+    let depth_right_tr  = tree.depth(right_tree);
+    get_contour_tidy_left(tree,right_tree,depth_right_tr,&mut left_co_of_right_tr,0.0);
+    println!("[push_right_tidy_tree] Contour left = {:?}",left_co_of_right_tr);
 
-    }
+    let mut dmin = 100000.0;
+    println!("[push_right_tidy_tree] DMIN = {:?}",dmin);
+    let toto = dmin_tidy(right_co_of_left_tr,left_co_of_right_tr,&mut dmin, &mut 0, &mut 0);
+    println!("[push_right_tidy_tree] DMIN = {:?}",dmin);
 
-    // let mut right_co_of_left_tr  = vec![tree.arena[left_tree].x
-    //     + tree.arena[left_tree].xmod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK];
+    if dmin > 10.0 {
+        tree.shift_x_subtree(left_tree,dmin - 10.0);
+        // let x =  tree.arena[left_tree].x;
+        // println!("[push_right_tidy_tree] x = {:?}",x);
+        // let x =  x + dmin - 10.0;
+        // println!("[push_right_tidy_tree] x = {:?}",x);
+        // tree.arena[left_tree].set_x_noref(x);
+        }
+    if dmin < -10.0 {
+        tree.shift_x_subtree(right_tree,dmin + 10.0);
+        // let x =  tree.arena[left_tree].x;
+        // println!("[push_right_tidy_tree] x = {:?}",x);
+        // let x =  x + dmin - 10.0;
+        // println!("[push_right_tidy_tree] x = {:?}",x);
+        // tree.arena[left_tree].set_x_noref(x);
+        }
+        //
+        // if dmin < -10.0 {
+        //     let x =  tree.arena[right_tree].x;
+        //     println!("[push_right_tidy_tree] x = {:?}",x);
+        //     let x =  x - dmin + 10.0;
+        //     println!("[push_right_tidy_tree] x = {:?}",x);
+        //     tree.arena[right_tree].set_x_noref(x);
+        //     }
+// if dmin < -1.0 {
+//         let x =  tree.arena[right_tree].x;
+//         println!("[push_right_tidy_tree] x = {:?}",x);
+//         let x =  x - dmin + 1.0;
+//         println!("[push_right_tidy_tree] x = {:?}",x);
+//         tree.arena[right_tree].set_x_noref(x);
+//         }
+
+
+    //             info!("[push_right] new x_mod = {}",x_mod);
+    //             tree.arena[right_tree].set_xmod_noref(x_mod);
+
     // let depth_left_tr  = tree.depth(left_tree);
+// let mut gene_nodes:std::vec::Vec<roxmltree::NodeId> = Vec::new();
     // get_contour_right(tree,left_tree,depth_left_tr,&mut right_co_of_left_tr,0.0);
     // info!("[push_right] right contour of {} = {:?}",left_tree,right_co_of_left_tr);
     // let mut left_co_of_right_tr  = vec![tree.arena[right_tree].x
