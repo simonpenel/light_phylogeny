@@ -1946,7 +1946,16 @@ pub fn  get_contour_tidy_right(tree: &mut ArenaTree<String>,index:usize,depth:us
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
         let right = children[1];
+        let left = children[0];
+        let lasty = contour_right[contour_right.len()-1].1;
+        let lefty = tree.arena[left].y  + tree.arena[left].nbg as f32 *PIPEBLOCK /2.0;
         get_contour_tidy_right(tree,right,depth,contour_right,tree.arena[index].xmod + parent_xmod );
+        if lefty >= lasty {
+                    get_contour_tidy_right(tree,left,depth,contour_right,tree.arena[index].xmod + parent_xmod );
+        }
+
+
+
     }
 }
 /// Get the left 'contour' of a sub tree.
@@ -1959,7 +1968,15 @@ pub fn  get_contour_tidy_left(tree: &mut ArenaTree<String>,index:usize,depth:usi
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
         let left = children[0];
+        let right = children[1];
+        let lasty = contour_left[contour_left.len()-1].1;
+        let righty = tree.arena[right].y  + tree.arena[right].nbg as f32 *PIPEBLOCK /2.0;
+
         get_contour_tidy_left(tree,left,depth,contour_left,tree.arena[index].xmod + parent_xmod );
+        if righty >= lasty {
+            get_contour_tidy_left(tree,right,depth,contour_left,tree.arena[index].xmod + parent_xmod );
+        }
+
     }
 }
 /// Check for conficts between subtrees and shift conflicting right-hand subtrees to the right
@@ -2017,49 +2034,49 @@ pub fn  push_right(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize
     }
     0.0
 }
-pub fn  dmin_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize, dmin:f32) -> f32 {
-// let  left_x = tree.arena[left_tree].x + tree.arena[left_tree].xmod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK;
-let  left_y = tree.arena[left_tree].y + tree.arena[left_tree].ymod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK;
-let left_children = &tree.arena[left_tree].children;
-let right_children = &tree.arena[right_tree].children;
-match  left_children.len() > 0 {
-    true => {
-            let right_son_of_left = left_children[1];
-            let left_y = tree.arena[right_son_of_left].y + tree.arena[right_son_of_left].ymod + tree.arena[right_son_of_left].nbg as f32 *PIPEBLOCK;
-            let right_y = tree.arena[right_tree].y + tree.arena[right_tree].ymod + tree.arena[right_tree].nbg as f32 *PIPEBLOCK;
-            if left_y < right_y {
-                let  left_x = tree.arena[right_son_of_left].x + tree.arena[right_son_of_left].xmod + tree.arena[right_son_of_left].nbg as f32 *PIPEBLOCK;
-                let  right_x = tree.arena[right_tree].x + tree.arena[right_tree].xmod - tree.arena[right_tree].nbg as f32 *PIPEBLOCK;
-                let new_d = right_x - left_x;
-                match dmin < new_d {
-                    true => dmin_tidy_tree(tree,right_son_of_left,right_tree, dmin),
-                    false => dmin_tidy_tree(tree,right_son_of_left,right_tree, new_d),
-                }
-            }
-            else  {
-                //  je prend le fils gauche de l'arbre droit
-                match  right_children.len() > 0 {
-                true => {
-                let left_son_of_right = right_children[0];
-                let  left_x = tree.arena[right_son_of_left].x + tree.arena[right_son_of_left].xmod + tree.arena[right_son_of_left].nbg as f32 *PIPEBLOCK;
-                let  right_x = tree.arena[left_son_of_right].x + tree.arena[left_son_of_right].xmod - tree.arena[left_son_of_right].nbg as f32 *PIPEBLOCK;
-                let new_d = right_x - left_x;
-                match dmin < new_d {
-                    true => dmin_tidy_tree(tree,right_son_of_left,left_son_of_right, dmin),
-                    false => dmin_tidy_tree(tree,right_son_of_left,left_son_of_right, new_d),
-                }
-
-                },
-                false => dmin,
-                }
-                // dmin_tidy_tree(tree,right_son_of_left,right_tree:usize, dmin)
-                // dmin
-            }
-        },
-    false => dmin,
-
-    }
-}
+// pub fn  dmin_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize, dmin:f32) -> f32 {
+// // let  left_x = tree.arena[left_tree].x + tree.arena[left_tree].xmod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK;
+// let  left_y = tree.arena[left_tree].y + tree.arena[left_tree].ymod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK;
+// let left_children = &tree.arena[left_tree].children;
+// let right_children = &tree.arena[right_tree].children;
+// match  left_children.len() > 0 {
+//     true => {
+//             let right_son_of_left = left_children[1];
+//             let left_y = tree.arena[right_son_of_left].y + tree.arena[right_son_of_left].ymod + tree.arena[right_son_of_left].nbg as f32 *PIPEBLOCK;
+//             let right_y = tree.arena[right_tree].y + tree.arena[right_tree].ymod + tree.arena[right_tree].nbg as f32 *PIPEBLOCK;
+//             if left_y < right_y {
+//                 let  left_x = tree.arena[right_son_of_left].x + tree.arena[right_son_of_left].xmod + tree.arena[right_son_of_left].nbg as f32 *PIPEBLOCK;
+//                 let  right_x = tree.arena[right_tree].x + tree.arena[right_tree].xmod - tree.arena[right_tree].nbg as f32 *PIPEBLOCK;
+//                 let new_d = right_x - left_x;
+//                 match dmin < new_d {
+//                     true => dmin_tidy_tree(tree,right_son_of_left,right_tree, dmin),
+//                     false => dmin_tidy_tree(tree,right_son_of_left,right_tree, new_d),
+//                 }
+//             }
+//             else  {
+//                 //  je prend le fils gauche de l'arbre droit
+//                 match  right_children.len() > 0 {
+//                 true => {
+//                 let left_son_of_right = right_children[0];
+//                 let  left_x = tree.arena[right_son_of_left].x + tree.arena[right_son_of_left].xmod + tree.arena[right_son_of_left].nbg as f32 *PIPEBLOCK;
+//                 let  right_x = tree.arena[left_son_of_right].x + tree.arena[left_son_of_right].xmod - tree.arena[left_son_of_right].nbg as f32 *PIPEBLOCK;
+//                 let new_d = right_x - left_x;
+//                 match dmin < new_d {
+//                     true => dmin_tidy_tree(tree,right_son_of_left,left_son_of_right, dmin),
+//                     false => dmin_tidy_tree(tree,right_son_of_left,left_son_of_right, new_d),
+//                 }
+//
+//                 },
+//                 false => dmin,
+//                 }
+//                 // dmin_tidy_tree(tree,right_son_of_left,right_tree:usize, dmin)
+//                 // dmin
+//             }
+//         },
+//     false => dmin,
+//
+//     }
+// }
 pub fn  dmin_tidy(cont_left:Vec<(f32,f32)>,cont_right:Vec<(f32,f32)>, dmin:&mut f32, index_L:&mut usize,index_R:&mut usize) -> f32 {
 let max_L = cont_left.len();
 let max_R = cont_right.len();
@@ -2102,9 +2119,9 @@ pub fn  push_right_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_
     let toto = dmin_tidy(right_co_of_left_tr,left_co_of_right_tr,&mut dmin, &mut 0, &mut 0);
     println!("[push_right_tidy_tree] DMIN = {:?}",dmin);
 
-    if dmin >= 10.0 {
+    if dmin >= PIPEBLOCK *2.0 {
         // tree.shift_x_subtree(left_tree,dmin/2.0 -5.0);
-        tree.shift_x_subtree(left_tree,dmin -10.0);
+        tree.shift_x_subtree(left_tree,dmin - PIPEBLOCK * 2.0 );
         // tree.shift_x_subtree(right_tree,-dmin/2.0 +5.0);
         // let x =  tree.arena[left_tree].x;
         // println!("[push_right_tidy_tree] x = {:?}",x);
