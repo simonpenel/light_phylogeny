@@ -1861,14 +1861,14 @@ pub fn  check_contour_postorder_tidy_tree(tree: &mut ArenaTree<String>,index:usi
     if children.len() > 0 {
         let left = children[0];
         let right = children[1];
-        // check_contour_postorder_tidy_tree(tree,left);
-        // check_contour_postorder_tidy_tree(tree,right);
+        check_contour_postorder_tidy_tree(tree,left);
+        check_contour_postorder_tidy_tree(tree,right);
         println!("DEBUG LEFT  = {:?} {:?}" , tree.arena[left].val,tree.arena[left].name);
         println!("DEBUG RIGHT = {:?} {:?}" , tree.arena[right].val,tree.arena[right].name);
 
         push_right_tidy_tree(tree,left,right);
-        check_contour_postorder_tidy_tree(tree,left);
-        check_contour_postorder_tidy_tree(tree,right);
+        // check_contour_postorder_tidy_tree(tree,left);
+        // check_contour_postorder_tidy_tree(tree,right);
     }
     else{
     }
