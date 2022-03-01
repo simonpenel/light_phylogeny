@@ -1950,7 +1950,7 @@ pub fn  get_contour_tidy_right(tree: &mut ArenaTree<String>,index:usize,depth:us
         let lasty = contour_right[contour_right.len()-1].1;
         let lefty = tree.arena[left].y  + tree.arena[left].nbg as f32 *PIPEBLOCK /2.0;
         get_contour_tidy_right(tree,right,depth,contour_right,tree.arena[index].xmod + parent_xmod );
-        if lefty > lasty {
+        if lefty >= lasty {
                     get_contour_tidy_right(tree,left,depth,contour_right,tree.arena[index].xmod + parent_xmod );
         }
 
@@ -1973,7 +1973,7 @@ pub fn  get_contour_tidy_left(tree: &mut ArenaTree<String>,index:usize,depth:usi
         let righty = tree.arena[right].y  + tree.arena[right].nbg as f32 *PIPEBLOCK /2.0;
 
         get_contour_tidy_left(tree,left,depth,contour_left,tree.arena[index].xmod + parent_xmod );
-        if righty > lasty {
+        if righty >= lasty {
             get_contour_tidy_left(tree,right,depth,contour_left,tree.arena[index].xmod + parent_xmod );
         }
 
@@ -2119,9 +2119,9 @@ pub fn  push_right_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_
     let toto = dmin_tidy(right_co_of_left_tr,left_co_of_right_tr,&mut dmin, &mut 0, &mut 0);
     println!("[push_right_tidy_tree] DMIN = {:?}",dmin);
 
-    if dmin >= 10.0 {
+    if dmin >= PIPEBLOCK *2.0 {
         // tree.shift_x_subtree(left_tree,dmin/2.0 -5.0);
-        tree.shift_x_subtree(left_tree,dmin -10.0);
+        tree.shift_x_subtree(left_tree,dmin - PIPEBLOCK * 2.0 );
         // tree.shift_x_subtree(right_tree,-dmin/2.0 +5.0);
         // let x =  tree.arena[left_tree].x;
         // println!("[push_right_tidy_tree] x = {:?}",x);
