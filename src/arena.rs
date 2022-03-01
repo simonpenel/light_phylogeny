@@ -1946,7 +1946,16 @@ pub fn  get_contour_tidy_right(tree: &mut ArenaTree<String>,index:usize,depth:us
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
         let right = children[1];
+        let left = children[0];
+        let lasty = contour_right[contour_right.len()-1].1;
+        let lefty = tree.arena[left].y  + tree.arena[left].nbg as f32 *PIPEBLOCK /2.0;
         get_contour_tidy_right(tree,right,depth,contour_right,tree.arena[index].xmod + parent_xmod );
+        if lefty > lasty {
+                    get_contour_tidy_right(tree,left,depth,contour_right,tree.arena[index].xmod + parent_xmod );
+        }
+
+
+
     }
 }
 /// Get the left 'contour' of a sub tree.
@@ -1959,7 +1968,15 @@ pub fn  get_contour_tidy_left(tree: &mut ArenaTree<String>,index:usize,depth:usi
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
         let left = children[0];
+        let right = children[1];
+        let lasty = contour_left[contour_left.len()-1].1;
+        let righty = tree.arena[right].y  + tree.arena[right].nbg as f32 *PIPEBLOCK /2.0;
+
         get_contour_tidy_left(tree,left,depth,contour_left,tree.arena[index].xmod + parent_xmod );
+        if righty > lasty {
+            get_contour_tidy_left(tree,right,depth,contour_left,tree.arena[index].xmod + parent_xmod );
+        }
+
     }
 }
 /// Check for conficts between subtrees and shift conflicting right-hand subtrees to the right
