@@ -304,9 +304,11 @@ pub fn phyloxml_processing(
     // ---------------------------------------------------------
     if options.real_length_flag {
         real_length(&mut tree, root, &mut 0.0, & options);
-        check_contour_postorder_tidy_tree(&mut tree, root);
-        // shift_mod_xy(&mut tree, root, &mut 0.0, &mut 0.0);
-        set_middle_postorder(&mut tree, root);
+        if options.tidy{
+            check_contour_postorder_tidy_tree(&mut tree, root);
+            // shift_mod_xy(&mut tree, root, &mut 0.0, &mut 0.0);
+            set_middle_postorder(&mut tree, root);
+        }
     }
     // ---------------------------------------------------------
     // Fin: Ecriture du fichier svg
