@@ -8,7 +8,7 @@
         <name>species_1</name>
         <clade>
           <name>species_2</name>
-            <branch_length>0.18105</branch_length>
+            <branch_length>0.48105</branch_length>
             <confidence type="unknown">89.0</confidence>
             <clade>
             <name>species_3</name>
