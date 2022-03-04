@@ -1866,9 +1866,11 @@ pub fn  check_contour_postorder_tidy_tree(tree: &mut ArenaTree<String>,index:usi
         let left = children[0];
         let right = children[1];
         // push_right_tidy_tree(tree,left,right);
-        check_contour_postorder_tidy_tree(tree,left);
         check_contour_postorder_tidy_tree(tree,right);
+        check_contour_postorder_tidy_tree(tree,left);
+        // check_contour_postorder_tidy_tree(tree,right);
         push_right_tidy_tree(tree,left,right);
+        set_middle_postorder(tree, 0);
         // push_right_tidy_tree(tree,left,right);
         // check_contour_postorder_tidy_tree(tree,left);
         // check_contour_postorder_tidy_tree(tree,right);
@@ -1946,6 +1948,10 @@ pub fn  get_contour_tidy_right(tree: &mut ArenaTree<String>,index:usize,depth:us
     contour_right: &mut Vec<(f32,f32,String)>, ymax: &mut f32)  {
     let x = tree.arena[index].x  + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
     let y = tree.arena[index].y  + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
+
+    // let x = tree.arena[index].x  + tree.arena[index].width /2.0;
+    // let y = tree.arena[index].y  + tree.arena[index].height /2.0;
+
     let name  = &tree.arena[index].name;
     // println!("[get_contour_tidy_right] test   {:?} x={} y={} ymax={}", tree.arena[index].name,x,y,ymax);
     if y >= *ymax {
@@ -1996,6 +2002,9 @@ pub fn  get_contour_tidy_left(tree: &mut ArenaTree<String>,index:usize,depth:usi
     contour_left: &mut Vec<(f32,f32,String)>, ymax: &mut f32)  {
     let x = tree.arena[index].x  - tree.arena[index].nbg as f32 *PIPEBLOCK /2.0 ;
     let y = tree.arena[index].y + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
+    // let x = tree.arena[index].x  - tree.arena[index].width /2.0 ;
+    // let y = tree.arena[index].y + tree.arena[index].height /2.0;
+
     let name =  &tree.arena[index].name;
     // println!("[get_contour_tidy_left] test   {:?} x={} y={} ymax={}", tree.arena[index].name,x,y,ymax);
 
@@ -2162,10 +2171,13 @@ pub fn  push_right_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_
     let toto = dmin_tidy(right_co_of_left_tr,left_co_of_right_tr,&mut dmin, &mut 0, &mut 0);
     println!("[push_right_tidy_tree] DMIN = {:?} [max = {}]",dmin,PIPEBLOCK);
 
-    if dmin >= BLOCK * 1.0 {
+    if dmin > BLOCK * 0.50 {
     println!("[push_right_tidy_tree] SHIFTING SUBTREE  {:?} {:?}",tree.arena[left_tree].val,tree.arena[left_tree].name);
     // tree.shift_x_subtree(left_tree,dmin - PIPEBLOCK *4.0 );
-    tree.shift_x_subtree(left_tree,dmin - BLOCK * 1.0  );
+    tree.shift_x_subtree(left_tree,dmin - BLOCK * 0.50  );
+
+    set_middle_postorder( tree, 0);
+
     // bouge son frere de gauch si existe
     match  tree.arena[left_tree].parent {
         None => {},
