@@ -409,6 +409,8 @@ pub struct Options{
     pub thickness_gene: usize,
     /// Display the abundance of the redundant transfers (recPhyloXML).
     pub thickness_disp_score:bool,
+    /// Tidy option
+    pub tidy:bool,
     /// Optimise species branches left/right orientation in order to minimise transfer crossings (recPhyloXML, under development).
     pub optimisation:bool,
     /// Scale to be applied to the heigth of the tree.
@@ -444,6 +446,7 @@ impl Options {
             thickness_thresh:0,
             thickness_gene:0,
             thickness_disp_score:false,
+            tidy:false,
             optimisation:false,
             height:1.0,
             width:1.0,
