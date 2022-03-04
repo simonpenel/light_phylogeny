@@ -190,7 +190,8 @@ pub fn draw_tree (
     false => y_viewbox,
     };
     // transfo.push_str(&((max_svg  + max_box)).to_string());
-    transfo.push_str(&((width_svg  + y_viewbox + x_viewbox)).to_string());
+    // 20.O = police size
+    transfo.push_str(&((width_svg  + y_viewbox + x_viewbox + 20.0)).to_string());
 
     transfo.push_str(") rotate(-90 0 0 ) ");
     match options.rotate {
