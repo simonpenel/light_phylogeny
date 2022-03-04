@@ -39,8 +39,10 @@ pub fn draw_tree (
     info!("[draw_tree] Drawing tree...");
     let gene_color = & config.single_gene_color;
     let largest_x = tree.get_largest_x() * 1.0 + 0.0 ;
+    println!("debug largest x = {}",largest_x);
     let largest_y = tree.get_largest_y() * 1.0 + 0.0 ;
     let smallest_x = tree.get_smallest_x() * 1.0 + 0.0 ;
+    println!("debug smallest x = {}",smallest_x);
     let smallest_y = tree.get_smallest_y() * 1.0 + 0.0 ;
     let width_svg = largest_x - smallest_x + 0.0;
     let width_svg = width_svg * 1.0;
@@ -59,7 +61,7 @@ pub fn draw_tree (
         false => Document::new()
                 .set("width",width_svg  )
                 .set("height",height_svg  )
-                .set("viewBox", (y_viewbox,x_viewbox,width_svg + 0.5 *BLOCK ,height_svg + 2.0 *BLOCK )),
+                .set("viewBox", (x_viewbox,y_viewbox,width_svg + 0.5 *BLOCK ,height_svg + 2.0 *BLOCK )),
     };
     let style = Style::new(".gene { font-size:  ".to_owned()
         + &config.gene_police_size.to_string()+"px; fill:"
