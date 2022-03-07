@@ -260,7 +260,7 @@ pub fn draw_sptree_gntrees (
         false => Document::new()
                 .set("width",width_svg  )
                 .set("height",height_svg  )
-                .set("viewBox", (y_viewbox,x_viewbox,width_svg + 0.5 *BLOCK ,height_svg *1.1 + 2.0 *BLOCK )),
+                .set("viewBox", (x_viewbox,y_viewbox - 0.5 *BLOCK ,width_svg + 0.5 *BLOCK ,height_svg *1.1 + 0.5 *BLOCK )),
     };
     // Initialse la chaine de carctere dediee aux styles des fonts : font pour l'espece
     let mut recphylostyle:String = ".species { font: italic ".to_owned()
