@@ -2122,37 +2122,35 @@ pub fn  push_right(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize
 //
 //     }
 // }
-pub fn  dmin_tidy(cont_left:Vec<(f32,f32,String)>,cont_right:Vec<(f32,f32,String)>, dmin:&mut f32, index_L:&mut usize,index_R:&mut usize) -> f32 {
-let max_L = cont_left.len();
-let max_R = cont_right.len();
+pub fn  dmin_tidy(cont_left:Vec<(f32,f32,String)>,cont_right:Vec<(f32,f32,String)>, dmin:&mut f32, index_left:&mut usize,index_right:&mut usize)  {
+let max_left = cont_left.len();
+let max_right = cont_right.len();
 println!("[dmin_tidy] dmin {}",dmin);
-println!("[dmin_tidy] left  contour {}{:?}",index_L,cont_left);
-println!("[dmin_tidy] right contour {}{:?}",index_R,cont_right);
-println!("[dmin_tidy] Compare x value of  right {} and  left  {}",cont_left[*index_L].2,cont_right[*index_R].2,);
+println!("[dmin_tidy] left  contour {}{:?}",index_left,cont_left);
+println!("[dmin_tidy] right contour {}{:?}",index_right,cont_right);
+println!("[dmin_tidy] Compare x value of  right {} and  left  {}",cont_left[*index_left].2,cont_right[*index_right].2,);
 // let mut index_L = 0;
 // let mut index_R = 0;
-let mut d = cont_right[*index_R].0 - cont_left[*index_L].0;
+let d = cont_right[*index_right].0 - cont_left[*index_left].0;
 if d < *dmin {
     *dmin = d;
     println!("[dmin_tidy] new dmin = {} ",dmin);
     }
-println!("[dmin_tidy] Compare y value of  right {} {} and  left  {} {}",cont_left[*index_L].2,cont_left[*index_L].1,cont_right[*index_R].2,cont_right[*index_R].1);
-if cont_right[*index_R].1 <= cont_left[*index_L].1 {
+println!("[dmin_tidy] Compare y value of  right {} {} and  left  {} {}",cont_left[*index_left].2,cont_left[*index_left].1,cont_right[*index_right].2,cont_right[*index_right].1);
+if cont_right[*index_right].1 <= cont_left[*index_left].1 {
 println!("[dmin_tidy] increment right");
-    *index_R = *index_R + 1;
-    if *index_R < max_R {
-        dmin_tidy(cont_left,cont_right,dmin,index_L,index_R);
+    *index_right = *index_right + 1;
+    if *index_right < max_right {
+        dmin_tidy(cont_left,cont_right,dmin,index_left,index_right);
     }
 }
 else  {
     println!("[dmin_tidy] increment left");
-    *index_L = *index_L + 1;
-    if *index_L < max_L {
-        dmin_tidy(cont_left,cont_right,dmin,index_L,index_R);
+    *index_left = *index_left + 1;
+    if *index_left < max_left {
+        dmin_tidy(cont_left,cont_right,dmin,index_left,index_right);
     }
 }
-// if cont_right[index_R].1 > cont_left[index_L].1
-0.0
 }
 /// Check for conficts between subtrees and shift conflicting right-hand subtrees to the right
 /// in order to solve detected conflicts.
@@ -2171,7 +2169,7 @@ pub fn  push_right_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_
     println!("[push_right_tidy_tree] Contour left = {:?}",left_co_of_right_tr);
 
     let mut dmin = 100000.0;
-    let toto = dmin_tidy(right_co_of_left_tr,left_co_of_right_tr,&mut dmin, &mut 0, &mut 0);
+    dmin_tidy(right_co_of_left_tr,left_co_of_right_tr,&mut dmin, &mut 0, &mut 0);
     println!("[push_right_tidy_tree] DMIN = {:?} [max = {}]",dmin,PIPEBLOCK);
 
     if dmin > BLOCK * 0.50 {
