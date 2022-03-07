@@ -181,18 +181,8 @@ pub fn draw_tree (
     // transfo.push_str(&( x_viewbox).to_string());
     transfo.push_str(&( x_viewbox).to_string());
     transfo.push_str(" ");
-    let max_svg = match width_svg > height_svg {
-    true => width_svg,
-    false => height_svg,
-    };
-    let max_box = match x_viewbox > y_viewbox {
-    true => x_viewbox,
-    false => y_viewbox,
-    };
-    // transfo.push_str(&((max_svg  + max_box)).to_string());
     let psize= &config.gene_police_size.parse::<f32>().unwrap();
     transfo.push_str(&((width_svg  + y_viewbox + x_viewbox + psize)).to_string());
-
     transfo.push_str(") rotate(-90 0 0 ) ");
     match options.rotate {
         true => g.assign("transform",transfo),
