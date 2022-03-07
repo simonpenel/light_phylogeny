@@ -1940,8 +1940,13 @@ pub fn  get_contour_right(tree: &mut ArenaTree<String>,index:usize,depth:usize,
 /// Get the right 'contour' of a sub tree in the "tidy" context.
 pub fn  get_contour_tidy_right(tree: &mut ArenaTree<String>,index:usize,depth:usize,
     contour_right: &mut Vec<(f32,f32,String)>, ymax: &mut f32)  {
+    // let children  = &mut  tree.arena[index].children;
     let x = tree.arena[index].x  + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
-    let y = tree.arena[index].y  + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
+    let mut y = tree.arena[index].y  + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
+    // avoid superposition of leaves
+    if tree.is_leaf(index) {
+        y = y + 5.0;
+    }
     let name  = &tree.arena[index].name;
     if y >= *ymax {
         contour_right.push((x,y,name.to_string()));
@@ -1959,7 +1964,11 @@ pub fn  get_contour_tidy_right(tree: &mut ArenaTree<String>,index:usize,depth:us
 pub fn  get_contour_tidy_left(tree: &mut ArenaTree<String>,index:usize,depth:usize,
     contour_left: &mut Vec<(f32,f32,String)>, ymax: &mut f32)  {
     let x = tree.arena[index].x  - tree.arena[index].nbg as f32 *PIPEBLOCK /2.0 ;
-    let y = tree.arena[index].y + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
+    let mut y = tree.arena[index].y + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
+    // avoid superposition of leaves
+    if tree.is_leaf(index) {
+        y = y + 5.0;
+    }
     let name =  &tree.arena[index].name;
     if y >= *ymax{
         *ymax = y;
