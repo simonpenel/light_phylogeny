@@ -39,10 +39,8 @@ pub fn draw_tree (
     info!("[draw_tree] Drawing tree...");
     let gene_color = & config.single_gene_color;
     let largest_x = tree.get_largest_x() * 1.0 + 0.0 ;
-    println!("debug largest x = {}",largest_x);
     let largest_y = tree.get_largest_y() * 1.0 + 0.0 ;
     let smallest_x = tree.get_smallest_x() * 1.0 + 0.0 ;
-    println!("debug smallest x = {}",smallest_x);
     let smallest_y = tree.get_smallest_y() * 1.0 + 0.0 ;
     let width_svg = largest_x - smallest_x + 0.0;
     let width_svg = width_svg * 1.0;
