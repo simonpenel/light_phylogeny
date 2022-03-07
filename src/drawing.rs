@@ -61,7 +61,7 @@ pub fn draw_tree (
         false => Document::new()
                 .set("width",width_svg  )
                 .set("height",height_svg  )
-                .set("viewBox", (x_viewbox,y_viewbox,width_svg + 0.5 *BLOCK ,height_svg + 2.0 *BLOCK )),
+                .set("viewBox", (x_viewbox,y_viewbox,width_svg + 2.0 *BLOCK ,height_svg + 2.0 *BLOCK )),
     };
     let style = Style::new(".gene { font-size:  ".to_owned()
         + &config.gene_police_size.to_string()+"px; fill:"
@@ -190,8 +190,8 @@ pub fn draw_tree (
     false => y_viewbox,
     };
     // transfo.push_str(&((max_svg  + max_box)).to_string());
-    // 20.O = police size
-    transfo.push_str(&((width_svg  + y_viewbox + x_viewbox + 20.0)).to_string());
+    let psize= &config.gene_police_size.parse::<f32>().unwrap();
+    transfo.push_str(&((width_svg  + y_viewbox + x_viewbox + psize)).to_string());
 
     transfo.push_str(") rotate(-90 0 0 ) ");
     match options.rotate {
