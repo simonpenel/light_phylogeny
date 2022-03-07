@@ -1868,17 +1868,10 @@ pub fn  check_contour_postorder_tidy_tree(tree: &mut ArenaTree<String>,index:usi
     if children.len() > 0 {
         let left = children[0];
         let right = children[1];
-        // push_right_tidy_tree(tree,left,right);
         check_contour_postorder_tidy_tree(tree,right);
         check_contour_postorder_tidy_tree(tree,left);
-        // check_contour_postorder_tidy_tree(tree,right);
         push_right_tidy_tree(tree,left,right);
         set_middle_postorder(tree, 0);
-        // push_right_tidy_tree(tree,left,right);
-        // check_contour_postorder_tidy_tree(tree,left);
-        // check_contour_postorder_tidy_tree(tree,right);
-    }
-    else{
     }
 }
 
@@ -1944,24 +1937,15 @@ pub fn  get_contour_right(tree: &mut ArenaTree<String>,index:usize,depth:usize,
         get_contour_right(tree,right,depth,contour_right,tree.arena[index].xmod + parent_xmod );
     }
 }
-
-
-/// Get the right 'contour' of a sub tree.
+/// Get the right 'contour' of a sub tree in the "tidy" context.
 pub fn  get_contour_tidy_right(tree: &mut ArenaTree<String>,index:usize,depth:usize,
     contour_right: &mut Vec<(f32,f32,String)>, ymax: &mut f32)  {
     let x = tree.arena[index].x  + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
     let y = tree.arena[index].y  + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
-
-    // let x = tree.arena[index].x  + tree.arena[index].width /2.0;
-    // let y = tree.arena[index].y  + tree.arena[index].height /2.0;
-
     let name  = &tree.arena[index].name;
-    // println!("[get_contour_tidy_right] test   {:?} x={} y={} ymax={}", tree.arena[index].name,x,y,ymax);
     if y >= *ymax {
-    // println!("[get_contour_tidy_right] adding   {:?} x={} y={}", tree.arena[index].name,x,y);
-    contour_right.push((x,y,name.to_string()));
-            *ymax=y;
-
+        contour_right.push((x,y,name.to_string()));
+        *ymax=y;
     }
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
@@ -1971,48 +1955,13 @@ pub fn  get_contour_tidy_right(tree: &mut ArenaTree<String>,index:usize,depth:us
         get_contour_tidy_right(tree,left,depth,contour_right,ymax );
     }
 }
-
-/// Get the right 'contour' of a sub tree.
-// pub fn  get_contour_tidy_right(tree: &mut ArenaTree<String>,index:usize,depth:usize,
-//     contour_right: &mut Vec<(f32,f32)>,mut ymax: f32)  {
-//     info!("[get_contour_tidy_right] process node {:?}",tree.arena[index]);
-//     let x = tree.arena[index].x  + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
-//     let y = tree.arena[index].y  + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
-//     println!("[get_contour_tidy_right] test   {:?} x={} y={} ymax={}", tree.arena[index].name,x,y,ymax);
-//     if y >= ymax {
-//     println!("[get_contour_tidy_right] adding   {:?} x={} y={}", tree.arena[index].name,x,y);
-//     contour_right.push((x,y));
-//             ymax=y;
-//
-//     }
-//     let children  = &mut  tree.arena[index].children;
-//     if children.len() > 0 {
-//         let right = children[1];
-//         let left = children[0];
-//         get_contour_tidy_right(tree,right,depth,contour_right,ymax );
-//                 // println!("[get_contour_tidy_right] left y    {:?} y={}", tree.arena[left].name,lefty);
-//         // if lefty >= lasty {
-//
-//                     get_contour_tidy_right(tree,left,depth,contour_right,ymax );
-//         // }
-//
-//
-//
-//     }
-// }
-/// Get the left 'contour' of a sub tree.
+/// Get the left 'contour' of a sub tree in the "tidy" context.
 pub fn  get_contour_tidy_left(tree: &mut ArenaTree<String>,index:usize,depth:usize,
     contour_left: &mut Vec<(f32,f32,String)>, ymax: &mut f32)  {
     let x = tree.arena[index].x  - tree.arena[index].nbg as f32 *PIPEBLOCK /2.0 ;
     let y = tree.arena[index].y + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
-    // let x = tree.arena[index].x  - tree.arena[index].width /2.0 ;
-    // let y = tree.arena[index].y + tree.arena[index].height /2.0;
-
     let name =  &tree.arena[index].name;
-    // println!("[get_contour_tidy_left] test   {:?} x={} y={} ymax={}", tree.arena[index].name,x,y,ymax);
-
     if y >= *ymax{
-        // println!("[get_contour_tidy_left] adding   {:?} x={} y={}", tree.arena[index].name,x,y);
         *ymax = y;
         contour_left.push((x,y,name.to_string()));
     }
@@ -2079,49 +2028,7 @@ pub fn  push_right(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize
     }
     0.0
 }
-// pub fn  dmin_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize, dmin:f32) -> f32 {
-// // let  left_x = tree.arena[left_tree].x + tree.arena[left_tree].xmod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK;
-// let  left_y = tree.arena[left_tree].y + tree.arena[left_tree].ymod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK;
-// let left_children = &tree.arena[left_tree].children;
-// let right_children = &tree.arena[right_tree].children;
-// match  left_children.len() > 0 {
-//     true => {
-//             let right_son_of_left = left_children[1];
-//             let left_y = tree.arena[right_son_of_left].y + tree.arena[right_son_of_left].ymod + tree.arena[right_son_of_left].nbg as f32 *PIPEBLOCK;
-//             let right_y = tree.arena[right_tree].y + tree.arena[right_tree].ymod + tree.arena[right_tree].nbg as f32 *PIPEBLOCK;
-//             if left_y < right_y {
-//                 let  left_x = tree.arena[right_son_of_left].x + tree.arena[right_son_of_left].xmod + tree.arena[right_son_of_left].nbg as f32 *PIPEBLOCK;
-//                 let  right_x = tree.arena[right_tree].x + tree.arena[right_tree].xmod - tree.arena[right_tree].nbg as f32 *PIPEBLOCK;
-//                 let new_d = right_x - left_x;
-//                 match dmin < new_d {
-//                     true => dmin_tidy_tree(tree,right_son_of_left,right_tree, dmin),
-//                     false => dmin_tidy_tree(tree,right_son_of_left,right_tree, new_d),
-//                 }
-//             }
-//             else  {
-//                 //  je prend le fils gauche de l'arbre droit
-//                 match  right_children.len() > 0 {
-//                 true => {
-//                 let left_son_of_right = right_children[0];
-//                 let  left_x = tree.arena[right_son_of_left].x + tree.arena[right_son_of_left].xmod + tree.arena[right_son_of_left].nbg as f32 *PIPEBLOCK;
-//                 let  right_x = tree.arena[left_son_of_right].x + tree.arena[left_son_of_right].xmod - tree.arena[left_son_of_right].nbg as f32 *PIPEBLOCK;
-//                 let new_d = right_x - left_x;
-//                 match dmin < new_d {
-//                     true => dmin_tidy_tree(tree,right_son_of_left,left_son_of_right, dmin),
-//                     false => dmin_tidy_tree(tree,right_son_of_left,left_son_of_right, new_d),
-//                 }
-//
-//                 },
-//                 false => dmin,
-//                 }
-//                 // dmin_tidy_tree(tree,right_son_of_left,right_tree:usize, dmin)
-//                 // dmin
-//             }
-//         },
-//     false => dmin,
-//
-//     }
-// }
+/// Get the minimal distance between 2 contours in "tidy" context.
 pub fn  dmin_tidy(cont_left:Vec<(f32,f32,String)>,cont_right:Vec<(f32,f32,String)>, dmin:&mut f32, index_left:&mut usize,index_right:&mut usize)  {
 let max_left = cont_left.len();
 let max_right = cont_right.len();
@@ -2129,8 +2036,6 @@ info!("[dmin_tidy] dmin {}",dmin);
 info!("[dmin_tidy] left  contour {}{:?}",index_left,cont_left);
 info!("[dmin_tidy] right contour {}{:?}",index_right,cont_right);
 info!("[dmin_tidy] Compare x value of  right {} and  left  {}",cont_left[*index_left].2,cont_right[*index_right].2,);
-// let mut index_L = 0;
-// let mut index_R = 0;
 let d = cont_right[*index_right].0 - cont_left[*index_left].0;
 if d < *dmin {
     *dmin = d;
@@ -2153,25 +2058,21 @@ else  {
 }
 }
 /// Check for conficts between subtrees and shift conflicting right-hand subtrees to the right
-/// in order to solve detected conflicts.
-pub fn  push_right_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize) -> f32 {
+/// in order to solve detected conflicts in the "tidy" context.
+pub fn  push_right_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize) {
     info!("[push_right_tidy_tree]");
     info!("[push_right_tidy_tree] Compare right contour of {} {} and left contour of {} {}",tree.arena[left_tree].val,tree.arena[left_tree].name,tree.arena[right_tree].val,tree.arena[right_tree].name );
-    // set_middle_postorder(tree, 0);
     let mut  right_co_of_left_tr:std::vec::Vec<(f32,f32,String)> = Vec::new();
     let depth_left_tr  = tree.depth(left_tree);
-    // get_contour_tidy_right(tree,left_tree,depth_left_tr,&mut right_co_of_left_tr,0.0);
     get_contour_tidy_right(tree,left_tree,depth_left_tr,&mut right_co_of_left_tr,&mut 0.0);
     info!("[push_right_tidy_tree] Contour right = {:?}",right_co_of_left_tr);
     let mut  left_co_of_right_tr:std::vec::Vec<(f32,f32,String)> = Vec::new();
     let depth_right_tr  = tree.depth(right_tree);
     get_contour_tidy_left(tree,right_tree,depth_right_tr,&mut left_co_of_right_tr,&mut 0.0);
     info!("[push_right_tidy_tree] Contour left = {:?}",left_co_of_right_tr);
-
     let mut dmin = 1000000.0;
     dmin_tidy(right_co_of_left_tr,left_co_of_right_tr,&mut dmin, &mut 0, &mut 0);
     info!("[push_right_tidy_tree] DMIN = {:?} [max = {}]",dmin,PIPEBLOCK);
-
     if dmin > BLOCK * 0.50 {
         info!("[push_right_tidy_tree] SHIFTING SUBTREE  {:?} {:?}",tree.arena[left_tree].val,tree.arena[left_tree].name);
         tree.shift_x_subtree(left_tree,dmin - BLOCK * 0.50  );
@@ -2180,9 +2081,7 @@ pub fn  push_right_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_
     else {
         info!("[push_right_tidy_tree] NOT SHIFTING ");
     }
-    0.0
 }
-
 /// Set the x of the father between its children.
 pub fn  set_middle_postorder(tree: &mut ArenaTree<String>,index:usize) {
     let children  = &mut  tree.arena[index].children;
