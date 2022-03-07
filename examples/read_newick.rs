@@ -21,6 +21,42 @@ fn main() {
     let mut options: Options = Options::new();
     options.real_length_flag = true;
     options.rotate = false;
+    options.scale = 5.0;
+    options.branch = true;
+    options.tidy = true;
+    let config: Config = Config::new();
+    read_newick("examples/newick.txt".to_string(), &mut tree);
+    phyloxml_processing(&mut tree, &options, &config,"read_newick_real_by5_tidy_landcsape.svg".to_string());
+    println!("Please open output file 'read_newick_real_by5_tidy_landcsape.svg' with your browser");
+
+    let mut tree: ArenaTree<String> = ArenaTree::default();
+    let mut options: Options = Options::new();
+    options.real_length_flag = true;
+    // options.rotate = false;
+    options.scale = 4.0;
+    options.branch = true;
+    options.tidy = true;
+    let config: Config = Config::new();
+    read_newick("examples/newick.txt".to_string(), &mut tree);
+    phyloxml_processing(&mut tree, &options, &config,"read_newick_real_by4_tidy.svg".to_string());
+    println!("Please open output file 'read_newick_real_by4_tidy.svg' with your browser");
+
+    let mut tree: ArenaTree<String> = ArenaTree::default();
+    let mut options: Options = Options::new();
+    options.real_length_flag = true;
+    options.rotate = false;
+    options.scale = 5.0;
+    options.branch = true;
+    let config: Config = Config::new();
+    read_newick("examples/newick.txt".to_string(), &mut tree);
+    phyloxml_processing(&mut tree, &options, &config,"read_newick_real_by5_landcsape.svg".to_string());
+    println!("Please open output file 'read_newick_real_by5_landcsape.svg' with your browser");
+
+
+    let mut tree: ArenaTree<String> = ArenaTree::default();
+    let mut options: Options = Options::new();
+    options.real_length_flag = true;
+    options.rotate = false;
     let config: Config = Config::new();
     read_newick("examples/newick.220.txt".to_string(), &mut tree);
     phyloxml_processing(&mut tree, &options, &config,"read_newick_220_real_landscape.svg".to_string());
