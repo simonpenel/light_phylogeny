@@ -2173,113 +2173,13 @@ pub fn  push_right_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_
     info!("[push_right_tidy_tree] DMIN = {:?} [max = {}]",dmin,PIPEBLOCK);
 
     if dmin > BLOCK * 0.50 {
-    info!("[push_right_tidy_tree] SHIFTING SUBTREE  {:?} {:?}",tree.arena[left_tree].val,tree.arena[left_tree].name);
-    // tree.shift_x_subtree(left_tree,dmin - PIPEBLOCK *4.0 );
-    tree.shift_x_subtree(left_tree,dmin - BLOCK * 0.50  );
-
-    set_middle_postorder( tree, 0);
-
-    // bouge son frere de gauch si existe
-    match  tree.arena[left_tree].parent {
-        None => {},
-        Some(p) => {
-        match  tree.arena[p].parent {
-        None => {},
-        Some(pp) => {
-        let freres = &tree.arena[pp].children;
-        info!("[push_right_tidy_tree] COMPARE {} {} {}]",&tree.arena[p].name,&tree.arena[freres[0]].name,&tree.arena[freres[1]].name);
-        // if p == freres[1] {
-        //     tree.shift_x_subtree(freres[0],dmin - BLOCK * 1.0 );
-        // }else {
-        // tree.shift_x_subtree(freres[1],dmin - BLOCK * 1.0 );
-        // }
-        },
-        }
-        },
-        }
-    // set_middle_postorder(tree, 0);
-        // tree.shift_x_subtree(right_tree,dmin - PIPEBLOCK * 1.0 );
-        }
-    else {
-    info!("[push_right_tidy_tree] NOT SHIFTING ");
+        info!("[push_right_tidy_tree] SHIFTING SUBTREE  {:?} {:?}",tree.arena[left_tree].val,tree.arena[left_tree].name);
+        tree.shift_x_subtree(left_tree,dmin - BLOCK * 0.50  );
+        set_middle_postorder( tree, 0);
     }
-    // if dmin > 120.0 {
-    //     tree.shift_x_subtree(left_tree,50.0);
-    //     // let x =  tree.arena[left_tree].x;
-    //     // println!("[push_right_tidy_tree] x = {:?}",x);
-    //     // let x =  x + dmin - 10.0;
-    //     // println!("[push_right_tidy_tree] x = {:?}",x);
-    //     // tree.arena[left_tree].set_x_noref(x);
-    //     }
-
-        //
-        // if dmin < -10.0 {
-        //     let x =  tree.arena[right_tree].x;
-        //     println!("[push_right_tidy_tree] x = {:?}",x);
-        //     let x =  x - dmin + 10.0;
-        //     println!("[push_right_tidy_tree] x = {:?}",x);
-        //     tree.arena[right_tree].set_x_noref(x);
-        //     }
-// if dmin < -1.0 {
-//         let x =  tree.arena[right_tree].x;
-//         println!("[push_right_tidy_tree] x = {:?}",x);
-//         let x =  x - dmin + 1.0;
-//         println!("[push_right_tidy_tree] x = {:?}",x);
-//         tree.arena[right_tree].set_x_noref(x);
-//         }
-
-
-    //             info!("[push_right] new x_mod = {}",x_mod);
-    //             tree.arena[right_tree].set_xmod_noref(x_mod);
-
-    // let depth_left_tr  = tree.depth(left_tree);
-// let mut gene_nodes:std::vec::Vec<roxmltree::NodeId> = Vec::new();
-    // get_contour_right(tree,left_tree,depth_left_tr,&mut right_co_of_left_tr,0.0);
-    // info!("[push_right] right contour of {} = {:?}",left_tree,right_co_of_left_tr);
-    // let mut left_co_of_right_tr  = vec![tree.arena[right_tree].x
-    //     + tree.arena[right_tree].xmod - tree.arena[right_tree].nbg as f32 *PIPEBLOCK];
-    // let depth_right_tr  = tree.depth(right_tree);
-    // get_contour_left(tree,right_tree,depth_right_tr,&mut left_co_of_right_tr,0.0);
-    // info!("[push_right] left contour of {} = {:?}",right_tree,left_co_of_right_tr);
-    // // Si on   a pas le meme longeur de contour on complete le plus petit
-    // // en remplissant ce qui manque avec la derniere valeur, pour eviter
-    // // qu'un sous arbre vosin se place sous une feuille
-    // // let right_len = right_co_of_left_tr.len();
-    // // let left_len = left_co_of_right_tr.len();
-    // // if left_len > right_len {
-    // //     let last_val =  right_co_of_left_tr[right_len-1];
-    // //     let last_vals =  vec![last_val;left_len-right_len];
-    // //     right_co_of_left_tr.extend(last_vals.iter().copied());
-    // //     info!("[push_right] complete right contour with last value {}", last_val);
-    // // }
-    // // if left_len < right_len {
-    // //     let last_val =  left_co_of_right_tr[left_len-1];
-    // //     let last_vals =  vec![last_val;right_len - left_len];
-    // //     left_co_of_right_tr.extend(last_vals.iter().copied());
-    // //     info!("[push_right] complete left contour with last value {}", last_val);
-    // // }
-    // info!("[push_right] comparing  right cont. of left tree: {:?}",right_co_of_left_tr);
-    // info!("[push_right] with left cont. of right tree:       {:?} ",left_co_of_right_tr);
-    // let iter = left_co_of_right_tr.iter().zip(right_co_of_left_tr).map(|(x, y )| (x-y));
-    // let shift = iter.min_by(|x, y| (*x as i64) .cmp(&(*y as i64 )));
-    // info!("[push_right] distance max  = {:?}",shift);
-    // match shift {
-    //     Some(val) => {
-    //         info!("[push_right] distance max  = {:?}",shift);
-    //         if val <= 0.0 {// bidouilel
-    //             info!("[push_right] ================CONFLIT==========");
-    //             info!("[push_right] Modify node {:?}",tree.arena[right_tree]);
-    //             let x_mod =  tree.arena[right_tree].xmod;
-    //             info!("[push_right] initial x_mod = {}",x_mod);
-    //             let x_mod =  x_mod -1.0 *val + BLOCK ;//bidouille
-    //             info!("[push_right] new x_mod = {}",x_mod);
-    //             tree.arena[right_tree].set_xmod_noref(x_mod);
-    //             info!("[push_right] updated node {:?}",tree.arena[right_tree]);
-    //             info!("[push_right] ================CONFLIT==========");
-    //         }
-    //     },
-    //     None => {}
-    // }
+    else {
+        info!("[push_right_tidy_tree] NOT SHIFTING ");
+    }
     0.0
 }
 
