@@ -411,6 +411,8 @@ pub struct Options{
     pub thickness_disp_score:bool,
     /// Tidy option
     pub tidy:bool,
+    /// Tidy option
+    pub tidy_leaves_check:bool,
     /// Optimise species branches left/right orientation in order to minimise transfer crossings (recPhyloXML, under development).
     pub optimisation:bool,
     /// Scale to be applied to the heigth of the tree.
@@ -447,6 +449,7 @@ impl Options {
             thickness_gene:0,
             thickness_disp_score:false,
             tidy:false,
+            tidy_leaves_check:false,
             optimisation:false,
             height:1.0,
             width:1.0,
@@ -1861,16 +1864,17 @@ pub fn  check_contour_postorder(tree: &mut ArenaTree<String>,index:usize) {
 
 
 /// Solve the conflicts between the left subtree and the right subtree.
-pub fn  check_contour_postorder_tidy_tree(tree: &mut ArenaTree<String>,index:usize) {
+pub fn  check_contour_postorder_tidy_tree(tree: &mut ArenaTree<String>,index:usize,
+    options: &Options, config: &Config) {
     info!("[check_contour_postorder_tidy_tree]");
     info!("[check_contour_postorder_tidy_tree] node {}",tree.arena[index].name);
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
         let left = children[0];
         let right = children[1];
-        check_contour_postorder_tidy_tree(tree,right);
-        check_contour_postorder_tidy_tree(tree,left);
-        push_right_tidy_tree(tree,left,right);
+        check_contour_postorder_tidy_tree(tree,right,options,config);
+        check_contour_postorder_tidy_tree(tree,left,options,config);
+        push_right_tidy_tree(tree,left,right,options,config);
         set_middle_postorder(tree, 0);
     }
 }
@@ -1939,13 +1943,16 @@ pub fn  get_contour_right(tree: &mut ArenaTree<String>,index:usize,depth:usize,
 }
 /// Get the right 'contour' of a sub tree in the "tidy" context.
 pub fn  get_contour_tidy_right(tree: &mut ArenaTree<String>,index:usize,depth:usize,
-    contour_right: &mut Vec<(f32,f32,String)>, ymax: &mut f32)  {
+    contour_right: &mut Vec<(f32,f32,String)>, ymax: &mut f32, options: &Options,config: &Config)  {
     // let children  = &mut  tree.arena[index].children;
     let x = tree.arena[index].x  + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
     let mut y = tree.arena[index].y  + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
     // avoid superposition of leaves
     if tree.is_leaf(index) {
-        y = y + 5.0;
+        y = y + match options.tidy_leaves_check {
+            false => 5.0,
+            true => tree.arena[index].name.len() as f32 * config.gene_police_size.parse::<f32>().unwrap(),
+        };
     }
     let name  = &tree.arena[index].name;
     if y >= *ymax {
@@ -1956,18 +1963,21 @@ pub fn  get_contour_tidy_right(tree: &mut ArenaTree<String>,index:usize,depth:us
     if children.len() > 0 {
         let right = children[1];
         let left = children[0];
-        get_contour_tidy_right(tree,right,depth,contour_right,ymax );
-        get_contour_tidy_right(tree,left,depth,contour_right,ymax );
+        get_contour_tidy_right(tree,right,depth,contour_right,ymax,options,config);
+        get_contour_tidy_right(tree,left,depth,contour_right,ymax,options,config);
     }
 }
 /// Get the left 'contour' of a sub tree in the "tidy" context.
 pub fn  get_contour_tidy_left(tree: &mut ArenaTree<String>,index:usize,depth:usize,
-    contour_left: &mut Vec<(f32,f32,String)>, ymax: &mut f32)  {
+    contour_left: &mut Vec<(f32,f32,String)>, ymax: &mut f32,options: &Options,config: &Config)  {
     let x = tree.arena[index].x  - tree.arena[index].nbg as f32 *PIPEBLOCK /2.0 ;
     let mut y = tree.arena[index].y + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
     // avoid superposition of leaves
     if tree.is_leaf(index) {
-        y = y + 5.0;
+        y = y + match options.tidy_leaves_check {
+            false => 5.0,
+            true => tree.arena[index].name.len() as f32 *config.gene_police_size.parse::<f32>().unwrap(),
+        };
     }
     let name =  &tree.arena[index].name;
     if y >= *ymax{
@@ -1978,8 +1988,8 @@ pub fn  get_contour_tidy_left(tree: &mut ArenaTree<String>,index:usize,depth:usi
     if children.len() > 0 {
         let left = children[0];
         let right = children[1];
-        get_contour_tidy_left(tree,left,depth,contour_left,ymax);
-        get_contour_tidy_left(tree,right,depth,contour_left,ymax);
+        get_contour_tidy_left(tree,left,depth,contour_left,ymax,options,config);
+        get_contour_tidy_left(tree,right,depth,contour_left,ymax,options,config);
     }
 }
 /// Check for conficts between subtrees and shift conflicting right-hand subtrees to the right
@@ -2068,16 +2078,17 @@ else  {
 }
 /// Check for conficts between subtrees and shift conflicting right-hand subtrees to the right
 /// in order to solve detected conflicts in the "tidy" context.
-pub fn  push_right_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize) {
+pub fn  push_right_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize,
+    options: &Options, config: &Config) {
     info!("[push_right_tidy_tree]");
     info!("[push_right_tidy_tree] Compare right contour of {} {} and left contour of {} {}",tree.arena[left_tree].val,tree.arena[left_tree].name,tree.arena[right_tree].val,tree.arena[right_tree].name );
     let mut  right_co_of_left_tr:std::vec::Vec<(f32,f32,String)> = Vec::new();
     let depth_left_tr  = tree.depth(left_tree);
-    get_contour_tidy_right(tree,left_tree,depth_left_tr,&mut right_co_of_left_tr,&mut 0.0);
+    get_contour_tidy_right(tree,left_tree,depth_left_tr,&mut right_co_of_left_tr,&mut 0.0,options,config);
     info!("[push_right_tidy_tree] Contour right = {:?}",right_co_of_left_tr);
     let mut  left_co_of_right_tr:std::vec::Vec<(f32,f32,String)> = Vec::new();
     let depth_right_tr  = tree.depth(right_tree);
-    get_contour_tidy_left(tree,right_tree,depth_right_tr,&mut left_co_of_right_tr,&mut 0.0);
+    get_contour_tidy_left(tree,right_tree,depth_right_tr,&mut left_co_of_right_tr,&mut 0.0,options,config);
     info!("[push_right_tidy_tree] Contour left = {:?}",left_co_of_right_tr);
     let mut dmin = 1000000.0;
     dmin_tidy(right_co_of_left_tr,left_co_of_right_tr,&mut dmin, &mut 0, &mut 0);

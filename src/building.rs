@@ -305,7 +305,7 @@ pub fn phyloxml_processing(
     if options.real_length_flag {
         real_length(&mut tree, root, &mut 0.0, & options);
         if options.tidy{
-            check_contour_postorder_tidy_tree(&mut tree, root);
+            check_contour_postorder_tidy_tree(&mut tree, root, & options, & config);
             // shift_mod_xy(&mut tree, root, &mut 0.0, &mut 0.0);
             set_middle_postorder(&mut tree, root);
         }
