@@ -3,7 +3,7 @@
 //! `light_phylogeny` is a set of structures and functions dedicated to reading, building,
 //! manipulating and displaying phylogenic trees, especially reconciled trees  with speciation,
 //! duplication, loss and horizontal transfer events. Read newick, phyloXML and recPhyloXML files.
-//! For more information, visit https://github.com/simonpenel/light_phylogeny/wiki
+//! For more information, visit <https://github.com/simonpenel/light_phylogeny/wiki>
 /// name = "light_phylogeny"
 /// version = "0.19.0"
 /// authors = ["Simon Penel <simon.penel@univ-lyon1.fr>"]
@@ -20,16 +20,20 @@ pub use self::arena::add_child;
 pub use self::arena::bilan_mappings;
 pub use self::arena::center_gene_nodes;
 pub use self::arena::check_contour_postorder;
+pub use self::arena::check_contour_postorder_tidy_tree;
 pub use self::arena::check_vertical_contour_postorder;
 pub use self::arena::check_for_obsolete;
 pub use self::arena::check_is_rooted;
 pub use self::arena::cladogramme;
 pub use self::arena::copie_fl;
+pub use self::arena::dmin_tidy;
 pub use self::arena::find_left_right;
 pub use self::arena::find_rgtrees;
 pub use self::arena::find_sptrees;
 pub use self::arena::get_contour_left;
 pub use self::arena::get_contour_right;
+pub use self::arena::get_contour_tidy_left;
+pub use self::arena::get_contour_tidy_right;
 pub use self::arena::get_maxdepth;
 pub use self::arena::knuth_layout;
 pub use self::arena::lca;
@@ -44,6 +48,7 @@ pub use self::arena::node_ypos;
 pub use self::arena::process_fl;
 pub use self::arena::push_down;
 pub use self::arena::push_right;
+pub use self::arena::push_right_tidy_tree;
 pub use self::arena::real_length;
 pub use self::arena::remplace_fl_inv;
 pub use self::arena::reset_pos;
