@@ -1585,13 +1585,15 @@ pub fn center_gene_nodes(
     }
 }
 /// Set the node widths of the species tree pipe.
-pub fn set_species_width(sp_tree: &mut ArenaTree<String>,
-    gene_trees: &mut std::vec::Vec<ArenaTree<String>>) {
-    for spindex in  &mut sp_tree.arena {
-        let  nbg = spindex.nbg;
+pub fn set_species_width(
+    sp_tree: &mut ArenaTree<String>,
+    gene_trees: &mut std::vec::Vec<ArenaTree<String>>,
+    ) {
+    for spindex in &mut sp_tree.arena {
+        let nbg = spindex.nbg;
         let nodes = &spindex.nodes;
         let mut nb_duplication_node = 0;
-        for (index_node,node) in nodes {
+        for (index_node, node) in nodes {
             if gene_trees[*index_node].arena[*node].e == Event::Duplication {
                 nb_duplication_node = nb_duplication_node + 1;
             }
@@ -1602,28 +1604,29 @@ pub fn set_species_width(sp_tree: &mut ArenaTree<String>,
             spindex.height = ( nbg - 0 ) as f32 * PIPEBLOCK;
         }
         else {
-            spindex.width =   PIPEBLOCK;
-            spindex.height =  PIPEBLOCK;
+            spindex.width = PIPEBLOCK;
+            spindex.height = PIPEBLOCK;
         }
     }
 }
-
 /// Give to the y val of gene leaves the same value in order to align species leaves
-pub fn uniformise_gene_leaves_y_values(sp_tree: &mut ArenaTree<String>,
-    gene_trees: &mut std::vec::Vec<ArenaTree<String>>) {
+pub fn uniformise_gene_leaves_y_values(
+    sp_tree: &mut ArenaTree<String>,
+    gene_trees: &mut std::vec::Vec<ArenaTree<String>>,
+    ) {
     let mut leave_y_max = 0.0;
-    for spindex in  & sp_tree.arena {
+    for spindex in & sp_tree.arena {
         // if the species node is a leaf
         if spindex.children.len() == 0 {
             for (index_node, node) in &sp_tree.arena[spindex.idx].nodes {
                 if gene_trees[*index_node].arena[*node].location != "FREE_LIVING".to_string() &&
-                 gene_trees[*index_node].arena[*node].y > leave_y_max {
-                    leave_y_max = gene_trees[*index_node].arena[*node].y;
+                gene_trees[*index_node].arena[*node].y > leave_y_max {
+                     leave_y_max = gene_trees[*index_node].arena[*node].y;
                 }
             }
         }
     }
-    for spindex in  & sp_tree.arena {
+    for spindex in & sp_tree.arena {
         // if the species node is a leaf
         if spindex.children.len() == 0 {
             for (index_node, node) in &sp_tree.arena[spindex.idx].nodes {
@@ -1635,9 +1638,8 @@ pub fn uniformise_gene_leaves_y_values(sp_tree: &mut ArenaTree<String>,
         }
     }
 }
-
 /// Get the list of ids of all the "spTree" tag in a xml document.
-pub fn find_sptrees( doc: &mut roxmltree::Document) -> Result < Vec<roxmltree::NodeId>, usize> {
+pub fn find_sptrees(doc: &mut roxmltree::Document) -> Result <Vec<roxmltree::NodeId>, usize> {
     let descendants = doc.root().descendants();
     let mut gene_nodes:std::vec::Vec<roxmltree::NodeId> = Vec::new();
     // Search for the first occurnce of clade spTree
@@ -1653,7 +1655,7 @@ pub fn find_sptrees( doc: &mut roxmltree::Document) -> Result < Vec<roxmltree::N
     }
 }
 /// Get the list of ids of all the "regGeneTree" tag in a xml document.
-pub fn find_rgtrees( doc: &mut roxmltree::Document) -> Result < Vec<roxmltree::NodeId>, usize> {
+pub fn find_rgtrees(doc: &mut roxmltree::Document) -> Result <Vec<roxmltree::NodeId>, usize> {
     let descendants = doc.root().descendants();
     let mut gene_nodes:std::vec::Vec<roxmltree::NodeId> = Vec::new();
     // Search for the first occurnce of clade spTree
@@ -1662,16 +1664,16 @@ pub fn find_rgtrees( doc: &mut roxmltree::Document) -> Result < Vec<roxmltree::N
             gene_nodes.push(node.id());
         }
     }
-    info!("[find_rgtrees] Number of gene trees in xml = {}",gene_nodes.len());
+    info!("[find_rgtrees] Number of gene trees in xml = {}", gene_nodes.len());
     match gene_nodes.len() > 0 {
         true => return Ok(gene_nodes),
         false => Err(0),
     }
 }
 /// Initial set x and y of nodes in a tree: left son x is 0;  right son x is 1; y is depth.
-pub fn  knuth_layout(tree: &mut ArenaTree<String>,index: usize,depth: &mut usize){
+pub fn knuth_layout(tree: &mut ArenaTree<String>, index: usize, depth: &mut usize) {
     tree.arena[index].set_y_noref(BLOCK* (*depth as f32));
-    let children  = &mut  tree.arena[index].children;
+    let children  = &mut tree.arena[index].children;
     if children.len() > 2 {
         panic!("The tree must be binary.")
     }
@@ -1680,19 +1682,19 @@ pub fn  knuth_layout(tree: &mut ArenaTree<String>,index: usize,depth: &mut usize
         let son_right = children[1];
         tree.arena[son_left].set_x_noref(0.0);
         tree.arena[son_right].set_x_noref(BLOCK);
-        knuth_layout(tree,son_left,&mut(*depth+1));
-        knuth_layout(tree,son_right,&mut(*depth+1));
+        knuth_layout(tree, son_left, &mut(*depth+1));
+        knuth_layout(tree, son_right, &mut(*depth+1));
     }
 }
 /// Transforms the tree into cladogram.
-pub fn cladogramme( tree: &mut ArenaTree<String>) {
+pub fn cladogramme(tree: &mut ArenaTree<String>) {
     let root = tree.get_root();
-    let mut  max_depth = get_maxdepth(tree,root,&mut 0);
-    set_leaves_to_bottom(tree,root,&mut max_depth);
+    let mut max_depth = get_maxdepth(tree, root, &mut 0);
+    set_leaves_to_bottom(tree, root, &mut max_depth);
 }
 ///  Use real branch lengths to build the tree.
 pub fn real_length(tree: &mut ArenaTree<String>, index: usize, dist: &mut f32, options: &Options) {
-    let  dist_father = tree.arena[index].l;
+    let dist_father = tree.arena[index].l;
     let mut dist = *dist + dist_father;
     tree.arena[index].set_y_noref(dist * BLOCK * options.scale + BLOCK);
     let children  = &mut  tree.arena[index].children;
@@ -1704,19 +1706,19 @@ pub fn real_length(tree: &mut ArenaTree<String>, index: usize, dist: &mut f32, o
     }
 }
 /// Get the depth of a tree.
-pub fn get_maxdepth( tree: &mut ArenaTree<String>, index:usize, max :&mut usize) -> usize {
+pub fn get_maxdepth(tree: &mut ArenaTree<String>, index:usize, max :&mut usize) -> usize {
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
         let son_left = children[0];
         let son_right = children[1];
-        if  tree.depth(son_left) > *max {
-            *max =  tree.depth(son_left);
+        if tree.depth(son_left) > *max {
+            *max = tree.depth(son_left);
         }
-        if  tree.depth(son_right) > *max {
-            *max =  tree.depth(son_right);
+        if tree.depth(son_right) > *max {
+            *max = tree.depth(son_right);
         }
-         get_maxdepth(tree,son_left,max);
-         get_maxdepth(tree,son_right,max);
+        get_maxdepth(tree,son_left,max);
+        get_maxdepth(tree,son_right,max);
     }
     *max
 }
