@@ -1363,22 +1363,22 @@ pub fn move_species_mappings(
                     };
                     let parent_x = gene_trees[*index_node].arena[*node].x;
                     if left_x > parent_x {
-                    	gene_trees[*index_node].arena[*node].set_x_noref((left_x + right_x) /2.0 );
+                    	gene_trees[*index_node].arena[*node].set_x_noref((left_x + right_x) / 2.0 );
                 	}
                     if parent_x > right_x {
-                        gene_trees[*index_node].arena[*node].set_x_noref((left_x + right_x) /2.0 );
+                        gene_trees[*index_node].arena[*node].set_x_noref((left_x + right_x) / 2.0 );
                     }
                 }
             },
-        _=> {},
+            _=> {},
         }
     }
     let children =  &mut  sp_tree.arena[index].children;
     if children.len() > 0 {
         let son_left = children[0];
         let son_right = children[1];
-        move_species_mappings( sp_tree, gene_trees,son_left);
-        move_species_mappings( sp_tree, gene_trees,son_right);
+        move_species_mappings( sp_tree, gene_trees, son_left);
+        move_species_mappings( sp_tree, gene_trees, son_right);
     }
 }
 /// Specific processing of free living gene trees.
@@ -1392,8 +1392,8 @@ pub fn process_fl(
     let mut  genes = vec![];
     let mut  feuilles = vec![];
     for (index_node, node) in &sp_tree.arena[index].nodes {
-        info!("[process_fl] >>> {:?} {:?}",gene_trees[*index_node].arena[*node].name,
-         gene_trees[*index_node].arena[*node].e);
+        info!("[process_fl] >>> {:?} {:?}",
+            gene_trees[*index_node].arena[*node].name, gene_trees[*index_node].arena[*node].e);
         if gene_trees[*index_node].arena[*node].e == Event::Leaf {
             if !genes.contains(index_node) {
                 genes.push(*index_node);
@@ -1411,16 +1411,16 @@ pub fn process_fl(
             None => panic!("Unexpected error in process_fl"),
         };
         let mut parent = gene_trees[*index_node].arena[*node].parent.expect("[process_fl] ERROR Unexpected root (1)");
-            while gene_trees[*index_node].arena[*node].location == gene_trees[*index_node].arena[parent].location
-                {
-                _parent = parent;
-                parent = match gene_trees[*index_node].arena[parent].parent {
-                    Some(p) => p,
-                    None =>    {
-                        break
-                    },
-                };
-             }
+        while gene_trees[*index_node].arena[*node].location == gene_trees[*index_node].arena[parent].location
+            {
+            _parent = parent;
+            parent = match gene_trees[*index_node].arena[parent].parent {
+                Some(p) => p,
+                None =>    {
+                    break
+                },
+            };
+        }
         info!("[process_fl] Ancestor of the gene {} in this species node is {:?}",index_node,gene_trees[*index_node].arena[_parent]);
         // Cree l'arbre de gene qui servira a afficher le free living
         let mut fl_tree: ArenaTree<String> = ArenaTree::default();
@@ -1431,7 +1431,7 @@ pub fn process_fl(
         // let mut parent_xmod = sp_tree.arena[index].x-sp_tree.arena[index].width + shift * PIPEBLOCK ;
         let mut parent_ymod = sp_tree.arena[index].y / 2.0 + shift * PIPEBLOCK;
         // Copie une de l'arbre de   genes dans le free living
-        copie_fl(&mut fl_tree,&mut gene_trees[*index_node], _parent);
+        copie_fl(&mut fl_tree, &mut gene_trees[*index_node], _parent);
         // Traitement habituel d'un arbre
         knuth_layout(&mut fl_tree,0, &mut 1);
         check_contour_postorder(&mut fl_tree, 0);
@@ -1440,13 +1440,13 @@ pub fn process_fl(
         max_x_in_lf = max_x_in_lf + fl_tree.get_largest_x() - parent_xmod;
         let mut compteur = 0 ;
         while compteur < fl_tree.arena.len() {
-            remplace_fl_inv(&mut fl_tree,&mut gene_trees[*index_node], compteur);
+            remplace_fl_inv(&mut fl_tree, &mut gene_trees[*index_node], compteur);
             compteur = compteur + 1;
         }
     }
 }
 /// Copy a node of the free-living part of a gene tree into a another tree under some conditions.
-pub fn copie_fl(fl_tree: &mut ArenaTree<String>,gn_tree: &mut ArenaTree<String>, index: usize) {
+pub fn copie_fl(fl_tree: &mut ArenaTree<String>, gn_tree: &mut ArenaTree<String>, index: usize) {
     // Keep onmy gene associated to FREE_LIVING and skip tranferts
     if gn_tree.arena[index].location == "FREE_LIVING" && gn_tree.arena[index].e != Event::BranchingOut {
         let fl_root_val = gn_tree.arena[index].val.clone();
@@ -1469,8 +1469,8 @@ pub fn copie_fl(fl_tree: &mut ArenaTree<String>,gn_tree: &mut ArenaTree<String>,
             fl_tree.arena[new_right_index].parent = Some(new_index);
             fl_tree.arena[new_index].children.push(new_left_index);
             fl_tree.arena[new_index].children.push(new_right_index);
-            copie_fl(fl_tree,gn_tree, left);
-            copie_fl(fl_tree,gn_tree, right);
+            copie_fl(fl_tree, gn_tree, left);
+            copie_fl(fl_tree, gn_tree, right);
         }
     }
     // Handling transfert
@@ -1517,7 +1517,7 @@ pub fn copie_fl(fl_tree: &mut ArenaTree<String>,gn_tree: &mut ArenaTree<String>,
     }
 }
 /// Replace the free-living part of a gene tree by a free living tree calculated independantly.
-pub fn remplace_fl_inv(fl_tree: &mut ArenaTree<String>,gn_tree: &mut ArenaTree<String>, index: usize) {
+pub fn remplace_fl_inv(fl_tree: &mut ArenaTree<String>, gn_tree: &mut ArenaTree<String>, index: usize) {
     if ! fl_tree.arena[index].virtualsvg {
         let fl_val = fl_tree.arena[index].val.clone();
         let gn_index = gn_tree.get_node(fl_val.to_string());
@@ -1528,8 +1528,11 @@ pub fn remplace_fl_inv(fl_tree: &mut ArenaTree<String>,gn_tree: &mut ArenaTree<S
     }
 }
 /// Center the gene nodes into a  species node.
-pub fn center_gene_nodes(sp_tree: &mut ArenaTree<String>,
-    gene_trees: &mut std::vec::Vec<ArenaTree<String>>, index: usize) {
+pub fn center_gene_nodes(
+    sp_tree: &mut ArenaTree<String>,
+    gene_trees: &mut std::vec::Vec<ArenaTree<String>>,
+    index: usize,
+    ) {
     let left_sp = sp_tree.arena[index].x - sp_tree.arena[index].width / 2.0  ;
     let right_sp = sp_tree.arena[index].x + sp_tree.arena[index].width / 2.0  ;
     let up_sp = sp_tree.arena[index].y + sp_tree.arena[index].ymod
@@ -1541,30 +1544,30 @@ pub fn center_gene_nodes(sp_tree: &mut ArenaTree<String>,
     let mut down_gene = -100000000.0;
     let mut up_gene = 100000000.0;
     for (index_node, node) in &sp_tree.arena[index].nodes {
-        info!("[center_gene_nodes] >>> {:?} {:?}",gene_trees[*index_node].arena[*node].name,
-         gene_trees[*index_node].arena[*node].e);
-        if  gene_trees[*index_node].arena[*node].x    > left_gene {
-            left_gene =  gene_trees[*index_node].arena[*node].x  ;
+        info!("[center_gene_nodes] >>> {:?} {:?}",
+            gene_trees[*index_node].arena[*node].name, gene_trees[*index_node].arena[*node].e);
+        if  gene_trees[*index_node].arena[*node].x > left_gene {
+            left_gene = gene_trees[*index_node].arena[*node].x;
         }
-        if gene_trees[*index_node].arena[*node].x    < right_gene {
-            right_gene =  gene_trees[*index_node].arena[*node].x  ;
+        if gene_trees[*index_node].arena[*node].x < right_gene {
+            right_gene = gene_trees[*index_node].arena[*node].x;
         }
         if  gene_trees[*index_node].arena[*node].ymod > 0.0 {
             panic!("Unexpected ymod value");
         }
-        if gene_trees[*index_node].arena[*node].y    > down_gene {
-            down_gene =  gene_trees[*index_node].arena[*node].y  ;
+        if gene_trees[*index_node].arena[*node].y > down_gene {
+            down_gene = gene_trees[*index_node].arena[*node].y;
         }
-        if  gene_trees[*index_node].arena[*node].y    < up_gene {
-            up_gene =  gene_trees[*index_node].arena[*node].y  ;
+        if  gene_trees[*index_node].arena[*node].y < up_gene {
+            up_gene = gene_trees[*index_node].arena[*node].y;
         }
     }
     let middle_sp = (left_sp + right_sp) / 2.0;
-    let middle_gn = (left_gene  + right_gene)  / 2.0;
-    let shift = middle_gn  - middle_sp;
+    let middle_gn = (left_gene + right_gene) / 2.0;
+    let shift = middle_gn - middle_sp;
     let y_middle_sp = (up_sp + down_sp) / 2.0;
-    let y_middle_gn = (up_gene  + down_gene)  / 2.0;
-    let y_shift = y_middle_gn  - y_middle_sp;
+    let y_middle_gn = (up_gene + down_gene) / 2.0;
+    let y_shift = y_middle_gn - y_middle_sp;
     for (index_node, node) in &sp_tree.arena[index].nodes {
         let x = gene_trees[*index_node].arena[*node].x;
         let x = x - shift ;
@@ -1573,12 +1576,12 @@ pub fn center_gene_nodes(sp_tree: &mut ArenaTree<String>,
         let y = y - y_shift ;
         gene_trees[*index_node].arena[*node].set_y_noref(y);
     }
-    let children =  &mut  sp_tree.arena[index].children;
+    let children = &mut sp_tree.arena[index].children;
     if children.len() > 0 {
         let son_left = children[0];
         let son_right = children[1];
-        center_gene_nodes( sp_tree, gene_trees,son_left);
-        center_gene_nodes( sp_tree, gene_trees,son_right);
+        center_gene_nodes(sp_tree, gene_trees, son_left);
+        center_gene_nodes(sp_tree, gene_trees, son_right);
     }
 }
 /// Set the node widths of the species tree pipe.
