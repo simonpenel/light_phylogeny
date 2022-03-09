@@ -1723,13 +1723,13 @@ pub fn get_maxdepth(tree: &mut ArenaTree<String>, index:usize, max :&mut usize) 
     *max
 }
 /// Set the y values of the leaves of a tree to the same value in a cladogram.
-pub fn set_leaves_to_bottom( tree: &mut ArenaTree<String>, index: usize, max:&mut  usize) {
-    let children  = &mut  tree.arena[index].children;
+pub fn set_leaves_to_bottom(tree: &mut ArenaTree<String>, index: usize, max:&mut usize) {
+    let children = &mut tree.arena[index].children;
     if children.len() > 0 {
         let son_left = children[0];
         let son_right = children[1];
-        set_leaves_to_bottom(tree,son_left,max);
-        set_leaves_to_bottom(tree,son_right,max);
+        set_leaves_to_bottom(tree, son_left, max);
+        set_leaves_to_bottom(tree, son_right, max);
     }
     else {
         match tree.arena[index].e {
@@ -1739,13 +1739,13 @@ pub fn set_leaves_to_bottom( tree: &mut ArenaTree<String>, index: usize, max:&mu
     }
 }
 /// Set the y values of the leaves of a tree to the same value in a real length branch tree.
-pub fn set_leaves_y_values( tree: &mut ArenaTree<String>, index: usize, y:  f32) {
-    let children  = &mut  tree.arena[index].children;
+pub fn set_leaves_y_values(tree: &mut ArenaTree<String>, index: usize, y: f32) {
+    let children  = &mut tree.arena[index].children;
     if children.len() > 0 {
         let son_left = children[0];
         let son_right = children[1];
-        set_leaves_y_values(tree,son_left,y);
-        set_leaves_y_values(tree,son_right,y);
+        set_leaves_y_values(tree, son_left, y);
+        set_leaves_y_values(tree, son_right, y);
     }
     else {
         match tree.arena[index].e {
@@ -1755,26 +1755,26 @@ pub fn set_leaves_y_values( tree: &mut ArenaTree<String>, index: usize, y:  f32)
     }
 }
 /// Shift the y values of the nodes of a tree.
-pub fn shift_nodes_y_values( tree: &mut ArenaTree<String>, index: usize, y:  f32) {
+pub fn shift_nodes_y_values(tree: &mut ArenaTree<String>, index: usize, y:  f32) {
     let val = tree.arena[index].y + y ;
     tree.arena[index].set_y_noref(val);
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
         let son_left = children[0];
         let son_right = children[1];
-        shift_nodes_y_values(tree,son_left,y);
-        shift_nodes_y_values(tree,son_right,y);
+        shift_nodes_y_values(tree, son_left, y);
+        shift_nodes_y_values(tree, son_right, y);
     }
 }
 /// Shift the  x y values  of a node and its children according to the cumulated xmod ymod values.
-pub fn shift_mod_xy( tree: &mut ArenaTree<String>, index: usize, xmod: &mut f32, ymod: &mut f32) {
-    info!("[shift_mod_xy] shifting {:?} xmod={} ymod={}",tree.arena[index],xmod,ymod);
+pub fn shift_mod_xy(tree: &mut ArenaTree<String>, index: usize, xmod: &mut f32, ymod: &mut f32) {
+    info!("[shift_mod_xy] shifting {:?} xmod={} ymod={}", tree.arena[index],xmod,ymod);
     let x_father = tree.arena[index].x;
-    let  xmod_father = tree.arena[index].xmod;
+    let xmod_father = tree.arena[index].xmod;
     let mut xmod = *xmod + xmod_father;
     tree.arena[index].set_x_noref(x_father+xmod);
     let y_father = tree.arena[index].y;
-    let  ymod_father = tree.arena[index].ymod;
+    let ymod_father = tree.arena[index].ymod;
     let mut ymod = *ymod + ymod_father;
     tree.arena[index].set_y_noref(y_father+ymod);
     let children  = &mut  tree.arena[index].children;
@@ -1784,8 +1784,8 @@ pub fn shift_mod_xy( tree: &mut ArenaTree<String>, index: usize, xmod: &mut f32,
     if children.len() > 1 {
         let son_left = children[0];
         let son_right = children[1];
-        shift_mod_xy( tree, son_left, &mut xmod, &mut ymod);
-        shift_mod_xy( tree, son_right, &mut xmod, &mut ymod);
+        shift_mod_xy(tree, son_left, &mut xmod, &mut ymod);
+        shift_mod_xy(tree, son_right, &mut xmod, &mut ymod);
     }
 }
 /// Scaling tree height.
