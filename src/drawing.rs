@@ -195,35 +195,41 @@ pub fn draw_tree (
         // Display name
         if index.visible {
             let mut element = Element::new("text");
-            element.assign("x", index.x-5.0);
-            element.assign("y", index.y+10.0);
+            element.assign("x", index.x - 5.0);
+            element.assign("y", index.y + 10.0);
             element.assign("class", "gene");
             let txt  = Text::new(&index.name);
             element.append(txt);
-            element.assign("transform","rotate(90 ".to_owned()+&(index.x - 5.0).to_string()
-            + ","+&(index.y + 10.0).to_string()+")");
+            element.assign(
+                "transform",
+                "rotate(90 ".to_owned() + &(index.x - 5.0).to_string() + ","
+                + &(index.y + 10.0).to_string() + ")"
+            );
             match tree.is_leaf(index.idx) {
                 true => g.append(element),
-                _   =>  match options.gene_internal {
+                _  =>  match options.gene_internal {
                             true =>  g.append(element),
                             false => {},
                         },
             };
             // Display support
             let mut element = Element::new("text");
-            element.assign("x", index.x-15.0);
-            element.assign("y", index.y+10.0);
+            element.assign("x", index.x - 15.0);
+            element.assign("y", index.y + 10.0);
             element.assign("class", "support");
             let txt  = Text::new(&index.support);
             element.append(txt);
-            element.assign("transform","rotate(90 ".to_owned()+&(index.x - 15.0).to_string()
-            + ","+&(index.y + 10.0).to_string()+")");
+            element.assign(
+                "transform",
+                "rotate(90 ".to_owned() + &(index.x - 15.0).to_string()
+                + "," + &(index.y + 10.0).to_string() + ")",
+            );
             match tree.is_leaf(index.idx) {
                 true => {},
-                _   =>  match options.support {
-                            true =>  g.append(element),
-                            false => {},
-                        },
+                _  => match options.support {
+                    true =>  g.append(element),
+                    false => {},
+                    },
             };
             // Display branch length
             match options.branch {
@@ -233,16 +239,19 @@ pub fn draw_tree (
                         Some(p)=> {
                             let mut element = Element::new("text");
                             let n = &tree.arena[p];
-                            let x_dist = index.x +5.0;
+                            let x_dist = index.x + 5.0;
                             // Display in the furst quarter of the branch lenght
-                            let y_dist = n.y + (index.y - n.y)/4.0 ;
+                            let y_dist = n.y + (index.y - n.y) / 4.0 ;
                             element.assign("x", x_dist);
                             element.assign("y", y_dist);
                             element.assign("class", "branch");
                             let txt  = Text::new(&index.l.to_string());
                             element.append(txt);
-                            element.assign("transform","rotate(90 ".to_owned()+&(x_dist).to_string()
-                            + ","+&(y_dist).to_string()+")");
+                            element.assign(
+                                "transform",
+                                "rotate(90 ".to_owned() + &(x_dist).to_string() + ","
+                                + &(y_dist).to_string() + ")",
+                            );
                             g.append(element);
                         },
                         None => {},
@@ -254,10 +263,9 @@ pub fn draw_tree (
     }
     // Note : simple tree
     let mut transfo: String = "translate(  ".to_owned();
-    // transfo.push_str(&( x_viewbox).to_string());
     transfo.push_str(&( x_viewbox).to_string());
     transfo.push_str(" ");
-    let psize= &config.gene_police_size.parse::<f32>().unwrap();
+    let psize = &config.gene_police_size.parse::<f32>().unwrap();
     transfo.push_str(&((width_svg  + y_viewbox + x_viewbox + psize)).to_string());
     transfo.push_str(") rotate(-90 0 0 ) ");
     match options.rotate {
@@ -268,7 +276,7 @@ pub fn draw_tree (
     svg::save(name, &document).unwrap();
 }
 /// Get the largest x in set of trees.
-pub fn get_longest_x_mul(gene_trees:&mut std::vec::Vec<ArenaTree<String>>) -> f32 {
+pub fn get_longest_x_mul(gene_trees: &mut std::vec::Vec<ArenaTree<String>>) -> f32 {
     let mut max = 0.0;
     for tree in gene_trees {
         let gene_max = tree.get_largest_x();
@@ -279,7 +287,7 @@ pub fn get_longest_x_mul(gene_trees:&mut std::vec::Vec<ArenaTree<String>>) -> f3
     max
 }
 /// Get the longest node name in a set of trees.
-pub fn get_longest_name_mul(gene_trees:&mut std::vec::Vec<ArenaTree<String>>) -> usize {
+pub fn get_longest_name_mul(gene_trees: &mut std::vec::Vec<ArenaTree<String>>) -> usize {
     let mut max = 0;
     for tree in gene_trees {
         let gene_max = get_longest_name(tree);
@@ -290,7 +298,7 @@ pub fn get_longest_name_mul(gene_trees:&mut std::vec::Vec<ArenaTree<String>>) ->
     max
 }
 /// Get the longest node name in a tree.
-pub fn get_longest_name(gene_tree:&ArenaTree<String>) -> usize {
+pub fn get_longest_name(gene_tree: &ArenaTree<String>) -> usize {
     let mut max = 0;
     for node in &gene_tree.arena {
         if node.name.len() > max {
@@ -302,14 +310,14 @@ pub fn get_longest_name(gene_tree:&ArenaTree<String>) -> usize {
 /// Draw a svg pipe species tree and  several gene trees inside it.
 pub fn draw_sptree_gntrees (
     sp_tree: &mut ArenaTree<String>,                    // species tree
-    gene_trees:&mut std::vec::Vec<ArenaTree<String>>,   // gene trees
+    gene_trees: &mut std::vec::Vec<ArenaTree<String>>,   // gene trees
     name: String,                                       // output file
     options: &Options,                                  // drawing options
     config: &Config,                                    // svg configuration
     transfers: &std::vec::Vec<(String,String)>          // additional transfers
     ) {
     let mut largest_x = sp_tree.get_largest_x() * 1.0 + 0.0 ;
-    let largest_x_genes = get_longest_x_mul(gene_trees);//Gestion des genes free living qio peuvent depasser de l'arbre d'espece
+    let largest_x_genes = get_longest_x_mul(gene_trees); //Gestion des genes free living qio peuvent depasser de l'arbre d'espece
     if  largest_x_genes > largest_x {
         largest_x = largest_x_genes;
     }
@@ -331,20 +339,30 @@ pub fn draw_sptree_gntrees (
     let y_viewbox = smallest_y - 0.0;
     let  mut document = match options.rotate {
         true => Document::new()
-                .set("width",height_svg  )
-                .set("height",width_svg  )
-                .set("viewBox", (x_viewbox,y_viewbox,
-                    height_svg *1.1 + 2.0 *BLOCK ,width_svg + 2.0 *BLOCK )),
+                .set("width", height_svg)
+                .set("height", width_svg)
+                .set("viewBox", (
+                    x_viewbox,
+                    y_viewbox,
+                    height_svg * 1.1 + 2.0 * BLOCK,
+                    width_svg + 2.0 * BLOCK,
+                    )
+                ),
         false => Document::new()
-                .set("width",width_svg  )
-                .set("height",height_svg  )
-                .set("viewBox", (x_viewbox,y_viewbox - 0.5 *BLOCK ,width_svg + 0.5 *BLOCK ,height_svg *1.1 + 0.5 *BLOCK )),
+                .set("width",width_svg)
+                .set("height",height_svg)
+                .set("viewBox", (
+                    x_viewbox,
+                    y_viewbox - 0.5 * BLOCK,
+                    width_svg + 0.5 *BLOCK,
+                    height_svg *1.1 + 0.5 *BLOCK,
+                    )
+                ),
     };
     // Initialse la chaine de carctere dediee aux styles des fonts : font pour l'espece
-    let mut recphylostyle:String = ".species { font: italic ".to_owned()
-        +"; font-size: "+ &config.species_police_size.to_string()+"px; fill: "
-        + &config.species_police_color.to_string()+"; }";
-
+    let mut recphylostyle:String = ".species { font: italic ".to_owned() + "; font-size: "
+        + &config.species_police_size.to_string() + "px; fill: "
+        + &config.species_police_color.to_string() + "; }";
     let mut g = Element::new("g");
     // Dessine l'arbre d'espece
     for index in &sp_tree.arena {
@@ -353,27 +371,34 @@ pub fn draw_sptree_gntrees (
             Some(p) => {
                 let n = &sp_tree.arena[p];
                 let color_branch_species = match index.e {
-                    Event::Loss => {"black".to_string()},
+                    Event::Loss => {
+                        "black".to_string()
+                    },
                     _ => {
                         match index.is_a_transfert {
-                        true => "green".to_string(),
-                        false => config.species_color.to_string(),
+                            true => "green".to_string(),
+                            false => config.species_color.to_string(),
                         }
                     },
                 };
-                let chemin = get_chemin_sp(index.x, index.y,
-                                           index.width/2.0, index.height/2.0,
-                                           n.x, n.y,
-                                           n.width/2.0, n.height/2.0,
-                                           // config.species_color.to_string(),
-                                           color_branch_species.clone(),
-                                           config.species_opacity.to_string());
+                let chemin = get_chemin_sp(
+                    index.x,
+                    index.y,
+                    index.width / 2.0,
+                    index.height / 2.0,
+                    n.x,
+                    n.y,
+                    n.width / 2.0,
+                    n.height / 2.0,
+                    color_branch_species.clone(),
+                    config.species_opacity.to_string(),
+                );
                 if sp_tree.arena[p].visible {
                     g.append(chemin)
                 };
                 if sp_tree.is_leaf(index.idx) {
                     // Set the y value of the pipe leaf ro the highest value of the y gene leaves
-                    let mut max_gene_y =  index.y;
+                    let mut max_gene_y = index.y;
                     for (gene_index, gene_node ) in &index.nodes {
                         let gene_y = gene_trees[*gene_index].arena[*gene_node].y;
                         if  gene_trees[*gene_index].arena[*gene_node].e != Event::Loss {
@@ -386,11 +411,11 @@ pub fn draw_sptree_gntrees (
                         // Dans le cas ou la fauille espece ne contient pas de gene ou seulement
                         // des loss (un peu tordu et surement inutile vu que l'on modifie
                         // cette valeur ensuite.)
-                         max_gene_y = max_gene_y +index.height / 2.0;
+                         max_gene_y = max_gene_y + index.height / 2.0;
                         // max_gene_y = max_gene_y + largest_height / 2.0;
                     }
                     if ! options.real_length_flag && index.e != Event::Loss {
-                    max_gene_y = largest_y_nofl ;
+                        max_gene_y = largest_y_nofl ;
                     }
                     let chemin = close_chemin_sp(index.x, index.y,
                                                  index.width/2.0, index.height/2.0,max_gene_y - index.y,
