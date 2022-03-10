@@ -735,27 +735,42 @@ pub fn draw_sptree_gntrees (
                     g.append(diamond);
                 },
                 // Est ce que BifurcationOut existe encore ???
-                Event::BifurcationOut  =>  g.append(get_carre(index.x,index.y,5.0,
-                                                    "yellow".to_string(),
-                                                    config.gene_opacity.to_string())),
-                Event::Speciation  =>  g.append(get_circle(index.x,index.y,3.0,
-                                                            gene_color.to_string(),
-                                                            config.gene_opacity.to_string())),
+                Event::BifurcationOut => g.append(
+                    get_carre(
+                        index.x,
+                        index.y,
+                        5.0,
+                        "yellow".to_string(),
+                        config.gene_opacity.to_string(),
+                    )
+                ),
+                Event::Speciation => g.append(
+                    get_circle(
+                        index.x,
+                        index.y,
+                        3.0,
+                        gene_color.to_string(),
+                        config.gene_opacity.to_string(),
+                    )
+                ),
                 _ =>  {},
             };
             // Affiche le texte associe au noeud
             match event {
-                Event::Leaf        => {
+                Event::Leaf => {
                     let mut element = Element::new("text");
                     element.assign("x", index.x - 5.0);
                     element.assign("y", index.y + 15.0);
-                    element.assign("class", "gene_".to_owned()+&idx_rcgen.to_string());
-                    let txt  = Text::new(&index.name);
+                    element.assign("class", "gene_".to_owned() + &idx_rcgen.to_string());
+                    let txt = Text::new(&index.name);
                     element.append(txt);
-                    element.assign("transform","rotate(90 ".to_owned() + &(index.x - 5.0).to_string()
-                    + "," + &(index.y + 15.0).to_string() + ")" );
+                    element.assign(
+                        "transform",
+                        "rotate(90 ".to_owned() + &(index.x - 5.0).to_string() + ","
+                        + &(index.y + 15.0).to_string() + ")",
+                    );
                     g.append(element);
-                    },
+                },
                 _ => {
                     match options.gene_internal {
                         true =>  {
@@ -781,35 +796,35 @@ pub fn draw_sptree_gntrees (
     }
     // Ajoute les Transfers surnumeraire
     // Analyse l'abondance des transferts
-    let mut unique_transfers: std::vec::Vec<(String,String)> =  vec![];
-    let mut scores: std::vec::Vec<usize> =  vec![];
+    let mut unique_transfers: std::vec::Vec<(String,String)> = vec![];
+    let mut scores: std::vec::Vec<usize> = vec![];
     let mut score_max = 1;
     if options.thickness_disp_score {
         // Style de la font pour affichage du nb de transcr
-         let added_style = " .rouge { font-size: ".to_owned()+ &config.gene_police_size.to_string()
-            +"px; fill:red ; } ";
+        let added_style = " .rouge { font-size: ".to_owned()+ &config.gene_police_size.to_string()
+        + "px; fill:red ; } ";
         // Je passe en str pour l'ajouter
-        let add_style_str :&str  =     &added_style;
+        let add_style_str :&str = &added_style;
         recphylostyle.push_str(add_style_str);
     }
     if options.branch {
         // Style de la font pour affichage du nb de transcr
-         let added_style = " .branch { font-size: ".to_owned()+ &config.species_police_size.to_string()
-            +"px; fill:black ; } ";
+        let added_style = " .branch { font-size: ".to_owned()
+        + &config.species_police_size.to_string() +"px; fill:black ; } ";
         // Je passe en str pour l'ajouter
-        let add_style_str :&str  =     &added_style;
+        let add_style_str :&str = &added_style;
         recphylostyle.push_str(add_style_str);
     }
     // Ajout le style
     let style = Style::new(recphylostyle);
     document.append(style);
-
     for transfer in transfers {
         let index = unique_transfers.iter().position(|r| r == transfer);
         match index {
             None => {
                 unique_transfers.push(transfer.clone());
-                scores.push(1)},
+                scores.push(1);
+            },
             Some(i) => {
                 scores[i] = scores[i]+ 1;
                 if scores[i] > score_max {
@@ -818,37 +833,38 @@ pub fn draw_sptree_gntrees (
             },
         }
     }
-    let mut  i_trans = 0;
+    let mut i_trans = 0;
     while i_trans < unique_transfers.len() {
-        let (end,start) = &unique_transfers[i_trans];
+        let (end, start) = &unique_transfers[i_trans];
         let score = scores[i_trans];
-        info!("[draw_sptree_gntrees] Additional transfer {}: {}=>{} Score = {}",i_trans,start,end,score);
+        info!("[draw_sptree_gntrees] Additional transfer {}: {}=>{} Score = {}",i_trans, start, end, score);
         i_trans = i_trans + 1;
         if score > options.thickness_thresh {
-            info!("[draw_sptree_gntrees] Selecting additional transfer {:?} {:?}",start,end);
+            info!("[draw_sptree_gntrees] Selecting additional transfer {:?} {:?}",start, end);
             let start_node = sp_tree.get_index(start.to_string()).expect("arg");
             let end_node = sp_tree.get_index(end.to_string()).expect("arg");
-            let opacity = score * 100/ score_max ;
+            let opacity = score * 100 / score_max ;
             let opacity = opacity as f32 / 100.0 ;
             let opacity = opacity.to_string();
-            info!("[draw_sptree_gntrees] Adding additional transfer {:?} {:?} with opacity {}",start,end,opacity);
-            let chemin = get_chemin_transfer(sp_tree.arena[start_node].x,
+            info!("[draw_sptree_gntrees] Adding additional transfer {:?} {:?} with opacity {}",start, end, opacity);
+            let chemin = get_chemin_transfer(
+                sp_tree.arena[start_node].x,
                 sp_tree.arena[start_node].y,
                 sp_tree.arena[end_node].x,
                 sp_tree.arena[end_node].y,
                 "red".to_string(),
                 opacity,
                 config.bezier.to_string().parse::<f32>().unwrap(),
-                0
+                0,
             );
             g.append(chemin);
             // Affichage du score
             if options.thickness_disp_score {
-                let bez_y = config.bezier.to_string().parse::<f32>().unwrap()  * BLOCK;
+                let bez_y = config.bezier.to_string().parse::<f32>().unwrap() * BLOCK;
                 // Point de controle de la courbe de Bezier
                 let controle_x = (sp_tree.arena[start_node].x + sp_tree.arena[end_node].x) / 2.0  ;
                 let controle_y = (sp_tree.arena[start_node].y + sp_tree.arena[end_node].y) / 2.0
-                    - bez_y - ( score.to_string().len() as f32 * &config.gene_police_size.parse::<f32>().unwrap()) ;
+                - bez_y - ( score.to_string().len() as f32 * &config.gene_police_size.parse::<f32>().unwrap() );
                 let mut element = Element::new("text");
                 element.assign("x", controle_x - 0.0);
                 element.assign("y", controle_y + 0.0);
@@ -857,8 +873,11 @@ pub fn draw_sptree_gntrees (
                 element.append(txt);
                 match options.rotate {
                     false => {}
-                    true => element.assign("transform","rotate(90 ".to_owned()+ &controle_x.to_string() + "," +
-                        &controle_y.to_string()+")"),
+                    true => element.assign(
+                        "transform",
+                        "rotate(90 ".to_owned()
+                        + &controle_x.to_string() + "," + &controle_y.to_string()+")"
+                    ),
                 };
                 g.append(element);
             }
@@ -878,194 +897,220 @@ pub fn draw_sptree_gntrees (
 }
 #[allow(dead_code)]
 /// Draw a frame.
-pub fn get_cadre (x: f32, y:f32,w:f32,h:f32, c:String) -> Path {
+pub fn get_cadre (x: f32, y:f32, w:f32, h:f32, c:String) -> Path {
     let data = Data::new()
-    .move_to((x , y))
-    .line_by((w, 0.0 ))
-    .line_by((0.0, h))
-    .line_by((-w, 0.0))
-    .close();
+        .move_to((x, y))
+        .line_by((w, 0.0))
+        .line_by((0.0, h))
+        .line_by((-w, 0.0))
+        .close();
     let path = Path::new()
-    .set("fill", "none")
-    .set("stroke", c)
-    .set("stroke-width", 3)
-    .set("d", data);
+        .set("fill", "none")
+        .set("stroke", c)
+        .set("stroke-width", 3)
+        .set("d", data);
     path
 }
 /// Draw a square of size s at x,y.
 pub fn get_carre (x: f32, y:f32, s:f32, c:String, o:String) -> Path {
     let data = Data::new()
-    .move_to((x*1.0 -s*0.5 , y*1.0 -s*0.5))
-    .line_by((0, s))
-    .line_by((s, 0))
-    .line_by((0, -s))
-    .close();
+        .move_to((x*1.0 -s*0.5 , y*1.0 -s*0.5))
+        .line_by((0, s))
+        .line_by((s, 0))
+        .line_by((0, -s))
+        .close();
     let fill = c.clone();
     let path = Path::new()
-    .set("fill", fill)
-    .set("stroke", c)
-    .set("opacity", o)
-    .set("stroke-width", 3)
-    .set("d", data);
+        .set("fill", fill)
+        .set("stroke", c)
+        .set("opacity", o)
+        .set("stroke-width", 3)
+        .set("d", data);
     path
 }
 /// Draw a triangle of size s at x,y.
 pub fn get_triangle (x: f32, y:f32, s:f32, c:String, o:String) -> Path {
     let data = Data::new()
-    .move_to((x*1.0, y*1.0))
-    .line_by((-s, -s))
-    .line_by((2.0 * s, 0))
-    .close();
+        .move_to((x*1.0, y*1.0))
+        .line_by((-s, -s))
+        .line_by((2.0 * s, 0))
+        .close();
     let fill = c.clone();
     let path = Path::new()
-    .set("fill", fill)
-    .set("stroke", c)
-    .set("opacity", o)
-    .set("stroke-width", 1)
-    .set("d", data);
+        .set("fill", fill)
+        .set("stroke", c)
+        .set("opacity", o)
+        .set("stroke-width", 1)
+        .set("d", data);
     path
 }
 /// Draw a circle  of size s at x,y.
 pub fn get_circle (x: f32, y:f32, r:f32, c:String, o:String) -> Circle {
     let fill = c.clone();
     let circle = Circle::new()
-    .set("cx", x)
-    .set("cy", y)
-    .set("r", r)
-    .set("fill", fill)
-    .set("stroke", c)
-    .set("opacity", o)
-    .set("stroke-width", 1);
+        .set("cx", x)
+        .set("cy", y)
+        .set("r", r)
+        .set("fill", fill)
+        .set("stroke", c)
+        .set("opacity", o)
+        .set("stroke-width", 1);
     circle
 }
 /// Draw a cross  of size s at x,y.
 pub fn get_cross (x: f32, y:f32, s:f32, c:String, o:String) -> Path {
     let data = Data::new()
-    .move_to((x*1.0 , y*1.0 -s*2.0))
-    .line_by((0, s*4.0))
-    .move_to((x*1.0 -s*2.0, y*1.0 ))
-    .line_by((s*4.0, 0));
+        .move_to((x * 1.0 , y * 1.0 -s * 2.0))
+    .line_by((0, s * 4.0))
+    .move_to((x*1.0 - s * 2.0, y * 1.0 ))
+    .line_by((s * 4.0, 0));
     let fill = c.clone();
     let path = Path::new()
-    .set("fill", fill)
-    .set("stroke", c)
-    .set("opacity", o)
-    .set("stroke-width", s*1.0)
-    .set("d", data);
+        .set("fill", fill)
+        .set("stroke", c)
+        .set("opacity", o)
+        .set("stroke-width", s * 1.0)
+        .set("d", data);
     path
 }
 /// Draw a square path between x1,y1 and x2,y2.
-pub fn get_chemin_carre (x1: f32, y1:f32,x2: f32, y2:f32, c:String, o:String, stroke:bool)-> Path {
+pub fn get_chemin_carre (x1: f32, y1:f32, x2: f32, y2:f32, c:String, o:String, stroke:bool) -> Path {
     let data = Data::new()
-    .move_to((x1*1.0, y1*1.0))
-    .line_to((x1*1.0, y2*1.0))
-    .line_to((x2*1.0, y2*1.0));
+        .move_to((x1 * 1.0, y1 * 1.0))
+        .line_to((x1 * 1.0, y2 * 1.0))
+        .line_to((x2 * 1.0, y2 * 1.0));
     let path = Path::new()
-    .set("fill", "none")
-    .set("stroke", c)
-    .set("opacity", o)
-    .set("stroke-width", GTHICKNESS);
+        .set("fill", "none")
+        .set("stroke", c)
+        .set("opacity", o)
+        .set("stroke-width", GTHICKNESS);
     let path = match stroke {
-        true => path.set("stroke-dasharray","1, 1"),
+        true => path.set("stroke-dasharray", "1, 1"),
         false => path,
     };
-    let path  = path.set("d", data);
+    let path = path.set("d", data);
     path
 }
 /// Draw a transfer path between x1,y1 and x2,y2.
-pub fn get_chemin_transfer (x1: f32, y1:f32,x2: f32, y2:f32, c:String, o:String,b:f32,
-    stroke:i32) -> Path {
+pub fn get_chemin_transfer (
+    x1: f32,
+    y1: f32,
+    x2: f32,
+    y2: f32,
+    c: String,
+    o: String,
+    b:f32,
+    stroke:i32,
+    ) -> Path {
     // Arrivee du point: un peu avant pour dessiner la fleche
     let initial_y1 = y1 ;
     let y1 = y1 - PIPEBLOCK;
     // Courbure de la courbe de Bezier
-    let bez_y = b  * BLOCK;
+    let bez_y = b * BLOCK;
     // let bez_y = 20.0;
     // Point de controle de la courbe de Bezier
     let controle_x = (x1 + x2) / 2.0 ;
     let controle_y = (y1 + y2) / 2.0 - bez_y ;
     // ligne horizontale
-    let mut data = "M".to_owned() + &x1.to_string() +" " + &initial_y1.to_string()
-             +" L "+ &x1.to_string() + " " + &y1.to_string();
+    let mut data = "M".to_owned() + &x1.to_string() + " " + &initial_y1.to_string()
+    + " L " + &x1.to_string() + " " + &y1.to_string();
     // fleche : pas de fleche si stroke = 3
     if stroke != 3 {
+        data = data.to_owned() + "M" + &x1.to_string() + " "
+        + &(initial_y1 - PIPEBLOCK / 4.0).to_string() + "L "
+        + &(x1 - PIPEBLOCK / 4.0 ).to_string() + " "
+        + &(initial_y1 - PIPEBLOCK / 2.0 ).to_string();
         data = data.to_owned()+ "M" + &x1.to_string() + " "
-              + &(initial_y1- PIPEBLOCK / 4.0).to_string() + "L "
-              + &(x1 - PIPEBLOCK / 4.0 ).to_string() + " "
-              + &(initial_y1 - PIPEBLOCK / 2.0 ).to_string();
-        data = data.to_owned()+ "M"+&x1.to_string() + " "
-               + &(initial_y1- PIPEBLOCK / 4.0).to_string() + "L "
-               + &(x1 + PIPEBLOCK / 4.0 ).to_string() + " "
-               + &(initial_y1 - PIPEBLOCK / 2.0 ).to_string();
+        + &(initial_y1 - PIPEBLOCK / 4.0).to_string() + "L "
+        + &(x1 + PIPEBLOCK / 4.0 ).to_string() + " "
+        + &(initial_y1 - PIPEBLOCK / 2.0 ).to_string();
     }
     // bezier
     data = data.to_owned() + "M" + &x1.to_string() + " " + &y1.to_string()
-               + " Q " + &controle_x.to_string() + " " + &controle_y.to_string()
-               + " " + &x2.to_string() + " " + &y2.to_string();
+    + " Q " + &controle_x.to_string() + " " + &controle_y.to_string()
+    + " " + &x2.to_string() + " " + &y2.to_string();
     let path = Path::new()
-    .set("fill", "none")
-    .set("stroke", c)
-    .set("opacity", o)
-    .set("stroke-width", GTHICKNESS);
+        .set("fill", "none")
+        .set("stroke", c)
+        .set("opacity", o)
+        .set("stroke-width", GTHICKNESS);
     // choix du pointille
     let path = match stroke {
         3 => path,
-        2 => path.set("stroke-dasharray","4, 1"),
-        1 => path.set("stroke-dasharray","1, 1"),
+        2 => path.set("stroke-dasharray", "4, 1"),
+        1 => path.set("stroke-dasharray", "1, 1"),
         0 => path,
-        _ => path.set("stroke-dasharray","1, 1"),
+        _ => path.set("stroke-dasharray", "1, 1"),
     };
     let path  = path.set("d", data);
     path
 }
 /// Draw a square pipe path between x1,y1 ad x2,y2
-pub fn get_chemin_sp (x1: f32, y1:f32, width1:f32, height1:f32, x2: f32, y2:f32,
-    width2:f32, height2:f32, c:String, o:String ) -> Path {
+pub fn get_chemin_sp (
+    x1: f32,
+    y1: f32,
+    width1: f32,
+    height1: f32,
+    x2: f32,
+    y2: f32,
+    width2: f32,
+    height2: f32,
+    c: String,
+    o: String
+    ) -> Path {
     if x1 < x2 {
         let data = Data::new()
-        .move_to((x1 - width1, y1 - height1 + (STHICKNESS / 2)  as f32))
-        .line_to((x1 - width1, y2 - height2))
-        .line_to((x2 - width2 - (STHICKNESS / 2)  as f32, y2 - height2))
-        .move_to((x1 + width1, y1 - height1 + (STHICKNESS / 2)  as f32 ))
-        .line_to((x1 + width1, y2 + height2))
-        .line_to((x2, y2 + height2));
+            .move_to((x1 - width1, y1 - height1 + (STHICKNESS / 2)  as f32))
+            .line_to((x1 - width1, y2 - height2))
+            .line_to((x2 - width2 - (STHICKNESS / 2)  as f32, y2 - height2))
+            .move_to((x1 + width1, y1 - height1 + (STHICKNESS / 2)  as f32 ))
+            .line_to((x1 + width1, y2 + height2))
+            .line_to((x2, y2 + height2));
         let path = Path::new()
-        .set("fill", "none")
-        .set("stroke", c)
-        .set("opacity", o)
-        .set("stroke-width", STHICKNESS)
-        .set("d", data);
+            .set("fill", "none")
+            .set("stroke", c)
+            .set("opacity", o)
+            .set("stroke-width", STHICKNESS)
+            .set("d", data);
         path
     }
     else {
         let data = Data::new()
-        .move_to((x1 + width1, y1 - height1 + (STHICKNESS / 2)  as f32 ))
-        .line_to((x1 + width1, y2 - height2))
-        .line_to((x2 + width2 + (STHICKNESS / 2)  as f32, y2 - height2))
-        .move_to((x1 - width1, y1 - height1 + (STHICKNESS / 2)  as f32))
-        .line_to((x1 - width1, y2 + height2))
-        .line_to((x2, y2 + height2));
+            .move_to((x1 + width1, y1 - height1 + (STHICKNESS / 2)  as f32 ))
+            .line_to((x1 + width1, y2 - height2))
+            .line_to((x2 + width2 + (STHICKNESS / 2)  as f32, y2 - height2))
+            .move_to((x1 - width1, y1 - height1 + (STHICKNESS / 2)  as f32))
+            .line_to((x1 - width1, y2 + height2))
+            .line_to((x2, y2 + height2));
         let path = Path::new()
-        .set("fill", "none")
-        .set("stroke", c)
-        .set("opacity", o)
-        .set("stroke-width", STHICKNESS)
-        .set("d", data);
+            .set("fill", "none")
+            .set("stroke", c)
+            .set("opacity", o)
+            .set("stroke-width", STHICKNESS)
+            .set("d", data);
         path
     }
 }
 /// Finish  the drawing of species tree at the leaves level.
-pub fn close_chemin_sp (x1: f32, y1:f32, width1:f32, height1:f32, height2:f32,c:String, o:String ) -> Path {
+pub fn close_chemin_sp (
+    x1: f32,
+    y1: f32,
+    width1: f32,
+    height1: f32,
+    height2: f32,
+    c: String,
+    o: String
+    ) -> Path {
         let data = Data::new()
-        .move_to((x1 - width1, y1 - height1 + (STHICKNESS / 2)  as f32  ))
-        .line_to((x1 - width1, y1 + 1.0 * height2))
-        .line_to((x1 + width1, y1 + 1.0 * height2))
-        .line_to((x1 + width1, y1 - height1 + (STHICKNESS / 2)  as f32  ));
+            .move_to((x1 - width1, y1 - height1 + (STHICKNESS / 2)  as f32  ))
+            .line_to((x1 - width1, y1 + 1.0 * height2))
+            .line_to((x1 + width1, y1 + 1.0 * height2))
+            .line_to((x1 + width1, y1 - height1 + (STHICKNESS / 2)  as f32  ));
         let path = Path::new()
-        .set("fill", "none")
-        .set("stroke", c)
-        .set("opacity", o)
-        .set("stroke-width", STHICKNESS)
-        .set("d", data);
+            .set("fill", "none")
+            .set("stroke", c)
+            .set("opacity", o)
+            .set("stroke-width", STHICKNESS)
+            .set("d", data);
         path
 }
