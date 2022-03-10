@@ -253,7 +253,7 @@ pub fn read_recphyloxml_multi(
         // Ajoute l'arbre de gene
         gene_trees.push(gene_tree);
     }
-    let  nb_gntree =  gene_trees.len().clone();
+    let  nb_gntree = gene_trees.len().clone();
     println!("Number of gene trees : {}",nb_gntree);
     info!("List of gene trees : {:?}",gene_trees);
 }
@@ -276,7 +276,7 @@ pub fn phyloxml_processing(
     // profondeur => Y, left => X= 0, right X=1
     // ---------------------------------------------------------
     let  root = tree.get_root();
-    knuth_layout(&mut tree,root, &mut 1);
+    knuth_layout(&mut tree, root, &mut 1);
     // ---------------------------------------------------------
     // Option : Cladogramme
     // ---------------------------------------------------------
@@ -300,11 +300,11 @@ pub fn phyloxml_processing(
     // ---------------------------------------------------------
     // OPTIONAL Scale the heigt if needed
     // ---------------------------------------------------------
-    if options.height != 1.0 { scale_heigth(&mut tree,options.height)};
+    if options.height != 1.0 {scale_heigth(&mut tree,options.height)};
     // ---------------------------------------------------------
     // OPTIONAL Scale the width if needed
     // ---------------------------------------------------------
-    if options.width != 1.0 { scale_width(&mut tree,options.width)};
+    if options.width != 1.0 {scale_width(&mut tree,options.width)};
     // ---------------------------------------------------------
     // Option : real_length
     // ---------------------------------------------------------
@@ -328,9 +328,9 @@ pub fn recphyloxml_processing(
     mut gene_trees: &mut std::vec::Vec<ArenaTree<String>>,  // gene trees
     mut options: &mut Options,                              // display options
     config: &Config,                                        // svg configuration
-    mapping:bool,                                           // map gene and species
+    mapping: bool,                                           // map gene and species
     transfers: & std::vec::Vec<(String,String)>,            // optional additional transfers
-    outfile: String                                         // output file
+    outfile: String,                                         // output file
 ) {
     // -----------------------
     // Traitement en 12 etapes
@@ -354,16 +354,16 @@ pub fn recphyloxml_processing(
             Err(_err) => {
                 info!("[recphyloxml_processing] No FREE_LIVING_ROOT  in the tree, I create one.");
                 let left = sp_tree.get_root();
-                let  right = sp_tree.new_node("free_living".to_string());
-                sp_tree.arena[right].name="FREE_LIVING".to_string();
+                let right = sp_tree.new_node("free_living".to_string());
+                sp_tree.arena[right].name = "FREE_LIVING".to_string();
                 free_root = right;
-                let  fl_root = sp_tree.new_node("free_living_root".to_string());
-                sp_tree.arena[fl_root].name="FREE_LIVING_ROOT".to_string();
-                sp_tree.arena[fl_root].visible=false;
+                let fl_root = sp_tree.new_node("free_living_root".to_string());
+                sp_tree.arena[fl_root].name = "FREE_LIVING_ROOT".to_string();
+                sp_tree.arena[fl_root].visible = false;
                 sp_tree.arena[fl_root].children.push(left);
                 sp_tree.arena[fl_root].children.push(right);
-                sp_tree.arena[right].parent=Some(fl_root);
-                sp_tree.arena[left].parent=Some(fl_root);
+                sp_tree.arena[right].parent = Some(fl_root);
+                sp_tree.arena[left].parent = Some(fl_root);
                 info!("[recphyloxml_processing] FREE_LIVING_ROOT : {}",free_root);
             },
         };
@@ -372,7 +372,7 @@ pub fn recphyloxml_processing(
     // 1ere étape :initialisation des x,y de l'arbre d'espèces :
     // profondeur => Y, left => X= 0, right X=1
     // ---------------------------------------------------------
-    let  root = sp_tree.get_root();
+    let root = sp_tree.get_root();
     knuth_layout(&mut sp_tree,root, &mut 1);
     // --------------------
     // OPTIONAL  Cladogramme
@@ -386,7 +386,7 @@ pub fn recphyloxml_processing(
     // chaque noeud de l'arbre d'espèces
     // ---------------------------------------------------------
     if mapping {
-        map_species_trees(&mut sp_tree,&mut gene_trees);
+        map_species_trees(&mut sp_tree, &mut gene_trees);
         info!("Species tree after mapping : {:?}",sp_tree);
     }
     //  Option: uniformise les noeuds de l'arbre d'espece
@@ -395,7 +395,7 @@ pub fn recphyloxml_processing(
         // Il fait decaler le tout (mais je ne comprend pas pourquoi?)
         let smallest_y = sp_tree.get_smallest_y();
         let root_width = sp_tree.arena[root].nbg as f32 * PIPEBLOCK ;
-        shift_nodes_y_values(sp_tree,root,-smallest_y + root_width);
+        shift_nodes_y_values(sp_tree, root, -smallest_y + root_width);
     }
     // ---------------------------------------------------------
     // Option : utilise les longueurs de branches
@@ -413,13 +413,12 @@ pub fn recphyloxml_processing(
         // On utilise le nombre de gene , qui a etet uniformise precedemment
         // options.scale = (sp_tree.arena[root].nbg as f32 / 2.0  + 0.25)  / min_dist ;
         let optimised_factor = (sp_tree.arena[root].nbg as f32 / 2.0  + 0.25)  / min_dist ;
-        options.scale = optimised_factor  * options.scale ;
-
+        options.scale = optimised_factor * options.scale ;
         real_length(&mut sp_tree, root, &mut 0.0, & options);
         // Il faut decaler le tout (mais je ne comprend pas pourquoi?)
         let smallest_y = sp_tree.get_smallest_y();
         let root_width = sp_tree.arena[root].nbg as f32 * PIPEBLOCK ;
-        shift_nodes_y_values(sp_tree,root,-smallest_y + root_width);
+        shift_nodes_y_values(sp_tree, root, -smallest_y + root_width);
     }
     // ---------------------------------------------------------
     // OPTIONAL Optimisation if needed
@@ -433,7 +432,7 @@ pub fn recphyloxml_processing(
         // Analyse des transfers
         // ---------------------
         let gene_transfers = get_gtransfer(&mut gene_trees[0]);
-        let selected_transfers =gene_transfers;
+        let selected_transfers = gene_transfers;
         println!("Optimisation: Gene transfers = {:?}",selected_transfers);
         let nbt = selected_transfers.len();
         println!("Optimisation: Number of transfers = {:?}",nbt);
@@ -458,7 +457,7 @@ pub fn recphyloxml_processing(
     check_contour_postorder(&mut sp_tree, root);
     // ---------------------------------------------------------
     // 4eme étape : Décale toutes les valeurs de x en fonction
-    // de xmod dans l'abre d'espèces
+    // de xmod dans l'arbre d'espèces
     // ---------------------------------------------------------
     shift_mod_xy(&mut sp_tree, root, &mut 0.0, &mut 0.0);
     // ---------------------------------------------------------
@@ -483,42 +482,42 @@ pub fn recphyloxml_processing(
     if ! options.real_length_flag {
         // Egalise les feuilles
         let largest_y  = sp_tree.get_largest_y();
-        set_leaves_y_values(sp_tree,root,largest_y);
+        set_leaves_y_values(sp_tree, root, largest_y);
     }
     // ---------------------------------------------------------
     // OPTIONAL Scale the heigt if needed
     // ---------------------------------------------------------
-    if options.height != 1.0 { scale_heigth(&mut sp_tree,options.height)};
+    if options.height != 1.0 {scale_heigth(&mut sp_tree, options.height)};
     // ---------------------------------------------------------
     // OPTIONAL Scale the width if needed
     // ---------------------------------------------------------
-    if options.width != 1.0 { scale_width(&mut sp_tree,options.width)};
+    if options.width != 1.0 { scale_width(&mut sp_tree, options.width)};
     // ---------------------------------------------------------
     // 8ème etape : décale les noeuds de gene associés à un
     // noeud d'especes pour éviter qu'ils soit superposés
     // ---------------------------------------------------------
-    bilan_mappings(&mut sp_tree, &mut gene_trees,initial_root, & options);
+    bilan_mappings(&mut sp_tree, &mut gene_trees, initial_root, & options);
     // ---------------------------------------------------------
     // 9eme etape : centre les noeuds de genes dans le noeud de l'espece
     // ---------------------------------------------------------
-    center_gene_nodes(&mut sp_tree,&mut gene_trees,initial_root);
+    center_gene_nodes(&mut sp_tree,&mut gene_trees, initial_root);
     // ---------------------------------------------------------
     // 10eme etape traite spécifiquement les duplications et les feuilles
     // ---------------------------------------------------------
-    move_dupli_mappings(&mut sp_tree, &mut gene_trees,initial_root);
+    move_dupli_mappings(&mut sp_tree, &mut gene_trees, initial_root);
     // 11eme etape : Ca des speciations dont les fils sont
     // dans le meme noeud "tuyeau" que le pere
     // Cela n'arrice que quand on mappe des genes sur des hotes
     // via les parasites (thirdlevel)
     // ---------------------------------------------------------
-    move_species_mappings(&mut sp_tree, &mut gene_trees,initial_root);
+    move_species_mappings(&mut sp_tree, &mut gene_trees, initial_root);
     // Option : traitement specifique des gene "free living"
     if options.free_living {
-        process_fl(&mut sp_tree, &mut gene_trees,free_root, &options);
+        process_fl(&mut sp_tree, &mut gene_trees, free_root, &options);
     }
     if ! options.real_length_flag {
         // Egalise les feuilles 2
-        uniformise_gene_leaves_y_values(sp_tree,gene_trees);
+        uniformise_gene_leaves_y_values(sp_tree, gene_trees);
     }
     // ---------------------------------------------------------
     // Fin: Ecriture du fichier svg
@@ -530,7 +529,7 @@ pub fn recphyloxml_processing(
                 options.gene_internal = true;
                 }
             draw_tree(&mut sp_tree, outfile, &options, &config);
-            },
+        },
         false => draw_sptree_gntrees(&mut sp_tree, &mut gene_trees, outfile,
             &options, &config, &transfers),
     };
