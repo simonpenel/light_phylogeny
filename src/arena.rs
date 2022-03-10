@@ -1789,21 +1789,21 @@ pub fn shift_mod_xy(tree: &mut ArenaTree<String>, index: usize, xmod: &mut f32, 
     }
 }
 /// Scaling tree height.
-pub fn scale_heigth( tree: &mut ArenaTree<String>, scale: f32) {
+pub fn scale_heigth(tree: &mut ArenaTree<String>, scale: f32) {
     for spindex in  &mut tree.arena {
         let y = spindex.y;
         spindex.y = y * scale;
     };
 }
 /// Scaling tree width.
-pub fn scale_width( tree: &mut ArenaTree<String>, scale: f32) {
+pub fn scale_width(tree: &mut ArenaTree<String>, scale: f32) {
     for spindex in  &mut tree.arena {
         let x = spindex.x;
         spindex.x = x * scale;
     };
 }
 /// Uniformise the size of the pipe tree nodes (by uniformising nbg).
-pub fn species_uniformisation( tree: &mut ArenaTree<String>) {
+pub fn species_uniformisation(tree: &mut ArenaTree<String>) {
     let mut max = 0;
     for spindex in  &mut tree.arena {
         if spindex.nbg > max {max = spindex.nbg};
@@ -1814,13 +1814,13 @@ pub fn species_uniformisation( tree: &mut ArenaTree<String>) {
 }
 #[allow(dead_code)]
 // Traverse the tree using post-order traversal starting from a given node
-pub fn  explore_postorder(tree: &mut ArenaTree<String>,index:usize) {
-    let children  = &mut  tree.arena[index].children;
+pub fn  explore_postorder(tree: &mut ArenaTree<String>, index: usize) {
+    let children  = &mut tree.arena[index].children;
     if children.len() > 0 {
         let left = children[0];
         let right = children[1];
-        explore_postorder(tree,left);
-        explore_postorder(tree,right);
+        explore_postorder(tree, left);
+        explore_postorder(tree, right);
         println!("POST-ORDER TRAVERSAL : INTERNAL NODE  {:?} / DEPTH = {}",tree.arena[index],
             tree.depth(index));
     }
@@ -1830,7 +1830,7 @@ pub fn  explore_postorder(tree: &mut ArenaTree<String>,index:usize) {
     }
 }
 /// Solve the conflicts between a parent and its children in a tree  (species pipe tree only).
-pub fn  check_vertical_contour_postorder(tree: &mut ArenaTree<String>,index:usize, ymod: f32) {
+pub fn  check_vertical_contour_postorder(tree: &mut ArenaTree<String>, index: usize, ymod: f32) {
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
         let left = children[0];
