@@ -417,21 +417,30 @@ pub fn draw_sptree_gntrees (
                     if ! options.real_length_flag && index.e != Event::Loss {
                         max_gene_y = largest_y_nofl ;
                     }
-                    let chemin = close_chemin_sp(index.x, index.y,
-                                                 index.width/2.0, index.height/2.0,max_gene_y - index.y,
-                                                 color_branch_species,
-                                                 config.species_opacity.to_string());
+                    let chemin = close_chemin_sp(
+                        index.x,
+                        index.y,
+                        index.width / 2.0,
+                        index.height / 2.0,
+                        max_gene_y - index.y,
+                        color_branch_species,
+                        config.species_opacity.to_string(),
+                    );
                     if sp_tree.arena[p].visible {
                         g.append(chemin)
                     };
                 }
-                match  index.e {
+                match index.e {
                     Event::Duplication => {
-                        // println!("Duplication!!");
-                        let carre = get_carre(index.x,index.y,1.5 * index.width,
-                            config.species_color.to_string(),config.species_opacity.to_string());
+                        let carre = get_carre(
+                            index.x,
+                            index.y,
+                            1.5 * index.width,
+                            config.species_color.to_string(),
+                            config.species_opacity.to_string(),
+                        );
                         g.append(carre);
-                    }
+                    },
                     _=> {},
                 }
             },
@@ -441,13 +450,16 @@ pub fn draw_sptree_gntrees (
         // Affiche le texte associe au noeud
         match sp_tree.is_leaf(index.idx) {
             true => {
-                element.assign("x", index.x-15.0);
+                element.assign("x", index.x - 15.0);
                 element.assign("y", index.y - index.width /2.0 - 10.0);
                 element.assign("class", "species");
                 let txt  = Text::new(&index.name);
                 element.append(txt);
-                element.assign("transform","rotate(90 ".to_owned() + &index.x.to_string()
-                + "," + &index.y.to_string() + ")" );
+                element.assign(
+                    "transform",
+                    "rotate(90 ".to_owned() + &index.x.to_string() + ","
+                    + &index.y.to_string() + ")",
+                );
                 if index.visible {
                     g.append(element);
                 }
@@ -455,13 +467,16 @@ pub fn draw_sptree_gntrees (
             false => {
                 match options.species_internal {
                     true => {
-                        element.assign("x", index.x+15.0);
-                        element.assign("y", index.y+20.0);
+                        element.assign("x", index.x + 15.0);
+                        element.assign("y", index.y + 20.0);
                         element.assign("class", "species");
-                        let txt  = Text::new(&index.name);
+                        let txt = Text::new(&index.name);
                         element.append(txt);
-                        element.assign("transform","rotate(90 ".to_owned()+&index.x.to_string()
-                        + "," + &index.y.to_string() + ")" );
+                        element.assign(
+                            "transform",
+                            "rotate(90 ".to_owned() + &index.x.to_string()
+                            + "," + &index.y.to_string() + ")",
+                        );
                         if index.visible {
                             g.append(element);
                         }
@@ -470,7 +485,6 @@ pub fn draw_sptree_gntrees (
                 };
             },
         };
-
         // Display branch length
         match options.branch {
             true => {
@@ -479,16 +493,19 @@ pub fn draw_sptree_gntrees (
                     Some(p)=> {
                         let mut element = Element::new("text");
                         let n = &sp_tree.arena[p];
-                        let x_dist = index.x + index.width/2.0 + 5.0;
+                        let x_dist = index.x + index.width / 2.0 + 5.0;
                         // Display in the furst quarter of the branch lenght
-                        let y_dist = n.y + (index.y - n.y)/4.0  + index.height/2.0 ;
+                        let y_dist = n.y + (index.y - n.y) / 4.0  + index.height / 2.0 ;
                         element.assign("x", x_dist);
                         element.assign("y", y_dist);
                         element.assign("class", "branch");
                         let txt  = Text::new(&index.l.to_string());
                         element.append(txt);
-                        element.assign("transform","rotate(90 ".to_owned()+&(x_dist).to_string()
-                        + ","+&(y_dist).to_string()+")");
+                        element.assign(
+                            "transform",
+                            "rotate(90 ".to_owned() + &(x_dist).to_string()
+                            + "," + &(y_dist).to_string()+")",
+                        );
                         g.append(element);
                     },
                     None => {},
@@ -497,10 +514,8 @@ pub fn draw_sptree_gntrees (
             false => {},
         }
      }
-
     let  nb_gntree =  gene_trees.len(); // Nombre d'arbres de gene
     let mut idx_rcgen = 0;
-
      // Boucle sur les arbres de genes
     loop {
         let base_couleur = match &idx_rcgen % 6 {
@@ -518,13 +533,12 @@ pub fn draw_sptree_gntrees (
             .alpha(1.0) // Optional
             .to_rgb_string(); //
         // Style de la font pour le gene
-        let added_style = " .gene_".to_owned()+&idx_rcgen.to_string()
-             + " { font-size: "+ &config.gene_police_size.to_string()+"px; fill:"
+        let added_style = " .gene_".to_owned() + &idx_rcgen.to_string()
+             + " { font-size: " + &config.gene_police_size.to_string() + "px; fill:"
              + &gene_color.to_string() + "; } ";
         // Je passe en str pour l'ajouter
-        let add_style_str :&str  =     &added_style;
+        let add_style_str :&str = &added_style;
         recphylostyle.push_str(add_style_str);
-
         for  index in &gene_trees[idx_rcgen].arena {
             // Dessine le chemin du noeud a son pere
             match index.parent {
@@ -541,28 +555,40 @@ pub fn draw_sptree_gntrees (
                             };
                             // Verifie que le parent est bien un branchingout
                             match n.e {
-                                Event::BranchingOut => get_chemin_transfer(index.x,index.y,
-                                        n.x,n.y,
-                                        gene_color.to_string(),
-                                        transfer_opacity,
-                                        config.bezier.to_string().parse::<f32>().unwrap(),
-                                        1),
-                                Event::BifurcationOut => get_chemin_transfer(index.x,index.y,
-                                        n.x,n.y,
-                                        gene_color.to_string(),
-                                        transfer_opacity,
-                                        config.bezier.to_string().parse::<f32>().unwrap(),
-                                        2),
+                                Event::BranchingOut => get_chemin_transfer(
+                                    index.x,
+                                    index.y,
+                                    n.x,
+                                    n.y,
+                                    gene_color.to_string(),
+                                    transfer_opacity,
+                                    config.bezier.to_string().parse::<f32>().unwrap(),
+                                    1,
+                                ),
+                                Event::BifurcationOut => get_chemin_transfer(
+                                    index.x,
+                                    index.y,
+                                    n.x,
+                                    n.y,
+                                    gene_color.to_string(),
+                                    transfer_opacity,
+                                    config.bezier.to_string().parse::<f32>().unwrap(),
+                                    2,
+                                ),
                                 _ => {
                                     // Si le noaud courant est vrituel,je peux tracer quand  meme
                                     // ( a verfier)
                                     if index.virtualsvg {
-                                        get_chemin_transfer(index.x,index.y,
-                                                n.x,n.y,
-                                                gene_color.to_string(),
-                                                transfer_opacity,
-                                                config.bezier.to_string().parse::<f32>().unwrap(),
-                                                1)
+                                        get_chemin_transfer(
+                                            index.x,
+                                            index.y,
+                                            n.x,
+                                            n.y,
+                                            gene_color.to_string(),
+                                            transfer_opacity,
+                                            config.bezier.to_string().parse::<f32>().unwrap(),
+                                            1,
+                                        )
                                     }
                                     else {
                                         // Si c'est le pere qui est virtuel on va voir le grand PERE
@@ -573,12 +599,16 @@ pub fn draw_sptree_gntrees (
                                                 panic!("Wrong recPhyloXML feature in tree # {}.The (grand)father node should be BranchingOut or BifurcationOut, but I found a {:?} Father node: {:?}\nCurrent node: {:?}",
                                                 idx_rcgen,nnn.e,nnn,index);
                                             }
-                                            get_chemin_transfer(index.x,index.y,
-                                                    nnn.x,nnn.y,
-                                                    gene_color.to_string(),
-                                                    1.0.to_string(),
-                                                    config.bezier.to_string().parse::<f32>().unwrap(),
-                                                    1)
+                                            get_chemin_transfer(
+                                                index.x,
+                                                index.y,
+                                                nnn.x,
+                                                nnn.y,
+                                                gene_color.to_string(),
+                                                1.0.to_string(),
+                                                config.bezier.to_string().parse::<f32>().unwrap(),
+                                                1,
+                                            )
                                         }
                                         else {
                                             panic!("Wrong recPhyloXML feature in tree # {}.The father node should be BranchingOut or BifurcationOut, but I found a {:?} Father node: {:?}\nCurrent node: {:?}",
@@ -591,28 +621,45 @@ pub fn draw_sptree_gntrees (
                         false => {
                             // Vérifie que le noeud n'est pas associé à FREE_LIVING
                             if index.location != "FREE_LIVING".to_string() {
-                                get_chemin_carre(index.x,index.y,n.x,n.y ,gene_color.to_string(),
-                                config.gene_opacity.to_string(),false)
+                                get_chemin_carre(
+                                    index.x,
+                                    index.y,
+                                    n.x,
+                                    n.y,
+                                    gene_color.to_string(),
+                                    config.gene_opacity.to_string(),
+                                    false,
+                                )
                             }
                             else {
                                 // Le noeud est  associé à FREE_LIVING
                                 // Calcule l'opacite de l'arbre free living
-                                let free_opacity =
-                                    config.gene_opacity.parse::<f32>().unwrap() / 2.0 ;
+                                let free_opacity = config.gene_opacity.parse::<f32>().unwrap() / 2.0 ;
                                 if n.location == "FREE_LIVING".to_string() {
                                     // La branche est dans l'arbre free living
-                                    get_chemin_carre(index.x,index.y,n.x,n.y,
-                                        gene_color.to_string(),free_opacity.to_string(),false)
+                                    get_chemin_carre(
+                                        index.x,
+                                        index.y,
+                                        n.x,
+                                        n.y,
+                                        gene_color.to_string(),
+                                        free_opacity.to_string(),
+                                        false,
+                                    )
                                 }
                                 else {
                                     // La branche  est entre la racine de l'arbre free living
                                     // et le reste
-                                    get_chemin_transfer(index.x,index.y,
-                                        n.x,n.y,
+                                    get_chemin_transfer(
+                                        index.x,
+                                        index.y,
+                                        n.x,
+                                        n.y,
                                         gene_color.to_string(),
                                         free_opacity.to_string(),
                                         config.bezier.to_string().parse::<f32>().unwrap(),
-                                        3)
+                                        3,
+                                    )
                                 }
                             }
                         },
@@ -623,36 +670,70 @@ pub fn draw_sptree_gntrees (
                  },
                  None => {
                     // C'est la racine
-                    let triangle=get_triangle(index.x,index.y-SQUARESIZE,SQUARESIZE,
-                        gene_color.to_string(),config.gene_opacity.to_string());
+                    let triangle = get_triangle(
+                        index.x,
+                        index.y - SQUARESIZE,
+                        SQUARESIZE,
+                        gene_color.to_string(),
+                        config.gene_opacity.to_string(),
+                    );
                     g.append(triangle);
                  },
              };
              // Dessine le symbole associe au noeud
              let  event = &index.e;
              match event {
-                Event::Leaf        =>  g.append(get_carre(index.x,index.y,1.0,"red".to_string(),
-                                                            config.gene_opacity.to_string())),
-                Event::Duplication =>  g.append(get_carre(index.x,index.y,SQUARESIZE,
-                                                 gene_color.to_string(),
-                                                 config.gene_opacity.to_string())),
+                Event::Leaf => g.append(
+                    get_carre(
+                        index.x,
+                        index.y,
+                        1.0,
+                        "red".to_string(),
+                        config.gene_opacity.to_string(),
+                    )
+                ),
+                Event::Duplication => g.append(
+                    get_carre(
+                        index.x,
+                        index.y,
+                        SQUARESIZE,
+                        gene_color.to_string(),
+                        config.gene_opacity.to_string(),
+                    )
+                ),
                 Event::Loss => {
-                     let mut cross = get_cross(index.x,index.y,2.0,gene_color.to_string(),
-                                                config.gene_opacity.to_string());
-                     cross.assign("transform","rotate(45 ".to_owned() + &index.x.to_string()
-                     + " " + &index.y.to_string() + ")" );
-                     g.append(cross);
+                    let mut cross = get_cross(
+                        index.x,
+                        index.y,
+                        2.0,
+                        gene_color.to_string(),
+                        config.gene_opacity.to_string(),
+                    );
+                    cross.assign(
+                        "transform",
+                        "rotate(45 ".to_owned() + &index.x.to_string() + " "
+                        + &index.y.to_string() + ")",
+                    );
+                    g.append(cross);
                 },
                 // Normalement il ny' a pas d event transferBack : comme il est toujour associé
                 // a un autre event,c'est ce dernier qui est stocké dans le champs "e"
                 // Par contre le champs "is_a_transfert" indique si le noeud prvient d'un transfer
                 Event::BranchingOut  =>  {
-                    let mut diamond = get_carre(index.x,index.y,4.0,gene_color.to_string(),
-                                                config.gene_opacity.to_string());
-                    diamond.assign("transform","rotate(45 ".to_owned() + &index.x.to_string()
-                    + " " + &index.y.to_string() + ")" );
+                    let mut diamond = get_carre(
+                        index.x,
+                        index.y,
+                        4.0,
+                        gene_color.to_string(),
+                        config.gene_opacity.to_string(),
+                    );
+                    diamond.assign(
+                        "transform",
+                        "rotate(45 ".to_owned() + &index.x.to_string() + " "
+                        + &index.y.to_string() + ")",
+                    );
                     g.append(diamond);
-                    },
+                },
                 // Est ce que BifurcationOut existe encore ???
                 Event::BifurcationOut  =>  g.append(get_carre(index.x,index.y,5.0,
                                                     "yellow".to_string(),
