@@ -1,5 +1,5 @@
 /// name = "light_phylogeny"
-/// version = "1.4.0"
+/// version = "1.4.1"
 /// authors = ["Simon Penel <simon.penel@univ-lyon1.fr>"]
 /// license = "CECILL-2.1"
 use std::process;
