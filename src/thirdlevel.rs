@@ -16,8 +16,10 @@ use crate::arena::{lca};
 // =========
 
 /// Map a transfer in gene  tree to the species tree.
-pub fn map_transfer(transfers: Vec<(String,String)> ,
-    parasite_tree: &mut ArenaTree<String>) -> Vec<(String,String)> {
+pub fn map_transfer(
+    transfers: Vec<(String, String)>,
+    parasite_tree: &mut ArenaTree<String>,
+    ) -> Vec<(String, String)> {
     let mut  map_transfers = vec![];
     for (start, end) in transfers {
         let map_start = parasite_tree.get_index(start.to_string())
@@ -26,14 +28,16 @@ pub fn map_transfer(transfers: Vec<(String,String)> ,
         let map_end = parasite_tree.get_index(end.to_string())
             .expect("[map_transfer] unable to find end node");
         let map_end = parasite_tree.arena[map_end].location.to_string();
-        map_transfers.push((map_start,map_end));
+        map_transfers.push((map_start, map_end));
     }
     map_transfers
 }
 /// Map a transfer from a gene tree to the species trees.
-pub fn map_transfer_mul(transfers: Vec<(String,String)> ,
-    parasite_trees: &mut  Vec<ArenaTree<String>>) -> Vec<(String,String)> {
-    let mut  map_transfers = vec![];
+pub fn map_transfer_mul(
+    transfers: Vec<(String, String)>,
+    parasite_trees: &mut  Vec<ArenaTree<String>>,
+    ) -> Vec<(String, String)> {
+    let mut map_transfers = vec![];
     let nb_par = parasite_trees.len();  // Nb of parasite trees
     let mut map_start: Result<usize, usize> = Err(0);
     let mut map_end: Result<usize, usize> = Err(0);
@@ -46,7 +50,7 @@ pub fn map_transfer_mul(transfers: Vec<(String,String)> ,
                 Ok(_) => {
                     info!("[map_transfer_mul] Find transfert start in parasite tree {}",i);
                     break
-                    },
+                },
                 Err(_e) => {},
             }
         i = i + 1;
@@ -75,7 +79,7 @@ pub fn map_transfer_mul(transfers: Vec<(String,String)> ,
             Err(_e) => panic!("Unable to find end of transfer"),
         };
         let map_end = parasite_trees[i].arena[map_end].location.to_string();
-        map_transfers.push((map_start,map_end));
+        map_transfers.push((map_start, map_end));
         }
     map_transfers
 }
@@ -97,7 +101,7 @@ pub fn get_gtransfer(gene_tree: &mut ArenaTree<String>) -> Vec<(String,String)> 
     transfers
 }
 /// Map a reconciled species tree to a pipe species tree.
-pub fn map_parasite_g2s(para_as_species: &mut ArenaTree<String>,para_as_gene: &mut ArenaTree<String>,) {
+pub fn map_parasite_g2s(para_as_species: &mut ArenaTree<String>, para_as_gene: &mut ArenaTree<String>) {
     // Explore pipe species tree
     for index in  &mut para_as_species.arena {
         let name = &index.name;
@@ -107,7 +111,7 @@ pub fn map_parasite_g2s(para_as_species: &mut ArenaTree<String>,para_as_gene: &m
             // If mapping is successful attribute the event and is_a_transfert to the node
             Ok(i) => {
                 let e = &para_as_gene.arena[i].e;
-                info!("[map_parasite_g2s] Mapping of {} OK, event is {:?} (transfert: {})",name,e,&para_as_gene.arena[i].is_a_transfert);
+                info!("[map_parasite_g2s] Mapping of {} OK, event is {:?} (transfert: {})", name, e, &para_as_gene.arena[i].is_a_transfert);
                 index.is_a_transfert = para_as_gene.arena[i].is_a_transfert;
                 index.e = match  e {
                     &Event::Duplication => Event::Duplication,
@@ -129,9 +133,11 @@ pub fn map_parasite_g2s(para_as_species: &mut ArenaTree<String>,para_as_gene: &m
     }
 }
 /// Map a pipe species tree to a reconciled species tree.
-pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
+pub fn map_parasite_s2g(
+    para_as_species: &mut ArenaTree<String>,
     para_as_gene: &mut ArenaTree<String>,
-    gene_trees : &mut std::vec::Vec<ArenaTree<String>>) {
+    gene_trees : &mut std::vec::Vec<ArenaTree<String>>,
+    ) {
     let mut virt_svg = 0; //Increment for virtual svg nodes
     //  We consider a gene/parasite(or symbiot)/host reconciliation
     // Explore each node of the parasite tree reconciled with the host tree
@@ -147,7 +153,7 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
             Err(_err) => {
                 // The node does not exist, proably because of a  loss
                 // We need to define a new node in the pipe species tree
-                info!("[map_parasite_s2g] Unable to map {} {:?}, new node needed",name,&index.e);
+                info!("[map_parasite_s2g] Unable to map {} {:?}, new node needed",name, &index.e);
                 info!("[map_parasite_s2g] Creation of new species node");
                 // To do that we nee the parent of the missing node
                 let p = &index.parent;
@@ -163,30 +169,28 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                         'virtual' node in the reconciled tree, and the program will create \
                         a new node to deal with this. But the current missing node is a root \
                         it can not be a virtual node, so it seems it is actually not possible to map.");
-                        process::exit(1);},
+                        process::exit(1);
+                    },
                 };
                 // p is the parent of the node in the path parasite tree which is not found
                 // in the pipe parsite tree
                 let parent_name = para_as_gene.arena[*p].name.clone();
                 info!("[map_parasite_s2g] parent of the node in the  parasite 'lower' tree \
-                (i.e. recGeneTree from -f file) is {}({})",
-                    p,parent_name);
+                (i.e. recGeneTree from -f file) is {}({})", p, parent_name);
                 // let's find this node in the pipe species tree
                 let j = para_as_species.get_index(parent_name.to_string());
                 let j = match j {
                     Ok(j) => j,
-                    Err(_e) =>
-                        {
-                            eprintln!("\n[map_parasite_s2g] ERROR:");
-                            eprintln!("Unable to find {} in the 'upper' parasite tree \
-                            (i.e. specTree from -g file)", parent_name);
-                            process::exit(1);
-                        },
+                    Err(_e) => {
+                        eprintln!("\n[map_parasite_s2g] ERROR:");
+                        eprintln!("Unable to find {} in the 'upper' parasite tree (i.e. specTree from -g file)",parent_name);
+                        process::exit(1);
+                    },
                 };
                 // j is the mapping of p  in the pipe parasite tree
                 info!("[map_parasite_s2g] Mapping of parent {} OK",parent_name);
-                info!("[map_parasite_s2g] Parents: {:?} <=> {:?}",para_as_species.arena[j],para_as_gene.arena[*p]);
-                info!("[map_parasite_s2g]  Event of the current parasite 'lower' tree node is {:?}",index.e );
+                info!("[map_parasite_s2g] Parents: {:?} <=> {:?}",para_as_species.arena[j], para_as_gene.arena[*p]);
+                info!("[map_parasite_s2g]  Event of the current parasite 'lower' tree node is {:?}",index.e);
                 match index.e {
                     // the missing node is a loss, I add it to the parent j
                     // (which will have 3 children now)
@@ -217,8 +221,8 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                         para_as_species.arena[new_leaf].nbg = nbg;
                         para_as_species.arena[j].nbg = 0;
                         para_as_species.arena[j].nodes = [].to_vec();
-                        info!("[map_parasite_s2g] parent species node is now #{} {:?}",j,para_as_species.arena[j]);
-                        info!("[map_parasite_s2g] added species leave is now #{} {:?}",new_leaf,para_as_species.arena[new_leaf]);
+                        info!("[map_parasite_s2g] parent species node is now #{} {:?}",j, para_as_species.arena[j]);
+                        info!("[map_parasite_s2g] added species leave is now #{} {:?}",new_leaf, para_as_species.arena[new_leaf]);
                         info!("[map_parasite_s2g] the reconciled species node is still {:?}",index);
                         // Now we modify the location of  the gene nodes (gene species maping)
                         // We may have to add  a node in  the gene tree for j
@@ -229,7 +233,7 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                         let mut add_gnodes = [].to_vec();
                         for (ng,nn) in new_gnodes { // ng is the tree number, nn the index of node
                             info!("\n[map_parasite_s2g]");
-                            info!("[map_parasite_s2g] Modify gene tree number {}, node {}",*ng,nn );
+                            info!("[map_parasite_s2g] Modify gene tree number {}, node {}",*ng, nn );
                             info!("[map_parasite_s2g] Before : {:?}", &gene_trees[*ng].arena[*nn]);
                             match gene_trees[*ng].arena[*nn].parent {
                                      Some(p) => info!("[map_parasite_s2g] Parent = {:?}:", &gene_trees[*ng].arena[p]),
@@ -265,9 +269,9 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                                 // We need to add 2 virtual svg nodes, 1 to be displayed in the
                                 // pipe node j, and 1 because we want a binary tree.
                                 let new_svgnode = gene_trees[*ng].new_node("virtualsvg_".to_string()
-                                    + &virt_svg.to_string());
+                                + &virt_svg.to_string());
                                 gene_trees[*ng].arena[new_svgnode].name   = "virtualsvg_".to_string()
-                                    + &virt_svg.to_string();
+                                + &virt_svg.to_string();
                                 virt_svg = virt_svg + 1 ;
                                 // A verifier
                                 gene_trees[*ng].arena[new_svgnode].location = index.name.clone();
@@ -283,18 +287,18 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                                 let new_svgnode_bis = gene_trees[*ng].new_node("virtualsvg_".to_string()
                                 + &virt_svg.to_string());
                                 gene_trees[*ng].arena[new_svgnode_bis].name   = "virtualsvg_".to_string()
-                                    + &virt_svg.to_string();
+                                + &virt_svg.to_string();
                                 virt_svg = virt_svg + 1 ;
                                 // A verifier
                                 gene_trees[*ng].arena[new_svgnode_bis].location = index.name.clone();
                                 gene_trees[*ng].arena[new_svgnode_bis].virtualsvg = true;
                                 add_gnodes.push((j,*ng,(new_svgnode_bis,new_svgnode)));
                                 //  le nouveau noeud a comme parent le parent du noeud traité
-                                gene_trees[*ng].arena[new_svgnode].parent=p;
+                                gene_trees[*ng].arena[new_svgnode].parent = p;
                                 //  le noeud traite a comme parent le nouveau noeud
-                                gene_trees[*ng].arena[*nn].parent=Some(new_svgnode);
+                                gene_trees[*ng].arena[*nn].parent = Some(new_svgnode);
                                 //  le noeud bis a comme parent le nouveau noeud
-                                gene_trees[*ng].arena[new_svgnode_bis].parent=Some(new_svgnode);
+                                gene_trees[*ng].arena[new_svgnode_bis].parent = Some(new_svgnode);
                                 gene_trees[*ng].arena[new_svgnode_bis].visible = false;
                                 gene_trees[*ng].arena[new_svgnode].children.push(new_svgnode_bis);
                                 gene_trees[*ng].arena[new_svgnode].children.push(*nn);
@@ -309,8 +313,8 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                         }
                         info!("[map_parasite_s2g] End of the loop.");
                         info!("[map_parasite_s2g] Associates the new virtual gene nodes to the 'upper' parasite tree.");
-                        for (node,ng,(node1,node2))  in add_gnodes {
-                            info!("[map_parasite_s2g] Adding gene nodes of tree number {} to species node {} ({},{})",ng,node,node1,node2);
+                        for (node, ng, (node1, node2))  in add_gnodes {
+                            info!("[map_parasite_s2g] Adding gene nodes of tree number {} to species node {} ({},{})",ng, node, node1, node2);
                             info!("[map_parasite_s2g] Species  node  was {:?}",para_as_species.arena[node]);
                             para_as_species.arena[node].nbg = para_as_species.arena[node].nbg + 1;
                             para_as_species.arena[node].nodes.push((ng,node1)) ;
@@ -357,7 +361,7 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                         let new_gnodes = &para_as_species.arena[new_node].nodes;
                         // Array of gene nodes we will have to deal with  afterrwawrds
                         let mut add_gnodes = [].to_vec();
-                        for (ng,nn) in new_gnodes { // ng is the tree number, nn the index of node
+                        for (ng, nn) in new_gnodes { // ng is the tree number, nn the index of node
                             info!("[map_parasite_s2g] Modify gene tree number {}",*ng);
                             info!("[map_parasite_s2g] Redefine location of the node.");
                             info!("[map_parasite_s2g] Previous {:?}:", &gene_trees[*ng].arena[*nn]);
@@ -378,31 +382,27 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                                     None => panic!("[map_parasite_s2g] Unable to find parent"),
                                 };
                                 // nouveau noeud 1
-                                let new_svgnode = gene_trees[*ng].new_node("virtualsvg_".to_string()
-                                    + &virt_svg.to_string());
-                                gene_trees[*ng].arena[new_svgnode].name   = "virtualsvg_".to_string()
-                                        + &virt_svg.to_string();
+                                let new_svgnode = gene_trees[*ng].new_node("virtualsvg_".to_string() + &virt_svg.to_string());
+                                gene_trees[*ng].arena[new_svgnode].name = "virtualsvg_".to_string() + &virt_svg.to_string();
                                 virt_svg = virt_svg + 1 ;
                                 // A verifier
                                 gene_trees[*ng].arena[new_svgnode].location = index.name.clone();
                                 gene_trees[*ng].arena[new_svgnode].virtualsvg = true;
                                 // nouveau noeud 2
-                                let new_svgnode_bis = gene_trees[*ng].new_node("virtualsvg_".to_string()
-                                    + &virt_svg.to_string());
-                                gene_trees[*ng].arena[new_svgnode_bis].name   = "virtualsvg_".to_string()
-                                        + &virt_svg.to_string();
+                                let new_svgnode_bis = gene_trees[*ng].new_node("virtualsvg_".to_string() + &virt_svg.to_string());
+                                gene_trees[*ng].arena[new_svgnode_bis].name = "virtualsvg_".to_string() + &virt_svg.to_string();
                                 virt_svg = virt_svg + 1 ;
                                 // A verifier
                                 gene_trees[*ng].arena[new_svgnode_bis].location = index.name.clone();
                                 gene_trees[*ng].arena[new_svgnode_bis].virtualsvg = true;
-                                add_gnodes.push((j,*ng,(new_svgnode_bis,new_svgnode)));
+                                add_gnodes.push((j, *ng, (new_svgnode_bis, new_svgnode)));
                                 // para_as_species.arena[j].nodes.push = [].to_vec();
                                 //  le nouveau noeud a comme parent le parent du noeud traité
-                                gene_trees[*ng].arena[new_svgnode].parent=p;
+                                gene_trees[*ng].arena[new_svgnode].parent = p;
                                 //  le noeud traite a comme parent le nouveau noeud
-                                gene_trees[*ng].arena[*nn].parent=Some(new_svgnode);
+                                gene_trees[*ng].arena[*nn].parent = Some(new_svgnode);
                                 //  le noeud bis a comme parent le nouveau noeud
-                                gene_trees[*ng].arena[new_svgnode_bis].parent=Some(new_svgnode);
+                                gene_trees[*ng].arena[new_svgnode_bis].parent = Some(new_svgnode);
                                 gene_trees[*ng].arena[new_svgnode_bis].visible = false;
                                 gene_trees[*ng].arena[new_svgnode].children.push(new_svgnode_bis);
                                 gene_trees[*ng].arena[new_svgnode].children.push(*nn);
@@ -412,7 +412,7 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
                             }
                         }
                         for (node,ng,(node1,node2))  in add_gnodes {
-                            info!("[map_parasite_s2g] Adding gene nodes of tree number {} to species node {} ({},{})",ng,node,node1,node2);
+                            info!("[map_parasite_s2g] Adding gene nodes of tree number {} to species node {} ({},{})",ng, node, node1, node2);
                             para_as_species.arena[node].nbg = para_as_species.arena[node].nbg + 1;
                             para_as_species.arena[node].nodes.push((ng,node1)) ;
                             para_as_species.arena[node].nbg = para_as_species.arena[node].nbg + 1;
@@ -425,15 +425,19 @@ pub fn map_parasite_s2g(para_as_species: &mut ArenaTree<String>,
     }
 }
 /// Map gene trees to a host tree.
-pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipes:  &mut Vec<ArenaTree<String>>, tree_host_pipe:&mut ArenaTree<String>) {
+pub fn map_gene_host(
+    gene_trees: &mut Vec<ArenaTree<String>>,
+    tree_para_pipes:  &mut Vec<ArenaTree<String>>,
+    tree_host_pipe:&mut ArenaTree<String>,
+    ) {
     // unmap the host tree
     let mut j = 0;
     let nb_nodes = tree_host_pipe.arena.len();
     while j < nb_nodes {
         tree_host_pipe.arena[j].nbg = 0;
-        tree_host_pipe.arena[j].nodes  = vec![];
-        tree_host_pipe.arena[j].width =  PIPEBLOCK;
-        tree_host_pipe.arena[j].height =  PIPEBLOCK;
+        tree_host_pipe.arena[j].nodes = vec![];
+        tree_host_pipe.arena[j].width = PIPEBLOCK;
+        tree_host_pipe.arena[j].height = PIPEBLOCK;
         j = j + 1 ;
     }
     let mut i = 0;
@@ -470,9 +474,9 @@ pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipes:  
                 // location of gene node is found in parasite tree
                 if find_spec {
                     // println!("debug AVANT {:?}",gene_trees[i].arena[j]);
-                    gene_trees[i].arena[j].location =  tree_para_pipes[k].arena[espece_index].location.clone();
+                    gene_trees[i].arena[j].location = tree_para_pipes[k].arena[espece_index].location.clone();
                     // println!("debug APRES {:?}",gene_trees[i].arena[j]);
-                    if  tree_para_pipes[k].arena[espece_index].is_a_transfert {
+                    if tree_para_pipes[k].arena[espece_index].is_a_transfert {
                         gene_trees[i].arena[j].is_a_transfert = true;
                         let parent = gene_trees[i].arena[j].parent;
                         match parent {
@@ -507,7 +511,7 @@ pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipes:  
                     //     };
                     // }
 
-                    if  gene_trees[i].arena[j].e == Event::Undef {
+                    if gene_trees[i].arena[j].e == Event::Undef {
                         if gene_trees[i].arena[j].children.len() > 0 {
                             virtual_nodes.push(j);
                         }
@@ -554,26 +558,26 @@ pub fn map_gene_host(gene_trees: &mut Vec<ArenaTree<String>>, tree_para_pipes:  
 #[allow(dead_code)]
 pub fn select_transfer(transfers: & Vec<(String,String)>,species_tree: &mut ArenaTree<String>) -> Vec<(String,String)> {
 	let mut  selected = vec![];
-	for (start,end) in transfers {
-    let s = species_tree.get_index(start.to_string()).expect("[select_transfer] Unable fo find start");
+	for (start, end) in transfers {
+        let s = species_tree.get_index(start.to_string()).expect("[select_transfer] Unable fo find start");
         let e = species_tree.get_index(end.to_string()).expect("[select_transfer] Unable fo find start");
-        let ancestor = lca(species_tree,s,e);
+        let ancestor = lca(species_tree, s, e);
         if (ancestor != s) && (ancestor != e) {
-            selected.push((start.clone(),end.clone()));
+            selected.push((start.clone(), end.clone()));
         }
     }
     selected
 }
 //  Under development
-pub fn optimisation(transfer: & (String,String),species_tree: &mut ArenaTree<String>) -> usize {
+pub fn optimisation(transfer: & (String,String), species_tree: &mut ArenaTree<String>) -> usize {
     info!("[optimisation]");
-    let  (start,end) = transfer;
-    info!("[optimisation] Transfer {}->{}",start,end);
+    let  (start, end) = transfer;
+    info!("[optimisation] Transfer {}->{}",start, end);
     // est ce le start est a droite du end?
     let s = species_tree.get_index(start.to_string()).expect("[optimisation] Unable fo find start");
     let e = species_tree.get_index(end.to_string()).expect("[optimisation] Unable fo find start");
-    let ancestor = lca(species_tree,s,e);
-    info!("[optimisation] Ancestor of {}->{} is {}",start,end, &species_tree.arena[ancestor].name);
+    let ancestor = lca(species_tree, s, e);
+    info!("[optimisation] Ancestor of {}->{} is {}",start, end, &species_tree.arena[ancestor].name);
     //  le noeu de droite de l'ancetre
     let droite = species_tree.arena[ancestor].children[1];
     let gauche = species_tree.arena[ancestor].children[0];
@@ -602,39 +606,38 @@ pub fn optimisation(transfer: & (String,String),species_tree: &mut ArenaTree<Str
 
         // SAUF QUNAD ON EST SOI MEME KE PERE
         info!("[optimisation]  Start: Check if {} is not {} nor its parent {}",
-        species_tree.arena[s].name,species_tree.arena[droite].name,
-        species_tree.arena[ancestor].name);
+        species_tree.arena[s].name, species_tree.arena[droite].name, species_tree.arena[ancestor].name);
         if (s != droite ) && ( s!= ancestor ){
             info!("[optimisation] Increment 'go left' at {}",species_tree.arena[s].name);
-            species_tree.arena[s].go_left = species_tree.arena[s].go_left +1;
+            species_tree.arena[s].go_left = species_tree.arena[s].go_left + 1;
             let mut parent = species_tree.arena[s].parent;
             info!("[optimisation] Start: Add a go left from parent of {} to {}",
-            species_tree.arena[s].name,species_tree.arena[droite].name);
-            while parent != Some(droite) && parent != Some(ancestor)  && parent != None {
+            species_tree.arena[s].name, species_tree.arena[droite].name);
+            while parent != Some(droite) && parent != Some(ancestor) && parent != None {
                 let p = match parent {
                     Some(p) => p,
                     None => panic!("[optimisation] unexpected None"),
                 };
                 info!("[optimisation] Increment go left at {}",species_tree.arena[p].name);
-                species_tree.arena[p].go_left = species_tree.arena[p].go_left +1;
+                species_tree.arena[p].go_left = species_tree.arena[p].go_left + 1;
                 parent = species_tree.arena[p].parent;
             }
         }
         info!("[optimisation] End: Check if {} is not {} nor its parent {}",
-        species_tree.arena[e].name,species_tree.arena[gauche].name,species_tree.arena[ancestor].name);
+        species_tree.arena[e].name, species_tree.arena[gauche].name, species_tree.arena[ancestor].name);
         if (e != gauche ) && ( e!= ancestor) {
             info!("[optimisation] Increment go right at {}",species_tree.arena[e].name);
-            species_tree.arena[e].go_right = species_tree.arena[e].go_right +1;
+            species_tree.arena[e].go_right = species_tree.arena[e].go_right + 1;
             let mut parent = species_tree.arena[e].parent;
             info!("[optimisation] End: Add a go right from parent of {} to {}",
-            species_tree.arena[e].name,species_tree.arena[gauche].name);
+            species_tree.arena[e].name, species_tree.arena[gauche].name);
             while parent != Some(gauche) && parent != Some(ancestor) {
                 let p = match parent {
                     Some(p) => p,
                     None => panic!("[optimisation]  unexpected None"),
                 };
                 info!("[optimisation] Increment go right at {}",species_tree.arena[p].name);
-                species_tree.arena[p].go_right = species_tree.arena[p].go_right +1;
+                species_tree.arena[p].go_right = species_tree.arena[p].go_right + 1;
                 parent = species_tree.arena[p].parent;
             }
         }
@@ -642,21 +645,20 @@ pub fn optimisation(transfer: & (String,String),species_tree: &mut ArenaTree<Str
     else {
         info!("[optimisation] The start is on the left side");
         info!("[optimisation] Start: Check if {} is not {} nor its parent {}",
-            species_tree.arena[s].name,species_tree.arena[gauche].name,
-            species_tree.arena[ancestor].name);
+            species_tree.arena[s].name, species_tree.arena[gauche].name, species_tree.arena[ancestor].name);
         if (s != gauche ) && ( s!= ancestor){
             info!("[optimisation] Increment go rigth at {}",species_tree.arena[s].name);
-            species_tree.arena[s].go_right = species_tree.arena[s].go_right +1;
+            species_tree.arena[s].go_right = species_tree.arena[s].go_right + 1;
             let mut parent = species_tree.arena[s].parent;
             info!("[optimisation] Start: Add a go right from parent of {} to {}",
-                species_tree.arena[s].name,species_tree.arena[gauche].name);
+                species_tree.arena[s].name, species_tree.arena[gauche].name);
             while parent != Some(gauche) && parent != Some(ancestor)  && parent != None {
                     let p = match parent {
                     Some(p) => p,
                     None => panic!("[optimisation] unexpected None"),
                 };
                 info!("[optimisation]  Increment go right at {}",species_tree.arena[p].name);
-                species_tree.arena[p].go_right = species_tree.arena[p].go_right +1;
+                species_tree.arena[p].go_right = species_tree.arena[p].go_right + 1;
                 parent = species_tree.arena[p].parent;
             }
         }
@@ -665,7 +667,7 @@ pub fn optimisation(transfer: & (String,String),species_tree: &mut ArenaTree<Str
             species_tree.arena[ancestor].name);
         if (e != droite ) && ( e != ancestor ){
             info!("[optimisation] Increment go left at {}",species_tree.arena[e].name);
-            species_tree.arena[e].go_left = species_tree.arena[e].go_left +1;
+            species_tree.arena[e].go_left = species_tree.arena[e].go_left + 1;
             let mut parent = species_tree.arena[e].parent;
             info!("[optimisation] End: Add a go left from parent of {} to {}",
                 species_tree.arena[e].name,species_tree.arena[droite].name);
@@ -675,7 +677,7 @@ pub fn optimisation(transfer: & (String,String),species_tree: &mut ArenaTree<Str
                     None => panic!("[optimisation] unexpected None"),
                 };
                 info!("[optimisation] Increment go left at {}",species_tree.arena[p].name);
-                species_tree.arena[p].go_left = species_tree.arena[p].go_left +1;
+                species_tree.arena[p].go_left = species_tree.arena[p].go_left + 1;
                 parent = species_tree.arena[p].parent;
             }
         }
@@ -683,10 +685,10 @@ pub fn optimisation(transfer: & (String,String),species_tree: &mut ArenaTree<Str
     ancestor
 }
 // Under development.
-pub fn check_optimisation(transfer: & (String,String), species_tree: &mut ArenaTree<String>,node: usize) {
-    let  (start,end) = transfer;
+pub fn check_optimisation(transfer: & (String, String), species_tree: &mut ArenaTree<String>, node: usize) {
+    let  (start, end) = transfer;
     info!("[check_optimisation]");
-    info!("[check_optimisation] Processing transfer {}->{} for node {}",start,end,&species_tree.arena[node].name);
+    info!("[check_optimisation] Processing transfer {}->{} for node {}",start, end, &species_tree.arena[node].name);
     // est ce le start est a droite du end?
     let s = species_tree.get_index(start.to_string()).expect("[check_optimisation] Unable fo find start");
     let e = species_tree.get_index(end.to_string()).expect("[check_optimisation]] Unable fo find start");
@@ -694,37 +696,26 @@ pub fn check_optimisation(transfer: & (String,String), species_tree: &mut ArenaT
     if children.len() > 0 {
         let left = children[0];
         let right = children[1];
-        let goleft_left =      species_tree.arena[left].go_left as i32;
-        let goright_left =     species_tree.arena[left].go_right as i32;
+        let goleft_left = species_tree.arena[left].go_left as i32;
+        let goright_left = species_tree.arena[left].go_right as i32;
         let score_goleft_left = goleft_left - goright_left;
-        let goleft_right =      species_tree.arena[right].go_left as i32;
-        let goright_right =     species_tree.arena[right].go_right as i32;
+        let goleft_right = species_tree.arena[right].go_left as i32;
+        let goright_right = species_tree.arena[right].go_right as i32;
         let score_goleft_right = goleft_right - goright_right;
         let switch = score_goleft_right > score_goleft_left;
-        // let switch  = match inversion {
-        //      1 =>  score_goleft_right > score_goleft_left,
-        //     -1 => score_goleft_left > score_goleft_right,
-        //     _ => panic!("[check_optimisation] switch error"),
-        // };
         if switch {
             info!("[check_optimisation] Try to switch node {} : ",species_tree.arena[node].name);
             if species_tree.arena[node].fixed  {
-                info!("[check_optimisation] Not possible :  node is fixed");
+                info!("[check_optimisation] Not possible : node is fixed");
             }
             else {
                 info!("[check_optimisation] OK");
             }
         }
-        if switch && ( species_tree.arena[node].fixed == false ){
-            info!("[check_optimisation] Inversion at node {} {} ({}>{})",node,
-            species_tree.arena[node].name,score_goleft_right,score_goleft_left);
+        if switch && (species_tree.arena[node].fixed == false ) {
+            info!("[check_optimisation] Inversion at node {} {} ({}>{})",node, species_tree.arena[node].name, score_goleft_right, score_goleft_left);
             species_tree.arena[node].children[0] = right;
             species_tree.arena[node].children[1] = left;
-                // _inversion = match inversion {
-                //     1 => -1,
-                //     -1 => 1,
-                //     _ => panic!("akalzkla"),
-                // };
         }
         if (node != e ) && (node != s) {
             info!("[check_optimisation] Fixing node orientation {}",species_tree.arena[node].name);
@@ -741,12 +732,16 @@ pub fn check_optimisation(transfer: & (String,String), species_tree: &mut ArenaT
     }
 }
 // Under development.
-pub fn classify_transfer(transfer: & (String,String),species_tree: &mut ArenaTree<String>, index: & usize)  {
+pub fn classify_transfer(
+    transfer: & (String, String),
+    species_tree: &mut ArenaTree<String>,
+    index: & usize,
+    ) {
     let  (start,end) = transfer;
     info!("[classify_transfer] Transfer {}->{}",start,end);
     let s = species_tree.get_index(start.to_string()).expect("[classify_transfer] Unable fo find start");
     let e = species_tree.get_index(end.to_string()).expect("[classify_transfer] Unable fo find start");
-    let ancestor = lca(species_tree,s,e);
+    let ancestor = lca(species_tree, s, e);
     let mut parent = species_tree.arena[s].parent;
     while (parent != Some(ancestor)) && (parent != None) {
         let p = match parent {
@@ -756,15 +751,14 @@ pub fn classify_transfer(transfer: & (String,String),species_tree: &mut ArenaTre
     species_tree.arena[p].transfers.push(*index);
     parent = species_tree.arena[p].parent;
     };
-
     let mut parent = species_tree.arena[e].parent;
     while (parent != Some(ancestor)) && (parent != None) {
         let p = match parent {
             Some(p) => p,
             None => panic!("[classify_transfer] unexpected None"),
         };
-    species_tree.arena[p].transfers.push(*index);
-    parent = species_tree.arena[p].parent;
+        species_tree.arena[p].transfers.push(*index);
+        parent = species_tree.arena[p].parent;
     };
 }
 // Under development.
