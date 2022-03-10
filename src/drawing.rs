@@ -70,11 +70,11 @@ pub fn draw_tree (
                     height_svg + 2.0 *BLOCK,
                 )),
     };
-    let style = Style::new(".gene { font-size:  ".to_owned()
-        + &config.gene_police_size.to_string()+"px; fill:"
+    let style = Style::new(".gene { font-size: ".to_owned()
+        + &config.gene_police_size.to_string() + "px; fill:"
         + &gene_color.to_string() + "; } .support { font-size: "
-        + &config.gene_police_size.to_string()+"px; fill: red; } .branch { font-size: "
-        + &config.gene_police_size.to_string()+"px; fill: black; }" );
+        + &config.gene_police_size.to_string() + "px; fill: red; } .branch { font-size: "
+        + &config.gene_police_size.to_string() + "px; fill: black; }" );
     document.append(style);
     let mut g = Element::new("g");
     for  index in &tree.arena {
@@ -82,45 +82,114 @@ pub fn draw_tree (
             Some(p) => {
                 let n = &tree.arena[p];
                 let chemin = match index.is_a_transfert {
-                true => {get_chemin_carre(index.x,index.y,n.x,n.y,gene_color.to_string(),
-                         config.gene_opacity.to_string(),true)},
-                false => {get_chemin_carre(index.x,index.y,n.x,n.y,gene_color.to_string(),
-                         config.gene_opacity.to_string(),false)},
+                    true => {
+                        get_chemin_carre(
+                            index.x,
+                            index.y,
+                            n.x,
+                            n.y,
+                            gene_color.to_string(),
+                            config.gene_opacity.to_string(),
+                            true,
+                        )
+                    },
+                    false => {
+                        get_chemin_carre(
+                            index.x,
+                            index.y,
+                            n.x,
+                            n.y,
+                            gene_color.to_string(),
+                            config.gene_opacity.to_string(),
+                            false
+                        )
+                    },
                 };
-                if tree.arena[p].visible  {
+                if tree.arena[p].visible {
                     g.append(chemin);
                 }
                 0
             },
-            None => {-1},
+            None => { -1 },
         };
         let  event = &index.e;
         match event {
-            Event::Leaf        =>  g.append(get_carre(index.x,index.y,2.0,"red".to_string(),
-                                    config.gene_opacity.to_string())),
-            Event::Duplication =>  g.append(get_carre(index.x,index.y,SQUARESIZE,
-                                    gene_color.to_string(),config.gene_opacity.to_string())),
-            Event::Loss =>  {
-                let mut cross = get_cross(index.x,index.y,4.0,gene_color.to_string(),
-                                    config.gene_opacity.to_string());
-                cross.assign("transform","rotate(45 ".to_owned()+&index.x.to_string()
-                + " "+&index.y.to_string()+")");
+            Event::Leaf => {
+                g.append(
+                    get_carre(
+                        index.x,
+                        index.y,
+                        2.0,
+                        "red".to_string(),
+                        config.gene_opacity.to_string(),
+                    )
+                )
+            },
+            Event::Duplication => {
+                g.append(
+                    get_carre(
+                        index.x,
+                        index.y,
+                        SQUARESIZE,
+                        gene_color.to_string(),
+                        config.gene_opacity.to_string(),
+                    )
+                )
+            },
+            Event::Loss => {
+                let mut cross = get_cross(
+                    index.x,
+                    index.y,
+                    4.0,
+                    gene_color.to_string(),
+                    config.gene_opacity.to_string(),
+                );
+                cross.assign(
+                    "transform",
+                    "rotate(45 ".to_owned() + &index.x.to_string() + " " + &index.y.to_string() + ")",
+                );
                 g.append(cross);
             },
-            Event::BranchingOut =>  {
-                let mut diamond = get_carre(index.x,index.y,12.0,"orange".to_string(),
-                    config.gene_opacity.to_string());
-                diamond.assign("transform","rotate(45 ".to_owned() + &index.x.to_string()
-                     + " " + &index.y.to_string() + ")" );
+            Event::BranchingOut => {
+                let mut diamond = get_carre(
+                    index.x,
+                    index.y,
+                    12.0,
+                    "orange".to_string(),
+                    config.gene_opacity.to_string(),
+                );
+                diamond.assign(
+                    "transform",
+                    "rotate(45 ".to_owned() + &index.x.to_string() + " " + &index.y.to_string() + ")",
+                );
                 g.append(diamond);
             },
-
-            _   => if index.visible { g.append(get_circle(index.x,index.y,3.0,gene_color.to_string(),
-                                        config.gene_opacity.to_string()))},
+            _  => {
+                if index.visible {
+                    g.append(
+                        get_circle(
+                            index.x,
+                            index.y,
+                            3.0,
+                            gene_color.to_string(),
+                            config.gene_opacity.to_string(),
+                        )
+                    )
+                }
+            },
         };
         match index.is_a_transfert {
-            true => { g.append(get_triangle(index.x,index.y - 6.0,12.0,"yellow".to_string(),
-                                            config.gene_opacity.to_string())) },
+            true => {
+                g.append(
+                    get_triangle(
+                        index.x,
+                        index.y - 6.0,
+                        12.0,
+                        "yellow".to_string(),
+                        config.gene_opacity.to_string(),
+                    )
+                )
+            },
             false => {},
         };
         // Display name
