@@ -762,9 +762,13 @@ pub fn classify_transfer(
     };
 }
 // Under development.
-pub fn reorder_transfers(species_tree: &mut ArenaTree<String>, node:  usize, ordered: &mut Vec<usize> ) {
+pub fn reorder_transfers(
+    species_tree: &mut ArenaTree<String>,
+    node: usize,
+    ordered: &mut Vec<usize>,
+    ) {
     let tr = &species_tree.arena[node].transfers;
-    info!("[reorder_transfers_transfer] Transfers at {} =  {:?}", &species_tree.arena[node].name,tr);
+    info!("[reorder_transfers_transfer] Transfers at {} =  {:?}",&species_tree.arena[node].name,tr);
     for t in tr {
         if !ordered.contains(&t) {
             ordered.push(*t);
@@ -774,7 +778,7 @@ pub fn reorder_transfers(species_tree: &mut ArenaTree<String>, node:  usize, ord
     if children.len() > 0 {
         let left = children[0];
         let right = children[1];
-        reorder_transfers(species_tree,left,ordered);
-        reorder_transfers(species_tree,right,ordered);
+        reorder_transfers(species_tree, left, ordered);
+        reorder_transfers(species_tree, right, ordered);
     }
 }
