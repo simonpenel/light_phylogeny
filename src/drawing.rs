@@ -52,14 +52,23 @@ pub fn draw_tree (
     let y_viewbox = smallest_y - 0.0;
     let  mut document = match options.rotate {
         true => Document::new()
-                .set("width",height_svg  )
-                .set("height",width_svg  )
-                .set("viewBox", (x_viewbox,y_viewbox,
-                    height_svg + 2.0 *BLOCK ,width_svg + 2.0 *BLOCK )),
+                .set("width", height_svg)
+                .set("height", width_svg)
+                .set("viewBox", (
+                    x_viewbox,
+                    y_viewbox,
+                    height_svg + 2.0 *BLOCK,
+                    width_svg + 2.0 *BLOCK,
+                )),
         false => Document::new()
-                .set("width",width_svg  )
-                .set("height",height_svg  )
-                .set("viewBox", (x_viewbox,y_viewbox,width_svg + 2.0 *BLOCK ,height_svg + 2.0 *BLOCK )),
+                .set("width", width_svg)
+                .set("height", height_svg)
+                .set("viewBox", (
+                    x_viewbox,
+                    y_viewbox,
+                    width_svg + 2.0 *BLOCK,
+                    height_svg + 2.0 *BLOCK,
+                )),
     };
     let style = Style::new(".gene { font-size:  ".to_owned()
         + &config.gene_police_size.to_string()+"px; fill:"
