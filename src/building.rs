@@ -5,7 +5,6 @@
 
 // Convention: "pipe" trees are equivalent to "upper" trees, "path" trees are equivalenet to "lower" trees
 
-
 use log::{info};
 use std::fs;
 use crate::arena::Options;
@@ -42,7 +41,7 @@ pub fn read_newick(filename:String, tree: &mut ArenaTree<String>) {
     newick2tree(contents, tree, root, &mut 0);
 }
 /// Read a phyloxml file and store the tree into a ArenaTree structure.
-pub fn read_phyloxml(filename:String, tree: &mut ArenaTree<String>) {
+pub fn read_phyloxml(filename: String, tree: &mut ArenaTree<String>) {
     let contents = fs::read_to_string(filename);
     let contents = match contents {
         Ok(contents) => contents,
@@ -74,23 +73,27 @@ pub fn read_phyloxml(filename:String, tree: &mut ArenaTree<String>) {
             // Create the node, get its associated index and store it in root again
             let root = tree.new_node(root.to_string());
             // Call xlm2tree on the root
-            xml2tree(node, root, &mut index,  tree);
+            xml2tree(node, root, &mut index, tree);
             break;
         }
     }
     info!("Tree : {:?}",tree);
 }
 /// Adding invisible parent nodes in order to display multiple species trees.
-pub fn add_virtual_roots(global_roots: &mut std::vec::Vec<String>, pere: &mut usize, level: &mut usize,
-    global_pipe: &mut ArenaTree<String>) {
+pub fn add_virtual_roots(
+    global_roots: &mut std::vec::Vec<String>,
+    pere: &mut usize,
+    level: &mut usize,
+    global_pipe: &mut ArenaTree<String>,
+    ) {
     if global_roots.len() == 1 {
-        let nom_droite = "VIRTUAL_".to_string().to_owned()+&level.to_string()+"_"+&(*pere-1).to_string();
-        let nom_pere = "ROOT_".to_string().to_owned()+&level.to_string()+"_"+&(*pere).to_string();
+        let nom_droite = "VIRTUAL_".to_string().to_owned() + &level.to_string() + "_"+&(*pere-1).to_string();
+        let nom_pere = "ROOT_".to_string().to_owned() + &level.to_string() + "_"+&(*pere).to_string();
         let  node_pere = global_pipe.new_node(nom_pere.clone());
-        global_pipe.arena[node_pere].name=nom_pere;
+        global_pipe.arena[node_pere].name = nom_pere;
         global_pipe.arena[node_pere].visible = false;
         let  node_droite = global_pipe.node(nom_droite.clone());
-        global_pipe.arena[node_droite].name=nom_droite;
+        global_pipe.arena[node_droite].name = nom_droite;
         global_pipe.arena[node_droite].visible = false;
         let node_left = global_pipe.node(global_roots[0].to_string());
         global_pipe.arena[node_pere].children.push(node_left);
@@ -98,16 +101,16 @@ pub fn add_virtual_roots(global_roots: &mut std::vec::Vec<String>, pere: &mut us
         global_pipe.arena[node_left].parent = Some(node_pere);
         global_pipe.arena[node_droite].parent = Some(node_pere);
         if *pere >  0 {
-            let mut my_vect : Vec<String> = (0..(*pere+1)).map(|n| "ROOT_".to_string().to_owned()+&level.to_string()+"_"+&n.to_string()).collect();
+            let mut my_vect : Vec<String> = (0..(*pere+1)).map(|n| "ROOT_".to_string().to_owned() + &level.to_string() + "_" + &n.to_string()).collect();
             *level = *level + 1;
             *pere = 0;
-            add_virtual_roots( &mut my_vect, pere, level, global_pipe);
+            add_virtual_roots(&mut my_vect, pere, level, global_pipe);
         }
     }
     if global_roots.len() == 2 {
-        let nom_pere = "ROOT_".to_string().to_owned()+&level.to_string()+"_"+&(*pere).to_string();
+        let nom_pere = "ROOT_".to_string().to_owned() + &level.to_string() + "_"+&(*pere).to_string();
         let  node_pere = global_pipe.node(nom_pere.clone());
-        global_pipe.arena[node_pere].name=nom_pere;
+        global_pipe.arena[node_pere].name = nom_pere;
         global_pipe.arena[node_pere].visible = false;
         let  node_droite = global_pipe.node(global_roots[1].to_string());
         let node_left = global_pipe.node(global_roots[0].to_string());
@@ -115,20 +118,20 @@ pub fn add_virtual_roots(global_roots: &mut std::vec::Vec<String>, pere: &mut us
         global_pipe.arena[node_pere].children.push(node_droite);
         global_pipe.arena[node_left].parent = Some(node_pere);
         global_pipe.arena[node_droite].parent = Some(node_pere);
-        if *pere >  0 {
-            let mut my_vect : Vec<String> = (0..(*pere+1)).map(|n| "ROOT_".to_string().to_owned()+&level.to_string()+"_"+&n.to_string()).collect();
+        if *pere > 0 {
+            let mut my_vect : Vec<String> = (0..(*pere+1)).map(|n| "ROOT_".to_string().to_owned() + &level.to_string() + "_" + &n.to_string()).collect();
             *level = *level + 1;
             *pere = 0;
-            add_virtual_roots( &mut my_vect, pere, level, global_pipe);
+            add_virtual_roots(&mut my_vect, pere, level, global_pipe);
         }
     }
     if global_roots.len() > 2 {
         let  (tete, queue) = global_roots.split_at(2);
-        let nom_pere = "ROOT_".to_string().to_owned()+&level.to_string()+"_"+&(*pere).to_string();
+        let nom_pere = "ROOT_".to_string().to_owned() + &level.to_string() + "_"+&(*pere).to_string();
         let  node_pere = global_pipe.node(nom_pere.clone());
-        global_pipe.arena[node_pere].name=nom_pere;
+        global_pipe.arena[node_pere].name = nom_pere;
         global_pipe.arena[node_pere].visible = false;
-        let  node_droite = global_pipe.node(tete[1].to_string());
+        let node_droite = global_pipe.node(tete[1].to_string());
         let node_left = global_pipe.node(tete[0].to_string());
         global_pipe.arena[node_pere].children.push(node_left);
         global_pipe.arena[node_pere].children.push(node_droite);
@@ -136,13 +139,16 @@ pub fn add_virtual_roots(global_roots: &mut std::vec::Vec<String>, pere: &mut us
         global_pipe.arena[node_droite].parent = Some(node_pere);
         let mut queue_clone = queue.clone().to_vec();
         *pere = *pere + 1;
-        add_virtual_roots( &mut queue_clone, pere,level, global_pipe);
+        add_virtual_roots(&mut queue_clone, pere,level, global_pipe);
     }
 }
 /// Read a recphyloxml file and store the species and gene trees into several ArenaTree structures.
-pub fn read_recphyloxml_multi(filename:String, global_pipe: &mut ArenaTree<String>,
+pub fn read_recphyloxml_multi(
+    filename: String,
+    global_pipe: &mut ArenaTree<String>,
     gene_trees: &mut std::vec::Vec<ArenaTree<String>>,
-    global_roots:  &mut std::vec::Vec<usize>) {
+    global_roots: &mut std::vec::Vec<usize>
+    ) {
     let contents = fs::read_to_string(filename);
     let contents = match contents {
         Ok(contents) => contents,
@@ -176,7 +182,7 @@ pub fn read_recphyloxml_multi(filename:String, global_pipe: &mut ArenaTree<Strin
              std::process::exit(1);
         },
     };
-    let  mut index  =  &mut 0;
+    let mut index = &mut 0;
     let mut global_root_names: std::vec::Vec<String> = Vec::new();
     for spnode in spnodes {
         info!("Search spTree node {:?}",spnode);
@@ -186,13 +192,13 @@ pub fn read_recphyloxml_multi(filename:String, global_pipe: &mut ArenaTree<Strin
         let descendants = spnode.descendants();
         // Search for the first occurence of the "clade" tag
         // index = &(index + 1) ;
-        *index +=1;
+        *index += 1;
         for node in descendants {
             if node.has_tag_name("clade"){
-                let globalroot = "G".to_owned()+&index.to_string();
+                let globalroot = "G".to_owned() + &index.to_string();
                 global_root_names.push(globalroot.clone());
                 // Create the node, get its associated index and store it in root again
-                info!("Create {}","G".to_owned()+&index.to_string());
+                info!("Create {}","G".to_owned() + &index.to_string());
                 let globalroot = global_pipe.new_node(globalroot.to_string());
                 global_roots.push(globalroot);
                 // Call xlm2tree on the root
@@ -202,7 +208,7 @@ pub fn read_recphyloxml_multi(filename:String, global_pipe: &mut ArenaTree<Strin
         }
     }
     if global_roots.len() > 1 {
-        add_virtual_roots(&mut global_root_names, &mut 0, &mut 0,  global_pipe);
+        add_virtual_roots(&mut global_root_names, &mut 0, &mut 0, global_pipe);
     }
     let  nb_sptree =  global_roots.len().clone();
     println!("Number of species trees : {}",nb_sptree);
@@ -232,7 +238,7 @@ pub fn read_recphyloxml_multi(filename:String, global_pipe: &mut ArenaTree<Strin
             if node.has_tag_name("clade"){
                 // The first clade is the root
                 // Initialize the index used for defining the value
-                let mut index  = &mut 0;
+                let mut index = &mut 0;
                 // Val of the root
                 let root = "N".to_owned()+&index.to_string();
                 // Create the node, get its associated index and store it in root again
