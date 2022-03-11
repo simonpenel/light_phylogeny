@@ -95,13 +95,13 @@ where
             height: PIPEBLOCK ,
             nbg: 0,
             nodes: vec![],
-            is_a_transfert:false,
+            is_a_transfert: false,
             go_left: 0,
             go_right: 0,
-            fixed:false,
+            fixed: false,
             transfers: vec![],
-            visible:true,
-            virtualsvg:false,
+            visible: true,
+            virtualsvg: false,
         }
     }
     /// Set node event.
@@ -372,7 +372,7 @@ where
 #[derive(Debug)]
 pub struct Options{
     ///Display branch length
-    pub branch:bool,
+    pub branch: bool,
     /// Display internal gene nodes.
     pub gene_internal: bool,
     /// Display internal species nodes (recPhyloXML).
@@ -406,53 +406,53 @@ pub struct Options{
     /// Display the abundance of the redundant transfers (recPhyloXML).
     pub thickness_disp_score:bool,
     /// Tidy option
-    pub tidy:bool,
+    pub tidy: bool,
     /// Tidy option
-    pub tidy_leaves_check:bool,
+    pub tidy_leaves_check: bool,
     /// Optimise species branches left/right orientation in order to minimise transfer crossings (recPhyloXML, under development).
-    pub optimisation:bool,
+    pub optimisation: bool,
     /// Scale to be applied to the heigth of the tree.
-    pub height:f32,
+    pub height: f32,
     /// Width to be applied to the heigth of the tree.
-    pub width:f32,
+    pub width: f32,
     /// Display support.
-    pub support:bool,
+    pub support: bool,
     /// Support "free living" species (i.e. not associated to a species of the species tree) in the gene tree(s).
-    pub free_living:bool,
+    pub free_living: bool,
     /// With free_living option : in case of multriple gene trees, shifting  free living trees instead superposing.
-    pub free_living_shift:bool,
+    pub free_living_shift: bool,
     /// Uniformise the species tree nodes size.
-    pub uniform:bool,
+    pub uniform: bool,
 }
 impl Options {
     pub fn new() -> Self {
         Self {
-            branch:false,
-            gene_internal:false,
-            species_internal:false,
-            clado_flag:true,
-            species_only_flag:false,
-            real_length_flag:false,
-            open_browser:false,
-            verbose:false,
-            disp_gene:0,
-            scale:1.0,
-            ratio:1.0,
-            rotate:true,
-            remove:false,
-            thickness_flag:false,
-            thickness_thresh:0,
-            thickness_gene:0,
-            thickness_disp_score:false,
-            tidy:false,
-            tidy_leaves_check:false,
-            optimisation:false,
-            height:1.0,
-            width:1.0,
-            support:false,
-            free_living:false,
-            free_living_shift:false,
-            uniform:false,
+            branch: false,
+            gene_internal: false,
+            species_internal: false,
+            clado_flag: true,
+            species_only_flag: false,
+            real_length_flag: false,
+            open_browser: false,
+            verbose: false,
+            disp_gene: 0,
+            scale: 1.0,
+            ratio: 1.0,
+            rotate: true,
+            remove: false,
+            thickness_flag: false,
+            thickness_thresh: 0,
+            thickness_gene: 0,
+            thickness_disp_score: false,
+            tidy: false,
+            tidy_leaves_check: false,
+            optimisation: false,
+            height: 1.0,
+            width: 1.0,
+            support: false,
+            free_living: false,
+            free_living_shift: false,
+            uniform: false,
         }
     }
 }
@@ -471,14 +471,14 @@ pub struct Config{
 impl Config {
     pub fn new() -> Self {
         Self {
-            species_color:"pink".to_string(),
-            species_opacity:"0.9".to_string(),
-            single_gene_color:"blue".to_string(),
-            gene_opacity:"0.9".to_string(),
-            species_police_color:"orange".to_string(),
-            species_police_size:"12".to_string(),
-            gene_police_size:"10".to_string(),
-            bezier:"1".to_string(),
+            species_color: "pink".to_string(),
+            species_opacity: "0.9".to_string(),
+            single_gene_color: "blue".to_string(),
+            gene_opacity: "0.9".to_string(),
+            species_police_color: "orange".to_string(),
+            species_police_size: "12".to_string(),
+            gene_police_size: "10".to_string(),
+            bezier: "1".to_string(),
         }
     }
 }
@@ -518,8 +518,8 @@ pub fn newick2tree(
     info!("[newick2tree] Tree = {}",arbre);
     let arbre = arbre;
     check_is_rooted(&arbre);
-    let (left,right,trail) = find_left_right(arbre);
-    info!("[newick2tree] Left = {} Right = {} Trail = {}",left,right,trail);
+    let (left, right, trail) = find_left_right(arbre);
+    info!("[newick2tree] Left = {} Right = {} Trail = {}",left, right, trail);
     match trail.find(':') {
         Some(j) => {
             tree.arena[index].l = trail[j+1..].to_string().parse::<f32>().unwrap();
@@ -542,7 +542,7 @@ pub fn newick2tree(
         None => {
             info!("[newick2tree] {} is a leaf",left);
             *num = *num + 1;
-            let name = "NODE_".to_string()+&num.to_string();
+            let name = "NODE_".to_string() + &num.to_string();
             let left_index = tree.new_node(name);
             tree.arena[index].children.push(left_index);
             tree.arena[left_index].parent = Some(index);
@@ -566,16 +566,16 @@ pub fn newick2tree(
     match right.find(',') {
         Some(_i)=> {
             *num = *num + 1;
-            let name = "NODE_".to_string()+&num.to_string();
+            let name = "NODE_".to_string() + &num.to_string();
             let new_index = tree.new_node(name.to_string());
             tree.arena[index].children.push(new_index);
             tree.arena[new_index].parent = Some(index);
-            newick2tree(right, tree,new_index,num);
+            newick2tree(right, tree, new_index, num);
         },
         None => {
             info!("[newick2tree] {} is a leaf",right);
             *num = *num + 1;
-            let name = "NODE_".to_string()+&num.to_string();
+            let name = "NODE_".to_string() + &num.to_string();
             let right_index = tree.new_node(name);
             tree.arena[index].children.push(right_index);
             tree.arena[right_index].parent = Some(index);
@@ -684,7 +684,7 @@ pub fn xml2tree (
             // increment le numero
             *numero += 1;
             // Nouveau nom
-            let name = "N".to_owned()+&numero.to_string();
+            let name = "N".to_owned() + &numero.to_string();
             //  index de ce nouveau nom
             let name = tree.new_node(name.to_string());
             //Ajoute ce noeud au parent
@@ -780,11 +780,11 @@ pub fn xml2tree (
                     *numero += 1;
                     // Nouveau nom
                     let sploss_name = "ADDED_SPECLOSS".to_owned() + &numero.to_string();
-                    info!("[xml2tree] Create new node sploss {}", sploss_name);
+                    info!("[xml2tree] Create new node sploss {}",sploss_name);
                     //  index de ce nouveau nom
                     let sploss_name = tree.new_node(sploss_name.to_string());
-                    info!("[xml2tree] Modified tree 1  {:?}", tree);
-                    info!("[xml2tree] Index of current node {}", parent);
+                    info!("[xml2tree] Modified tree 1  {:?}",tree);
+                    info!("[xml2tree] Index of current node {}",parent);
                     // Je veux que le noeud courant soit le fils du ouveau noeud, et que celui ci
                     // prenne la place du noeud courant.
                     // parent du noeud courant:
@@ -799,7 +799,7 @@ pub fn xml2tree (
                     assert!(evenement.has_attribute("speciesLocation"));
                     assert_eq!(evenement.attributes()[0].name(),"speciesLocation");
                     let location = evenement.attributes()[0].value();
-                    info!("[xml2tree] Location is {}", location);
+                    info!("[xml2tree] Location is {}",location);
                     info!("[xml2tree] Set Location of sploss_name:");
                     tree.arena[sploss_name].location = location.to_string();
                     // Ajout du nouveau noeud comme frere du noeud courant
@@ -812,13 +812,13 @@ pub fn xml2tree (
                     tree.arena[sploss_name].children.push(parent);
                     //  Redfinit le parent du noeud courant
                     tree.arena[parent].parent = Some(sploss_name);
-                    info!("[xml2tree] Modified tree 2  {:?}", tree);
+                    info!("[xml2tree] Modified tree 2  {:?}",tree);
                     // Nouveau nom Loss
-                    let loss_name = "ADDED_LOSS".to_owned()+&numero.to_string();
-                    info!("[xml2tree] Create new node loss {}", loss_name);
+                    let loss_name = "ADDED_LOSS".to_owned() + &numero.to_string();
+                    info!("[xml2tree] Create new node loss {}",loss_name);
                     //  index de ce nouveau nom
                     let loss_name = tree.new_node(loss_name.to_string());
-                    info!("[xml2tree] New node loss : {:?}", tree.arena[loss_name]);
+                    info!("[xml2tree] New node loss : {:?}",tree.arena[loss_name]);
                     //  Ajoute le Loss au nouveau noeud
                     tree.arena[sploss_name].children.push(loss_name);
                     tree.arena[loss_name].parent = Some(sploss_name);
@@ -834,7 +834,7 @@ pub fn xml2tree (
                 }
                 if evenement.has_tag_name("loss"){
                     event_num += 1;
-                    info!("[xml2tree] event Nb {} = {:?}", event_num,evenement);
+                    info!("[xml2tree] event Nb {} = {:?}",event_num,evenement);
                     tree.arena[parent].set_event(Event::Loss);
                     info!("[xml2tree] setting event of {:?} : {:?}",
                         tree.arena[parent].name, tree.arena[parent].e);
@@ -845,7 +845,7 @@ pub fn xml2tree (
                 }
                 if evenement.has_tag_name("leaf"){
                     event_num += 1;
-                    info!("[xml2tree] event Nb {} = {:?}", event_num,evenement);
+                    info!("[xml2tree] event Nb {} = {:?}",event_num,evenement);
                     // TODO
                     // C'est une feuille mais pas forcement  le premier evenement:
                     // <eventsRec>
@@ -863,7 +863,7 @@ pub fn xml2tree (
                         tree.arena[parent].name, tree.arena[parent].e);
                     info!("[xml2tree] Attributes of {:?} are {:?}", evenement, evenement.attributes());
                     let nb_att = evenement.attributes().len();
-                    info!("[xml2tree] Number of attributes  = {}", nb_att);
+                    info!("[xml2tree] Number of attributes  = {}",nb_att);
                     assert!(evenement.has_attribute("speciesLocation"));
                     if nb_att == 1 {
                         assert_eq!(evenement.attributes()[0].name(), "speciesLocation");
@@ -881,7 +881,7 @@ pub fn xml2tree (
                             assert_eq!(evenement.attributes()[1].name(), "speciesLocation");
                             let name = evenement.attributes()[0].value();
                             tree.arena[parent].name = name.to_string();
-                            info!("[xml2tree] set name {:?}", tree.arena[parent]);
+                            info!("[xml2tree] set name {:?}",tree.arena[parent]);
                             let location = evenement.attributes()[1].value();
                             tree.arena[parent].location = location.to_string();
                         }
@@ -889,7 +889,7 @@ pub fn xml2tree (
                             assert_eq!(evenement.attributes()[0].name(), "speciesLocation");
                             let name = evenement.attributes()[1].value();
                             tree.arena[parent].name = name.to_string();
-                            info!("[xml2tree] set name {:?}", tree.arena[parent]);
+                            info!("[xml2tree] set name {:?}",tree.arena[parent]);
                             let location = evenement.attributes()[0].value();
                             tree.arena[parent].location = location.to_string();
                         }
@@ -905,7 +905,7 @@ pub fn xml2tree (
                     assert!(evenement.has_attribute("speciesLocation"));
                     assert_eq!(evenement.attributes()[0].name(), "speciesLocation");
                     let location = evenement.attributes()[0].value();
-                    info!("[xml2tree] set location = {}", location);
+                    info!("[xml2tree] set location = {}",location);
                     tree.arena[parent].location = location.to_string();
                 }
                 if evenement.has_tag_name("duplication"){
@@ -918,7 +918,7 @@ pub fn xml2tree (
                     assert!(evenement.has_attribute("speciesLocation"));
                     assert_eq!(evenement.attributes()[0].name(), "speciesLocation");
                     let location = evenement.attributes()[0].value();
-                    info!("[xml2tree] set location = {}", location);
+                    info!("[xml2tree] set location = {}",location);
                     tree.arena[parent].location = location.to_string();
                 }
                 if evenement.has_tag_name("branchingOut"){
@@ -931,7 +931,7 @@ pub fn xml2tree (
                     assert!(evenement.has_attribute("speciesLocation"));
                     assert_eq!(evenement.attributes()[0].name(), "speciesLocation");
                     let location = evenement.attributes()[0].value();
-                    info!("[xml2tree] set location = {}", location);
+                    info!("[xml2tree] set location = {}",location);
                     tree.arena[parent].location = location.to_string();
                 }
                 // TODO
@@ -961,7 +961,7 @@ pub fn xml2tree (
                     assert!(evenement.has_attribute("destinationSpecies"));
                     assert_eq!(evenement.attributes()[0].name(), "destinationSpecies");
                     let location = evenement.attributes()[0].value();
-                    info!("[xml2tree] set destinationSpecies = {}", location);
+                    info!("[xml2tree] set destinationSpecies = {}",location);
                     tree.arena[parent].location = location.to_string();
                     tree.arena[parent].is_a_transfert = true;
                 }
@@ -975,10 +975,10 @@ pub fn xml2tree (
                     match grandparent {
                         Some(p) => {
                             let location =  &tree.arena[p].location;
-                            info!("[xml2tree] set location according to its father = {}", location);
+                            info!("[xml2tree] set location according to its father = {}",location);
                             tree.arena[parent].location = location.to_string();
                         },
-                        None => panic!("BifurcationOut node as no parent : {:?}", tree.arena[parent]),
+                        None => panic!("BifurcationOut node as no parent : {:?}",tree.arena[parent]),
                     };
                     tree.arena[parent].is_a_transfert = true;
                     //  A verifier
@@ -995,20 +995,20 @@ pub fn xml2tree (
 }
 /// Processing potential obsolete tags from the old recPhyloXML format.
 pub fn check_for_obsolete(gene_tree: &mut ArenaTree<String>, species_tree: &mut ArenaTree<String>) {
-    info!("[check_for_obsolete] Initial gene tree {:?}", &gene_tree);
+    info!("[check_for_obsolete] Initial gene tree {:?}",&gene_tree);
     let mut osls = Vec::new();
     for index in &mut gene_tree.arena {
         if index.e == Event::ObsoleteSpeciationLoss {
-            info!("[check_for_obsolete] Find ObsoleteSpeciationLoss (OSL): {:?}", index);
+            info!("[check_for_obsolete] Find ObsoleteSpeciationLoss (OSL): {:?}",index);
             osls.push(index.idx);
         }
     }
-    info!("[check_for_obsolete] Find {} OSL in the tree", osls.len());
+    info!("[check_for_obsolete] Find {} OSL in the tree",osls.len());
     if osls.len() > 0 {
-        println!("Warning! There was {} obsolete SpeciationLoss tag in the recPhyloXML", osls.len());
+        println!("Warning! There was {} obsolete SpeciationLoss tag in the recPhyloXML",osls.len());
     }
     for osl in osls {
-        info!("[check_for_obsolete] Processing: {:?}", osl);
+        info!("[check_for_obsolete] Processing: {:?}",osl);
         info!("[check_for_obsolete] OSL = {} at species {:?}",
             gene_tree.arena[osl].name, gene_tree.arena[osl].location);
         let children = &gene_tree.arena[osl].children;
@@ -1032,8 +1032,8 @@ pub fn check_for_obsolete(gene_tree: &mut ArenaTree<String>, species_tree: &mut 
             Event::Loss => &gene_tree.arena[right].location,
             _ => &gene_tree.arena[left].location,
             };
-        info!("[check_for_obsolete] Loss node is {:?}", gene_tree.arena[loss]);
-        info!("[check_for_obsolete] Species of the other child is {:?}", species_not_loss);
+        info!("[check_for_obsolete] Loss node is {:?}",gene_tree.arena[loss]);
+        info!("[check_for_obsolete] Species of the other child is {:?}",species_not_loss);
         // Espece de l'OSL
         let species = &gene_tree.arena[osl].location;
         //  Index de l'espece dans l'arbre d'espece
@@ -1055,7 +1055,7 @@ pub fn check_for_obsolete(gene_tree: &mut ArenaTree<String>, species_tree: &mut 
         info!("[check_for_obsolete] Thus species of loss node is {}",loss_species);
         gene_tree.arena[loss].location = loss_species.to_string();
     }
-    info!("[check_for_obsolete] Final gene tree {:?}", &gene_tree);
+    info!("[check_for_obsolete] Final gene tree {:?}",&gene_tree);
 }
 #[allow(dead_code)]
 /// Set the coordinates of the gene tree according to the associated species tree coordinates.
@@ -1064,10 +1064,10 @@ pub fn map_gene_trees(
     gene_trees: &mut std::vec::Vec<ArenaTree<String>>,
     ) {
     let  nb_gntree =  gene_trees.len(); // Nombre d'arbres de gene
-    info!("[map_gene_trees] {} gene trees to be processed", nb_gntree);
+    info!("[map_gene_trees] {} gene trees to be processed",nb_gntree);
     let mut idx_rcgen = 0;  // Boucle sur les arbres de genes
     loop {
-        info!("[map_gene_trees] => Processing Gene Tree {}", idx_rcgen);
+        info!("[map_gene_trees] => Processing Gene Tree {}",idx_rcgen);
         for  index in &mut gene_trees[idx_rcgen].arena {
             let mut mapped = false;
             for spindex in  &mut sp_tree.arena {
@@ -1082,7 +1082,7 @@ pub fn map_gene_trees(
                 }
             }
             if !mapped {
-                panic!("Unable to map Node {:?}", index);
+                panic!("Unable to map Node {:?}",index);
             }
         }
         // Passe à l'arbre de gènes suivant
@@ -1098,10 +1098,10 @@ pub fn map_species_trees(
     gene_trees: &mut std::vec::Vec<ArenaTree<String>>,
     ) {
     let  nb_gntree =  gene_trees.len(); // Nombre d'arbres de gene
-    info!("[map_species_trees] {} gene trees to be processed", nb_gntree);
+    info!("[map_species_trees] {} gene trees to be processed",nb_gntree);
     let mut idx_rcgen = 0;  // Boucle sur les arbres de genes
     loop {
-        info!("[map_species_trees] => Processing Gene Tree {}", idx_rcgen);
+        info!("[map_species_trees] => Processing Gene Tree {}",idx_rcgen);
         // Boucle sur les noeuds de l'arbre de gene idx_rcgen
         for  index in &mut gene_trees[idx_rcgen].arena {
             let mut mapped = false;
@@ -1114,14 +1114,14 @@ pub fn map_species_trees(
                     nbg = nbg + 1 ;
                     spindex.nbg = nbg;
                     // Ajoute le tuple (index de l'arbre de  gene, index du noeud de gene) associé
-                    spindex.nodes.push((idx_rcgen,index.idx));
+                    spindex.nodes.push((idx_rcgen, index.idx));
                     // spindex.nodes.insert(0,(idx_rcgen,index.idx));
                     info!("[map_species_trees] Gene node {:?} mapped to  species node {:?}", index, spindex);
                 }
             }
             if !mapped {
-                eprintln!("\nERROR: Unable to map Node {:?}", index);
-                eprintln!("\nThe species '{}' was not found in species tree", index.location);
+                eprintln!("\nERROR: Unable to map Node {:?}",index);
+                eprintln!("\nThe species '{}' was not found in species tree",index.location);
                 eprintln!("\nMaybe you should use the 'free_living' option.");
                 process::exit(1)
             }
@@ -1140,7 +1140,7 @@ pub fn bilan_mappings(
     index: usize,
     options: &Options,
     ) {
-    info!("[bilan_mappings] Species Node {}", sp_tree.arena[index].name);
+    info!("[bilan_mappings] Species Node {}",sp_tree.arena[index].name);
     let ratio = options.ratio ;   // permet de regler l'ecartement entre les noeuds de genes dans
                                   // l'arbre d'espece
     // shift_left_x is a shift for x for a left node
@@ -1397,7 +1397,7 @@ pub fn process_fl(
         if gene_trees[*index_node].arena[*node].e == Event::Leaf {
             if !genes.contains(index_node) {
                 genes.push(*index_node);
-                feuilles.push((index_node,node));
+                feuilles.push((index_node, node));
             }
         };
     }
@@ -1421,7 +1421,8 @@ pub fn process_fl(
                 },
             };
         }
-        info!("[process_fl] Ancestor of the gene {} in this species node is {:?}",index_node,gene_trees[*index_node].arena[_parent]);
+        info!("[process_fl] Ancestor of the gene {} in this species node is {:?}",
+            index_node, gene_trees[*index_node].arena[_parent]);
         // Cree l'arbre de gene qui servira a afficher le free living
         let mut fl_tree: ArenaTree<String> = ArenaTree::default();
         let mut parent_xmod = sp_tree.arena[index].x-sp_tree.arena[index].width + shift * PIPEBLOCK ;
@@ -1512,12 +1513,16 @@ pub fn copie_fl(fl_tree: &mut ArenaTree<String>, gn_tree: &mut ArenaTree<String>
             fl_tree.arena[new_index].children.push(new_left_index);
             fl_tree.arena[new_index].children.push(new_right_index);
             // On ne relance que se le noeud qui est dans free livong
-            copie_fl(fl_tree,gn_tree, fl_child);
+            copie_fl(fl_tree, gn_tree, fl_child);
         }
     }
 }
 /// Replace the free-living part of a gene tree by a free living tree calculated independantly.
-pub fn remplace_fl_inv(fl_tree: &mut ArenaTree<String>, gn_tree: &mut ArenaTree<String>, index: usize) {
+pub fn remplace_fl_inv(
+    fl_tree: &mut ArenaTree<String>,
+    gn_tree: &mut ArenaTree<String>,
+    index: usize,
+    ) {
     if ! fl_tree.arena[index].virtualsvg {
         let fl_val = fl_tree.arena[index].val.clone();
         let gn_index = gn_tree.get_node(fl_val.to_string());
@@ -1664,7 +1669,7 @@ pub fn find_rgtrees(doc: &mut roxmltree::Document) -> Result <Vec<roxmltree::Nod
             gene_nodes.push(node.id());
         }
     }
-    info!("[find_rgtrees] Number of gene trees in xml = {}", gene_nodes.len());
+    info!("[find_rgtrees] Number of gene trees in xml = {}",gene_nodes.len());
     match gene_nodes.len() > 0 {
         true => return Ok(gene_nodes),
         false => Err(0),
@@ -1706,7 +1711,7 @@ pub fn real_length(tree: &mut ArenaTree<String>, index: usize, dist: &mut f32, o
     }
 }
 /// Get the depth of a tree.
-pub fn get_maxdepth(tree: &mut ArenaTree<String>, index:usize, max :&mut usize) -> usize {
+pub fn get_maxdepth(tree: &mut ArenaTree<String>, index: usize, max :&mut usize) -> usize {
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
         let son_left = children[0];
@@ -1768,7 +1773,7 @@ pub fn shift_nodes_y_values(tree: &mut ArenaTree<String>, index: usize, y:  f32)
 }
 /// Shift the  x y values  of a node and its children according to the cumulated xmod ymod values.
 pub fn shift_mod_xy(tree: &mut ArenaTree<String>, index: usize, xmod: &mut f32, ymod: &mut f32) {
-    info!("[shift_mod_xy] shifting {:?} xmod={} ymod={}", tree.arena[index],xmod,ymod);
+    info!("[shift_mod_xy] shifting {:?} xmod={} ymod={}", tree.arena[index], xmod, ymod);
     let x_father = tree.arena[index].x;
     let xmod_father = tree.arena[index].xmod;
     let mut xmod = *xmod + xmod_father;
@@ -1821,12 +1826,12 @@ pub fn  explore_postorder(tree: &mut ArenaTree<String>, index: usize) {
         let right = children[1];
         explore_postorder(tree, left);
         explore_postorder(tree, right);
-        println!("POST-ORDER TRAVERSAL : INTERNAL NODE  {:?} / DEPTH = {}",tree.arena[index],
-            tree.depth(index));
+        println!("POST-ORDER TRAVERSAL : INTERNAL NODE  {:?} / DEPTH = {}",
+            tree.arena[index], tree.depth(index));
     }
     else{
-        println!("POST-ORDER TRAVERSAL : LEAF           {:?} / DEPTH = {}",tree.arena[index],
-            tree.depth(index));
+        println!("POST-ORDER TRAVERSAL : LEAF           {:?} / DEPTH = {}",
+            tree.arena[index], tree.depth(index));
     }
 }
 /// Solve the conflicts between a parent and its children in a tree  (species pipe tree only).
@@ -1836,19 +1841,19 @@ pub fn  check_vertical_contour_postorder(tree: &mut ArenaTree<String>, index: us
         let left = children[0];
         let right = children[1];
         info!("[check_vertical_contour_postorder] Father = {} (ymod = {} ) , Left = {}, Right = {}",
-        tree.arena[index].name,tree.arena[index].ymod,
-        tree.arena[left].name,tree.arena[right].name);
-        push_down(tree,index, left,right);
-        check_vertical_contour_postorder(tree,left,tree.arena[left].ymod + 0.0 *  ymod);
-        check_vertical_contour_postorder(tree,right,tree.arena[right].ymod + 0.0 * ymod);
+            tree.arena[index].name, tree.arena[index].ymod, tree.arena[left].name,
+            tree.arena[right].name);
+        push_down(tree, index, left, right);
+        check_vertical_contour_postorder(tree, left, tree.arena[left].ymod + 0.0 *  ymod);
+        check_vertical_contour_postorder(tree, right, tree.arena[right].ymod + 0.0 * ymod);
     }
 }
 /// Check for conficts between parents and children and shift down nodes in order to solve
 /// detected conflicts (species pipe tree only).
 pub fn push_down (tree: &mut ArenaTree<String>, parent: usize, left: usize, right: usize) {
-    let node_parent_down_pos = node_ypos(tree,parent,1);
-    let node_left_up_pos = node_ypos(tree,left,-1);
-    let node_right_up_pos = node_ypos(tree,right,-1);
+    let node_parent_down_pos = node_ypos(tree, parent, 1);
+    let node_left_up_pos = node_ypos(tree, left, -1);
+    let node_right_up_pos = node_ypos(tree, right, -1);
     if (node_left_up_pos <=  node_parent_down_pos) ||
        (node_right_up_pos <=  node_parent_down_pos) {
         let shift_left = node_parent_down_pos - node_left_up_pos ;
@@ -1862,9 +1867,11 @@ pub fn push_down (tree: &mut ArenaTree<String>, parent: usize, left: usize, righ
         }
         // TODO configurable
         let shift_down = shift_down + 4.0 * PIPEBLOCK;
-        info!("[push_down] CONFLIT AT SPEC NODE {}: parent y = {} ymod = {} down = {} left up = {} right up = {} => shift = {}",tree.arena[parent].name,tree.arena[parent].y,tree.arena[parent].ymod,node_parent_down_pos,node_left_up_pos,node_right_up_pos,shift_down);
-        info!("[push_down] SHIFTING Y {} + 1xPIPEBLOCK = {}",shift_down,shift_down + 1.0 * PIPEBLOCK);
-        info!("Initial left : y = {}, ymod = {}",tree.arena[left].y,tree.arena[left].ymod);
+        info!("[push_down] CONFLIT AT SPEC NODE {}: parent y = {} ymod = {} down = {} left up = {} right up = {} => shift = {}",
+            tree.arena[parent].name, tree.arena[parent].y, tree.arena[parent].ymod,
+            node_parent_down_pos, node_left_up_pos, node_right_up_pos, shift_down);
+        info!("[push_down] SHIFTING Y {} + 1xPIPEBLOCK = {}", shift_down, shift_down + 1.0 * PIPEBLOCK);
+        info!("Initial left : y = {}, ymod = {}", tree.arena[left].y, tree.arena[left].ymod);
         let y = tree.arena[left].y;
         let y = y + shift_down ;
         tree.arena[left].set_y_noref(y);
@@ -1874,14 +1881,14 @@ pub fn push_down (tree: &mut ArenaTree<String>, parent: usize, left: usize, righ
     }
 }
 /// Solve the conflicts between the left subtree and the right subtree.
-pub fn  check_contour_postorder(tree: &mut ArenaTree<String>,index:usize) {
+pub fn  check_contour_postorder(tree: &mut ArenaTree<String>, index: usize) {
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
         let left = children[0];
         let right = children[1];
-        check_contour_postorder(tree,left);
-        check_contour_postorder(tree,right);
-        push_right(tree,left,right);
+        check_contour_postorder(tree, left);
+        check_contour_postorder(tree, right);
+        push_right(tree, left, right);
     }
     else{
     }
@@ -1889,17 +1896,21 @@ pub fn  check_contour_postorder(tree: &mut ArenaTree<String>,index:usize) {
 
 
 /// Solve the conflicts between the left subtree and the right subtree.
-pub fn  check_contour_postorder_tidy_tree(tree: &mut ArenaTree<String>,index:usize,
-    options: &Options, config: &Config) {
+pub fn  check_contour_postorder_tidy_tree(
+    tree: &mut ArenaTree<String>,
+    index: usize,
+    options: &Options,
+    config: &Config,
+    ) {
     info!("[check_contour_postorder_tidy_tree]");
     info!("[check_contour_postorder_tidy_tree] node {}",tree.arena[index].name);
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
         let left = children[0];
         let right = children[1];
-        check_contour_postorder_tidy_tree(tree,right,options,config);
-        check_contour_postorder_tidy_tree(tree,left,options,config);
-        push_right_tidy_tree(tree,left,right,options,config);
+        check_contour_postorder_tidy_tree(tree, right, options, config);
+        check_contour_postorder_tidy_tree(tree, left, options, config);
+        push_right_tidy_tree(tree, left, right, options, config);
         set_middle_postorder(tree, 0);
     }
 }
@@ -1910,16 +1921,21 @@ pub fn node_xpos(tree: &mut ArenaTree<String>, index: usize, xmod: f32, operator
     + operator as f32 * tree.arena[index].nbg as f32 /2.0  *PIPEBLOCK + xmod
 }
 /// Get the upper or lower y value of a node
-pub fn node_ypos(tree: &mut ArenaTree<String>, index: usize,  operator : i32) -> f32 {
+pub fn node_ypos(tree: &mut ArenaTree<String>, index: usize, operator: i32) -> f32 {
     tree.arena[index].y + tree.arena[index].ymod
     + operator as f32 * tree.arena[index].nbg as f32 /2.0  *PIPEBLOCK
 }
 /// Get the left 'contour' of a sub tree.
-pub fn  get_contour_left(tree: &mut ArenaTree<String>,index:usize,depth:usize,
-    contour_left: &mut Vec<f32>,parent_xmod: f32)  {
+pub fn  get_contour_left(
+    tree: &mut ArenaTree<String>,
+    index:usize,
+    depth:usize,
+    contour_left: &mut Vec<f32>,
+    parent_xmod: f32,
+    )  {
     info!("[get_contour_left] >>> {:?}",tree.arena[index]);
-    let local_depth = tree.depth(index)-depth; // Profondeur du noeud pa rapport a noeud de depart
-    let node_left_pos = node_xpos(tree,index,parent_xmod,-1);
+    let local_depth = tree.depth(index) - depth; // Profondeur du noeud pa rapport a noeud de depart
+    let node_left_pos = node_xpos(tree, index, parent_xmod, -1);
     if contour_left.len() <= local_depth {
         if tree.arena[index].xmod < 0.0 {
             panic!("Error: negative xmod.");
@@ -1937,15 +1953,20 @@ pub fn  get_contour_left(tree: &mut ArenaTree<String>,index:usize,depth:usize,
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
         let left = children[0];
-        get_contour_left(tree,left,depth,contour_left,tree.arena[index].xmod + parent_xmod );
+        get_contour_left(tree, left, depth, contour_left, tree.arena[index].xmod + parent_xmod );
     }
 }
 /// Get the right 'contour' of a sub tree.
-pub fn  get_contour_right(tree: &mut ArenaTree<String>,index:usize,depth:usize,
-    contour_right: &mut Vec<f32>,parent_xmod: f32)  {
+pub fn  get_contour_right(
+    tree: &mut ArenaTree<String>,
+    index: usize,
+    depth: usize,
+    contour_right: &mut Vec<f32>,
+    parent_xmod: f32,
+    )  {
     info!("[get_contour_right] process node {:?}",tree.arena[index]);
-    let local_depth = tree.depth(index)-depth; // Profondeur du noeud pa rapport a noeud de depart
-    let node_right_pos = node_xpos(tree,index,parent_xmod,1);
+    let local_depth = tree.depth(index) - depth; // Profondeur du noeud pa rapport a noeud de depart
+    let node_right_pos = node_xpos(tree, index, parent_xmod, 1);
     if contour_right.len() <= local_depth {
         if tree.arena[index].xmod < 0.0 {
             panic!("Error: negative xmod");
@@ -1960,18 +1981,25 @@ pub fn  get_contour_right(tree: &mut ArenaTree<String>,index:usize,depth:usize,
         contour_right[local_depth] = node_right_pos ;
             info!("[get_contour_right] contour is now {:?}",contour_right);
     }
-    let children  = &mut  tree.arena[index].children;
+    let children  = &mut tree.arena[index].children;
     if children.len() > 0 {
         let right = children[1];
-        get_contour_right(tree,right,depth,contour_right,tree.arena[index].xmod + parent_xmod );
+        get_contour_right(tree, right, depth, contour_right, tree.arena[index].xmod + parent_xmod);
     }
 }
 /// Get the right 'contour' of a sub tree in the "tidy" context.
-pub fn  get_contour_tidy_right(tree: &mut ArenaTree<String>,index:usize,depth:usize,
-    contour_right: &mut Vec<(f32,f32,String)>, ymax: &mut f32, options: &Options,config: &Config)  {
+pub fn  get_contour_tidy_right(
+    tree: &mut ArenaTree<String>,
+    index: usize,
+    depth: usize,
+    contour_right: &mut Vec<(f32,f32,String)>,
+    ymax: &mut f32,
+    options: &Options,
+    config: &Config,
+    )  {
     // let children  = &mut  tree.arena[index].children;
-    let x = tree.arena[index].x  + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
-    let mut y = tree.arena[index].y  + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
+    let x = tree.arena[index].x + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
+    let mut y = tree.arena[index].y + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
     // avoid superposition of leaves
     if tree.is_leaf(index) {
         y = y + match options.tidy_leaves_check {
@@ -1981,20 +2009,27 @@ pub fn  get_contour_tidy_right(tree: &mut ArenaTree<String>,index:usize,depth:us
     }
     let name  = &tree.arena[index].name;
     if y >= *ymax {
-        contour_right.push((x,y,name.to_string()));
+        contour_right.push((x, y, name.to_string()));
         *ymax=y;
     }
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
         let right = children[1];
         let left = children[0];
-        get_contour_tidy_right(tree,right,depth,contour_right,ymax,options,config);
-        get_contour_tidy_right(tree,left,depth,contour_right,ymax,options,config);
+        get_contour_tidy_right(tree, right, depth, contour_right, ymax, options, config);
+        get_contour_tidy_right(tree, left, depth, contour_right, ymax, options, config);
     }
 }
 /// Get the left 'contour' of a sub tree in the "tidy" context.
-pub fn  get_contour_tidy_left(tree: &mut ArenaTree<String>,index:usize,depth:usize,
-    contour_left: &mut Vec<(f32,f32,String)>, ymax: &mut f32,options: &Options,config: &Config)  {
+pub fn  get_contour_tidy_left(
+    tree: &mut ArenaTree<String>,
+    index: usize,
+    depth: usize,
+    contour_left: &mut Vec<(f32, f32, String)>,
+    ymax: &mut f32,
+    options: &Options,
+    config: &Config,
+    )  {
     let x = tree.arena[index].x  - tree.arena[index].nbg as f32 *PIPEBLOCK /2.0 ;
     let mut y = tree.arena[index].y + tree.arena[index].nbg as f32 *PIPEBLOCK /2.0;
     // avoid superposition of leaves
@@ -2007,30 +2042,30 @@ pub fn  get_contour_tidy_left(tree: &mut ArenaTree<String>,index:usize,depth:usi
     let name =  &tree.arena[index].name;
     if y >= *ymax{
         *ymax = y;
-        contour_left.push((x,y,name.to_string()));
+        contour_left.push((x, y, name.to_string()));
     }
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
         let left = children[0];
         let right = children[1];
-        get_contour_tidy_left(tree,left,depth,contour_left,ymax,options,config);
-        get_contour_tidy_left(tree,right,depth,contour_left,ymax,options,config);
+        get_contour_tidy_left(tree, left, depth, contour_left, ymax, options, config);
+        get_contour_tidy_left(tree, right, depth, contour_left, ymax, options, config);
     }
 }
 /// Check for conficts between subtrees and shift conflicting right-hand subtrees to the right
 /// in order to solve detected conflicts.
-pub fn  push_right(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize) -> f32 {
-    info!("[push_right] compare right contour of {} and left contour of {}",left_tree, right_tree);
+pub fn  push_right(tree: &mut ArenaTree<String>, left_tree: usize, right_tree: usize) -> f32 {
+    info!("[push_right] compare right contour of {} and left contour of {}", left_tree, right_tree);
     let mut right_co_of_left_tr  = vec![tree.arena[left_tree].x
         + tree.arena[left_tree].xmod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK];
     let depth_left_tr  = tree.depth(left_tree);
-    get_contour_right(tree,left_tree,depth_left_tr,&mut right_co_of_left_tr,0.0);
-    info!("[push_right] right contour of {} = {:?}",left_tree,right_co_of_left_tr);
+    get_contour_right(tree, left_tree, depth_left_tr, &mut right_co_of_left_tr, 0.0);
+    info!("[push_right] right contour of {} = {:?}", left_tree, right_co_of_left_tr);
     let mut left_co_of_right_tr  = vec![tree.arena[right_tree].x
         + tree.arena[right_tree].xmod - tree.arena[right_tree].nbg as f32 *PIPEBLOCK];
     let depth_right_tr  = tree.depth(right_tree);
-    get_contour_left(tree,right_tree,depth_right_tr,&mut left_co_of_right_tr,0.0);
-    info!("[push_right] left contour of {} = {:?}",right_tree,left_co_of_right_tr);
+    get_contour_left(tree, right_tree, depth_right_tr, &mut left_co_of_right_tr, 0.0);
+    info!("[push_right] left contour of {} = {:?}", right_tree, left_co_of_right_tr);
     // Si on   a pas le meme longeur de contour on complete le plus petit
     // en remplissant ce qui manque avec la derniere valeur, pour eviter
     // qu'un sous arbre vosin se place sous une feuille
@@ -2040,13 +2075,13 @@ pub fn  push_right(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize
         let last_val =  right_co_of_left_tr[right_len-1];
         let last_vals =  vec![last_val;left_len-right_len];
         right_co_of_left_tr.extend(last_vals.iter().copied());
-        info!("[push_right] complete right contour with last value {}", last_val);
+        info!("[push_right] complete right contour with last value {}",last_val);
     }
     if left_len < right_len {
         let last_val =  left_co_of_right_tr[left_len-1];
         let last_vals =  vec![last_val;right_len - left_len];
         left_co_of_right_tr.extend(last_vals.iter().copied());
-        info!("[push_right] complete left contour with last value {}", last_val);
+        info!("[push_right] complete left contour with last value {}",last_val);
     }
     info!("[push_right] comparing  right cont. of left tree: {:?}",right_co_of_left_tr);
     info!("[push_right] with left cont. of right tree:       {:?} ",left_co_of_right_tr);
@@ -2073,74 +2108,107 @@ pub fn  push_right(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize
     0.0
 }
 /// Get the minimal distance between 2 contours in "tidy" context.
-pub fn  dmin_tidy(cont_left:Vec<(f32,f32,String)>,cont_right:Vec<(f32,f32,String)>, dmin:&mut f32, index_left:&mut usize,index_right:&mut usize)  {
-let max_left = cont_left.len();
-let max_right = cont_right.len();
-info!("[dmin_tidy] dmin {}",dmin);
-info!("[dmin_tidy] left  contour {}{:?}",index_left,cont_left);
-info!("[dmin_tidy] right contour {}{:?}",index_right,cont_right);
-info!("[dmin_tidy] Compare x value of  right {} and  left  {}",cont_left[*index_left].2,cont_right[*index_right].2,);
-let d = cont_right[*index_right].0 - cont_left[*index_left].0;
-if d < *dmin {
-    *dmin = d;
-    info!("[dmin_tidy] new dmin = {} ",dmin);
+pub fn  dmin_tidy(
+    cont_left: Vec<(f32,f32,String)>,
+    cont_right: Vec<(f32,f32,String)>,
+    dmin: &mut f32,
+    index_left: &mut usize,
+    index_right: &mut usize,
+    )  {
+    let max_left = cont_left.len();
+    let max_right = cont_right.len();
+    info!("[dmin_tidy] dmin {}",dmin);
+    info!("[dmin_tidy] left  contour {}{:?}", index_left, cont_left);
+    info!("[dmin_tidy] right contour {}{:?}", index_right, cont_right);
+    info!("[dmin_tidy] Compare x value of  right {} and  left  {}",
+        cont_left[*index_left].2, cont_right[*index_right].2,);
+    let d = cont_right[*index_right].0 - cont_left[*index_left].0;
+    if d < *dmin {
+        *dmin = d;
+        info!("[dmin_tidy] new dmin = {} ",dmin);
     }
-info!("[dmin_tidy] Compare y value of  right {} {} and  left  {} {}",cont_left[*index_left].2,cont_left[*index_left].1,cont_right[*index_right].2,cont_right[*index_right].1);
-if cont_right[*index_right].1 <= cont_left[*index_left].1 {
-info!("[dmin_tidy] increment right");
-    *index_right = *index_right + 1;
-    if *index_right < max_right {
-        dmin_tidy(cont_left,cont_right,dmin,index_left,index_right);
+    info!("[dmin_tidy] Compare y value of  right {} {} and  left  {} {}",
+        cont_left[*index_left].2, cont_left[*index_left].1, cont_right[*index_right].2,
+        cont_right[*index_right].1);
+    if cont_right[*index_right].1 <= cont_left[*index_left].1 {
+        info!("[dmin_tidy] increment right");
+        *index_right = *index_right + 1;
+        if *index_right < max_right {
+            dmin_tidy(cont_left, cont_right, dmin, index_left, index_right);
+        }
     }
-}
-else  {
-    info!("[dmin_tidy] increment left");
-    *index_left = *index_left + 1;
-    if *index_left < max_left {
-        dmin_tidy(cont_left,cont_right,dmin,index_left,index_right);
+    else  {
+        info!("[dmin_tidy] increment left");
+        *index_left = *index_left + 1;
+        if *index_left < max_left {
+            dmin_tidy(cont_left, cont_right, dmin, index_left, index_right);
+        }
     }
-}
 }
 /// Check for conficts between subtrees and shift conflicting right-hand subtrees to the right
 /// in order to solve detected conflicts in the "tidy" context.
-pub fn  push_right_tidy_tree(tree: &mut ArenaTree<String>,left_tree:usize,right_tree:usize,
-    options: &Options, config: &Config) {
+pub fn  push_right_tidy_tree(
+    tree: &mut ArenaTree<String>,
+    left_tree:usize,
+    right_tree:usize,
+    options: &Options,
+    config: &Config
+    ) {
     info!("[push_right_tidy_tree]");
-    info!("[push_right_tidy_tree] Compare right contour of {} {} and left contour of {} {}",tree.arena[left_tree].val,tree.arena[left_tree].name,tree.arena[right_tree].val,tree.arena[right_tree].name );
+    info!("[push_right_tidy_tree] Compare right contour of {} {} and left contour of {} {}",
+        tree.arena[left_tree].val, tree.arena[left_tree].name, tree.arena[right_tree].val,
+        tree.arena[right_tree].name);
     let mut  right_co_of_left_tr:std::vec::Vec<(f32,f32,String)> = Vec::new();
-    let depth_left_tr  = tree.depth(left_tree);
-    get_contour_tidy_right(tree,left_tree,depth_left_tr,&mut right_co_of_left_tr,&mut 0.0,options,config);
+    let depth_left_tr = tree.depth(left_tree);
+    get_contour_tidy_right(
+        tree,
+        left_tree,
+        depth_left_tr,
+        &mut right_co_of_left_tr,
+        &mut 0.0,
+        options,
+        config,
+    );
     info!("[push_right_tidy_tree] Contour right = {:?}",right_co_of_left_tr);
     let mut  left_co_of_right_tr:std::vec::Vec<(f32,f32,String)> = Vec::new();
     let depth_right_tr  = tree.depth(right_tree);
-    get_contour_tidy_left(tree,right_tree,depth_right_tr,&mut left_co_of_right_tr,&mut 0.0,options,config);
+    get_contour_tidy_left(
+        tree,
+        right_tree,
+        depth_right_tr,
+        &mut left_co_of_right_tr,
+        &mut 0.0,
+        options,
+        config
+    );
     info!("[push_right_tidy_tree] Contour left = {:?}",left_co_of_right_tr);
     let mut dmin = 1000000.0;
-    dmin_tidy(right_co_of_left_tr,left_co_of_right_tr,&mut dmin, &mut 0, &mut 0);
-    info!("[push_right_tidy_tree] DMIN = {:?} [max = {}]",dmin,PIPEBLOCK);
+    dmin_tidy(right_co_of_left_tr, left_co_of_right_tr, &mut dmin, &mut 0, &mut 0);
+    info!("[push_right_tidy_tree] DMIN = {:?} [max = {}]", dmin, PIPEBLOCK);
     if dmin > BLOCK * 0.50 {
-        info!("[push_right_tidy_tree] SHIFTING SUBTREE  {:?} {:?}",tree.arena[left_tree].val,tree.arena[left_tree].name);
-        tree.shift_x_subtree(left_tree,dmin - BLOCK * 0.50  );
-        set_middle_postorder( tree, 0);
+        info!("[push_right_tidy_tree] SHIFTING SUBTREE  {:?} {:?}",
+            tree.arena[left_tree].val, tree.arena[left_tree].name);
+        tree.shift_x_subtree(left_tree, dmin - BLOCK * 0.50  );
+        set_middle_postorder(tree, 0);
     }
     else {
         info!("[push_right_tidy_tree] NOT SHIFTING ");
     }
 }
 /// Set the x of the father between its children.
-pub fn  set_middle_postorder(tree: &mut ArenaTree<String>,index:usize) {
+pub fn set_middle_postorder(tree: &mut ArenaTree<String>, index: usize) {
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
         let left = children[0];
         let right = children[1];
-        set_middle_postorder(tree,left);
-        set_middle_postorder(tree,right);
+        set_middle_postorder(tree, left);
+        set_middle_postorder(tree, right);
         info!("[set_middle_postorder] node {:?}",index);
         let x_left = tree.arena[left].x;
         let x_right = tree.arena[right].x;
         let x = tree.arena[index].x;
         let x_middle = ( x_right + x_left ) / 2.0 ;
-        info!("[set_middle_postorder] x father set from {} to {}",x,x_middle);
+        info!("[set_middle_postorder] x father set from {} to {}", x, x_middle);
         tree.arena[index].set_x_noref(x_middle);
         let x_mod =  tree.arena[right].xmod;
         let x_mod =  x_mod + x_middle - x;
@@ -2149,7 +2217,7 @@ pub fn  set_middle_postorder(tree: &mut ArenaTree<String>,index:usize) {
 }
 /// Send the index of the last common ancestor of 2 nodes.
 #[allow(dead_code)]
-pub fn lca(tree : &mut ArenaTree<String>, index1:usize, index2: usize)  -> usize {
+pub fn lca(tree: &mut ArenaTree<String>, index1: usize, index2: usize) -> usize {
     let p1 = tree.arena[index1].parent;
     let p2 = tree.arena[index2].parent;
     let p1 = match p1 {
@@ -2168,28 +2236,28 @@ pub fn lca(tree : &mut ArenaTree<String>, index1:usize, index2: usize)  -> usize
     }
     let d1 = tree.depth(index1);
     let d2 = tree.depth(index2);
-    info!("[lca] Distance {}: {}",index1,d1);
-    info!("[lca] Distance {}: {}",index2,d2);
+    info!("[lca] Distance {}: {}", index1, d1);
+    info!("[lca] Distance {}: {}", index2, d2);
     if d1 == d2 {
         // lca(tree,p1,p2);
-        info!("[lca] Comparison of {:?} and {:?}",tree.arena[index1],tree.arena[index2]);
+        info!("[lca] Comparison of {:?} and {:?}", tree.arena[index1], tree.arena[index2]);
         match p1 == p2  {
             true => {
                 info!("[lca] LCA is {}",p1);
                  return p1
             },
-            false => lca(tree,p1,p2),
+            false => lca(tree, p1, p2),
         }
     }
     else if d1 > d2 {
-        lca(tree,p1,index2)
+        lca(tree, p1, index2)
     }
     else {
-         lca(tree,index1,p2)
+         lca(tree, index1, p2)
     }
 }
 #[allow(dead_code)]
-pub fn summary_root(tree : &mut ArenaTree<String>, index:usize)  {
+pub fn summary_root(tree: &mut ArenaTree<String>, index: usize)  {
     let children  = &tree.arena[index].children;
     match children.len() > 0  {
         true => {
@@ -2199,43 +2267,43 @@ pub fn summary_root(tree : &mut ArenaTree<String>, index:usize)  {
             index, &tree.arena[index].name,
             left, &tree.arena[left].name,
             right, &tree.arena[right].name);
-            summary_root(tree,left);
-            summary_root(tree,right);
+            summary_root(tree, left);
+            summary_root(tree, right);
         },
         false => {
-            println!("Node {} ({}) has no children ",index,&tree.arena[index].name)
+            println!("Node {} ({}) has no children ", index, &tree.arena[index].name)
         },
     }
 }
 #[allow(dead_code)]
 /// Reset all positions x y xmod ymod of a tree.
-pub fn reset_pos(tree : &mut ArenaTree<String>)  {
-for index in &mut tree.arena {
-    index.x = 0.0;
-    index.y = 0.0;
-    index.xmod = 0.0;
-    index.ymod = 0.0;
+pub fn reset_pos(tree: &mut ArenaTree<String>)  {
+    for index in &mut tree.arena {
+        index.x = 0.0;
+        index.y = 0.0;
+        index.xmod = 0.0;
+        index.ymod = 0.0;
     };
 }
 #[allow(dead_code)]
 /// Display a short summary of each node of a tree.
-pub fn summary(tree : &mut ArenaTree<String>)  {
-for index in &tree.arena {
-    let children  = &index.children;
-    let parent = match index.parent {
-        Some(p) =>  &tree.arena[p].name,
-        None => "None",
-    };
-    match children.len() > 0  {
-        true => {
-            print!("Node {} ({}) has {} children:",index.idx,index.name,children.len());
-            for child in children {
+pub fn summary(tree: &mut ArenaTree<String>)  {
+    for index in &tree.arena {
+        let children  = &index.children;
+        let parent = match index.parent {
+            Some(p) =>  &tree.arena[p].name,
+            None => "None",
+        };
+        match children.len() > 0  {
+            true => {
+                print!("Node {} ({}) has {} children:", index.idx, index.name, children.len());
+                for child in children {
                 print!(" {} ({})", child, &tree.arena[*child].name);
             };
             print!(" and its parent is {}",parent);
             },
         false => {
-            print!("Node {} ({}) has no children and its parent is {}",index.idx,index.name,parent)
+            print!("Node {} ({}) has no children and its parent is {}", index.idx, index.name,parent)
             },
         }
         println!(" [{:?}]",index.e);
@@ -2243,7 +2311,7 @@ for index in &tree.arena {
 }
 #[allow(dead_code)]
 /// Add a node to another node in a tree.
-pub fn add_child(tree : &mut ArenaTree<String>, parent:usize, child:usize)  {
+pub fn add_child(tree: &mut ArenaTree<String>, parent: usize, child: usize)  {
     info!("[add_child] adding {} to {}",child,parent);
     tree.arena[child].parent = Some(parent);
     tree.arena[parent].children.push(child);
@@ -2251,12 +2319,12 @@ pub fn add_child(tree : &mut ArenaTree<String>, parent:usize, child:usize)  {
 }
 #[allow(dead_code)]
 /// Move a node from a parent node to another node in a tree.
-pub fn move_child(tree : &mut ArenaTree<String>, child:usize, new_parent:usize)  {
+pub fn move_child(tree: &mut ArenaTree<String>, child: usize, new_parent: usize)  {
     let parent =  match tree.arena[child].parent {
         Some(p) => p,
         None => panic!("Node {:?} has no parent.",child),
     };
-    info!("[move_child] moving {} from {} to {}",child,parent,new_parent);
+    info!("[move_child] moving {} from {} to {}", child, parent, new_parent);
     tree.arena[child].parent = Some(new_parent);
     tree.arena[new_parent].children.push(child);
     tree.arena[parent].children.retain(|&x| x !=  child);
