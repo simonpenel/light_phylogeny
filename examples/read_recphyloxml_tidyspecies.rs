@@ -51,7 +51,7 @@ fn main() {
     let transfers = vec![];
     let mut options: Options = Options::new();
     options.real_length_flag = true;
-    options.scale = 1.0;
+    options.scale = 0.20;
     // options.rotate = false;
     options.tidy = true;
     // options.tidy_leaves_check = true;
