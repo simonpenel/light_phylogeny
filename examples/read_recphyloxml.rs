@@ -1,6 +1,7 @@
 // Display a reconciled tree form recPhyloXML format
 
 use light_phylogeny::{ArenaTree,Options,Config,read_recphyloxml_multi,recphyloxml_processing,phyloxml_processing};
+use std::env;
 
 fn main() {
 
@@ -285,7 +286,49 @@ fn main() {
          &transfers, "hote_parasite_page4_BL_real_fonts_landcsape.svg".to_string());
     println!("Please open output file 'hote_parasite_page4_BL_real_fonts_landcsape.svg' with your browser");
 
+    // Version tidy
+    env::set_var("RUST_LOG", "info");
+    env_logger::init();
+    let transfers = vec![];
+    let mut options: Options = Options::new();
+    options.real_length_flag = true;
+    options.species_internal = true;
+    options.branch = true;
+    options.rotate = false;
+    options.tidy = true;
+    let mut config: Config = Config::new();
+    config.species_police_size = 60.to_string();
+    config.gene_police_size = 5.to_string();
+    config.species_police_color = "green".to_string();
+    let mut sp_tree: ArenaTree<String> = ArenaTree::default();
+    let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
+    let mut global_roots: std::vec::Vec<usize> = Vec::new();
+    read_recphyloxml_multi("examples/hote_parasite_page4_BL_3.recphylo".to_string(),
+        &mut sp_tree, &mut gene_trees, &mut global_roots);
+    recphyloxml_processing(&mut sp_tree, &mut gene_trees, &mut options, &config, true,
+         &transfers, "hote_parasite_page4_BL_3_real_fonts_landcsape_tidy.svg".to_string());
+    println!("Please open output file 'hote_parasite_page4_BL_3_real_fonts_landcsape_tidy.svg' with your browser");
 
+    // Version nono tidy
+    env::set_var("RUST_LOG", "warn");
+    let transfers = vec![];
+    let mut options: Options = Options::new();
+    options.real_length_flag = true;
+    options.species_internal = true;
+    options.branch = true;
+    options.rotate = false;
+    let mut config: Config = Config::new();
+    config.species_police_size = 60.to_string();
+    config.gene_police_size = 5.to_string();
+    config.species_police_color = "green".to_string();
+    let mut sp_tree: ArenaTree<String> = ArenaTree::default();
+    let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
+    let mut global_roots: std::vec::Vec<usize> = Vec::new();
+    read_recphyloxml_multi("examples/hote_parasite_page4_BL_3.recphylo".to_string(),
+        &mut sp_tree, &mut gene_trees, &mut global_roots);
+    recphyloxml_processing(&mut sp_tree, &mut gene_trees, &mut options, &config, true,
+         &transfers, "hote_parasite_page4_BL_3_real_fonts_landcsape.svg".to_string());
+    println!("Please open output file 'hote_parasite_page4_BL_3_real_fonts_landcsape.svg' with your browser");
 
 
 
