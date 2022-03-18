@@ -483,6 +483,13 @@ pub fn recphyloxml_processing(
         // Egalise les feuilles
         let largest_y  = sp_tree.get_largest_y();
         set_leaves_y_values(sp_tree, root, largest_y);
+    } else {
+        if options.tidy{
+            println!("TIDY!");
+            check_contour_postorder_tidy_tree(&mut sp_tree, root, & options, & config);
+            // shift_mod_xy(&mut tree, root, &mut 0.0, &mut 0.0);
+            set_middle_postorder(&mut sp_tree, root);
+        }
     }
     // ---------------------------------------------------------
     // OPTIONAL Scale the heigt if needed
