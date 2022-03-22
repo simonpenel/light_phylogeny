@@ -87,8 +87,8 @@ fn main() {
     read_recphyloxml_multi("examples/FAM000297_reconciliated_BL.recphylo".to_string(),
         &mut sp_tree, &mut gene_trees, &mut global_roots);
     recphyloxml_processing(&mut sp_tree, &mut gene_trees, &mut options, &config, true,
-         &transfers, "FAM000297_reconciliated_BL_portrait_tidy.svg".to_string());
-    println!("Please open output file 'FAM000297_reconciliated_BL_portrait_tidy.svg' with your browser");
+         &transfers, "FAM000297_reconciliated_BL_landscape_tidy.svg".to_string());
+    println!("Please open output file 'FAM000297_reconciliated_BL_landscape_tidy.svg' with your browser");
 
 
 
