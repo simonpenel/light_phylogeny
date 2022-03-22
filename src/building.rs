@@ -487,8 +487,8 @@ pub fn recphyloxml_processing(
         if options.tidy{
             println!("TIDY!");
             check_contour_postorder_tidy_tree(&mut sp_tree, root, & options, & config);
-            // shift_mod_xy(&mut tree, root, &mut 0.0, &mut 0.0);
-            set_middle_postorder(&mut sp_tree, root);
+            // shift_mod_xy(&mut sp_tree, root, &mut 0.0, &mut 0.0);
+            // set_middle_postorder(&mut sp_tree, root);
         }
     }
     // ---------------------------------------------------------
