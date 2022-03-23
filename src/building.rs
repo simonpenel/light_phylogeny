@@ -57,7 +57,8 @@ pub fn read_phyloxml(filename: String, tree: &mut ArenaTree<String>) {
         Ok(xml) => xml,
         Err(_err) => {
             eprintln!("\nERROR:\nSomething went wrong when parsing the input file.");
-            eprintln!("It seems this is not a xml file");
+            eprintln!("It seems this is not a correct xml file:");
+            eprintln!("{}",_err);
             std::process::exit(1);
         },
     };
@@ -165,7 +166,8 @@ pub fn read_recphyloxml_multi(
         Ok(contents) => contents,
         Err(_err) => {
             eprintln!("\nERROR:\nSomething went wrong when parsing the input file.");
-            eprintln!("It seems this is not a xml file");
+            eprintln!("It seems this is not a correct xml file:");
+            eprintln!("{}",_err);
             std::process::exit(1);
         },
     };
