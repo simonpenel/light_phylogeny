@@ -886,7 +886,7 @@ pub fn draw_sptree_gntrees (
     let mut transfo: String = "translate(  ".to_owned();
     transfo.push_str(&( x_viewbox).to_string());
     transfo.push_str(" ");
-    transfo.push_str(&((width_svg  + x_viewbox)).to_string());
+    transfo.push_str(&((width_svg  + x_viewbox + y_viewbox)).to_string());
     transfo.push_str(") rotate(-90 0 0 ) ");
     match options.rotate {
         true => g.assign("transform",transfo),
