@@ -2009,10 +2009,10 @@ pub fn  get_contour_tidy_right(
             true => {
                     match tree.arena[index].nbg > 0 {
                         true => {
-                        let mut longest_gene_name = 0;
-                        for gene in &tree.arena[index].nodes {
-                        //  J'ai besoin des arbres de gènes....
-                        }
+                        // let mut longest_gene_name = 0;
+                        // for gene in &tree.arena[index].nodes {
+                        // //  J'ai besoin des arbres de gènes....
+                        // }
                         5.0
                         },
                         false => tree.arena[index].name.len() as f32 * config.gene_police_size.parse::<f32>().unwrap(),
