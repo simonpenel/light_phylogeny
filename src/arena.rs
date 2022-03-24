@@ -2004,7 +2004,20 @@ pub fn  get_contour_tidy_right(
     if tree.is_leaf(index) {
         y = y + match options.tidy_leaves_check {
             false => 5.0,
-            true => tree.arena[index].name.len() as f32 * config.gene_police_size.parse::<f32>().unwrap(),
+            // TO DO : cas des arbre d'espèces. Il faiut prendre la longueur du plus long nom de
+            // gène associé à la feuille espèce.
+            true => {
+                    match tree.arena[index].nbg > 0 {
+                        true => {
+                        let mut longest_gene_name = 0;
+                        for gene in &tree.arena[index].nodes {
+                        //  J'ai besoin des arbres de gènes....
+                        }
+                        5.0
+                        },
+                        false => tree.arena[index].name.len() as f32 * config.gene_police_size.parse::<f32>().unwrap(),
+                    }
+            },
         };
     }
     let name  = &tree.arena[index].name;
