@@ -1,7 +1,7 @@
 // Display a reconciled tree form recPhyloXML format
 
 use light_phylogeny::{ArenaTree,Options,Config,read_recphyloxml_multi,recphyloxml_processing,phyloxml_processing};
-use std::env;
+// use std::env;
 
 fn main() {
 
@@ -287,7 +287,7 @@ fn main() {
     println!("Please open output file 'hote_parasite_page4_BL_real_fonts_landcsape.svg' with your browser");
 
     // Version tidy
-    env::set_var("RUST_LOG", "info");
+    // env::set_var("RUST_LOG", "info");
     env_logger::init();
     let transfers = vec![];
     let mut options: Options = Options::new();
@@ -310,7 +310,7 @@ fn main() {
     println!("Please open output file 'hote_parasite_page4_BL_3_real_fonts_landcsape_tidy.svg' with your browser");
 
     // Version nono tidy
-    env::set_var("RUST_LOG", "warn");
+    // env::set_var("RUST_LOG", "warn");
     let transfers = vec![];
     let mut options: Options = Options::new();
     options.real_length_flag = true;
