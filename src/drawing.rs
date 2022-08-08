@@ -22,8 +22,10 @@ use svg::node::element::path::Data;
 use svg::Node;
 use random_color::{Color,RandomColor,Luminosity};
 
-const GTHICKNESS: usize = 3; // Epaisseur trait gene_
-const STHICKNESS: usize = 6; // Epaisseur trait species
+// const GTHICKNESS: usize = 3; // Epaisseur trait gene_
+// const STHICKNESS: usize = 6; // Epaisseur trait species
+const GTHICKNESS: usize = 16; // Epaisseur trait gene_
+const STHICKNESS: usize = 12; // Epaisseur trait species
 const SQUARESIZE: f32 = 6.0; // taille carre dupli
 
 // Functions
@@ -91,6 +93,8 @@ pub fn draw_tree (
                             gene_color.to_string(),
                             config.gene_opacity.to_string(),
                             true,
+                            options.gthickness,
+
                         )
                     },
                     false => {
@@ -101,7 +105,8 @@ pub fn draw_tree (
                             n.y,
                             gene_color.to_string(),
                             config.gene_opacity.to_string(),
-                            false
+                            false,
+                            options.gthickness,
                         )
                     },
                 };
@@ -564,6 +569,7 @@ pub fn draw_sptree_gntrees (
                                     transfer_opacity,
                                     config.bezier.to_string().parse::<f32>().unwrap(),
                                     1,
+                                    options.gthickness,
                                 ),
                                 Event::BifurcationOut => get_chemin_transfer(
                                     index.x,
@@ -574,6 +580,7 @@ pub fn draw_sptree_gntrees (
                                     transfer_opacity,
                                     config.bezier.to_string().parse::<f32>().unwrap(),
                                     2,
+                                    options.gthickness,
                                 ),
                                 _ => {
                                     // Si le noaud courant est vrituel,je peux tracer quand  meme
@@ -588,6 +595,7 @@ pub fn draw_sptree_gntrees (
                                             transfer_opacity,
                                             config.bezier.to_string().parse::<f32>().unwrap(),
                                             1,
+                                            options.gthickness,
                                         )
                                     }
                                     else {
@@ -608,6 +616,7 @@ pub fn draw_sptree_gntrees (
                                                 1.0.to_string(),
                                                 config.bezier.to_string().parse::<f32>().unwrap(),
                                                 1,
+                                                options.gthickness,
                                             )
                                         }
                                         else {
@@ -629,6 +638,7 @@ pub fn draw_sptree_gntrees (
                                     gene_color.to_string(),
                                     config.gene_opacity.to_string(),
                                     false,
+                                    options.gthickness,
                                 )
                             }
                             else {
@@ -645,6 +655,7 @@ pub fn draw_sptree_gntrees (
                                         gene_color.to_string(),
                                         free_opacity.to_string(),
                                         false,
+                                        options.gthickness,
                                     )
                                 }
                                 else {
@@ -659,6 +670,7 @@ pub fn draw_sptree_gntrees (
                                         free_opacity.to_string(),
                                         config.bezier.to_string().parse::<f32>().unwrap(),
                                         3,
+                                        options.gthickness,
                                     )
                                 }
                             }
@@ -856,6 +868,7 @@ pub fn draw_sptree_gntrees (
                 opacity,
                 config.bezier.to_string().parse::<f32>().unwrap(),
                 0,
+                options.gthickness,
             );
             g.append(chemin);
             // Affichage du score
@@ -974,7 +987,7 @@ pub fn get_cross (x: f32, y:f32, s:f32, c:String, o:String) -> Path {
     path
 }
 /// Draw a square path between x1,y1 and x2,y2.
-pub fn get_chemin_carre (x1: f32, y1:f32, x2: f32, y2:f32, c:String, o:String, stroke:bool) -> Path {
+pub fn get_chemin_carre (x1: f32, y1:f32, x2: f32, y2:f32, c:String, o:String, stroke:bool, thickness:usize) -> Path {
     let data = Data::new()
         .move_to((x1 * 1.0, y1 * 1.0))
         .line_to((x1 * 1.0, y2 * 1.0))
@@ -983,7 +996,7 @@ pub fn get_chemin_carre (x1: f32, y1:f32, x2: f32, y2:f32, c:String, o:String, s
         .set("fill", "none")
         .set("stroke", c)
         .set("opacity", o)
-        .set("stroke-width", GTHICKNESS);
+        .set("stroke-width", thickness);
     let path = match stroke {
         true => path.set("stroke-dasharray", "1, 1"),
         false => path,
@@ -1001,6 +1014,7 @@ pub fn get_chemin_transfer (
     o: String,
     b:f32,
     stroke:i32,
+    thickness:usize,
     ) -> Path {
     // Arrivee du point: un peu avant pour dessiner la fleche
     let initial_y1 = y1 ;
@@ -1033,7 +1047,7 @@ pub fn get_chemin_transfer (
         .set("fill", "none")
         .set("stroke", c)
         .set("opacity", o)
-        .set("stroke-width", GTHICKNESS);
+        .set("stroke-width", thickness);
     // choix du pointille
     let path = match stroke {
         3 => path,
