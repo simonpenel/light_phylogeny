@@ -705,7 +705,7 @@ pub fn draw_sptree_gntrees (
                     let mut cross = get_cross(
                         index.x,
                         index.y,
-                        2.0,
+                        SQUARESIZE,
                         gene_color.to_string(),
                         config.gene_opacity.to_string(),
                     );
@@ -723,7 +723,7 @@ pub fn draw_sptree_gntrees (
                     let mut diamond = get_carre(
                         index.x,
                         index.y,
-                        4.0,
+                        SQUARESIZE,
                         gene_color.to_string(),
                         config.gene_opacity.to_string(),
                     );
@@ -748,7 +748,7 @@ pub fn draw_sptree_gntrees (
                     get_circle(
                         index.x,
                         index.y,
-                        3.0,
+                        SQUARESIZE,
                         gene_color.to_string(),
                         config.gene_opacity.to_string(),
                     )
