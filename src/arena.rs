@@ -425,6 +425,8 @@ pub struct Options{
     pub uniform: bool,
     /// thickness of the stroke for gene trees
     pub gthickness: usize,
+    /// used for the size of square, circle, etc.
+    pub squaresize: f32,
 }
 impl Options {
     pub fn new() -> Self {
@@ -456,6 +458,7 @@ impl Options {
             free_living_shift: false,
             uniform: false,
             gthickness: 3,
+            squaresize: 6.0,
         }
     }
 }

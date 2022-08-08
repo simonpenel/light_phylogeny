@@ -22,9 +22,7 @@ use svg::node::element::path::Data;
 use svg::Node;
 use random_color::{Color,RandomColor,Luminosity};
 
-// const GTHICKNESS: usize = 3; // Epaisseur trait gene_
-// const STHICKNESS: usize = 6; // Epaisseur trait species
-const GTHICKNESS: usize = 16; // Epaisseur trait gene_
+
 const STHICKNESS: usize = 12; // Epaisseur trait species
 const SQUARESIZE: f32 = 6.0; // taille carre dupli
 
@@ -135,7 +133,7 @@ pub fn draw_tree (
                     get_carre(
                         index.x,
                         index.y,
-                        SQUARESIZE,
+                        options.squaresize,
                         gene_color.to_string(),
                         config.gene_opacity.to_string(),
                     )
@@ -145,7 +143,7 @@ pub fn draw_tree (
                 let mut cross = get_cross(
                     index.x,
                     index.y,
-                    SQUARESIZE * 0.75,
+                    options.squaresize * 0.75,
                     gene_color.to_string(),
                     config.gene_opacity.to_string(),
                 );
@@ -159,7 +157,7 @@ pub fn draw_tree (
                 let mut diamond = get_carre(
                     index.x,
                     index.y,
-                    SQUARESIZE * 2.0,
+                    options.squaresize * 2.0,
                     "orange".to_string(),
                     config.gene_opacity.to_string(),
                 );
@@ -175,7 +173,7 @@ pub fn draw_tree (
                         get_circle(
                             index.x,
                             index.y,
-                            SQUARESIZE * 0.75,
+                            options.squaresize * 0.75,
                             gene_color.to_string(),
                             config.gene_opacity.to_string(),
                         )
@@ -189,7 +187,7 @@ pub fn draw_tree (
                     get_triangle(
                         index.x,
                         index.y - 6.0,
-                        SQUARESIZE * 2.0,
+                        options.squaresize * 2.0,
                         "yellow".to_string(),
                         config.gene_opacity.to_string(),
                     )
@@ -684,8 +682,8 @@ pub fn draw_sptree_gntrees (
                     // C'est la racine
                     let triangle = get_triangle(
                         index.x,
-                        index.y - SQUARESIZE,
-                        SQUARESIZE,
+                        index.y - options.squaresize,
+                        options.squaresize,
                         gene_color.to_string(),
                         config.gene_opacity.to_string(),
                     );
@@ -708,7 +706,7 @@ pub fn draw_sptree_gntrees (
                     get_carre(
                         index.x,
                         index.y,
-                        SQUARESIZE,
+                        options.squaresize,
                         gene_color.to_string(),
                         config.gene_opacity.to_string(),
                     )
@@ -717,7 +715,7 @@ pub fn draw_sptree_gntrees (
                     let mut cross = get_cross(
                         index.x,
                         index.y,
-                        SQUARESIZE,
+                        options.squaresize,
                         gene_color.to_string(),
                         config.gene_opacity.to_string(),
                     );
@@ -735,7 +733,7 @@ pub fn draw_sptree_gntrees (
                     let mut diamond = get_carre(
                         index.x,
                         index.y,
-                        SQUARESIZE,
+                        options.squaresize,
                         gene_color.to_string(),
                         config.gene_opacity.to_string(),
                     );
@@ -760,7 +758,7 @@ pub fn draw_sptree_gntrees (
                     get_circle(
                         index.x,
                         index.y,
-                        SQUARESIZE * 0.75,
+                        options.squaresize * 0.75,
                         gene_color.to_string(),
                         config.gene_opacity.to_string(),
                     )
