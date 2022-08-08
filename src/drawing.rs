@@ -140,7 +140,7 @@ pub fn draw_tree (
                 let mut cross = get_cross(
                     index.x,
                     index.y,
-                    4.0,
+                    SQUARESIZE * 0.75,
                     gene_color.to_string(),
                     config.gene_opacity.to_string(),
                 );
@@ -154,7 +154,7 @@ pub fn draw_tree (
                 let mut diamond = get_carre(
                     index.x,
                     index.y,
-                    12.0,
+                    SQUARESIZE * 2.0,
                     "orange".to_string(),
                     config.gene_opacity.to_string(),
                 );
@@ -170,7 +170,7 @@ pub fn draw_tree (
                         get_circle(
                             index.x,
                             index.y,
-                            3.0,
+                            SQUARESIZE * 0.75,
                             gene_color.to_string(),
                             config.gene_opacity.to_string(),
                         )
@@ -184,7 +184,7 @@ pub fn draw_tree (
                     get_triangle(
                         index.x,
                         index.y - 6.0,
-                        12.0,
+                        SQUARESIZE * 2.0,
                         "yellow".to_string(),
                         config.gene_opacity.to_string(),
                     )
