@@ -748,7 +748,7 @@ pub fn draw_sptree_gntrees (
                     get_circle(
                         index.x,
                         index.y,
-                        SQUARESIZE,
+                        SQUARESIZE * 0.75,
                         gene_color.to_string(),
                         config.gene_opacity.to_string(),
                     )
