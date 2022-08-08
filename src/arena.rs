@@ -425,6 +425,8 @@ pub struct Options{
     pub uniform: bool,
     /// thickness of the stroke for gene trees
     pub gthickness: usize,
+    /// thickness of the stroke for species trees
+    pub sthickness: usize,
     /// used for the size of square, circle, etc.
     pub squaresize: f32,
 }
@@ -458,6 +460,7 @@ impl Options {
             free_living_shift: false,
             uniform: false,
             gthickness: 3,
+            sthickness: 6,
             squaresize: 6.0,
         }
     }

@@ -23,8 +23,8 @@ use svg::Node;
 use random_color::{Color,RandomColor,Luminosity};
 
 
-const STHICKNESS: usize = 12; // Epaisseur trait species
-const SQUARESIZE: f32 = 6.0; // taille carre dupli
+// const STHICKNESS: usize = 12; // Epaisseur trait species
+// const SQUARESIZE: f32 = 6.0; // taille carre dupli
 
 // Functions
 // =========
@@ -395,6 +395,7 @@ pub fn draw_sptree_gntrees (
                     n.height / 2.0,
                     color_branch_species.clone(),
                     config.species_opacity.to_string(),
+                    options.sthickness,
                 );
                 if sp_tree.arena[p].visible {
                     g.append(chemin)
@@ -428,6 +429,7 @@ pub fn draw_sptree_gntrees (
                         max_gene_y - index.y,
                         color_branch_species,
                         config.species_opacity.to_string(),
+                        options.sthickness,
                     );
                     if sp_tree.arena[p].visible {
                         g.append(chemin)
@@ -1068,37 +1070,38 @@ pub fn get_chemin_sp (
     width2: f32,
     height2: f32,
     c: String,
-    o: String
+    o: String,
+    thickness: usize,
     ) -> Path {
     if x1 < x2 {
         let data = Data::new()
-            .move_to((x1 - width1, y1 - height1 + (STHICKNESS / 2)  as f32))
+            .move_to((x1 - width1, y1 - height1 + (thickness / 2)  as f32))
             .line_to((x1 - width1, y2 - height2))
-            .line_to((x2 - width2 - (STHICKNESS / 2)  as f32, y2 - height2))
-            .move_to((x1 + width1, y1 - height1 + (STHICKNESS / 2)  as f32 ))
+            .line_to((x2 - width2 - (thickness / 2)  as f32, y2 - height2))
+            .move_to((x1 + width1, y1 - height1 + (thickness / 2)  as f32 ))
             .line_to((x1 + width1, y2 + height2))
             .line_to((x2, y2 + height2));
         let path = Path::new()
             .set("fill", "none")
             .set("stroke", c)
             .set("opacity", o)
-            .set("stroke-width", STHICKNESS)
+            .set("stroke-width",thickness)
             .set("d", data);
         path
     }
     else {
         let data = Data::new()
-            .move_to((x1 + width1, y1 - height1 + (STHICKNESS / 2)  as f32 ))
+            .move_to((x1 + width1, y1 - height1 + (thickness / 2)  as f32 ))
             .line_to((x1 + width1, y2 - height2))
-            .line_to((x2 + width2 + (STHICKNESS / 2)  as f32, y2 - height2))
-            .move_to((x1 - width1, y1 - height1 + (STHICKNESS / 2)  as f32))
+            .line_to((x2 + width2 + (thickness / 2)  as f32, y2 - height2))
+            .move_to((x1 - width1, y1 - height1 + (thickness / 2)  as f32))
             .line_to((x1 - width1, y2 + height2))
             .line_to((x2, y2 + height2));
         let path = Path::new()
             .set("fill", "none")
             .set("stroke", c)
             .set("opacity", o)
-            .set("stroke-width", STHICKNESS)
+            .set("stroke-width", thickness)
             .set("d", data);
         path
     }
@@ -1111,18 +1114,19 @@ pub fn close_chemin_sp (
     height1: f32,
     height2: f32,
     c: String,
-    o: String
+    o: String,
+    thickness: usize,
     ) -> Path {
         let data = Data::new()
-            .move_to((x1 - width1, y1 - height1 + (STHICKNESS / 2)  as f32  ))
+            .move_to((x1 - width1, y1 - height1 + (thickness / 2)  as f32  ))
             .line_to((x1 - width1, y1 + 1.0 * height2))
             .line_to((x1 + width1, y1 + 1.0 * height2))
-            .line_to((x1 + width1, y1 - height1 + (STHICKNESS / 2)  as f32  ));
+            .line_to((x1 + width1, y1 - height1 + (thickness / 2)  as f32  ));
         let path = Path::new()
             .set("fill", "none")
             .set("stroke", c)
             .set("opacity", o)
-            .set("stroke-width", STHICKNESS)
+            .set("stroke-width", thickness)
             .set("d", data);
         path
 }
