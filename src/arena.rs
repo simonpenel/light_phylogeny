@@ -315,14 +315,14 @@ where
         let mut x = self.arena[idx].x;
         x = x + shift;
         info!("[shift_x_subtree] shifting node {} ({}) of {}",&self.arena[idx].name,&self.arena[idx].x,shift);
-        &self.arena[idx].set_x_noref(x);
+        let _ = &self.arena[idx].set_x_noref(x);
         info!("[shift_x_subtree] new value     {} ({})",&self.arena[idx].name,&self.arena[idx].x);
         let children = &self.arena[idx].children;
         if children.len() > 0 {
             let left = children[0];
             let right = children[1];
-            &self.shift_x_subtree(left, shift);
-            &self.shift_x_subtree(right, shift);
+            let _ = &self.shift_x_subtree(left, shift);
+            let _ = &self.shift_x_subtree(right, shift);
         }
     }
     /// Copy a whole ArenaTree structure.
