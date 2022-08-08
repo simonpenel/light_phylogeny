@@ -423,6 +423,8 @@ pub struct Options{
     pub free_living_shift: bool,
     /// Uniformise the species tree nodes size.
     pub uniform: bool,
+    /// thickness of the stroke for gene trees
+    pub gthickness: usize,
 }
 impl Options {
     pub fn new() -> Self {
@@ -453,6 +455,7 @@ impl Options {
             free_living: false,
             free_living_shift: false,
             uniform: false,
+            gthickness: 3,
         }
     }
 }
