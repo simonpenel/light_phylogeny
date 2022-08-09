@@ -143,7 +143,7 @@ pub fn draw_tree (
                 let mut cross = get_cross(
                     index.x,
                     index.y,
-                    options.squaresize * 0.75,
+                    options.squaresize * 0.5,
                     gene_color.to_string(),
                     config.gene_opacity.to_string(),
                 );
@@ -717,7 +717,7 @@ pub fn draw_sptree_gntrees (
                     let mut cross = get_cross(
                         index.x,
                         index.y,
-                        options.squaresize * 0.75,
+                        options.squaresize * 0.5,
                         gene_color.to_string(),
                         config.gene_opacity.to_string(),
                     );
