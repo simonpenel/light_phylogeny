@@ -122,7 +122,7 @@ pub fn draw_tree (
                     get_carre(
                         index.x,
                         index.y,
-                        2.0,
+                        (options.gthickness as f32) * 1.5 ,
                         "red".to_string(),
                         config.gene_opacity.to_string(),
                     )
@@ -157,7 +157,7 @@ pub fn draw_tree (
                 let mut diamond = get_carre(
                     index.x,
                     index.y,
-                    options.squaresize * 2.0,
+                    options.squaresize ,
                     "orange".to_string(),
                     config.gene_opacity.to_string(),
                 );
@@ -187,7 +187,7 @@ pub fn draw_tree (
                     get_triangle(
                         index.x,
                         index.y - 6.0,
-                        options.squaresize * 2.0,
+                        options.squaresize ,
                         "yellow".to_string(),
                         config.gene_opacity.to_string(),
                     )
@@ -699,7 +699,7 @@ pub fn draw_sptree_gntrees (
                     get_carre(
                         index.x,
                         index.y,
-                        1.0,
+                        (options.gthickness as f32) * 1.5 ,
                         "red".to_string(),
                         config.gene_opacity.to_string(),
                     )
@@ -751,7 +751,7 @@ pub fn draw_sptree_gntrees (
                     get_carre(
                         index.x,
                         index.y,
-                        5.0,
+                        options.squaresize,
                         "yellow".to_string(),
                         config.gene_opacity.to_string(),
                     )
