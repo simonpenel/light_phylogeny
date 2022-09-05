@@ -429,6 +429,10 @@ pub struct Options{
     pub sthickness: usize,
     /// used for the size of square, circle, etc.
     pub squaresize: f32,
+    /// start transfert
+    pub trans_start: Option<String>,
+    /// end transfert
+    pub trans_end: Option<String>,
 }
 impl Options {
     pub fn new() -> Self {
@@ -462,6 +466,8 @@ impl Options {
             gthickness: 3,
             sthickness: 6,
             squaresize: 6.0,
+            trans_start:None,
+            trans_end:None,
         }
     }
 }
