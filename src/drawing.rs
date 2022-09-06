@@ -835,9 +835,9 @@ pub fn draw_sptree_gntrees (
         if  ((options.trans_start.as_ref() == None) || (options.trans_start.as_ref() == Some(start))) &&
             ((options.trans_end.as_ref() == None) || (options.trans_end.as_ref() == Some(end))) {
             
-            if (options.trans_start.as_ref() != None) || (options.trans_end.as_ref() != None) { 
+            /*if (options.trans_start.as_ref() != None) || (options.trans_end.as_ref() != None) { 
                 println!("Selected transfer {:?} => {:?}",end,start);
-            }
+            }*/
             let index = unique_transfers.iter().position(|r| r == transfer);
             match index {
                 None => {
