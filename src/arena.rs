@@ -1114,39 +1114,41 @@ pub fn map_species_trees(
     ) {
     let  nb_gntree =  gene_trees.len(); // Nombre d'arbres de gene
     info!("[map_species_trees] {} gene trees to be processed",nb_gntree);
-    let mut idx_rcgen = 0;  // Boucle sur les arbres de genes
-    loop {
-        info!("[map_species_trees] => Processing Gene Tree {}",idx_rcgen);
-        // Boucle sur les noeuds de l'arbre de gene idx_rcgen
-        for  index in &mut gene_trees[idx_rcgen].arena {
-            let mut mapped = false;
-            // Boucle sur les noeuds de l'arbre d'espèce
-            for spindex in  &mut sp_tree.arena {
-                if  index.location == spindex.name {
-                    mapped = true;
-                    // Incremente le nb de noeuds de gene associé au noeud d'espece
-                    let mut nbg = spindex.nbg;
-                    nbg = nbg + 1 ;
-                    spindex.nbg = nbg;
-                    // Ajoute le tuple (index de l'arbre de  gene, index du noeud de gene) associé
-                    spindex.nodes.push((idx_rcgen, index.idx));
-                    // spindex.nodes.insert(0,(idx_rcgen,index.idx));
-                    info!("[map_species_trees] Gene node {:?} mapped to  species node {:?}", index, spindex);
+    if nb_gntree > 0 {
+        let mut idx_rcgen = 0;  // Boucle sur les arbres de genes
+        loop {
+            info!("[map_species_trees] => Processing Gene Tree {}",idx_rcgen);
+            // Boucle sur les noeuds de l'arbre de gene idx_rcgen
+            for  index in &mut gene_trees[idx_rcgen].arena {
+                let mut mapped = false;
+                // Boucle sur les noeuds de l'arbre d'espèce
+                for spindex in  &mut sp_tree.arena {
+                    if  index.location == spindex.name {
+                        mapped = true;
+                        // Incremente le nb de noeuds de gene associé au noeud d'espece
+                        let mut nbg = spindex.nbg;
+                        nbg = nbg + 1 ;
+                        spindex.nbg = nbg;
+                        // Ajoute le tuple (index de l'arbre de  gene, index du noeud de gene) associé
+                        spindex.nodes.push((idx_rcgen, index.idx));
+                        // spindex.nodes.insert(0,(idx_rcgen,index.idx));
+                        info!("[map_species_trees] Gene node {:?} mapped to  species node {:?}", index, spindex);
+                    }
+                }
+                if !mapped {
+                    eprintln!("\nERROR: Unable to map Node {:?}",index);
+                    eprintln!("\nThe species '{}' was not found in species tree",index.location);
+                    eprintln!("\nMaybe you should use the 'free_living' option.");
+                    process::exit(1)
                 }
             }
-            if !mapped {
-                eprintln!("\nERROR: Unable to map Node {:?}",index);
-                eprintln!("\nThe species '{}' was not found in species tree",index.location);
-                eprintln!("\nMaybe you should use the 'free_living' option.");
-                process::exit(1)
+            // Passe à l'arbre de gènes suivant
+            idx_rcgen += 1;
+            if idx_rcgen == nb_gntree {
+                break;
             }
-        }
-        // Passe à l'arbre de gènes suivant
-        idx_rcgen += 1;
-        if idx_rcgen == nb_gntree {
-            break;
-        }
-    } //Fin de la boucle sur les arbres de gènes
+        } //Fin de la boucle sur les arbres de gènes
+    } // fin de la condition sur ke nb de gènes
 }
 /// Shift the gene nodes in a given species node to avoid superposition.
 pub fn bilan_mappings(
