@@ -833,22 +833,25 @@ pub fn draw_sptree_gntrees (
     for transfer in transfers {
         let (end, start) = &transfer;
         if  ((options.trans_start.as_ref() == None) || (options.trans_start.as_ref() == Some(start))) &&
-             ((options.trans_end.as_ref() == None) || (options.trans_end.as_ref() == Some(end))) {
-        println!("debug transfer {:?} => {:?}",end,start);
-        let index = unique_transfers.iter().position(|r| r == transfer);
-        match index {
-            None => {
-                unique_transfers.push(transfer.clone());
-                scores.push(1);
-            },
-            Some(i) => {
-                scores[i] = scores[i]+ 1;
-                if scores[i] > score_max {
-                    score_max = scores[i];
-                }
-            },
+            ((options.trans_end.as_ref() == None) || (options.trans_end.as_ref() == Some(end))) {
+            
+            if (options.trans_start.as_ref() != None) || (options.trans_end.as_ref() != None) { 
+                println!("Selected transfer {:?} => {:?}",end,start);
+            }
+            let index = unique_transfers.iter().position(|r| r == transfer);
+            match index {
+                None => {
+                    unique_transfers.push(transfer.clone());
+                    scores.push(1);
+                },
+                Some(i) => {
+                    scores[i] = scores[i]+ 1;
+                    if scores[i] > score_max {
+                        score_max = scores[i];
+                    }
+                },
+            }
         }
-    }
     }
     let mut i_trans = 0;
     while i_trans < unique_transfers.len() {
