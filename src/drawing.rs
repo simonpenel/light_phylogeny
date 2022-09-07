@@ -523,6 +523,10 @@ pub fn draw_sptree_gntrees (
     let mut idx_rcgen = 0;
      // Boucle sur les arbres de genes
     loop {
+        /* sort de la bcoule si il n'y a pas de genes*/
+        if nb_gntree == 0 {
+            break;
+        }
         let base_couleur = match &idx_rcgen % 6 {
              5 => Color::Orange,
              0 => Color::Blue,

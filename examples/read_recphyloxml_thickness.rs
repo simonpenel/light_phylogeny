@@ -112,10 +112,10 @@ fn main() {
     options.thickness_thresh = 0;
     options.thickness_disp_score = true;
     options.rotate = false;
-    options.trans_end=Some("species_18".to_string());
+    options.trans_end=None;
     options.thickness_gene = 0;
     let mut selected_gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
-    selected_gene_trees.push(gene_trees.remove(options.thickness_gene));
+    //selected_gene_trees.push(gene_trees.remove(options.thickness_gene));
     recphyloxml_processing(&mut sp_tree, &mut selected_gene_trees, &mut options, &config, true,
          &gene_transfers, "read_recphyloxml_threshold_6.svg".to_string());
     println!("Please open output file 'read_recphyloxml_threshold_6.svg' with your browser");
