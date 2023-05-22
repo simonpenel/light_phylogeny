@@ -433,6 +433,9 @@ pub struct Options{
     pub trans_start: Option<String>,
     /// end transfert
     pub trans_end: Option<String>,
+    /// place les duplication et les branchingout
+    /// a mi distance de leur parent
+    pub mid_dist: bool,
 }
 impl Options {
     pub fn new() -> Self {
@@ -468,6 +471,7 @@ impl Options {
             squaresize: 6.0,
             trans_start:None,
             trans_end:None,
+            mid_dist:false,
         }
     }
 }
@@ -1317,6 +1321,7 @@ pub fn move_dupli_mappings(
     sp_tree: &mut ArenaTree<String>,
     gene_trees: &mut std::vec::Vec<ArenaTree<String>>,
     index: usize,
+    options: &Options,
     ) {
     for (index_node, node) in &sp_tree.arena[index].nodes {
         info!("[move_dupli_mappings] >>> {:?} {:?}",
@@ -1332,7 +1337,35 @@ pub fn move_dupli_mappings(
                 };
                 let x = gene_trees[*index_node].arena[dupli_son].x;
                 gene_trees[*index_node].arena[*node].set_x_noref(x);
+                //  On decale le noeuyd pour qu'il soit au milieu de la branche
+                // let species_parent =  sp_tree.arena[index].parent;
+                if options.mid_dist {
+                    let species_parent =  gene_trees[*index_node].arena[*node].parent;
+                    // let midistance = match species_parent {
+                    //     None => 0.0,
+                    //     Some(p) => (sp_tree.arena[index].y - sp_tree.arena[p].y) / 1.7,
+                    // };
+                    let midistance = match species_parent {
+                        None =>  sp_tree.arena[index].height / 2.0,
+                        Some(p) => (gene_trees[*index_node].arena[*node].y - gene_trees[*index_node].arena[p].y) / 1.5,
+                    };
+                    let y = gene_trees[*index_node].arena[*node].y - midistance ;
+                    gene_trees[*index_node].arena[*node].set_y_noref(y);
+                    gene_trees[*index_node].arena[*node].set_ymod_noref(0.0);
+                }
             },
+            Event::BranchingOut => {
+                if options.mid_dist {
+                    let species_parent =  gene_trees[*index_node].arena[*node].parent;
+                    let midistance = match species_parent {
+                        None =>  0.0,
+                        Some(p) => (gene_trees[*index_node].arena[*node].y - gene_trees[*index_node].arena[p].y) / 1.5,
+                    };
+                    let y = gene_trees[*index_node].arena[*node].y - midistance ;
+                    gene_trees[*index_node].arena[*node].set_y_noref(y);
+                    gene_trees[*index_node].arena[*node].set_ymod_noref(0.0);
+                }
+            }
             // Il faut deplacer aussi les feuilles pour compenser: on les mets au meme niveau
             Event::Leaf => {
                 let y = sp_tree.arena[index].y + sp_tree.arena[index].height / 2.0 ;
@@ -1346,8 +1379,8 @@ pub fn move_dupli_mappings(
     if children.len() > 0 {
         let son_left = children[0];
         let son_right = children[1];
-        move_dupli_mappings(sp_tree, gene_trees, son_left);
-        move_dupli_mappings(sp_tree, gene_trees, son_right);
+        move_dupli_mappings(sp_tree, gene_trees, son_left, options);
+        move_dupli_mappings(sp_tree, gene_trees, son_right, options);
     }
 }
 /// Move species father when the father and children of a gene speciation

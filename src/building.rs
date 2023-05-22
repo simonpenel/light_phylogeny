@@ -509,7 +509,7 @@ pub fn recphyloxml_processing(
     // ---------------------------------------------------------
     // 10eme etape traite spécifiquement les duplications et les feuilles
     // ---------------------------------------------------------
-    move_dupli_mappings(&mut sp_tree, &mut gene_trees, initial_root);
+    move_dupli_mappings(&mut sp_tree, &mut gene_trees, initial_root, & options);
     // 11eme etape : Ca des speciations dont les fils sont
     // dans le meme noeud "tuyeau" que le pere
     // Cela n'arrice que quand on mappe des genes sur des hotes
