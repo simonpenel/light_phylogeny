@@ -1354,18 +1354,18 @@ pub fn move_dupli_mappings(
                     gene_trees[*index_node].arena[*node].set_ymod_noref(0.0);
                 }
             },
-            Event::BranchingOut => {
-                if options.mid_dist {
-                    let species_parent =  gene_trees[*index_node].arena[*node].parent;
-                    let midistance = match species_parent {
-                        None =>  0.0,
-                        Some(p) => (gene_trees[*index_node].arena[*node].y - gene_trees[*index_node].arena[p].y) / 1.5,
-                    };
-                    let y = gene_trees[*index_node].arena[*node].y - midistance ;
-                    gene_trees[*index_node].arena[*node].set_y_noref(y);
-                    gene_trees[*index_node].arena[*node].set_ymod_noref(0.0);
-                }
-            }
+            // Event::BranchingOut => {
+            //     if options.mid_dist  {
+            //         let species_parent =  gene_trees[*index_node].arena[*node].parent;
+            //         let midistance = match species_parent {
+            //             None =>  0.0,
+            //             Some(p) => (gene_trees[*index_node].arena[*node].y - gene_trees[*index_node].arena[p].y) / 1.5,
+            //         };
+            //         let y = gene_trees[*index_node].arena[*node].y - midistance ;
+            //         gene_trees[*index_node].arena[*node].set_y_noref(y);
+            //         gene_trees[*index_node].arena[*node].set_ymod_noref(0.0);
+            //     }
+            // }
             // Il faut deplacer aussi les feuilles pour compenser: on les mets au meme niveau
             Event::Leaf => {
                 let y = sp_tree.arena[index].y + sp_tree.arena[index].height / 2.0 ;
