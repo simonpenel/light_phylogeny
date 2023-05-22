@@ -12,7 +12,7 @@ readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-svg = "0.8.1"
+svg = "0.13.1"
 log = "0.4.14"
 env_logger = "0.8.3"
 structopt = "0.3"
