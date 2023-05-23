@@ -769,6 +769,15 @@ pub fn draw_sptree_gntrees (
                         config.gene_opacity.to_string(),
                     )
                 ),
+                Event::ObsoleteSpeciationLoss => g.append(
+                    get_circle(
+                        index.x,
+                        index.y,
+                        options.squaresize * 0.75,
+                        gene_color.to_string(),
+                        config.gene_opacity.to_string(),
+                    )
+                ),
                 _ =>  {},
             };
             // Affiche le texte associe au noeud
@@ -838,8 +847,8 @@ pub fn draw_sptree_gntrees (
         let (end, start) = &transfer;
         if  ((options.trans_start.as_ref() == None) || (options.trans_start.as_ref() == Some(start))) &&
             ((options.trans_end.as_ref() == None) || (options.trans_end.as_ref() == Some(end))) {
-            
-            /*if (options.trans_start.as_ref() != None) || (options.trans_end.as_ref() != None) { 
+
+            /*if (options.trans_start.as_ref() != None) || (options.trans_end.as_ref() != None) {
                 println!("Selected transfer {:?} => {:?}",end,start);
             }*/
             let index = unique_transfers.iter().position(|r| r == transfer);

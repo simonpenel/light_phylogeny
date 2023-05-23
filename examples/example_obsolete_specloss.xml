@@ -1,0 +1,281 @@
+<recPhylo>
+ <spTree>
+  <phylogeny rooted="true">
+   <clade>
+    <name>8</name>
+    <clade>
+     <name>6</name>
+     <clade>
+      <name>5</name>
+      <clade>
+       <name>3</name>
+       <clade>
+        <name>2</name>
+        <clade>
+         <name>1</name>
+         <clade>
+          <name>0</name>
+          <clade>
+           <name>poecilia_formosa</name>
+          </clade>
+          <clade>
+           <name>xiphophorus_maculatus</name>
+          </clade>
+         </clade>
+         <clade>
+          <name>oryzias_latipes</name>
+         </clade>
+        </clade>
+        <clade>
+         <name>gasterosteus_aculeatus</name>
+        </clade>
+       </clade>
+       <clade>
+        <name>oreochromis_niloticus</name>
+       </clade>
+      </clade>
+      <clade>
+       <name>4</name>
+       <clade>
+        <name>takifugu_rubripes</name>
+       </clade>
+       <clade>
+        <name>tetraodon_nigroviridis</name>
+       </clade>
+      </clade>
+     </clade>
+     <clade>
+      <name>gadus_morhua</name>
+     </clade>
+    </clade>
+    <clade>
+     <name>7</name>
+     <clade>
+      <name>astyanax_mexicanus</name>
+     </clade>
+     <clade>
+      <name>danio_rerio</name>
+     </clade>
+    </clade>
+   </clade>
+  </phylogeny>
+ </spTree>
+<!-- family 1 tree 1 (total cost = 9, duplications = 3, losses = 3, contraction threshold = 98) -->
+ <recGeneTree>
+  <phylogeny rooted="true">
+   <clade>
+    <name>16</name>
+    <eventsRec>
+     <duplication speciesLocation="8"></duplication>
+    </eventsRec>
+    <clade>
+     <name>82_speciation</name>
+     <eventsRec>
+      <speciation speciesLocation="8"></speciation>
+     </eventsRec>
+     <clade>
+      <name>11</name>
+      <eventsRec>
+       <speciation speciesLocation="6"></speciation>
+      </eventsRec>
+      <clade>
+       <name>gadus_morhua@ENSGMOP00000009881</name>
+       <eventsRec>
+        <leaf geneName="gadus_morhua@ENSGMOP00000009881" speciesLocation="gadus_morhua"></leaf>
+       </eventsRec>
+      </clade>
+      <clade>
+       <name>51_speciation</name>
+       <eventsRec>
+        <speciationLoss speciesLocation="5"></speciationLoss>
+        <speciation speciesLocation="3"></speciation>
+       </eventsRec>
+       <clade>
+        <name>oreochromis_niloticus@ENSONIP00000022938</name>
+        <eventsRec>
+         <leaf geneName="oreochromis_niloticus@ENSONIP00000022938" speciesLocation="oreochromis_niloticus"></leaf>
+        </eventsRec>
+       </clade>
+       <clade>
+        <name>21_speciation</name>
+        <eventsRec>
+         <speciation speciesLocation="2"></speciation>
+        </eventsRec>
+        <clade>
+         <name>gasterosteus_aculeatus@ENSGACP00000010414</name>
+         <eventsRec>
+          <leaf geneName="gasterosteus_aculeatus@ENSGACP00000010414" speciesLocation="gasterosteus_aculeatus"></leaf>
+         </eventsRec>
+        </clade>
+        <clade>
+         <name>11_speciation</name>
+         <eventsRec>
+          <speciation speciesLocation="1"></speciation>
+         </eventsRec>
+         <clade>
+          <name>7</name>
+          <eventsRec>
+           <speciation speciesLocation="0"></speciation>
+          </eventsRec>
+          <clade>
+           <name>poecilia_formosa@ENSPFOP00000012243</name>
+           <eventsRec>
+            <leaf geneName="poecilia_formosa@ENSPFOP00000012243" speciesLocation="poecilia_formosa"></leaf>
+           </eventsRec>
+          </clade>
+          <clade>
+           <name>xiphophorus_maculatus@ENSXMAP00000006920</name>
+           <eventsRec>
+            <leaf geneName="xiphophorus_maculatus@ENSXMAP00000006920" speciesLocation="xiphophorus_maculatus"></leaf>
+           </eventsRec>
+          </clade>
+         </clade>
+         <clade>
+          <name>oryzias_latipes@ENSORLP00000017928</name>
+          <eventsRec>
+           <leaf geneName="oryzias_latipes@ENSORLP00000017928" speciesLocation="oryzias_latipes"></leaf>
+          </eventsRec>
+         </clade>
+        </clade>
+       </clade>
+      </clade>
+     </clade>
+     <clade>
+      <name>74_duplication</name>
+      <eventsRec>
+       <duplication speciesLocation="7"></duplication>
+      </eventsRec>
+      <clade>
+       <name>13</name>
+       <eventsRec>
+        <speciation speciesLocation="7"></speciation>
+       </eventsRec>
+       <clade>
+        <name>astyanax_mexicanus@ENSAMXP00000009667</name>
+        <eventsRec>
+         <leaf geneName="astyanax_mexicanus@ENSAMXP00000009667" speciesLocation="astyanax_mexicanus"></leaf>
+        </eventsRec>
+       </clade>
+       <clade>
+        <name>danio_rerio@ENSDARP00000103275</name>
+        <eventsRec>
+         <leaf geneName="danio_rerio@ENSDARP00000103275" speciesLocation="danio_rerio"></leaf>
+        </eventsRec>
+       </clade>
+      </clade>
+      <clade>
+       <name>73_speciation</name>
+       <eventsRec>
+        <speciation speciesLocation="7"></speciation>
+       </eventsRec>
+       <clade>
+        <name>astyanax_mexicanus@ENSAMXP00000014769</name>
+        <eventsRec>
+         <leaf geneName="astyanax_mexicanus@ENSAMXP00000014769" speciesLocation="astyanax_mexicanus"></leaf>
+        </eventsRec>
+       </clade>
+       <clade>
+        <name>danio_rerio5_duplication</name>
+        <eventsRec>
+         <duplication speciesLocation="danio_rerio"></duplication>
+        </eventsRec>
+        <clade>
+         <name>danio_rerio@ENSDARP00000050406</name>
+         <eventsRec>
+          <leaf geneName="danio_rerio@ENSDARP00000050406" speciesLocation="danio_rerio"></leaf>
+         </eventsRec>
+        </clade>
+        <clade>
+         <name>danio_rerio@ENSDARP00000067963</name>
+         <eventsRec>
+          <leaf geneName="danio_rerio@ENSDARP00000067963" speciesLocation="danio_rerio"></leaf>
+         </eventsRec>
+        </clade>
+       </clade>
+      </clade>
+     </clade>
+    </clade>
+    <clade>
+     <name>83_speciation</name>
+     <eventsRec>
+      <speciation speciesLocation="8"></speciation>
+     </eventsRec>
+     <clade>
+      <name>1</name>
+      <eventsRec>
+       <speciation speciesLocation="7"></speciation>
+      </eventsRec>
+      <clade>
+       <name>astyanax_mexicanus@ENSAMXP00000009758</name>
+       <eventsRec>
+        <leaf geneName="astyanax_mexicanus@ENSAMXP00000009758" speciesLocation="astyanax_mexicanus"></leaf>
+       </eventsRec>
+      </clade>
+      <clade>
+       <name>danio_rerio@ENSDARP00000110233</name>
+       <eventsRec>
+        <leaf geneName="danio_rerio@ENSDARP00000110233" speciesLocation="danio_rerio"></leaf>
+       </eventsRec>
+      </clade>
+     </clade>
+     <clade>
+      <name>62_speciation</name>
+      <eventsRec>
+       <speciationLoss speciesLocation="6"></speciationLoss>
+       <speciationLoss speciesLocation="5"></speciationLoss>
+       <speciation speciesLocation="3"></speciation>
+      </eventsRec>
+      <clade>
+       <name>oreochromis_niloticus@ENSONIP00000014408</name>
+       <eventsRec>
+        <leaf geneName="oreochromis_niloticus@ENSONIP00000014408" speciesLocation="oreochromis_niloticus"></leaf>
+       </eventsRec>
+      </clade>
+      <clade>
+       <name>22_speciation</name>
+       <eventsRec>
+        <speciation speciesLocation="2"></speciation>
+       </eventsRec>
+       <clade>
+        <name>gasterosteus_aculeatus@ENSGACP00000010422</name>
+        <eventsRec>
+         <leaf geneName="gasterosteus_aculeatus@ENSGACP00000010422" speciesLocation="gasterosteus_aculeatus"></leaf>
+        </eventsRec>
+       </clade>
+       <clade>
+        <name>12_speciation</name>
+        <eventsRec>
+         <speciation speciesLocation="1"></speciation>
+        </eventsRec>
+        <clade>
+         <name>3</name>
+         <eventsRec>
+          <speciation speciesLocation="0"></speciation>
+         </eventsRec>
+         <clade>
+          <name>poecilia_formosa@ENSPFOP00000008246</name>
+          <eventsRec>
+           <leaf geneName="poecilia_formosa@ENSPFOP00000008246" speciesLocation="poecilia_formosa"></leaf>
+          </eventsRec>
+         </clade>
+         <clade>
+          <name>xiphophorus_maculatus@ENSXMAP00000018622</name>
+          <eventsRec>
+           <leaf geneName="xiphophorus_maculatus@ENSXMAP00000018622" speciesLocation="xiphophorus_maculatus"></leaf>
+          </eventsRec>
+         </clade>
+        </clade>
+        <clade>
+         <name>oryzias_latipes@ENSORLP00000019203</name>
+         <eventsRec>
+          <leaf geneName="oryzias_latipes@ENSORLP00000019203" speciesLocation="oryzias_latipes"></leaf>
+         </eventsRec>
+        </clade>
+       </clade>
+      </clade>
+     </clade>
+    </clade>
+   </clade>
+  </phylogeny>
+ </recGeneTree>
+</recPhylo>
