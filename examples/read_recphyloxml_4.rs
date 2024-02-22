@@ -1,6 +1,6 @@
 // Display a reconciled tree form recPhyloXML format
 
-use light_phylogeny::{ArenaTree,Options,Config,read_recphyloxml_multi,recphyloxml_processing,phyloxml_processing};
+use light_phylogeny::{ArenaTree,Options,Config,read_recphyloxml_multi,recphyloxml_processing};
 // use std::env;
 
 fn main() {
