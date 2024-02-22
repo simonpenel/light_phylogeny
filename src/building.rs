@@ -138,7 +138,7 @@ pub fn add_virtual_roots(
         global_pipe.arena[node_pere].children.push(node_droite);
         global_pipe.arena[node_left].parent = Some(node_pere);
         global_pipe.arena[node_droite].parent = Some(node_pere);
-        let mut queue_clone = queue.clone().to_vec();
+        let mut queue_clone = queue.to_vec();
         *pere = *pere + 1;
         add_virtual_roots(&mut queue_clone, pere,level, global_pipe);
     }
@@ -327,7 +327,7 @@ pub fn phyloxml_processing(
 pub fn recphyloxml_processing(
     mut sp_tree: &mut ArenaTree<String>,                    // species tree
     mut gene_trees: &mut std::vec::Vec<ArenaTree<String>>,  // gene trees
-    mut options: &mut Options,                              // display options
+    options: &mut Options,                                  // display options
     config: &Config,                                        // svg configuration
     mapping: bool,                                           // map gene and species
     transfers: & std::vec::Vec<(String,String)>,            // optional additional transfers
