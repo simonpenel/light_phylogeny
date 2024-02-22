@@ -714,8 +714,8 @@ pub fn xml2tree (
             if nb_att >= 1 {
                 let mut i = 0;
                 while i < nb_att {
-                    if child.attributes()[i].name() == "branch_length" {
-                        let dist = child.attributes()[i].value().parse::<f32>();
+                    if child.attributes().nth(i).unwrap().name() == "branch_length" {
+                        let dist = child.attributes().nth(i).unwrap().value().parse::<f32>();
                         match dist {
                             Ok(dist) => tree.arena[name].l = dist,
                             Err(_err) => panic!("[xml2tree] Unable to read branch length"),
@@ -816,8 +816,8 @@ pub fn xml2tree (
                     tree.arena[sploss_name].name = "SpecOutLoss".to_string();
                     // Attribution d'une location
                     assert!(evenement.has_attribute("speciesLocation"));
-                    assert_eq!(evenement.attributes()[0].name(),"speciesLocation");
-                    let location = evenement.attributes()[0].value();
+                    assert_eq!(evenement.attributes().nth(0).unwrap().name(),"speciesLocation");
+                    let location = evenement.attributes().nth(0).unwrap().value();
                     info!("[xml2tree] Location is {}",location);
                     info!("[xml2tree] Set Location of sploss_name:");
                     tree.arena[sploss_name].location = location.to_string();
@@ -858,8 +858,8 @@ pub fn xml2tree (
                     info!("[xml2tree] setting event of {:?} : {:?}",
                         tree.arena[parent].name, tree.arena[parent].e);
                     assert!(evenement.has_attribute("speciesLocation"));
-                    assert_eq!(evenement.attributes()[0].name(), "speciesLocation");
-                    let location = evenement.attributes()[0].value();
+                    assert_eq!(evenement.attributes().nth(0).unwrap().name(), "speciesLocation");
+                    let location = evenement.attributes().nth(0).unwrap().value();
                     tree.arena[parent].location = location.to_string();
                 }
                 if evenement.has_tag_name("leaf"){
@@ -885,8 +885,8 @@ pub fn xml2tree (
                     info!("[xml2tree] Number of attributes  = {}",nb_att);
                     assert!(evenement.has_attribute("speciesLocation"));
                     if nb_att == 1 {
-                        assert_eq!(evenement.attributes()[0].name(), "speciesLocation");
-                        let location = evenement.attributes()[0].value();
+                        assert_eq!(evenement.attributes().nth(0).unwrap().name(), "speciesLocation");
+                        let location = evenement.attributes().nth(0).unwrap().value();
                         tree.arena[parent].location = location.to_string();
                     }
                     else {
@@ -896,20 +896,20 @@ pub fn xml2tree (
                         assert!(nb_att == 2);
                         assert!(evenement.has_attribute("geneName"));
                         assert!(evenement.has_attribute("speciesLocation"));
-                        if evenement.attributes()[0].name() == "geneName" {
-                            assert_eq!(evenement.attributes()[1].name(), "speciesLocation");
-                            let name = evenement.attributes()[0].value();
+                        if evenement.attributes().nth(0).unwrap().name() == "geneName" {
+                            assert_eq!(evenement.attributes().nth(1).unwrap().name(), "speciesLocation");
+                            let name = evenement.attributes().nth(0).unwrap().value();
                             tree.arena[parent].name = name.to_string();
                             info!("[xml2tree] set name {:?}",tree.arena[parent]);
-                            let location = evenement.attributes()[1].value();
+                            let location = evenement.attributes().nth(1).unwrap().value();
                             tree.arena[parent].location = location.to_string();
                         }
-                        if evenement.attributes()[1].name() == "geneName" {
-                            assert_eq!(evenement.attributes()[0].name(), "speciesLocation");
-                            let name = evenement.attributes()[1].value();
+                        if evenement.attributes().nth(1).unwrap().name() == "geneName" {
+                            assert_eq!(evenement.attributes().nth(0).unwrap().name(), "speciesLocation");
+                            let name = evenement.attributes().nth(1).unwrap().value();
                             tree.arena[parent].name = name.to_string();
                             info!("[xml2tree] set name {:?}",tree.arena[parent]);
-                            let location = evenement.attributes()[0].value();
+                            let location = evenement.attributes().nth(0).unwrap().value();
                             tree.arena[parent].location = location.to_string();
                         }
                     }
@@ -922,8 +922,8 @@ pub fn xml2tree (
                         tree.arena[parent].name, tree.arena[parent].e);
                     info!("[xml2tree] Attributes of {:?} are {:?}", evenement, evenement.attributes());
                     assert!(evenement.has_attribute("speciesLocation"));
-                    assert_eq!(evenement.attributes()[0].name(), "speciesLocation");
-                    let location = evenement.attributes()[0].value();
+                    assert_eq!(evenement.attributes().nth(0).unwrap().name(), "speciesLocation");
+                    let location = evenement.attributes().nth(0).unwrap().value();
                     info!("[xml2tree] set location = {}",location);
                     tree.arena[parent].location = location.to_string();
                 }
@@ -935,8 +935,8 @@ pub fn xml2tree (
                         tree.arena[parent].name, tree.arena[parent].e);
                     info!("[xml2tree] Attributes of {:?} are {:?}", evenement, evenement.attributes());
                     assert!(evenement.has_attribute("speciesLocation"));
-                    assert_eq!(evenement.attributes()[0].name(), "speciesLocation");
-                    let location = evenement.attributes()[0].value();
+                    assert_eq!(evenement.attributes().nth(0).unwrap().name(), "speciesLocation");
+                    let location = evenement.attributes().nth(0).unwrap().value();
                     info!("[xml2tree] set location = {}",location);
                     tree.arena[parent].location = location.to_string();
                 }
@@ -948,8 +948,8 @@ pub fn xml2tree (
                         tree.arena[parent].name, tree.arena[parent].e);
                     info!("[xml2tree] Attributes of {:?} are {:?}", evenement, evenement.attributes());
                     assert!(evenement.has_attribute("speciesLocation"));
-                    assert_eq!(evenement.attributes()[0].name(), "speciesLocation");
-                    let location = evenement.attributes()[0].value();
+                    assert_eq!(evenement.attributes().nth(0).unwrap().name(), "speciesLocation");
+                    let location = evenement.attributes().nth(0).unwrap().value();
                     info!("[xml2tree] set location = {}",location);
                     tree.arena[parent].location = location.to_string();
                 }
@@ -978,8 +978,8 @@ pub fn xml2tree (
                         tree.arena[parent].name, tree.arena[parent].e);
                     info!("[xml2tree] Attributes of {:?} are {:?}", evenement, evenement.attributes());
                     assert!(evenement.has_attribute("destinationSpecies"));
-                    assert_eq!(evenement.attributes()[0].name(), "destinationSpecies");
-                    let location = evenement.attributes()[0].value();
+                    assert_eq!(evenement.attributes().nth(0).unwrap().name(), "destinationSpecies");
+                    let location = evenement.attributes().nth(0).unwrap().value();
                     info!("[xml2tree] set destinationSpecies = {}",location);
                     tree.arena[parent].location = location.to_string();
                     tree.arena[parent].is_a_transfert = true;
