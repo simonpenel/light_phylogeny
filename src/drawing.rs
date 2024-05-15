@@ -536,11 +536,19 @@ pub fn draw_sptree_gntrees (
              4 => Color::Yellow,
              _ => Color::Monochrome, // Jamais
         };
-        let gene_color = RandomColor::new()
+        let mut gene_color = RandomColor::new()
             .hue(base_couleur)
             .luminosity(Luminosity::Bright) // Optional
             .alpha(1.0) // Optional
             .to_rgb_string(); //
+
+        
+        if options.gene_colors.len() > 0 {
+            let _idx_user_color = &idx_rcgen % options.gene_colors.len();
+            println!("DEBUG {:?} {}",options.gene_colors,_idx_user_color);
+            gene_color = options.gene_colors[_idx_user_color].clone();
+        }    
+
         // Style de la font pour le gene
         let added_style = " .gene_".to_owned() + &idx_rcgen.to_string()
              + " { font-size: " + &config.gene_police_size.to_string() + "px; fill:"

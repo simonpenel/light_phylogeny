@@ -436,6 +436,8 @@ pub struct Options{
     /// place les duplication et les branchingout
     /// a mi distance de leur parent
     pub mid_dist: bool,
+    /// user-defined list of colors for genes
+    pub gene_colors: Vec<String>
 }
 impl Options {
     pub fn new() -> Self {
@@ -472,6 +474,7 @@ impl Options {
             trans_start:None,
             trans_end:None,
             mid_dist:false,
+            gene_colors: Vec::new(),
         }
     }
 }
