@@ -545,7 +545,6 @@ pub fn draw_sptree_gntrees (
         
         if options.gene_colors.len() > 0 {
             let _idx_user_color = &idx_rcgen % options.gene_colors.len();
-            println!("DEBUG {:?} {}",options.gene_colors,_idx_user_color);
             gene_color = options.gene_colors[_idx_user_color].clone();
         }    
 
