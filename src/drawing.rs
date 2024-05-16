@@ -119,11 +119,11 @@ pub fn draw_tree (
         match event {
             Event::Leaf => {
                 g.append(
-                    get_carre(
+                    get_half_circle(
                         index.x,
                         index.y,
-                        (options.gthickness as f32) * 1.5 ,
-                        "red".to_string(),
+                        options.squaresize,
+                        gene_color.to_string(),
                         config.gene_opacity.to_string(),
                     )
                 )
@@ -707,11 +707,11 @@ pub fn draw_sptree_gntrees (
              let  event = &index.e;
              match event {
                 Event::Leaf => g.append(
-                    get_carre(
+                    get_half_circle(
                         index.x,
                         index.y,
-                        (options.gthickness as f32) * 1.5 ,
-                        "red".to_string(),
+                        options.squaresize,
+                        gene_color.to_string(),
                         config.gene_opacity.to_string(),
                     )
                 ),
@@ -966,6 +966,22 @@ pub fn get_carre (x: f32, y:f32, s:f32, c:String, o:String) -> Path {
         .set("stroke", c)
         .set("opacity", o)
         .set("stroke-width", 3)
+        .set("d", data);
+    path
+}
+/// Draw a triangle of size s at x,y.
+pub fn get_half_circle (x: f32, y:f32, s:f32, c:String, o:String) -> Path {
+    let data = Data::new()
+        .move_to((x*1.0 -1.0 *s , y*1.0 - 0.0*s  ))
+/*        .line_by((2.0 * s, 0))*/
+        .elliptical_arc_by(( 0.5 * s, 0.5 * s, 0.0, 0, 1, s * 2.0, 0   ))
+        .close();
+    let fill = c.clone();
+    let path = Path::new()
+        .set("fill", fill)
+        .set("stroke", c)
+        .set("opacity", o)
+        .set("stroke-width", 1)
         .set("d", data);
     path
 }
