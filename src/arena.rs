@@ -71,6 +71,8 @@ where
     pub visible: bool,
     /// Node is a virtual node created for the svg only.
     pub virtualsvg: bool,
+    /// Index of the color for the node when the are different colors in a gene
+    pub color_node_idx : usize,
 }
 impl<T> Noeud<T>
 where
@@ -102,6 +104,7 @@ where
             transfers: vec![],
             visible: true,
             virtualsvg: false,
+            color_node_idx: 0,
         }
     }
     /// Set node event.
@@ -437,7 +440,9 @@ pub struct Options{
     /// a mi distance de leur parent
     pub mid_dist: bool,
     /// user-defined list of colors for genes
-    pub gene_colors: Vec<String>
+    pub gene_colors: Vec<String>,
+    /// user-defined list of nodes for genes. Children of nodes will be colorised 
+    pub node_colors: Vec<String>
 }
 impl Options {
     pub fn new() -> Self {
@@ -475,6 +480,7 @@ impl Options {
             trans_end:None,
             mid_dist:false,
             gene_colors: Vec::new(),
+            node_colors: Vec::new(),
         }
     }
 }

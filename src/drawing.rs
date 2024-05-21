@@ -527,6 +527,23 @@ pub fn draw_sptree_gntrees (
         if nb_gntree == 0 {
             break;
         }
+        if options.node_colors.len() > 0 {
+        	let mut node_color_idx = 1;
+        	for node_color in  &options.node_colors {
+        		let node_colored = gene_trees[idx_rcgen].get_index(node_color.to_string());
+        		match node_colored {
+        			Ok(n) => {
+        				println!("=>Index {}",n);
+        				set_color_index(&mut gene_trees[idx_rcgen],n,node_color_idx);
+        			},
+        			Err(e) =>{
+        				eprintln!("=>Index not found")
+        			},
+        		}
+        		node_color_idx += 1;
+        	}
+        }
+
         let base_couleur = match &idx_rcgen % 6 {
              5 => Color::Orange,
              0 => Color::Blue,
@@ -548,6 +565,7 @@ pub fn draw_sptree_gntrees (
             gene_color = options.gene_colors[_idx_user_color].clone();
         }    
 
+
         // Style de la font pour le gene
         let added_style = " .gene_".to_owned() + &idx_rcgen.to_string()
              + " { font-size: " + &config.gene_police_size.to_string() + "px; fill:"
@@ -555,7 +573,30 @@ pub fn draw_sptree_gntrees (
         // Je passe en str pour l'ajouter
         let add_style_str :&str = &added_style;
         recphylostyle.push_str(add_style_str);
+        // debugg
+        //let noaud_colorer = gene_trees[idx_rcgen].get_index("m2".to_string()).unwrap();
+        
         for  index in &gene_trees[idx_rcgen].arena {
+            // Dessine le chemin du noeud a son pere
+            if options.node_colors.len() > 0 {
+            	if options.gene_colors.len() > 0 {
+            		let _idx_user_color =  index.color_node_idx % options.gene_colors.len();
+            		gene_color = options.gene_colors[_idx_user_color].clone();
+            		}
+            	else {
+            		gene_color = match &index.color_node_idx % 6 {
+             			5 => "orange".to_string(),
+             			0 => "blue".to_string(),
+             			1 => "purple".to_string(),
+             			2 => "green".to_string(),
+             			3 => "red".to_string(),
+             			4 => "yellow".to_string(),
+             			_ => "monochrome".to_string(), // Jamais
+        			};
+      
+            		
+            	}
+            }
             // Dessine le chemin du noeud a son pere
             match index.parent {
                  Some(p) => {
@@ -1173,4 +1214,17 @@ pub fn close_chemin_sp (
             .set("stroke-width", thickness)
             .set("d", data);
         path
+}
+
+pub fn set_color_index(gene_tree: &mut ArenaTree<String>, root :usize, idx : usize){
+	println!("Color index = {}",gene_tree.arena[root].color_node_idx);
+	gene_tree.arena[root].color_node_idx = idx;
+	println!("Color index = {}",gene_tree.arena[root].color_node_idx);
+	let children = &gene_tree.arena[root].children;
+	if children.len() > 0 {
+            let left = children[0];
+            let right = children[1];
+            set_color_index(gene_tree, left, idx);
+            set_color_index(gene_tree, right, idx);
+            }
 }
