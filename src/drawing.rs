@@ -527,23 +527,50 @@ pub fn draw_sptree_gntrees (
         if nb_gntree == 0 {
             break;
         }
+        // Cas de la coloration par noeuds: on modifie l'index de couleur des descendants de chaque
+        // noeud dans options.node_colors
         if options.node_colors.len() > 0 {
-        	let mut node_color_idx = 1;
+        	let mut node_color_idx = 1; // Les autres restent a 0
+        	
+        	
+        	
         	for node_color in  &options.node_colors {
         		let node_colored = gene_trees[idx_rcgen].get_index(node_color.to_string());
         		match node_colored {
         			Ok(n) => {
         				println!("=>Index {}",n);
+        				// Style de la font pour la partie de l'arbre
+        				let mut font_color = match node_color_idx % 6 {
+             			5 => "orange".to_string(),
+             			0 => "blue".to_string(),
+             			1 => "purple".to_string(),
+             			2 => "green".to_string(),
+             			3 => "red".to_string(),
+             			4 => "yellow".to_string(),
+             			_ => "monochrome".to_string(), // Jamais
+        				};
+        				if options.gene_colors.len() > 0 {
+            				let _idx_user_color =  node_color_idx % options.gene_colors.len();
+            				font_color = options.gene_colors[_idx_user_color].clone();
+            			}
+        				let added_style = " .node_".to_owned() + &node_color_idx.to_string()
+             			+ " { font-size: " + &config.gene_police_size.to_string() + "px; fill:"
+             			+ &font_color.to_string() + "; } ";
+        				// Je passe en str pour l'ajouter
+        				let add_style_str :&str = &added_style;
+        				recphylostyle.push_str(add_style_str);
+        				// Modifie la valeur de l'index
         				set_color_index(&mut gene_trees[idx_rcgen],n,node_color_idx);
         			},
-        			Err(e) =>{
-        				eprintln!("=>Index not found")
+        			Err(_e) =>{
+        				println!("Warning Node {} not found in the gene tree number {}",node_color, idx_rcgen)
         			},
         		}
         		node_color_idx += 1;
         	}
         }
-
+        
+        // Choix de la couleur dans le cas d'une coloration par arbre de gene par defaut
         let base_couleur = match &idx_rcgen % 6 {
              5 => Color::Orange,
              0 => Color::Blue,
@@ -559,12 +586,11 @@ pub fn draw_sptree_gntrees (
             .alpha(1.0) // Optional
             .to_rgb_string(); //
 
-        
+        // Modification de la couleur dans le cas d'une coloration par arbre de gene défini par l'utilisateur
         if options.gene_colors.len() > 0 {
             let _idx_user_color = &idx_rcgen % options.gene_colors.len();
             gene_color = options.gene_colors[_idx_user_color].clone();
         }    
-
 
         // Style de la font pour le gene
         let added_style = " .gene_".to_owned() + &idx_rcgen.to_string()
@@ -573,17 +599,17 @@ pub fn draw_sptree_gntrees (
         // Je passe en str pour l'ajouter
         let add_style_str :&str = &added_style;
         recphylostyle.push_str(add_style_str);
-        // debugg
-        //let noaud_colorer = gene_trees[idx_rcgen].get_index("m2".to_string()).unwrap();
         
         for  index in &gene_trees[idx_rcgen].arena {
-            // Dessine le chemin du noeud a son pere
+ 			// Cas ou la coloration varie dans l'arbre des genes
             if options.node_colors.len() > 0 {
+            	// Utilisation des couleurs definies par l'utilsateur
             	if options.gene_colors.len() > 0 {
             		let _idx_user_color =  index.color_node_idx % options.gene_colors.len();
             		gene_color = options.gene_colors[_idx_user_color].clone();
             		}
             	else {
+            	    // Utilisation des couleurs par défaut (sans modulation aleatoire)
             		gene_color = match &index.color_node_idx % 6 {
              			5 => "orange".to_string(),
              			0 => "blue".to_string(),
@@ -593,8 +619,6 @@ pub fn draw_sptree_gntrees (
              			4 => "yellow".to_string(),
              			_ => "monochrome".to_string(), // Jamais
         			};
-      
-            		
             	}
             }
             // Dessine le chemin du noeud a son pere
@@ -834,7 +858,14 @@ pub fn draw_sptree_gntrees (
                     let mut element = Element::new("text");
                     element.assign("x", index.x - 5.0);
                     element.assign("y", index.y + 15.0);
-                    element.assign("class", "gene_".to_owned() + &idx_rcgen.to_string());
+                    if (options.node_colors.len() > 0) { 
+                    	
+                    	element.assign("class", "node_".to_owned() + &index.color_node_idx.to_string());
+                    	println!("Leaf style {}","node_".to_owned() + &index.color_node_idx.to_string());
+                    }
+                    else { 
+                    	element.assign("class", "gene_".to_owned() + &idx_rcgen.to_string());
+                    } 
                     let txt = Text::new(&index.name);
                     element.append(txt);
                     element.assign(
