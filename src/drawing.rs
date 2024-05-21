@@ -531,18 +531,18 @@ pub fn draw_sptree_gntrees (
         // noeud dans options.node_colors
         if options.node_colors.len() > 0 {
         	let mut node_color_idx = 1; // Les autres restent a 0
-        	
-        	
-        	
+        	// Traite tous les noeuds a colorer
         	for node_color in  &options.node_colors {
+        		// Recupere le noeud dans l'arbre
         		let node_colored = gene_trees[idx_rcgen].get_index(node_color.to_string());
         		match node_colored {
         			Ok(n) => {
-        				println!("=>Index {}",n);
+        				// On definit la couleur des font pour le style
         				// Style de la font pour la partie de l'arbre
         				let mut font_color  = get_default_color(node_color_idx);
+        				// Cas ou on utilise les couleurs definies par l'utilisateur
         				if options.gene_colors.len() > 0 {
-            				let _idx_user_color =  node_color_idx % options.gene_colors.len();
+            				let _idx_user_color = node_color_idx % options.gene_colors.len();
             				font_color = options.gene_colors[_idx_user_color].clone();
             			}
         				let added_style = " .node_".to_owned() + &node_color_idx.to_string()
@@ -551,7 +551,7 @@ pub fn draw_sptree_gntrees (
         				// Je passe en str pour l'ajouter
         				let add_style_str :&str = &added_style;
         				recphylostyle.push_str(add_style_str);
-        				// Modifie la valeur de l'index
+        				// Modifie la valeur de l'index de couleur dans tous les fils du noeud
         				set_color_index(&mut gene_trees[idx_rcgen],n,node_color_idx);
         			},
         			Err(_e) =>{
@@ -563,6 +563,7 @@ pub fn draw_sptree_gntrees (
         }
         
         // Choix de la couleur dans le cas d'une coloration par arbre de gene par defaut
+        // Boucle sur une base de 6 couleurs avec une modif aleatoire (utile qaund on a pmlus de 6 genes)
         let base_couleur = match &idx_rcgen % 6 {
              5 => Color::Orange,
              0 => Color::Blue,
