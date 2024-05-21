@@ -540,15 +540,7 @@ pub fn draw_sptree_gntrees (
         			Ok(n) => {
         				println!("=>Index {}",n);
         				// Style de la font pour la partie de l'arbre
-        				let mut font_color = match node_color_idx % 6 {
-             			5 => "orange".to_string(),
-             			0 => "blue".to_string(),
-             			1 => "purple".to_string(),
-             			2 => "green".to_string(),
-             			3 => "red".to_string(),
-             			4 => "yellow".to_string(),
-             			_ => "monochrome".to_string(), // Jamais
-        				};
+        				let mut font_color  = get_default_color(node_color_idx);
         				if options.gene_colors.len() > 0 {
             				let _idx_user_color =  node_color_idx % options.gene_colors.len();
             				font_color = options.gene_colors[_idx_user_color].clone();
@@ -610,15 +602,7 @@ pub fn draw_sptree_gntrees (
             		}
             	else {
             	    // Utilisation des couleurs par défaut (sans modulation aleatoire)
-            		gene_color = match &index.color_node_idx % 6 {
-             			5 => "orange".to_string(),
-             			0 => "blue".to_string(),
-             			1 => "purple".to_string(),
-             			2 => "green".to_string(),
-             			3 => "red".to_string(),
-             			4 => "yellow".to_string(),
-             			_ => "monochrome".to_string(), // Jamais
-        			};
+            	    gene_color  = get_default_color(index.color_node_idx);
             	}
             }
             // Dessine le chemin du noeud a son pere
@@ -858,12 +842,12 @@ pub fn draw_sptree_gntrees (
                     let mut element = Element::new("text");
                     element.assign("x", index.x - 5.0);
                     element.assign("y", index.y + 15.0);
-                    if (options.node_colors.len() > 0) { 
-                    	
+                    if options.node_colors.len() > 0 { 
+ 					// Mode coloration par noeud
                     	element.assign("class", "node_".to_owned() + &index.color_node_idx.to_string());
-                    	println!("Leaf style {}","node_".to_owned() + &index.color_node_idx.to_string());
                     }
                     else { 
+                    // Mode coloration par gene
                     	element.assign("class", "gene_".to_owned() + &idx_rcgen.to_string());
                     } 
                     let txt = Text::new(&index.name);
@@ -1246,7 +1230,7 @@ pub fn close_chemin_sp (
             .set("d", data);
         path
 }
-
+/// Set to idx the color_node_idx field of the children of root in gene_tree
 pub fn set_color_index(gene_tree: &mut ArenaTree<String>, root :usize, idx : usize){
 	println!("Color index = {}",gene_tree.arena[root].color_node_idx);
 	gene_tree.arena[root].color_node_idx = idx;
@@ -1258,4 +1242,17 @@ pub fn set_color_index(gene_tree: &mut ArenaTree<String>, root :usize, idx : usi
             set_color_index(gene_tree, left, idx);
             set_color_index(gene_tree, right, idx);
             }
+}
+/// Get the default color in function of index
+pub fn get_default_color (idx:usize) -> String {
+	let font = match idx % 6 {
+    	5 => "orange".to_string(),
+        0 => "blue".to_string(),
+        1 => "purple".to_string(),
+        2 => "green".to_string(),
+        3 => "red".to_string(),
+        4 => "yellow".to_string(),
+        _ => "monochrome".to_string(), // Jamais
+    };
+    font    			
 }
