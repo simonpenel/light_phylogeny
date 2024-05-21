@@ -1,0 +1,409 @@
+<recPhylo>
+<spTree>
+<phylogeny>
+  <clade>
+    <name>n1</name>
+    <clade>
+      <name>n2</name>
+      <clade>
+        <name>Cyc</name>
+      </clade>
+      <clade>
+        <name>n3</name>
+        <clade>
+          <name>n4</name>
+          <clade>
+            <name>Ap</name>
+          </clade>
+          <clade>
+            <name>Tba</name>
+          </clade>
+        </clade>
+        <clade>
+          <name>Eph</name>
+        </clade>
+      </clade>
+    </clade>
+    <clade>
+      <name>n5</name>
+      <clade>
+        <name>Zm</name>
+      </clade>
+      <clade>
+        <name>Atr</name>
+      </clade>
+    </clade>
+  </clade>
+</phylogeny>
+</spTree>
+<recGeneTree>
+<phylogeny rooted="true">
+  <clade>
+    <name>m1</name>
+    <eventsRec>
+    <duplication speciesLocation="n1"></duplication>
+    </eventsRec>
+    <clade>
+      <name>m2</name>
+      <eventsRec>
+      <duplication speciesLocation="n1"></duplication>
+      </eventsRec>
+      <clade>
+        <name>m3</name>
+        <eventsRec>
+        <speciation speciesLocation="n1"></speciation>
+        </eventsRec>
+        <clade>
+          <name>m4</name>
+          <eventsRec>
+          <duplication speciesLocation="n2"></duplication>
+          </eventsRec>
+          <clade>
+            <name>m8</name>
+            <eventsRec>
+            <duplication speciesLocation="n2"></duplication>
+            </eventsRec>
+            <clade>
+              <name>m9</name>
+              <eventsRec>
+              <speciation speciesLocation="n2"></speciation>
+              </eventsRec>
+              <clade>
+                <name>Cyc_GS1b</name>
+                <eventsRec>
+                <leaf speciesLocation="Cyc"></leaf>
+                </eventsRec>
+              </clade>
+              <clade>
+                <name>INS_m9</name>
+                <eventsRec>
+                <speciation speciesLocation="n4"></speciation>
+                </eventsRec>
+                <clade>
+                  <name>INS_m9</name>
+                  <eventsRec>
+                  <speciation speciesLocation="n3"></speciation>
+                  </eventsRec>
+                  <clade>
+                    <name>Ap_GS1b</name>
+                    <eventsRec>
+                    <leaf speciesLocation="Ap"></leaf>
+                    </eventsRec>
+                  </clade>
+                  <clade>
+                    <name>LOSS</name>
+                    <eventsRec>
+                    <loss speciesLocation="Eph"></loss>
+                    </eventsRec>
+                  </clade>
+                </clade>
+                <clade>
+                  <name>LOSS</name>
+                  <eventsRec>
+                  <loss speciesLocation="Tba"></loss>
+                  </eventsRec>
+                </clade>
+              </clade>
+            </clade>
+            <clade>
+              <name>INS_m8</name>
+              <eventsRec>
+              <speciation speciesLocation="n4"></speciation>
+              </eventsRec>
+              <clade>
+                <name>INS_m8</name>
+                <eventsRec>
+                <speciation speciesLocation="n3"></speciation>
+                </eventsRec>
+                <clade>
+                  <name>INS_m8</name>
+                  <eventsRec>
+                  <speciation speciesLocation="n2"></speciation>
+                  </eventsRec>
+                  <clade>
+                    <name>Tba_GS1b</name>
+                    <eventsRec>
+                    <leaf speciesLocation="Tba"></leaf>
+                    </eventsRec>
+                  </clade>
+                  <clade>
+                    <name>LOSS</name>
+                    <eventsRec>
+                    <loss speciesLocation="Cyc"></loss>
+                    </eventsRec>
+                  </clade>
+                </clade>
+                <clade>
+                  <name>LOSS</name>
+                  <eventsRec>
+                  <loss speciesLocation="Eph"></loss>
+                  </eventsRec>
+                </clade>
+              </clade>
+              <clade>
+                <name>LOSS</name>
+                <eventsRec>
+                <loss speciesLocation="Ap"></loss>
+                </eventsRec>
+              </clade>
+            </clade>
+          </clade>
+          <clade>
+            <name>INS_m4</name>
+            <eventsRec>
+            <speciation speciesLocation="n3"></speciation>
+            </eventsRec>
+            <clade>
+              <name>INS_m4</name>
+              <eventsRec>
+              <speciation speciesLocation="n2"></speciation>
+              </eventsRec>
+              <clade>
+                <name>m5</name>
+                <eventsRec>
+                <duplication speciesLocation="Eph"></duplication>
+                </eventsRec>
+                <clade>
+                  <name>Eph_GS1bx</name>
+                  <eventsRec>
+                  <leaf speciesLocation="Eph"></leaf>
+                  </eventsRec>
+                </clade>
+                <clade>
+                  <name>Eph_GS1by</name>
+                  <eventsRec>
+                  <leaf speciesLocation="Eph"></leaf>
+                  </eventsRec>
+                </clade>
+              </clade>
+              <clade>
+                <name>LOSS</name>
+                <eventsRec>
+                <loss speciesLocation="Cyc"></loss>
+                </eventsRec>
+              </clade>
+            </clade>
+            <clade>
+              <name>LOSS</name>
+              <eventsRec>
+              <loss speciesLocation="n4"></loss>
+              </eventsRec>
+            </clade>
+          </clade>
+        </clade>
+        <clade>
+          <name>m13</name>
+          <eventsRec>
+          <duplication speciesLocation="n5"></duplication>
+          </eventsRec>
+          <clade>
+            <name>m14</name>
+            <eventsRec>
+            <duplication speciesLocation="n5"></duplication>
+            </eventsRec>
+            <clade>
+              <name>m15</name>
+              <eventsRec>
+              <speciation speciesLocation="n5"></speciation>
+              </eventsRec>
+              <clade>
+                <name>m16</name>
+                <eventsRec>
+                <duplication speciesLocation="Zm"></duplication>
+                </eventsRec>
+                <clade>
+                  <name>Zm_GS1b_3</name>
+                  <eventsRec>
+                  <leaf speciesLocation="Zm"></leaf>
+                  </eventsRec>
+                </clade>
+                <clade>
+                  <name>Zm_GS1b_4</name>
+                  <eventsRec>
+                  <leaf speciesLocation="Zm"></leaf>
+                  </eventsRec>
+                </clade>
+              </clade>
+              <clade>
+                <name>Atr_GS1b_2</name>
+                <eventsRec>
+                <leaf speciesLocation="Atr"></leaf>
+                </eventsRec>
+              </clade>
+            </clade>
+            <clade>
+              <name>INS_m14</name>
+              <eventsRec>
+              <speciation speciesLocation="n5"></speciation>
+              </eventsRec>
+              <clade>
+                <name>Atr_GS1b_1</name>
+                <eventsRec>
+                <leaf speciesLocation="Atr"></leaf>
+                </eventsRec>
+              </clade>
+              <clade>
+                <name>LOSS</name>
+                <eventsRec>
+                <loss speciesLocation="Zm"></loss>
+                </eventsRec>
+              </clade>
+            </clade>
+          </clade>
+          <clade>
+            <name>INS_m13</name>
+            <eventsRec>
+            <speciation speciesLocation="n5"></speciation>
+            </eventsRec>
+            <clade>
+              <name>m21</name>
+              <eventsRec>
+              <duplication speciesLocation="Zm"></duplication>
+              </eventsRec>
+              <clade>
+                <name>m22</name>
+                <eventsRec>
+                <duplication speciesLocation="Zm"></duplication>
+                </eventsRec>
+                <clade>
+                  <name>Zm_GS1b_1</name>
+                  <eventsRec>
+                  <leaf speciesLocation="Zm"></leaf>
+                  </eventsRec>
+                </clade>
+                <clade>
+                  <name>Zm_GS1b_5</name>
+                  <eventsRec>
+                  <leaf speciesLocation="Zm"></leaf>
+                  </eventsRec>
+                </clade>
+              </clade>
+              <clade>
+                <name>Zm_GS1b_2</name>
+                <eventsRec>
+                <leaf speciesLocation="Zm"></leaf>
+                </eventsRec>
+              </clade>
+            </clade>
+            <clade>
+              <name>LOSS</name>
+              <eventsRec>
+              <loss speciesLocation="Atr"></loss>
+              </eventsRec>
+            </clade>
+          </clade>
+        </clade>
+      </clade>
+      <clade>
+        <name>m26</name>
+        <eventsRec>
+        <speciation speciesLocation="n1"></speciation>
+        </eventsRec>
+        <clade>
+          <name>m27</name>
+          <eventsRec>
+          <speciation speciesLocation="n2"></speciation>
+          </eventsRec>
+          <clade>
+            <name>m28</name>
+            <eventsRec>
+            <speciation speciesLocation="n3"></speciation>
+            </eventsRec>
+            <clade>
+              <name>m29</name>
+              <eventsRec>
+              <speciation speciesLocation="n4"></speciation>
+              </eventsRec>
+              <clade>
+                <name>Tba_GS1a</name>
+                <eventsRec>
+                <leaf speciesLocation="Tba"></leaf>
+                </eventsRec>
+              </clade>
+              <clade>
+                <name>Ap_GS1a</name>
+                <eventsRec>
+                <leaf speciesLocation="Ap"></leaf>
+                </eventsRec>
+              </clade>
+            </clade>
+            <clade>
+              <name>Eph_GS1a</name>
+              <eventsRec>
+              <leaf speciesLocation="Eph"></leaf>
+              </eventsRec>
+            </clade>
+          </clade>
+          <clade>
+            <name>Cyc_GS1a</name>
+            <eventsRec>
+            <leaf speciesLocation="Cyc"></leaf>
+            </eventsRec>
+          </clade>
+        </clade>
+        <clade>
+          <name>INS_m26</name>
+          <eventsRec>
+          <speciation speciesLocation="n5"></speciation>
+          </eventsRec>
+          <clade>
+            <name>Atr_GS1a</name>
+            <eventsRec>
+            <leaf speciesLocation="Atr"></leaf>
+            </eventsRec>
+          </clade>
+          <clade>
+            <name>LOSS</name>
+            <eventsRec>
+            <loss speciesLocation="Zm"></loss>
+            </eventsRec>
+          </clade>
+        </clade>
+      </clade>
+    </clade>
+    <clade>
+      <name>m35</name>
+      <eventsRec>
+      <speciation speciesLocation="n1"></speciation>
+      </eventsRec>
+      <clade>
+        <name>m36</name>
+        <eventsRec>
+        <speciation speciesLocation="n5"></speciation>
+        </eventsRec>
+        <clade>
+          <name>Atr_GS2</name>
+          <eventsRec>
+          <leaf speciesLocation="Atr"></leaf>
+          </eventsRec>
+        </clade>
+        <clade>
+          <name>Zm_GS2</name>
+          <eventsRec>
+          <leaf speciesLocation="Zm"></leaf>
+          </eventsRec>
+        </clade>
+      </clade>
+      <clade>
+        <name>INS_m35</name>
+        <eventsRec>
+        <speciation speciesLocation="n2"></speciation>
+        </eventsRec>
+        <clade>
+          <name>Cyc_GS2</name>
+          <eventsRec>
+          <leaf speciesLocation="Cyc"></leaf>
+          </eventsRec>
+        </clade>
+        <clade>
+          <name>LOSS</name>
+          <eventsRec>
+          <loss speciesLocation="n3"></loss>
+          </eventsRec>
+        </clade>
+      </clade>
+    </clade>
+  </clade>
+</phylogeny>
+</recGeneTree>
+</recPhylo>
