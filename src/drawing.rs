@@ -530,6 +530,21 @@ pub fn draw_sptree_gntrees (
         // Cas de la coloration par noeuds: on modifie l'index de couleur des descendants de chaque
         // noeud dans options.node_colors
         if options.node_colors.len() > 0 {
+
+            // On definit la couleur des font pour le style node_0 
+            // Style de la font pour la partie de l'arbre
+            let mut font_color  = get_default_color(0);
+            // Cas ou on utilise les couleurs definies par l'utilisateur
+            if options.gene_colors.len() > 0 {
+                font_color = options.gene_colors[0].clone();
+            }
+            let added_style = " .node_0".to_owned()
+            + " { font-size: " + &config.gene_police_size.to_string() + "px; fill:"
+            + &font_color.to_string() + "; } ";
+            // Je passe en str pour l'ajouter
+            let add_style_str :&str = &added_style;
+            recphylostyle.push_str(add_style_str);
+
         	let mut node_color_idx = 1; // Les autres restent a 0
         	// Traite tous les noeuds a colorer
         	for node_color in  &options.node_colors {
