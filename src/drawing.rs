@@ -1233,9 +1233,7 @@ pub fn close_chemin_sp (
 }
 /// Set to idx the color_node_idx field of the children of root in gene_tree
 pub fn set_color_index(gene_tree: &mut ArenaTree<String>, root :usize, idx : usize){
-	println!("Color index = {}",gene_tree.arena[root].color_node_idx);
 	gene_tree.arena[root].color_node_idx = idx;
-	println!("Color index = {}",gene_tree.arena[root].color_node_idx);
 	let children = &gene_tree.arena[root].children;
 	if children.len() > 0 {
             let left = children[0];
