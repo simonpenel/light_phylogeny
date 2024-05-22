@@ -866,7 +866,14 @@ pub fn draw_sptree_gntrees (
                             let mut element = Element::new("text");
                             element.assign("x", index.x+10.0);
                             element.assign("y", index.y+0.0);
-                            element.assign("class", "gene_".to_owned() + &idx_rcgen.to_string());
+                            if options.node_colors.len() > 0 { 
+                            // Mode coloration par noeud
+                                element.assign("class", "node_".to_owned() + &index.color_node_idx.to_string());
+                            }
+                            else { 
+                                // Mode coloration par gene
+                                element.assign("class", "gene_".to_owned() + &idx_rcgen.to_string());
+                            } 
                             let txt  = Text::new(&index.name);
                             element.append(txt);
                             element.assign("transform","rotate(90 ".to_owned()
