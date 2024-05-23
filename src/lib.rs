@@ -79,6 +79,9 @@ pub use self::drawing::get_longest_name;
 pub use self::drawing::get_longest_name_mul;
 pub use self::drawing::get_longest_x_mul;
 pub use self::drawing::get_triangle;
+pub use self::drawing::set_color_index;
+pub use self::drawing::get_default_color;
+pub use self::drawing::get_half_circle;
 
 mod building;
 pub use self::building::phyloxml_processing;
