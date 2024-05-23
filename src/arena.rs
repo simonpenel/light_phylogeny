@@ -442,7 +442,9 @@ pub struct Options{
     /// user-defined list of colors for genes
     pub gene_colors: Vec<String>,
     /// user-defined list of nodes for genes. Children of nodes will be colorised 
-    pub node_colors: Vec<String>
+    pub node_colors: Vec<String>,
+    /// svg background color
+    pub bckg_color: String
 }
 impl Options {
     pub fn new() -> Self {
@@ -481,6 +483,7 @@ impl Options {
             mid_dist:false,
             gene_colors: Vec::new(),
             node_colors: Vec::new(),
+            bckg_color: "White".to_string(),
         }
     }
 }

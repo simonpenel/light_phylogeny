@@ -59,7 +59,8 @@ pub fn draw_tree (
                     y_viewbox,
                     height_svg + 2.0 *BLOCK,
                     width_svg + 2.0 *BLOCK,
-                )),
+                ))
+                .set("style","background-color:".to_owned() + &options.bckg_color),
         false => Document::new()
                 .set("width", width_svg)
                 .set("height", height_svg)
@@ -68,7 +69,8 @@ pub fn draw_tree (
                     y_viewbox,
                     width_svg + 2.0 *BLOCK,
                     height_svg + 2.0 *BLOCK,
-                )),
+                ))
+                .set("style","background-color:".to_owned() + &options.bckg_color),
     };
     let style = Style::new(".gene { font-size: ".to_owned()
         + &config.gene_police_size.to_string() + "px; fill:"
@@ -350,7 +352,8 @@ pub fn draw_sptree_gntrees (
                     height_svg * 1.1 + 2.0 * BLOCK,
                     width_svg + 2.0 * BLOCK,
                     )
-                ),
+                )
+                .set("style","background-color:".to_owned() + &options.bckg_color),
         false => Document::new()
                 .set("width",width_svg)
                 .set("height",height_svg)
@@ -360,8 +363,10 @@ pub fn draw_sptree_gntrees (
                     width_svg + 0.5 *BLOCK,
                     height_svg *1.1 + 0.5 *BLOCK,
                     )
-                ),
+                )
+               .set("style","background-color:".to_owned() + &options.bckg_color),
     };
+
     // Initialse la chaine de carctere dediee aux styles des fonts : font pour l'espece
     let mut recphylostyle:String = ".species { font: italic ".to_owned() + "; font-size: "
         + &config.species_police_size.to_string() + "px; fill: "
@@ -926,6 +931,10 @@ pub fn draw_sptree_gntrees (
         let add_style_str :&str = &added_style;
         recphylostyle.push_str(add_style_str);
     }
+
+
+
+
     // Ajout le style
     let style = Style::new(recphylostyle);
     document.append(style);
