@@ -1057,7 +1057,7 @@ pub fn get_carre (x: f32, y:f32, s:f32, c:String, o:String) -> Path {
         .set("d", data);
     path
 }
-/// Draw a triangle of size s at x,y.
+/// Draw a half circle of size s at x,y.
 pub fn get_half_circle (x: f32, y:f32, s:f32, c:String, o:String) -> Path {
     let data = Data::new()
         .move_to((x*1.0 -1.0 *s , y*1.0 - 0.0*s  ))
