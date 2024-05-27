@@ -2,12 +2,15 @@
 
 use light_phylogeny::{ArenaTree,Options,Config,read_recphyloxml_multi,recphyloxml_processing,
     get_gtransfer};
+use std::env;
 
 fn main() {
-
+	env::set_var("RUST_LOG", "info");
     let transfers = vec![];
     let mut options: Options = Options::new();
     let mut config: Config = Config::new();
+	options.verbose = true; 
+	env::set_var("RUST_LOG", "info");
 
     config.species_opacity = "0.3".to_string();
     config.gene_opacity = "0.6".to_string();

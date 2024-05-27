@@ -3,7 +3,7 @@
 /// authors = ["Simon Penel <simon.penel@univ-lyon1.fr>"]
 /// license = "CECILL-2.1"
 use std::process;
-use log::{info};
+use log::{info,debug};
 pub const BLOCK: f32 = 60.0;
 pub const PIPEBLOCK: f32 = BLOCK / 4.0;
 
@@ -317,9 +317,9 @@ where
     pub fn shift_x_subtree(&mut self, idx: usize, shift: f32) {
         let mut x = self.arena[idx].x;
         x = x + shift;
-        info!("[shift_x_subtree] shifting node {} ({}) of {}",&self.arena[idx].name,&self.arena[idx].x,shift);
+        debug!("[shift_x_subtree] shifting node {} ({}) of {}",&self.arena[idx].name,&self.arena[idx].x,shift);
         let _ = &self.arena[idx].set_x_noref(x);
-        info!("[shift_x_subtree] new value     {} ({})",&self.arena[idx].name,&self.arena[idx].x);
+        debug!("[shift_x_subtree] new value     {} ({})",&self.arena[idx].name,&self.arena[idx].x);
         let children = &self.arena[idx].children;
         if children.len() > 0 {
             let left = children[0];
@@ -1336,7 +1336,7 @@ pub fn move_dupli_mappings(
     options: &Options,
     ) {
     for (index_node, node) in &sp_tree.arena[index].nodes {
-        info!("[move_dupli_mappings] >>> {:?} {:?}",
+        debug!("[move_dupli_mappings] >>> {:?} {:?}",
             gene_trees[*index_node].arena[*node].name, gene_trees[*index_node].arena[*node].e);
         match  gene_trees[*index_node].arena[*node].e {
             Event::Duplication => {
@@ -1403,7 +1403,7 @@ pub fn move_species_mappings(
     index: usize,
     ) {
     for (index_node, node) in &sp_tree.arena[index].nodes {
-        info!("[move_species_mappings] >>> {:?} {:?}",
+        debug!("[move_species_mappings] >>> {:?} {:?}",
             gene_trees[*index_node].arena[*node].name,gene_trees[*index_node].arena[*node].e);
         match  gene_trees[*index_node].arena[*node].e {
             Event::Speciation => {
@@ -1611,7 +1611,7 @@ pub fn center_gene_nodes(
     let mut down_gene = -100000000.0;
     let mut up_gene = 100000000.0;
     for (index_node, node) in &sp_tree.arena[index].nodes {
-        info!("[center_gene_nodes] >>> {:?} {:?}",
+        debug!("[center_gene_nodes] >>> {:?} {:?}",
             gene_trees[*index_node].arena[*node].name, gene_trees[*index_node].arena[*node].e);
         if  gene_trees[*index_node].arena[*node].x > left_gene {
             left_gene = gene_trees[*index_node].arena[*node].x;
@@ -1835,7 +1835,7 @@ pub fn shift_nodes_y_values(tree: &mut ArenaTree<String>, index: usize, y:  f32)
 }
 /// Shift the  x y values  of a node and its children according to the cumulated xmod ymod values.
 pub fn shift_mod_xy(tree: &mut ArenaTree<String>, index: usize, xmod: &mut f32, ymod: &mut f32) {
-    info!("[shift_mod_xy] shifting {:?} xmod={} ymod={}", tree.arena[index], xmod, ymod);
+    debug!("[shift_mod_xy] shifting {:?} xmod={} ymod={}", tree.arena[index], xmod, ymod);
     let x_father = tree.arena[index].x;
     let xmod_father = tree.arena[index].xmod;
     let mut xmod = *xmod + xmod_father;
@@ -1902,7 +1902,7 @@ pub fn  check_vertical_contour_postorder(tree: &mut ArenaTree<String>, index: us
     if children.len() > 0 {
         let left = children[0];
         let right = children[1];
-        info!("[check_vertical_contour_postorder] Father = {} (ymod = {} ) , Left = {}, Right = {}",
+        debug!("[check_vertical_contour_postorder] Father = {} (ymod = {} ) , Left = {}, Right = {}",
             tree.arena[index].name, tree.arena[index].ymod, tree.arena[left].name,
             tree.arena[right].name);
         push_down(tree, index, left, right);
@@ -1929,11 +1929,11 @@ pub fn push_down (tree: &mut ArenaTree<String>, parent: usize, left: usize, righ
         }
         // TODO configurable
         let shift_down = shift_down + 4.0 * PIPEBLOCK;
-        info!("[push_down] CONFLIT AT SPEC NODE {}: parent y = {} ymod = {} down = {} left up = {} right up = {} => shift = {}",
+        debug!("[push_down] CONFLIT AT SPEC NODE {}: parent y = {} ymod = {} down = {} left up = {} right up = {} => shift = {}",
             tree.arena[parent].name, tree.arena[parent].y, tree.arena[parent].ymod,
             node_parent_down_pos, node_left_up_pos, node_right_up_pos, shift_down);
-        info!("[push_down] SHIFTING Y {} + 1xPIPEBLOCK = {}", shift_down, shift_down + 1.0 * PIPEBLOCK);
-        info!("Initial left : y = {}, ymod = {}", tree.arena[left].y, tree.arena[left].ymod);
+        debug!("[push_down] SHIFTING Y {} + 1xPIPEBLOCK = {}", shift_down, shift_down + 1.0 * PIPEBLOCK);
+        debug!("Initial left : y = {}, ymod = {}", tree.arena[left].y, tree.arena[left].ymod);
         let y = tree.arena[left].y;
         let y = y + shift_down ;
         tree.arena[left].set_y_noref(y);
@@ -1995,7 +1995,7 @@ pub fn  get_contour_left(
     contour_left: &mut Vec<f32>,
     parent_xmod: f32,
     )  {
-    info!("[get_contour_left] >>> {:?}",tree.arena[index]);
+    debug!("[get_contour_left] >>> {:?}",tree.arena[index]);
     let local_depth = tree.depth(index) - depth; // Profondeur du noeud pa rapport a noeud de depart
     let node_left_pos = node_xpos(tree, index, parent_xmod, -1);
     if contour_left.len() <= local_depth {
@@ -2003,14 +2003,14 @@ pub fn  get_contour_left(
             panic!("Error: negative xmod.");
         }
         contour_left.push(node_left_pos);
-        info!("[get_contour_left] increment contour is now {:?}",contour_left);
+        debug!("[get_contour_left] increment contour is now {:?}",contour_left);
     }
     if tree.arena[index].xmod < 0.0 {
         panic!("Error: negative  xmod.");
     }
     if node_left_pos <= contour_left[local_depth] {
         contour_left[local_depth] = node_left_pos;
-        info!("[get_contour_left]: contour is now {:?}",contour_left);
+       	debug!("[get_contour_left]: contour is now {:?}",contour_left);
     }
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
@@ -2026,7 +2026,7 @@ pub fn  get_contour_right(
     contour_right: &mut Vec<f32>,
     parent_xmod: f32,
     )  {
-    info!("[get_contour_right] process node {:?}",tree.arena[index]);
+    debug!("[get_contour_right] process node {:?}",tree.arena[index]);
     let local_depth = tree.depth(index) - depth; // Profondeur du noeud pa rapport a noeud de depart
     let node_right_pos = node_xpos(tree, index, parent_xmod, 1);
     if contour_right.len() <= local_depth {
@@ -2034,14 +2034,14 @@ pub fn  get_contour_right(
             panic!("Error: negative xmod");
         }
         contour_right.push(node_right_pos);
-            info!("[get_contour_right] increment contour is now {:?}",contour_right);
+            debug!("[get_contour_right] increment contour is now {:?}",contour_right);
     }
     if tree.arena[index].xmod < 0.0 {
         panic!("Error: negative xmod");
     }
     if node_right_pos >= contour_right[local_depth] {
         contour_right[local_depth] = node_right_pos ;
-            info!("[get_contour_right] contour is now {:?}",contour_right);
+            debug!("[get_contour_right] contour is now {:?}",contour_right);
     }
     let children  = &mut tree.arena[index].children;
     if children.len() > 0 {
@@ -2130,17 +2130,17 @@ pub fn  get_contour_tidy_left(
 /// Check for conficts between subtrees and shift conflicting right-hand subtrees to the right
 /// in order to solve detected conflicts.
 pub fn  push_right(tree: &mut ArenaTree<String>, left_tree: usize, right_tree: usize) -> f32 {
-    info!("[push_right] compare right contour of {} and left contour of {}", left_tree, right_tree);
+    debug!("[push_right] compare right contour of {} and left contour of {}", left_tree, right_tree);
     let mut right_co_of_left_tr  = vec![tree.arena[left_tree].x
         + tree.arena[left_tree].xmod + tree.arena[left_tree].nbg as f32 *PIPEBLOCK];
     let depth_left_tr  = tree.depth(left_tree);
     get_contour_right(tree, left_tree, depth_left_tr, &mut right_co_of_left_tr, 0.0);
-    info!("[push_right] right contour of {} = {:?}", left_tree, right_co_of_left_tr);
+    debug!("[push_right] right contour of {} = {:?}", left_tree, right_co_of_left_tr);
     let mut left_co_of_right_tr  = vec![tree.arena[right_tree].x
         + tree.arena[right_tree].xmod - tree.arena[right_tree].nbg as f32 *PIPEBLOCK];
     let depth_right_tr  = tree.depth(right_tree);
     get_contour_left(tree, right_tree, depth_right_tr, &mut left_co_of_right_tr, 0.0);
-    info!("[push_right] left contour of {} = {:?}", right_tree, left_co_of_right_tr);
+    debug!("[push_right] left contour of {} = {:?}", right_tree, left_co_of_right_tr);
     // Si on   a pas le meme longeur de contour on complete le plus petit
     // en remplissant ce qui manque avec la derniere valeur, pour eviter
     // qu'un sous arbre vosin se place sous une feuille
@@ -2150,32 +2150,32 @@ pub fn  push_right(tree: &mut ArenaTree<String>, left_tree: usize, right_tree: u
         let last_val =  right_co_of_left_tr[right_len-1];
         let last_vals =  vec![last_val;left_len-right_len];
         right_co_of_left_tr.extend(last_vals.iter().copied());
-        info!("[push_right] complete right contour with last value {}",last_val);
+        debug!("[push_right] complete right contour with last value {}",last_val);
     }
     if left_len < right_len {
         let last_val =  left_co_of_right_tr[left_len-1];
         let last_vals =  vec![last_val;right_len - left_len];
         left_co_of_right_tr.extend(last_vals.iter().copied());
-        info!("[push_right] complete left contour with last value {}",last_val);
+        debug!("[push_right] complete left contour with last value {}",last_val);
     }
-    info!("[push_right] comparing  right cont. of left tree: {:?}",right_co_of_left_tr);
-    info!("[push_right] with left cont. of right tree:       {:?} ",left_co_of_right_tr);
+    debug!("[push_right] comparing  right cont. of left tree: {:?}",right_co_of_left_tr);
+    debug!("[push_right] with left cont. of right tree:       {:?} ",left_co_of_right_tr);
     let iter = left_co_of_right_tr.iter().zip(right_co_of_left_tr).map(|(x, y )| (x-y));
     let shift = iter.min_by(|x, y| (*x as i64) .cmp(&(*y as i64 )));
-    info!("[push_right] distance max  = {:?}",shift);
+    debug!("[push_right] distance max  = {:?}",shift);
     match shift {
         Some(val) => {
-            info!("[push_right] distance max  = {:?}",shift);
+            debug!("[push_right] distance max  = {:?}",shift);
             if val <= 0.0 {// bidouilel
-                info!("[push_right] ================CONFLIT==========");
-                info!("[push_right] Modify node {:?}",tree.arena[right_tree]);
+                debug!("[push_right] ================CONFLIT==========");
+                debug!("[push_right] Modify node {:?}",tree.arena[right_tree]);
                 let x_mod =  tree.arena[right_tree].xmod;
-                info!("[push_right] initial x_mod = {}",x_mod);
+                debug!("[push_right] initial x_mod = {}",x_mod);
                 let x_mod =  x_mod -1.0 *val + BLOCK ;//bidouille
-                info!("[push_right] new x_mod = {}",x_mod);
+                debug!("[push_right] new x_mod = {}",x_mod);
                 tree.arena[right_tree].set_xmod_noref(x_mod);
-                info!("[push_right] updated node {:?}",tree.arena[right_tree]);
-                info!("[push_right] ================CONFLIT==========");
+                debug!("[push_right] updated node {:?}",tree.arena[right_tree]);
+                debug!("[push_right] ================CONFLIT==========");
             }
         },
         None => {}
@@ -2192,28 +2192,28 @@ pub fn  dmin_tidy(
     )  {
     let max_left = cont_left.len();
     let max_right = cont_right.len();
-    info!("[dmin_tidy] dmin {}",dmin);
-    info!("[dmin_tidy] left  contour {}{:?}", index_left, cont_left);
-    info!("[dmin_tidy] right contour {}{:?}", index_right, cont_right);
-    info!("[dmin_tidy] Compare x value of  right {} and  left  {}",
+    debug!("[dmin_tidy] dmin {}",dmin);
+    debug!("[dmin_tidy] left  contour {}{:?}", index_left, cont_left);
+    debug!("[dmin_tidy] right contour {}{:?}", index_right, cont_right);
+    debug!("[dmin_tidy] Compare x value of  right {} and  left  {}",
         cont_left[*index_left].2, cont_right[*index_right].2,);
     let d = cont_right[*index_right].0 - cont_left[*index_left].0;
     if d < *dmin {
         *dmin = d;
-        info!("[dmin_tidy] new dmin = {} ",dmin);
+        debug!("[dmin_tidy] new dmin = {} ",dmin);
     }
-    info!("[dmin_tidy] Compare y value of  right {} {} and  left  {} {}",
+    debug!("[dmin_tidy] Compare y value of  right {} {} and  left  {} {}",
         cont_left[*index_left].2, cont_left[*index_left].1, cont_right[*index_right].2,
         cont_right[*index_right].1);
     if cont_right[*index_right].1 <= cont_left[*index_left].1 {
-        info!("[dmin_tidy] increment right");
+        debug!("[dmin_tidy] increment right");
         *index_right = *index_right + 1;
         if *index_right < max_right {
             dmin_tidy(cont_left, cont_right, dmin, index_left, index_right);
         }
     }
     else  {
-        info!("[dmin_tidy] increment left");
+        debug!("[dmin_tidy] increment left");
         *index_left = *index_left + 1;
         if *index_left < max_left {
             dmin_tidy(cont_left, cont_right, dmin, index_left, index_right);
@@ -2229,8 +2229,8 @@ pub fn  push_right_tidy_tree(
     options: &Options,
     config: &Config
     ) {
-    info!("[push_right_tidy_tree]");
-    info!("[push_right_tidy_tree] Compare right contour of {} {} and left contour of {} {}",
+    debug!("[push_right_tidy_tree]");
+    debug!("[push_right_tidy_tree] Compare right contour of {} {} and left contour of {} {}",
         tree.arena[left_tree].val, tree.arena[left_tree].name, tree.arena[right_tree].val,
         tree.arena[right_tree].name);
     let mut  right_co_of_left_tr:std::vec::Vec<(f32,f32,String)> = Vec::new();
@@ -2244,7 +2244,7 @@ pub fn  push_right_tidy_tree(
         options,
         config,
     );
-    info!("[push_right_tidy_tree] Contour right = {:?}",right_co_of_left_tr);
+    debug!("[push_right_tidy_tree] Contour right = {:?}",right_co_of_left_tr);
     let mut  left_co_of_right_tr:std::vec::Vec<(f32,f32,String)> = Vec::new();
     let depth_right_tr  = tree.depth(right_tree);
     get_contour_tidy_left(
@@ -2256,18 +2256,18 @@ pub fn  push_right_tidy_tree(
         options,
         config
     );
-    info!("[push_right_tidy_tree] Contour left = {:?}",left_co_of_right_tr);
+    debug!("[push_right_tidy_tree] Contour left = {:?}",left_co_of_right_tr);
     let mut dmin = 1000000.0;
     dmin_tidy(right_co_of_left_tr, left_co_of_right_tr, &mut dmin, &mut 0, &mut 0);
-    info!("[push_right_tidy_tree] DMIN = {:?} [max = {}]", dmin, PIPEBLOCK);
+    debug!("[push_right_tidy_tree] DMIN = {:?} [max = {}]", dmin, PIPEBLOCK);
     if dmin > BLOCK * 0.50 {
-        info!("[push_right_tidy_tree] SHIFTING SUBTREE  {:?} {:?}",
+        debug!("[push_right_tidy_tree] SHIFTING SUBTREE  {:?} {:?}",
             tree.arena[left_tree].val, tree.arena[left_tree].name);
         tree.shift_x_subtree(left_tree, dmin - BLOCK * 0.50  );
         set_middle_postorder(tree, 0);
     }
     else {
-        info!("[push_right_tidy_tree] NOT SHIFTING ");
+        debug!("[push_right_tidy_tree] NOT SHIFTING ");
     }
 }
 /// Set the x of the father between its children.
@@ -2278,12 +2278,12 @@ pub fn set_middle_postorder(tree: &mut ArenaTree<String>, index: usize) {
         let right = children[1];
         set_middle_postorder(tree, left);
         set_middle_postorder(tree, right);
-        info!("[set_middle_postorder] node {:?}",index);
+        debug!("[set_middle_postorder] node {:?}",index);
         let x_left = tree.arena[left].x;
         let x_right = tree.arena[right].x;
         let x = tree.arena[index].x;
         let x_middle = ( x_right + x_left ) / 2.0 ;
-        info!("[set_middle_postorder] x father set from {} to {}", x, x_middle);
+        debug!("[set_middle_postorder] x father set from {} to {}", x, x_middle);
         tree.arena[index].set_x_noref(x_middle);
         let x_mod =  tree.arena[right].xmod;
         let x_mod =  x_mod + x_middle - x;
