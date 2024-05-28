@@ -406,7 +406,7 @@ pub fn recphyloxml_processing(
         species_uniformisation(&mut sp_tree);
         let min_dist = sp_tree.get_smallest_l();
         if min_dist == 0.0 {
-            eprintln!("\nERROR:\nFound a branch with a distance equal to 0.0 in the 'pipe' tree.");
+            eprintln!("\nERROR:\nFound a branch with a distance equal to 0.0 in the species (or 'upper') tree.");
             eprintln!("It is not possible create an 'upper' tree presenting branches of zero length.");
             std::process::exit(1);
         }
