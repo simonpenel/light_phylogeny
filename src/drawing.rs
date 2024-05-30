@@ -37,7 +37,7 @@ pub fn draw_tree (
     config: &Config,              // svg config
     ) {
     info!("[draw_tree] Drawing tree...");
-    let gene_color = & config.single_gene_color;
+    let mut gene_color = config.single_gene_color.clone();
     let largest_x = tree.get_largest_x() * 1.0 + 0.0 ;
     let largest_y = tree.get_largest_y() * 1.0 + 0.0 ;
     let smallest_x = tree.get_smallest_x() * 1.0 + 0.0 ;
@@ -78,8 +78,90 @@ pub fn draw_tree (
         + &config.gene_police_size.to_string() + "px; fill: red; } .branch { font-size: "
         + &config.gene_police_size.to_string() + "px; fill: black; }" );
     document.append(style);
+
+    let mut phylostyle:String = Default::default() ;
+
+    // Cas ou il y a des couleurs definies par l'utilsateur: ajout de styles pour la police
+    if options.gene_colors.len() > 0 {
+        // On definit le style gene_O qu'on associe a la premiere couleur
+        let font_color = options.gene_colors[0].clone();
+        let added_style = " .gene_0".to_owned()
+            + " { font-size: " + &config.gene_police_size.to_string() + "px; fill:"
+            + &font_color.to_string() + "; } ";
+            // Je passe en str pour l'ajouter
+            let add_style_str :&str = &added_style;
+            phylostyle.push_str(add_style_str);
+    }
+
+    // Cas ou il y a des noeuds a colorer: ajout de styles pour la police
+    if options.node_colors.len() > 0 {
+        // On definit la couleur des font pour le style node_0 
+        // Style de la font pour la partie de l'arbre non selectionnee
+        let mut font_color  = get_default_color(0);
+        // Cas ou on utilise les couleurs definies par l'utilisateur
+        if options.gene_colors.len() > 0 {
+            font_color = options.gene_colors[0].clone();
+        }
+        let added_style = " .node_0".to_owned()
+            + " { font-size: " + &config.gene_police_size.to_string() + "px; fill:"
+            + &font_color.to_string() + "; } ";
+        // Je passe en str pour l'ajouter
+        let add_style_str :&str = &added_style;
+        phylostyle.push_str(add_style_str);
+
+        let mut node_color_idx = 1; // Les autres restent a 0
+        // Traite tous les noeuds a colorer
+        for node_color in  &options.node_colors {
+            // Recupere le noeud dans l'arbre
+            let node_colored = tree.get_index(node_color.to_string());
+            match node_colored {
+                Ok(n) => {
+                    // On definit la couleur des font pour le style
+                    // Style de la font pour la partie de l'arbre
+                    let mut font_color  = get_default_color(node_color_idx);
+                    // Cas ou on utilise les couleurs definies par l'utilisateur
+                    if options.gene_colors.len() > 0 {
+                        let _idx_user_color = node_color_idx % options.gene_colors.len();
+                        font_color = options.gene_colors[_idx_user_color].clone();
+                    }
+                    let added_style = " .node_".to_owned() + &node_color_idx.to_string()
+                        + " { font-size: " + &config.gene_police_size.to_string() + "px; fill:"
+                        + &font_color.to_string() + "; } ";
+                        // Je passe en str pour l'ajouter
+                        let add_style_str :&str = &added_style;
+                        phylostyle.push_str(add_style_str);
+                        // Modifie la valeur de l'index de couleur dans tous les fils du noeud
+                        set_color_index(tree,n,node_color_idx);
+                },
+                Err(_e) =>{
+                        println!("Warning Node {} not found in the gene tree",node_color)
+                },
+            }
+            node_color_idx += 1;
+        }
+    }
+    // Ajout du style
+    let style = Style::new(phylostyle);
+    document.append(style);
+
+    // Cas ou l'utilisateur a defini des couleur. Le gene unique a la premiere couleur
+    if options.gene_colors.len() > 0 {  
+        gene_color = options.gene_colors[0].clone();
+    }
     let mut g = Element::new("g");
     for  index in &tree.arena {
+        // Cas ou il y a une coloration par noeud
+        if options.node_colors.len() > 0 {
+            // Utilisation des couleurs definies par l'utilsateur
+            if options.gene_colors.len() > 0 {
+                let _idx_user_color =  index.color_node_idx % options.gene_colors.len();
+                gene_color = options.gene_colors[_idx_user_color].clone();
+            }
+            else {
+                // Utilisation des couleurs par défaut (sans modulation aleatoire)
+                gene_color  = get_default_color(index.color_node_idx);
+            }
+        }
         let _parent =  match index.parent {
             Some(p) => {
                 let n = &tree.arena[p];
@@ -202,7 +284,21 @@ pub fn draw_tree (
             let mut element = Element::new("text");
             element.assign("x", index.x - 5.0);
             element.assign("y", index.y + 10.0);
-            element.assign("class", "gene");
+            // Mode coloration par noeud
+            if options.node_colors.len() > 0 { 
+                element.assign("class", "node_".to_owned() + &index.color_node_idx.to_string());
+            }
+            // Mode coloration par gene
+            else { 
+                // plusieurs couleurs
+                if options.gene_colors.len() > 0 {
+                    element.assign("class", "gene_0");
+                    }
+                // une seule couleur (usage par defaut)     
+                else {
+                    element.assign("class", "gene");
+                }
+            } 
             let txt  = Text::new(&index.name);
             element.append(txt);
             element.assign(
