@@ -80,6 +80,110 @@ pub fn read_phyloxml(filename: String, tree: &mut ArenaTree<String>) {
     }
     info!("Tree : {:?}",tree);
 }
+
+pub fn check_reticulation( tree: &mut ArenaTree<String>) {
+    let mut a_virer = 0;
+    let mut a_utiliser = 0;
+    let mut reticulates : Vec<String> = Vec::new();
+    let mut reticulates_parent : Vec<usize> = Vec::new();
+    for index in  &mut tree.arena {
+        println!("{:?}",index.name);
+        let buf : Vec<_> = index.name.split(" ").collect();
+        let tag = buf[0];
+        println!("bug  = {:?}",tag);
+        if tag == "RETI" {
+            match reticulates.binary_search(&index.name){
+                Ok(idx) => {
+                    println!("ok1");
+                    index.parent2 = Some(reticulates_parent[idx]);
+                    println!("Le noeud {:?} a deux peres ",index);
+                    // let noeud_pere = match index.parent {
+                    //     None => { panic!() },
+                    //     Some(p) => &tree.arena[p],
+                    // };
+
+
+                },
+                Err(_err) => {
+                    reticulates.push(index.name.clone());
+                    match index.parent {
+                        None => {panic!()},
+                        Some(p) => {reticulates_parent.push(p)},
+                    }
+                },
+
+            }
+
+            // if  reticulates.contains(&index.name) {
+            //     println!("ok");
+            // }
+            // else {
+            //     reticulates.push(index.name.clone());
+            //     match index.parent {
+            //         None => {},
+            //         Some(p) => {reticulates_parent.push(p)},
+            //     }
+            // }
+        println!("node {:?}",index);
+        }
+
+    }
+    println!("Reticulates = {:?}",reticulates);
+
+// deuxieme passage
+    for index in  & tree.arena {
+        println!("{:?}",index.name);
+
+         match index.parent2 {
+            None => {  },
+            Some(p2) => {
+
+                println!("Ce noeud {:?} a 2 parents",index);
+                a_utiliser = index.idx;
+                let name_retic = &index.name;
+                let p =  match index.parent {
+                    None =>  panic!() ,
+                    Some(p) => p,
+
+                };
+                println!("Parent numero 1 {}  = {:?}",p,&tree.arena[p] );
+                println!("Parent numero 2 {}  = {:?}",p2,&tree.arena[p2] );
+                let children = &tree.arena[p].children;
+                println!();
+                println!("Enfant left du parent 1 : {:?}",&tree.arena[children[0]]);
+                println!("Enfant right du parent 1 : {:?}",&tree.arena[children[1]]);
+                println!();
+                let children = &tree.arena[p2].children;
+                println!("Enfant left du parent 2 : {:?}",&tree.arena[children[0]]);
+                println!("Enfant right du parent 2 : {:?}",&tree.arena[children[1]]);
+                if &tree.arena[children[0]].name == name_retic {
+                    println!("Enfant left a supprimer");
+                    a_virer = children[0];
+                }
+                else if &tree.arena[children[1]].name == name_retic {
+                    println!("Enfant right a supprimer");
+                    a_virer = children[1];
+                }
+                else {
+                    panic!()
+                }
+
+
+            },
+        };
+    }
+    println!("Virer {:?}",&tree.arena[a_virer]);
+    println!("Le remplacer par  {:?}",&tree.arena[a_utiliser]);
+    // mod parent 5
+    let test = [6,9];
+    let mut test : Vec<usize> = Vec::new();
+    test.push(6);
+    test.push(9);
+    // test.push(6);
+    tree.arena[5].children = test;
+    tree.arena[7].parent = None;
+}
+
 /// Adding invisible parent nodes in order to display multiple species trees.
 pub fn add_virtual_roots(
     global_roots: &mut std::vec::Vec<String>,
@@ -215,6 +319,8 @@ pub fn read_recphyloxml_multi(
     let  nb_sptree =  global_roots.len().clone();
     println!("Number of species trees : {}",nb_sptree);
     info!("List of species roots : {:?}",global_roots);
+    check_reticulation(global_pipe);
+    info!("Species tree(s) : {:?}",global_pipe);
     // Get the gene trees:
     // Get the list of nodes associated to  the "recGeneTree" tag
     // let rgnodes = find_rgtrees(doc).expect("No clade recGeneTree has been found in xml");

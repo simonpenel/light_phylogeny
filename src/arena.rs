@@ -28,6 +28,8 @@ where
     pub support: String,           // support du noeud
     /// Parent of the node.
     pub parent: Option<usize>,  // index du parent
+    /// Second parent of the node if reticulation
+    pub parent2: Option<usize>,  // index du parent
     /// Children of the node.
     pub children: Vec<usize>,   // indexes des enfants
     /// x coordinate.
@@ -85,6 +87,7 @@ where
             name: String::from("Undefined"),
             support: String::from("Undefined"),
             parent: None,
+            parent2: None,
             children: vec![],
             x: 0.0,
             xmod: 0.0,
@@ -441,7 +444,7 @@ pub struct Options{
     pub mid_dist: bool,
     /// user-defined list of colors for genes
     pub gene_colors: Vec<String>,
-    /// user-defined list of nodes for genes. Children of nodes will be colorised 
+    /// user-defined list of nodes for genes. Children of nodes will be colorised
     pub node_colors: Vec<String>,
     /// svg background color
     pub bckg_color: String
@@ -718,6 +721,7 @@ pub fn xml2tree (
             let name = "N".to_owned() + &numero.to_string();
             //  index de ce nouveau nom
             let name = tree.new_node(name.to_string());
+            println!("name = {}",name);
             //Ajoute ce noeud au parent
             tree.arena[parent].children.push(name);
             // Attribue un parent a ce noeud
@@ -754,6 +758,7 @@ pub fn xml2tree (
                 Some(text) => tree.arena[parent].name = text.to_string(),
                 None => tree.arena[parent].name = "Unkwnown".to_string(),
             };
+            println!("Name of {} = {}",parent,tree.arena[parent].name );
         }
         // Attribue la distance definie dans le tag branch_length
         if child.has_tag_name("branch_length"){
