@@ -13,10 +13,10 @@ use crate::arena::Config;
 use crate::arena::PIPEBLOCK;
 use crate::arena::{newick2tree,xml2tree};
 use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,
-    check_contour_postorder_tidy_tree,shift_mod_xy,set_middle_postorder,real_length,
+    check_contour_postorder_tidy_tree,shift_mod_xy,fusion_mod_xy,set_middle_postorder,real_length,
     set_leaves_y_values,shift_nodes_y_values};
 use crate::arena::{map_species_trees,set_species_width,check_vertical_contour_postorder,
-    bilan_mappings,center_gene_nodes,move_dupli_mappings,move_species_mappings,
+    bilan_mappings,bilan_mappings_reti,center_gene_nodes,move_dupli_mappings,move_species_mappings,
     species_uniformisation,process_fl,uniformise_gene_leaves_y_values};
 use crate::arena::{find_sptrees,find_rgtrees,check_for_obsolete,scale_heigth,scale_width};
 use crate::thirdlevel::{get_gtransfer,optimisation,check_optimisation,classify_transfer,reorder_transfers};
@@ -172,16 +172,56 @@ pub fn check_reticulation( tree: &mut ArenaTree<String>) {
             },
         };
     }
+
+    println!("TREE = {:?}",tree);
     println!("Virer {:?}",&tree.arena[a_virer]);
     println!("Le remplacer par  {:?}",&tree.arena[a_utiliser]);
+
+
     // mod parent 5
-    let test = [6,9];
-    let mut test : Vec<usize> = Vec::new();
+/*    let mut test : Vec<usize> = Vec::new();
     test.push(6);
     test.push(9);
-    // test.push(6);
+    tree.arena[5].children = test;*/
+
+//    tree.arena[7].parent = None;
+//    tree.arena[7].visible = false;
+
+    // mod parent 8
+/*    let mut test : Vec<usize> = Vec::new();
+    test.push(10);
+    test.push(7);
+    tree.arena[8].children = test;
+
+    tree.arena[9].parent = None;
+    tree.arena[9].visible = false;*/
+
+    //let mut newNode = arena::Noeud::new();
+//    let new_index = tree.new_node("Reticulate".to_string());
+        // mod parent 5
+/*    let mut test : Vec<usize> = Vec::new();
+ //   test.push(6);
+    test.push(new_index);
+    test.push(6);    
     tree.arena[5].children = test;
+    tree.arena[new_index].parent = Some(5);
+
     tree.arena[7].parent = None;
+    tree.arena[7].visible = false;
+
+    // mod parent 8
+    let mut test : Vec<usize> = Vec::new();*/
+//    test.push(10);
+/*    test.push(new_index);
+    test.push(10);
+    tree.arena[8].children = test;
+    tree.arena[new_index].parent2 = Some(8);
+
+    tree.arena[9].parent = None;
+    tree.arena[9].visible = false;*/
+
+
+
 }
 
 /// Adding invisible parent nodes in order to display multiple species trees.
@@ -567,6 +607,24 @@ pub fn recphyloxml_processing(
     // de xmod dans l'arbre d'espèces
     // ---------------------------------------------------------
     shift_mod_xy(&mut sp_tree, root, &mut 0.0, &mut 0.0);
+
+    // ---------------------------------------------------------
+    // 
+    // ---------------------------------------------------------
+//    fusion_mod_xy(&mut sp_tree, 9, 7, &mut 0.0, &mut 0.0);
+
+/*    for (h1, h2) in &options.hybrid {
+        println!("Hybridisation between {} [{}] and {}  [{}]",h1,sp_tree.arena[*h1].name,h2,sp_tree.arena[*h2].name);
+
+        fusion_mod_xy(&mut sp_tree, *h1, *h2, &mut 0.0, &mut 0.0);
+    }
+*/
+
+
+
+
+    //fusion_mod_xy(&mut sp_tree, 5, 3, &mut 0.0, &mut 0.0);
+
     // ---------------------------------------------------------
     // 5eme étape : Place le parent entre les enfants dans
     // l'arbre d'espèces
@@ -583,6 +641,15 @@ pub fn recphyloxml_processing(
     if ! options.real_length_flag {
         check_vertical_contour_postorder(&mut sp_tree, root, 0.0);
     }
+
+
+        for (h1, h2) in &options.hybrid {
+        println!("Hybridisation between {} [{}] and {}  [{}]",h1,sp_tree.arena[*h1].name,h2,sp_tree.arena[*h2].name);
+
+        fusion_mod_xy(&mut sp_tree, *h1, *h2, &mut 0.0, &mut 0.0);
+    }
+
+
     // ---------------------------------------------------------
     // Egalise les feuilles
     // ---------------------------------------------------------
@@ -608,10 +675,32 @@ pub fn recphyloxml_processing(
     // noeud d'especes pour éviter qu'ils soit superposés
     // ---------------------------------------------------------
     bilan_mappings(&mut sp_tree, &mut gene_trees, initial_root, & options);
+
+
+
     // ---------------------------------------------------------
     // 9eme etape : centre les noeuds de genes dans le noeud de l'espece
     // ---------------------------------------------------------
     center_gene_nodes(&mut sp_tree,&mut gene_trees, initial_root);
+
+
+    //bilan_mappings_reti(&mut sp_tree, &mut gene_trees, 7, true, & options);
+
+
+        for (h1, h2) in &options.hybrid {
+        println!("Hybridisation between {} [{}] and {}  [{}]",h1,sp_tree.arena[*h1].name,h2,sp_tree.arena[*h2].name);
+
+    bilan_mappings_reti(&mut sp_tree, &mut gene_trees, *h2, false, & options);
+    bilan_mappings_reti(&mut sp_tree, &mut gene_trees, *h1, true, & options);
+    }
+
+ //   bilan_mappings_reti(&mut sp_tree, &mut gene_trees, 9, false, & options);
+ //   bilan_mappings_reti(&mut sp_tree, &mut gene_trees, 7, true, & options);
+ //   bilan_mappings_reti(&mut sp_tree, &mut gene_trees, 5, true, & options);
+
+    //bilan_mappings_reti(&mut sp_tree, &mut gene_trees, 3, false, & options);
+    //bilan_mappings_reti(&mut sp_tree, &mut gene_trees, 5, true, & options);
+
     // ---------------------------------------------------------
     // 10eme etape traite spécifiquement les duplications et les feuilles
     // ---------------------------------------------------------
