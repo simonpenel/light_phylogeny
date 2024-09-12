@@ -1210,8 +1210,8 @@ pub fn bilan_mappings_reti(
         println!("X AVANT : {}",gene_trees[*index_node].arena[*node].x);
 
         let x = match bool_left {
-            false   => x + PIPEBLOCK * shift_left_x / ratio / 2.0 * reti_factor,
-            true  => x + PIPEBLOCK * shift_right_x / ratio / 2.0 * reti_factor ,
+            false   => x + PIPEBLOCK * shift_left_x / ratio / 4.0 * reti_factor,
+            true  => x + PIPEBLOCK * shift_right_x / ratio / 4.0 * reti_factor ,
         };
         
         gene_trees[*index_node].arena[*node].set_x_noref(x);
