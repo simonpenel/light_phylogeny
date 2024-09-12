@@ -643,10 +643,13 @@ pub fn recphyloxml_processing(
     }
 
 
-        for (h1, h2) in &options.hybrid {
-        println!("Hybridisation between {} [{}] and {}  [{}]",h1,sp_tree.arena[*h1].name,h2,sp_tree.arena[*h2].name);
+    for (name1, name2) in &options.hybrid {
+        let h1 = sp_tree.get_index(name1.to_string()).unwrap();
+        let h2 = sp_tree.get_index(name2.to_string()).unwrap();
 
-        fusion_mod_xy(&mut sp_tree, *h1, *h2, &mut 0.0, &mut 0.0);
+        println!("Hybridisation between {} [{}] and {}  [{}]",h1,sp_tree.arena[h1].name,h2,sp_tree.arena[h2].name);
+
+        fusion_mod_xy(&mut sp_tree, h1, h2, &mut 0.0, &mut 0.0);
     }
 
 
@@ -684,22 +687,15 @@ pub fn recphyloxml_processing(
     center_gene_nodes(&mut sp_tree,&mut gene_trees, initial_root);
 
 
-    //bilan_mappings_reti(&mut sp_tree, &mut gene_trees, 7, true, & options);
 
-
-        for (h1, h2) in &options.hybrid {
-        println!("Hybridisation between {} [{}] and {}  [{}]",h1,sp_tree.arena[*h1].name,h2,sp_tree.arena[*h2].name);
-
-    bilan_mappings_reti(&mut sp_tree, &mut gene_trees, *h2, false, & options);
-    bilan_mappings_reti(&mut sp_tree, &mut gene_trees, *h1, true, & options);
+    for (name1, name2) in &options.hybrid {
+        let h1 = sp_tree.get_index(name1.to_string()).unwrap();
+        let h2 = sp_tree.get_index(name2.to_string()).unwrap();        
+        println!("Hybridisation between {} [{}] and {}  [{}]",h1,sp_tree.arena[h1].name,h2,sp_tree.arena[h2].name);
+        bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h2, false, & options);
+        bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h1, true, & options);
     }
 
- //   bilan_mappings_reti(&mut sp_tree, &mut gene_trees, 9, false, & options);
- //   bilan_mappings_reti(&mut sp_tree, &mut gene_trees, 7, true, & options);
- //   bilan_mappings_reti(&mut sp_tree, &mut gene_trees, 5, true, & options);
-
-    //bilan_mappings_reti(&mut sp_tree, &mut gene_trees, 3, false, & options);
-    //bilan_mappings_reti(&mut sp_tree, &mut gene_trees, 5, true, & options);
 
     // ---------------------------------------------------------
     // 10eme etape traite spécifiquement les duplications et les feuilles

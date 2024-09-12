@@ -10,8 +10,13 @@ fn main() {
     let transfers = vec![];
     let mut options: Options = Options::new();
     //options.species_internal = true ;
-    //options.hybrid.push((3,6));
-    options.hybrid.push((7,9));
+    //options.hybrid.push((6,3));
+    //options.hybrid.push((7,9));
+
+    options.hybrid.push(("RETI TEST".to_string(),"RETI TEST 2".to_string()));
+    
+  
+    
     let config: Config = Config::new();
     let mut sp_tree: ArenaTree<String> = ArenaTree::default();
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();

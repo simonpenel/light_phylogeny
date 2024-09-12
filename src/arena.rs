@@ -449,7 +449,7 @@ pub struct Options{
     /// svg background color
     pub bckg_color: String,
     /// hybridisation
-    pub hybrid: Vec<(usize,usize)>
+    pub hybrid: Vec<(String,String)>
 }
 impl Options {
     pub fn new() -> Self {
