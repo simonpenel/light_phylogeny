@@ -95,7 +95,7 @@ pub fn draw_tree (
 
     // Cas ou il y a des noeuds a colorer: ajout de styles pour la police
     if options.node_colors.len() > 0 {
-        // On definit la couleur des font pour le style node_0 
+        // On definit la couleur des font pour le style node_0
         // Style de la font pour la partie de l'arbre non selectionnee
         let mut font_color  = get_default_color(0);
         // Cas ou on utilise les couleurs definies par l'utilisateur
@@ -145,7 +145,7 @@ pub fn draw_tree (
     document.append(style);
 
     // Cas ou l'utilisateur a defini des couleur. Le gene unique a la premiere couleur
-    if options.gene_colors.len() > 0 {  
+    if options.gene_colors.len() > 0 {
         gene_color = options.gene_colors[0].clone();
     }
     let mut g = Element::new("g");
@@ -285,20 +285,20 @@ pub fn draw_tree (
             element.assign("x", index.x - 5.0);
             element.assign("y", index.y + 10.0);
             // Mode coloration par noeud
-            if options.node_colors.len() > 0 { 
+            if options.node_colors.len() > 0 {
                 element.assign("class", "node_".to_owned() + &index.color_node_idx.to_string());
             }
             // Mode coloration par gene
-            else { 
+            else {
                 // plusieurs couleurs
                 if options.gene_colors.len() > 0 {
                     element.assign("class", "gene_0");
                     }
-                // une seule couleur (usage par defaut)     
+                // une seule couleur (usage par defaut)
                 else {
                     element.assign("class", "gene");
                 }
-            } 
+            }
             let txt  = Text::new(&index.name);
             element.append(txt);
             element.assign(
@@ -632,7 +632,7 @@ pub fn draw_sptree_gntrees (
         // noeud dans options.node_colors
         if options.node_colors.len() > 0 {
 
-            // On definit la couleur des font pour le style node_0 
+            // On definit la couleur des font pour le style node_0
             // Style de la font pour la partie de l'arbre
             let mut font_color  = get_default_color(0);
             // Cas ou on utilise les couleurs definies par l'utilisateur
@@ -677,7 +677,7 @@ pub fn draw_sptree_gntrees (
         		node_color_idx += 1;
         	}
         }
-        
+
         // Choix de la couleur dans le cas d'une coloration par arbre de gene par defaut
         // Boucle sur une base de 6 couleurs avec une modif aleatoire (utile qaund on a pmlus de 6 genes)
         let base_couleur = match &idx_rcgen % 6 {
@@ -699,7 +699,7 @@ pub fn draw_sptree_gntrees (
         if options.gene_colors.len() > 0 {
             let _idx_user_color = &idx_rcgen % options.gene_colors.len();
             gene_color = options.gene_colors[_idx_user_color].clone();
-        }    
+        }
 
         // Style de la font pour le gene
         let added_style = " .gene_".to_owned() + &idx_rcgen.to_string()
@@ -708,7 +708,7 @@ pub fn draw_sptree_gntrees (
         // Je passe en str pour l'ajouter
         let add_style_str :&str = &added_style;
         recphylostyle.push_str(add_style_str);
-        
+
         for  index in &gene_trees[idx_rcgen].arena {
  			// Cas ou la coloration varie dans l'arbre des genes
             if options.node_colors.len() > 0 {
@@ -959,14 +959,14 @@ pub fn draw_sptree_gntrees (
                     let mut element = Element::new("text");
                     element.assign("x", index.x - 5.0);
                     element.assign("y", index.y + 15.0);
-                    if options.node_colors.len() > 0 { 
+                    if options.node_colors.len() > 0 {
  					// Mode coloration par noeud
                     	element.assign("class", "node_".to_owned() + &index.color_node_idx.to_string());
                     }
-                    else { 
+                    else {
                     // Mode coloration par gene
                     	element.assign("class", "gene_".to_owned() + &idx_rcgen.to_string());
-                    } 
+                    }
                     let txt = Text::new(&index.name);
                     element.append(txt);
                     element.assign(
@@ -982,14 +982,14 @@ pub fn draw_sptree_gntrees (
                             let mut element = Element::new("text");
                             element.assign("x", index.x+10.0);
                             element.assign("y", index.y+0.0);
-                            if options.node_colors.len() > 0 { 
+                            if options.node_colors.len() > 0 {
                             // Mode coloration par noeud
                                 element.assign("class", "node_".to_owned() + &index.color_node_idx.to_string());
                             }
-                            else { 
+                            else {
                                 // Mode coloration par gene
                                 element.assign("class", "gene_".to_owned() + &idx_rcgen.to_string());
-                            } 
+                            }
                             let txt  = Text::new(&index.name);
                             element.append(txt);
                             element.assign("transform","rotate(90 ".to_owned()
@@ -1380,5 +1380,5 @@ pub fn get_default_color (idx:usize) -> String {
         4 => "yellow".to_string(),
         _ => "monochrome".to_string(), // Jamais
     };
-    font    			
+    font
 }
