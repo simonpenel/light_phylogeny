@@ -202,7 +202,7 @@ pub fn check_reticulation( tree: &mut ArenaTree<String>) {
 /*    let mut test : Vec<usize> = Vec::new();
  //   test.push(6);
     test.push(new_index);
-    test.push(6);    
+    test.push(6);
     tree.arena[5].children = test;
     tree.arena[new_index].parent = Some(5);
 
@@ -609,7 +609,7 @@ pub fn recphyloxml_processing(
     shift_mod_xy(&mut sp_tree, root, &mut 0.0, &mut 0.0);
 
     // ---------------------------------------------------------
-    // 
+    //
     // ---------------------------------------------------------
 //    fusion_mod_xy(&mut sp_tree, 9, 7, &mut 0.0, &mut 0.0);
 
@@ -642,13 +642,16 @@ pub fn recphyloxml_processing(
         check_vertical_contour_postorder(&mut sp_tree, root, 0.0);
     }
 
+    // Sens dans lequel decaler les noeuds de genes apres la fusion
+    let mut fusion_orders:Vec<bool> = Vec::new();
 
     for (name1, name2) in &options.hybrid {
         let h1 = sp_tree.get_index(name1.to_string()).unwrap();
         let h2 = sp_tree.get_index(name2.to_string()).unwrap();
 
         println!("Hybridisation between {} [{}] and {}  [{}]",h1,sp_tree.arena[h1].name,h2,sp_tree.arena[h2].name);
-
+        println!("\n\ndebug h1 - h2 {}\n\n",sp_tree.arena[h1].x - sp_tree.arena[h2].x);
+        fusion_orders.push(sp_tree.arena[h1].x < sp_tree.arena[h2].x);
         fusion_mod_xy(&mut sp_tree, h1, h2, &mut 0.0, &mut 0.0);
     }
 
@@ -687,14 +690,32 @@ pub fn recphyloxml_processing(
     center_gene_nodes(&mut sp_tree,&mut gene_trees, initial_root);
 
 
-
+    let mut idx_fusion = 0;
     for (name1, name2) in &options.hybrid {
         let h1 = sp_tree.get_index(name1.to_string()).unwrap();
-        let h2 = sp_tree.get_index(name2.to_string()).unwrap();        
+        let h2 = sp_tree.get_index(name2.to_string()).unwrap();
         println!("Hybridisation between {} [{}] and {}  [{}]",h1,sp_tree.arena[h1].name,h2,sp_tree.arena[h2].name);
-        bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h2, false, & options);
-        bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h1, true, & options);
+
+        // h1 puis h2 ok pour example big
+        let fusion_order = fusion_orders[idx_fusion];
+        let fusion_order_inv = ! fusion_order;
+        // bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h1, false, & options);
+        // bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h2, true, & options);
+        bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h1, fusion_order, & options);
+        bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h2, fusion_order_inv, & options);
+
+        idx_fusion += 1;
     }
+
+    for (name1, name2) in &options.hybrid {
+        let fusion_name  = &(name1.to_owned() + " hybrid. " + name2) ;
+        let h1 = sp_tree.get_index(name1.to_string()).unwrap();
+        let h2 = sp_tree.get_index(name2.to_string()).unwrap();
+        sp_tree.arena[h1].name = fusion_name.to_string();
+        sp_tree.arena[h2].name = fusion_name.to_string();
+
+    }
+
 
 
     // ---------------------------------------------------------
