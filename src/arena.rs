@@ -1188,10 +1188,8 @@ pub fn bilan_mappings_reti(
     let ratio = options.ratio ;   // permet de regler l'ecartement entre les noeuds de genes dans
                                   // l'arbre d'espece
 
-    let  mut shift_left_x = sp_tree.arena[index].nbg as f32 - 1.0 ;
-    let  mut shift_y = 0.0;
-    let  mut shift_right_x = sp_tree.arena[index].nbg as f32 - 1.0 ;
-    let incr = 1.0;
+    let shift_left_x = sp_tree.arena[index].nbg as f32 - 1.0 ;
+    let shift_right_x = sp_tree.arena[index].nbg as f32 - 1.0 ;
 
     let reti_factor = match left_reti {
         true => -1.0,
@@ -1904,31 +1902,23 @@ pub fn shift_nodes_y_values(tree: &mut ArenaTree<String>, index: usize, y:  f32)
     }
 }
 
-/// Shift the  x y values  of a node and its children according to the cumulated xmod ymod values.
-pub fn fusion_mod_xy(tree: &mut ArenaTree<String>, index_1: usize, index_2: usize, xmod: &mut f32, ymod: &mut f32) {
-
+/// Fusion des noeuds (hybridation)
+pub fn fusion_mod_xy(tree: &mut ArenaTree<String>, index_1: usize, index_2: usize, _xmod: &mut f32, _ymod: &mut f32) {
     let dist1 = tree.arena[index_1].x;
-    println!("DIST 9 = {}",dist1);
-
     let dist2 = tree.arena[index_2].x;
-    println!("DIST 7 = {}",dist2);
-
     let dist = ( dist1 + dist2 ) / 2.0 ;
     tree.arena[index_1].x = dist;
     tree.arena[index_2].x = dist;
 
     let width1 = tree.arena[index_1].width;
     let width2 = tree.arena[index_2].width;
-    println!("Width = {} {}",width1,width2);
-
-    let nbg = tree.arena[index_1].nbg + tree.arena[index_2].nbg ;
-
-    tree.arena[index_1].nbg = nbg;
-    tree.arena[index_2].nbg = nbg;
     tree.arena[index_1].width = width1 + width2;
     tree.arena[index_2].width = width1 + width2;
 
-    println!("DEBUG {:?}",tree);
+    let nbg = tree.arena[index_1].nbg + tree.arena[index_2].nbg ;
+    tree.arena[index_1].nbg = nbg;
+    tree.arena[index_2].nbg = nbg;
+
 }
 /// Shift the  x y values  of a node and its children according to the cumulated xmod ymod values.
 pub fn shift_mod_xy(tree: &mut ArenaTree<String>, index: usize, xmod: &mut f32, ymod: &mut f32) {
