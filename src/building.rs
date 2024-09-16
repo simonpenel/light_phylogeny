@@ -81,6 +81,8 @@ pub fn read_phyloxml(filename: String, tree: &mut ArenaTree<String>) {
     info!("Tree : {:?}",tree);
 }
 
+#[allow(dead_code)]
+// Fonction inutilisee
 pub fn check_reticulation( tree: &mut ArenaTree<String>) {
     let mut a_virer = 0;
     let mut a_utiliser = 0;
@@ -97,12 +99,6 @@ pub fn check_reticulation( tree: &mut ArenaTree<String>) {
                     println!("ok1");
                     index.parent2 = Some(reticulates_parent[idx]);
                     println!("Le noeud {:?} a deux peres ",index);
-                    // let noeud_pere = match index.parent {
-                    //     None => { panic!() },
-                    //     Some(p) => &tree.arena[p],
-                    // };
-
-
                 },
                 Err(_err) => {
                     reticulates.push(index.name.clone());
@@ -111,22 +107,9 @@ pub fn check_reticulation( tree: &mut ArenaTree<String>) {
                         Some(p) => {reticulates_parent.push(p)},
                     }
                 },
-
             }
-
-            // if  reticulates.contains(&index.name) {
-            //     println!("ok");
-            // }
-            // else {
-            //     reticulates.push(index.name.clone());
-            //     match index.parent {
-            //         None => {},
-            //         Some(p) => {reticulates_parent.push(p)},
-            //     }
-            // }
         println!("node {:?}",index);
         }
-
     }
     println!("Reticulates = {:?}",reticulates);
 
@@ -167,60 +150,12 @@ pub fn check_reticulation( tree: &mut ArenaTree<String>) {
                 else {
                     panic!()
                 }
-
-
             },
         };
     }
-
     println!("TREE = {:?}",tree);
     println!("Virer {:?}",&tree.arena[a_virer]);
     println!("Le remplacer par  {:?}",&tree.arena[a_utiliser]);
-
-
-    // mod parent 5
-/*    let mut test : Vec<usize> = Vec::new();
-    test.push(6);
-    test.push(9);
-    tree.arena[5].children = test;*/
-
-//    tree.arena[7].parent = None;
-//    tree.arena[7].visible = false;
-
-    // mod parent 8
-/*    let mut test : Vec<usize> = Vec::new();
-    test.push(10);
-    test.push(7);
-    tree.arena[8].children = test;
-
-    tree.arena[9].parent = None;
-    tree.arena[9].visible = false;*/
-
-    //let mut newNode = arena::Noeud::new();
-//    let new_index = tree.new_node("Reticulate".to_string());
-        // mod parent 5
-/*    let mut test : Vec<usize> = Vec::new();
- //   test.push(6);
-    test.push(new_index);
-    test.push(6);
-    tree.arena[5].children = test;
-    tree.arena[new_index].parent = Some(5);
-
-    tree.arena[7].parent = None;
-    tree.arena[7].visible = false;
-
-    // mod parent 8
-    let mut test : Vec<usize> = Vec::new();*/
-//    test.push(10);
-/*    test.push(new_index);
-    test.push(10);
-    tree.arena[8].children = test;
-    tree.arena[new_index].parent2 = Some(8);
-
-    tree.arena[9].parent = None;
-    tree.arena[9].visible = false;*/
-
-
 
 }
 
@@ -359,7 +294,6 @@ pub fn read_recphyloxml_multi(
     let  nb_sptree =  global_roots.len().clone();
     println!("Number of species trees : {}",nb_sptree);
     info!("List of species roots : {:?}",global_roots);
-    //check_reticulation(global_pipe);
     info!("Species tree(s) : {:?}",global_pipe);
     // Get the gene trees:
     // Get the list of nodes associated to  the "recGeneTree" tag
