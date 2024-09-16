@@ -1188,9 +1188,9 @@ pub fn bilan_mappings_reti(
     let ratio = options.ratio ;   // permet de regler l'ecartement entre les noeuds de genes dans
                                   // l'arbre d'espece
 
-    let  mut shift_left_x = sp_tree.arena[index].nbg as f32 -1.0 ;   
+    let  mut shift_left_x = sp_tree.arena[index].nbg as f32 - 1.0 ;
     let  mut shift_y = 0.0;
-    let  mut shift_right_x = sp_tree.arena[index].nbg as f32 -1.0 ;
+    let  mut shift_right_x = sp_tree.arena[index].nbg as f32 - 1.0 ;
     let incr = 1.0;
 
     let reti_factor = match left_reti {
@@ -1213,7 +1213,7 @@ pub fn bilan_mappings_reti(
             false   => x + PIPEBLOCK * shift_left_x / ratio / 4.0 * reti_factor,
             true  => x + PIPEBLOCK * shift_right_x / ratio / 4.0 * reti_factor ,
         };
-        
+
         gene_trees[*index_node].arena[*node].set_x_noref(x);
         println!("X APRES : {}",gene_trees[*index_node].arena[*node].x);
     }
@@ -1382,7 +1382,7 @@ pub fn bilan_mappings(
                 shift_right_x = shift_right_x - incr;
             },
         }
-    
+
     }
 
 
@@ -1915,7 +1915,7 @@ pub fn fusion_mod_xy(tree: &mut ArenaTree<String>, index_1: usize, index_2: usiz
 
     let dist = ( dist1 + dist2 ) / 2.0 ;
     tree.arena[index_1].x = dist;
-    tree.arena[index_2].x = dist;  
+    tree.arena[index_2].x = dist;
 
     let width1 = tree.arena[index_1].width;
     let width2 = tree.arena[index_2].width;
@@ -1924,11 +1924,11 @@ pub fn fusion_mod_xy(tree: &mut ArenaTree<String>, index_1: usize, index_2: usiz
     let nbg = tree.arena[index_1].nbg + tree.arena[index_2].nbg ;
 
     tree.arena[index_1].nbg = nbg;
-    tree.arena[index_2].nbg = nbg;   
+    tree.arena[index_2].nbg = nbg;
     tree.arena[index_1].width = width1 + width2;
-    tree.arena[index_2].width = width1 + width2; 
+    tree.arena[index_2].width = width1 + width2;
 
-    println!("DEBUG {:?}",tree); 
+    println!("DEBUG {:?}",tree);
 }
 /// Shift the  x y values  of a node and its children according to the cumulated xmod ymod values.
 pub fn shift_mod_xy(tree: &mut ArenaTree<String>, index: usize, xmod: &mut f32, ymod: &mut f32) {
