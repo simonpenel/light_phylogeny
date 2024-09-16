@@ -359,7 +359,7 @@ pub fn read_recphyloxml_multi(
     let  nb_sptree =  global_roots.len().clone();
     println!("Number of species trees : {}",nb_sptree);
     info!("List of species roots : {:?}",global_roots);
-    check_reticulation(global_pipe);
+    //check_reticulation(global_pipe);
     info!("Species tree(s) : {:?}",global_pipe);
     // Get the gene trees:
     // Get the list of nodes associated to  the "recGeneTree" tag
@@ -515,6 +515,12 @@ pub fn recphyloxml_processing(
             },
         };
     }
+
+    // let mut children : Vec<usize> = Vec::new();
+    // children.push(sp_tree.arena[20].children[1]);
+    // children.push(sp_tree.arena[20].children[0]);
+    // sp_tree.arena[20].children = children;
+
     //----------------------------------------------------------
     // 1ere étape :initialisation des x,y de l'arbre d'espèces :
     // profondeur => Y, left => X= 0, right X=1
@@ -609,23 +615,6 @@ pub fn recphyloxml_processing(
     shift_mod_xy(&mut sp_tree, root, &mut 0.0, &mut 0.0);
 
     // ---------------------------------------------------------
-    //
-    // ---------------------------------------------------------
-//    fusion_mod_xy(&mut sp_tree, 9, 7, &mut 0.0, &mut 0.0);
-
-/*    for (h1, h2) in &options.hybrid {
-        println!("Hybridisation between {} [{}] and {}  [{}]",h1,sp_tree.arena[*h1].name,h2,sp_tree.arena[*h2].name);
-
-        fusion_mod_xy(&mut sp_tree, *h1, *h2, &mut 0.0, &mut 0.0);
-    }
-*/
-
-
-
-
-    //fusion_mod_xy(&mut sp_tree, 5, 3, &mut 0.0, &mut 0.0);
-
-    // ---------------------------------------------------------
     // 5eme étape : Place le parent entre les enfants dans
     // l'arbre d'espèces
     // ---------------------------------------------------------
@@ -642,6 +631,9 @@ pub fn recphyloxml_processing(
         check_vertical_contour_postorder(&mut sp_tree, root, 0.0);
     }
 
+    // ----------------------------------------
+    // Etape optionele gestion des hybridations
+    // ----------------------------------------
     // Sens dans lequel decaler les noeuds de genes apres la fusion
     let mut fusion_orders:Vec<bool> = Vec::new();
 
@@ -650,11 +642,9 @@ pub fn recphyloxml_processing(
         let h2 = sp_tree.get_index(name2.to_string()).unwrap();
 
         println!("Hybridisation between {} [{}] and {}  [{}]",h1,sp_tree.arena[h1].name,h2,sp_tree.arena[h2].name);
-        println!("\n\ndebug h1 - h2 {}\n\n",sp_tree.arena[h1].x - sp_tree.arena[h2].x);
         fusion_orders.push(sp_tree.arena[h1].x < sp_tree.arena[h2].x);
         fusion_mod_xy(&mut sp_tree, h1, h2, &mut 0.0, &mut 0.0);
     }
-
 
     // ---------------------------------------------------------
     // Egalise les feuilles
@@ -690,20 +680,18 @@ pub fn recphyloxml_processing(
     center_gene_nodes(&mut sp_tree,&mut gene_trees, initial_root);
 
 
+    // -------------------------------------------
+    // Etape optionelle : gestion des hybridations
+    // -------------------------------------------
     let mut idx_fusion = 0;
     for (name1, name2) in &options.hybrid {
         let h1 = sp_tree.get_index(name1.to_string()).unwrap();
         let h2 = sp_tree.get_index(name2.to_string()).unwrap();
         println!("Hybridisation between {} [{}] and {}  [{}]",h1,sp_tree.arena[h1].name,h2,sp_tree.arena[h2].name);
-
-        // h1 puis h2 ok pour example big
         let fusion_order = fusion_orders[idx_fusion];
         let fusion_order_inv = ! fusion_order;
-        // bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h1, false, & options);
-        // bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h2, true, & options);
         bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h1, fusion_order, & options);
         bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h2, fusion_order_inv, & options);
-
         idx_fusion += 1;
     }
 
@@ -715,8 +703,6 @@ pub fn recphyloxml_processing(
         sp_tree.arena[h2].name = fusion_name.to_string();
 
     }
-
-
 
     // ---------------------------------------------------------
     // 10eme etape traite spécifiquement les duplications et les feuilles
