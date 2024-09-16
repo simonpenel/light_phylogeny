@@ -9,14 +9,13 @@ fn main() {
     // Version portrait
     let transfers = vec![];
     let mut options: Options = Options::new();
-    //options.species_internal = true ;
-    //options.hybrid.push((6,3));
-    //options.hybrid.push((7,9));
+    options.species_internal = true ;
 
+    options.switches.push("species_3".to_string());
     options.hybrid.push(("PPENT".to_string(),"PTRED".to_string()));
-    
-  
-    
+    //options.hybrid.push(("PSEXA".to_string(),"PDECA".to_string()));
+    options.hybrid.push(("PSEXA".to_string(),"PJENN".to_string()));
+
     let config: Config = Config::new();
     let mut sp_tree: ArenaTree<String> = ArenaTree::default();
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();

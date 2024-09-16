@@ -450,10 +450,14 @@ pub fn recphyloxml_processing(
         };
     }
 
-    // let mut children : Vec<usize> = Vec::new();
-    // children.push(sp_tree.arena[20].children[1]);
-    // children.push(sp_tree.arena[20].children[0]);
-    // sp_tree.arena[20].children = children;
+    // Etape optionelle : switch species tree node
+    for switch in &options.switches {
+        let sw = sp_tree.get_index(switch.to_string()).unwrap();
+        let mut children : Vec<usize> = Vec::new();
+        children.push(sp_tree.arena[sw].children[1]);
+        children.push(sp_tree.arena[sw].children[0]);
+        sp_tree.arena[sw].children = children;
+    }
 
     //----------------------------------------------------------
     // 1ere étape :initialisation des x,y de l'arbre d'espèces :

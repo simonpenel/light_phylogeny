@@ -449,7 +449,9 @@ pub struct Options{
     /// svg background color
     pub bckg_color: String,
     /// hybridisation
-    pub hybrid: Vec<(String,String)>
+    pub hybrid: Vec<(String,String)>,
+    /// switches
+    pub switches: Vec<String>
 }
 impl Options {
     pub fn new() -> Self {
@@ -490,6 +492,7 @@ impl Options {
             node_colors: Vec::new(),
             bckg_color: "White".to_string(),
             hybrid: Vec::new(),
+            switches: Vec::new(),
         }
     }
 }
