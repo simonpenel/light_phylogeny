@@ -1179,52 +1179,27 @@ pub fn map_species_trees(
 }
 
 
-/// Shift the gene nodes in a given species node to avoid superposition.
+/// Shift the gene nodes in a given species node to avoid superposition after hybridation.
 pub fn bilan_mappings_reti(
     sp_tree: &mut ArenaTree<String>,
     gene_trees: &mut std::vec::Vec<ArenaTree<String>>,
     index: usize,
     left_reti: bool,
-    options: &Options,
+    _options: &Options,
     ) {
-    info!("[bilan_mappings] Species Node {}",sp_tree.arena[index].name);
-    let ratio = options.ratio ;   // permet de regler l'ecartement entre les noeuds de genes dans
-                                  // l'arbre d'espece
-
-    let shift_left_x = sp_tree.arena[index].nbg as f32 - 1.0 ;
-    let shift_right_x = sp_tree.arena[index].nbg as f32 - 1.0 ;
-
+    info!("[bilan_mappings_reti] Species Node {}",sp_tree.arena[index].name);
+    let widthgenes = sp_tree.arena[index].nbg  as f32 * PIPEBLOCK;
+    let shift_left_x = ( sp_tree.arena[index].width - widthgenes ) / 2.0;
     let reti_factor = match left_reti {
         true => -1.0,
         false => 1.0
     };
-    // TODO classer selon le Y du pere pour eviter les croisement
-    // boucle sur l'espece
-    println!("DEBUG SPECIES NODE {:?}",&sp_tree.arena[index]);
     for (index_node, node) in &sp_tree.arena[index].nodes {
-
-        println!("DEBUG  NODE {:?}",&sp_tree.arena[index].nodes);
-        info!("[bilan_mappings] >>> {:?} {:?}",
-            gene_trees[*index_node].arena[*node].name, gene_trees[*index_node].arena[*node].e);
-        let bool_left = sp_tree.is_left(index);
+        info!("[bilan_mappings_reti] Gene node before {:?}",gene_trees[*index_node].arena[*node]);
         let x = gene_trees[*index_node].arena[*node].x;
-        println!("X AVANT : {}",gene_trees[*index_node].arena[*node].x);
-
-        let x = match bool_left {
-            false   => x + PIPEBLOCK * shift_left_x / ratio / 4.0 * reti_factor,
-            true  => x + PIPEBLOCK * shift_right_x / ratio / 4.0 * reti_factor ,
-        };
-
+        let x = x + shift_left_x * reti_factor;
         gene_trees[*index_node].arena[*node].set_x_noref(x);
-        println!("X APRES : {}",gene_trees[*index_node].arena[*node].x);
-    }
-
-    let children = &mut  sp_tree.arena[index].children;
-    if children.len() > 0 {
-        let son_left = children[0];
-        let son_right = children[1];
-         bilan_mappings_reti(sp_tree, gene_trees, son_left, left_reti, options);
-         bilan_mappings_reti(sp_tree, gene_trees, son_right, left_reti, options);
+        info!("[bilan_mappings_reti] Gene node after {:?}",gene_trees[*index_node].arena[*node]);
     }
 
 }
@@ -1917,10 +1892,6 @@ pub fn fusion_mod_xy(tree: &mut ArenaTree<String>, index_1: usize, index_2: usiz
     let width2 = tree.arena[index_2].width;
     tree.arena[index_1].width = width1 + width2;
     tree.arena[index_2].width = width1 + width2;
-
-    let nbg = tree.arena[index_1].nbg + tree.arena[index_2].nbg ;
-    tree.arena[index_1].nbg = nbg;
-    tree.arena[index_2].nbg = nbg;
 
 }
 /// Shift the  x y values  of a node and its children according to the cumulated xmod ymod values.
