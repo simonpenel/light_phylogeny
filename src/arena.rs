@@ -507,6 +507,7 @@ pub struct Config{
     pub species_police_size: String,
     pub gene_police_size: String,
     pub bezier: String,
+    pub fill_species: bool,
 }
 impl Config {
     pub fn new() -> Self {
@@ -519,6 +520,7 @@ impl Config {
             species_police_size: "12".to_string(),
             gene_police_size: "10".to_string(),
             bezier: "1".to_string(),
+            fill_species: false,
         }
     }
 }
