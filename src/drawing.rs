@@ -498,28 +498,6 @@ pub fn draw_sptree_gntrees (
                     config.species_opacity.to_string(),
                     options.sthickness,
                 );
-                let (chemin2,chemin3) = get_chemin_sp_fill(
-                    index.x,
-                    index.y,
-                    n.x,
-                    n.y,
-                    color_branch_species.clone(),
-                    config.species_opacity.to_string(),
-                    false,
-                    match n.height < n.width {
-                        true => n.height as usize ,
-                        false => n.width as usize ,
-                    },
-                    match index.height < index.width {
-                        true => index.height as usize ,
-                        false => index.width as usize ,
-                    }
-                    // match index.height < index.width {
-                    //     true => index.height as usize - 1,
-                    //     false => index.width as usize - 1,
-                    // },
-                );
-
                 let (chemin2,chemin3) = get_chemin_sp_filled(
                     index.x,
                     index.y,
@@ -531,12 +509,11 @@ pub fn draw_sptree_gntrees (
                     n.height / 2.0,
                     color_branch_species.clone(),
                     config.species_opacity.to_string(),
-                    options.sthickness,
                 );
 
                 if sp_tree.arena[p].visible {
                     g.append(chemin);
-                    //g.append(chemin2);
+                    g.append(chemin2);
                     g.append(chemin3);
                 };
 
@@ -1375,7 +1352,7 @@ pub fn get_chemin_sp (
 }
 
 
-/// Draw a square pipe path between x1,y1 ad x2,y2
+/// Draw a  filled square pipe path between x1,y1 ad x2,y2
 pub fn get_chemin_sp_filled (
     x1: f32,
     y1: f32,
@@ -1387,11 +1364,7 @@ pub fn get_chemin_sp_filled (
     height2: f32,
     c: String,
     o: String,
-    thickness: usize,
 ) -> (Path,Path) {
-
-    let mut path1 =  Path::new();
-    let mut path2 =  Path::new();
     let data1 = Data::new()
         .move_to((x1 - width1, y1 - height1 ))
         .line_to((x1 - width1, y2 - height2))
@@ -1399,68 +1372,56 @@ pub fn get_chemin_sp_filled (
         .line_to((x1 + width1, y1 - height1));
 
     let path1 = Path::new()
-        .set("fill", "red")
+        .set("fill", c.clone())
         .set("stroke", c.clone())
         .set("opacity", o.clone())
-        .set("stroke-width",thickness)
+        .set("stroke-width",0)
         .set("d", data1);
 
-    let mut data2 = Data::new();
-    if x1 < x2 {
-    let data2 = Data::new()
-            .move_to((x1 - width1, y1 - height1 ))
-            .line_to((x2 + width2, y1 - height1))
-            .line_to((x2 + width2, y1 + height1))
-            .line_to((x1 - width1, y1 + height1));
 
-            let path2 = Path::new()
-                .set("fill", "yellow")
+    // let mut data2 = Data::new();
+
+    //  always y1 > y2
+
+    let path2 = match  x1 < x2 {
+        true => {
+            let data2 = Data::new()
+                .move_to((x1 - width1, y2 - height2 ))
+                .line_to((x2 + width2, y2 - height2))
+                .line_to((x2 + width2, y2 + height2))
+                .line_to((x1 + width1, y2 + height2));
+
+            let path = Path::new()
+                .set("fill", c.clone())
                 .set("stroke", c)
                 .set("opacity", o)
                 .set("stroke-width",0)
                 .set("d", data2);
-                    return (path1,path2)
-            }
+
+            path
+        },
+        false => {
+            let data2 = Data::new()
+                .move_to((x2 - width2, y2 - height2 ))
+                .line_to((x1 + width1, y2 - height2))
+                .line_to((x1 + width1, y2 + height2))
+                .line_to((x2 + width2, y2 + height2));
+
+            let path = Path::new()
+                .set("fill", c.clone())
+                .set("stroke", c)
+                .set("opacity", o)
+                .set("stroke-width",0)
+                .set("d", data2);
+
+            path
+        },
+    };
+
     (path1,path2)
 }
 
 
-
-/// Draw a filled square path between x1,y1 and x2,y2.
-pub fn get_chemin_sp_fill (x1: f32, y1:f32, x2: f32, y2:f32, c:String, o:String, stroke:bool, thickness1:usize, thickness2:usize) -> (Path,Path) {
-    let data1 = Data::new()
-        .move_to((x1 * 1.0, y1 * 1.0))
-        .line_to((x1 * 1.0, y2 * 1.0))
-        .line_to((x2 * 1.0, y2 * 1.0));
-    let data1 = Data::new()
-            .move_to((x1 * 1.0, y1 * 1.0))
-            .line_to((x1 * 1.0, y2 * 1.0));
-
-    let data2 = Data::new()
-                .move_to((x1 * 1.0, y2 * 1.0))
-                .line_to((x2 * 1.0, y2 * 1.0));
-    let path1 = Path::new()
-        .set("fill", "none")
-        .set("stroke", c.clone())
-        .set("opacity", o.clone())
-        .set("stroke-width", thickness1);
-    let path1 = match stroke {
-        true => path1.set("stroke-dasharray", "1, 1"),
-        false => path1,
-    };
-    let path2 = Path::new()
-        .set("fill", "none")
-        .set("stroke", c)
-        .set("opacity", o)
-        .set("stroke-width", thickness1);
-    let path2 = match stroke {
-        true => path2.set("stroke-dasharray", "1, 1"),
-        false => path2,
-    };
-    let path1 = path1.set("d", data1);
-    let path2 = path2.set("d", data2);
-    (path1,path2)
-}
 /// Finish  the drawing of species tree at the leaves level.
 pub fn close_chemin_sp (
     x1: f32,
