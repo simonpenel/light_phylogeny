@@ -498,25 +498,29 @@ pub fn draw_sptree_gntrees (
                     config.species_opacity.to_string(),
                     options.sthickness,
                 );
-                let (chemin2,chemin3) = get_chemin_sp_filled(
-                    index.x,
-                    index.y,
-                    index.width / 2.0,
-                    index.height / 2.0,
-                    n.x,
-                    n.y,
-                    n.width / 2.0,
-                    n.height / 2.0,
-                    color_branch_species.clone(),
-                    config.species_opacity.to_string(),
-                );
-
                 if sp_tree.arena[p].visible {
                     g.append(chemin);
-                    g.append(chemin2);
-                    g.append(chemin3);
-                };
+                }
+                if config.fill_species {
+                    let (chemin2,chemin3) = get_chemin_sp_filled(
+                        index.x,
+                        index.y,
+                        index.width / 2.0,
+                        index.height / 2.0,
+                        n.x,
+                        n.y,
+                        n.width / 2.0,
+                        n.height / 2.0,
+                        color_branch_species.clone(),
+                        config.species_opacity.to_string(),
+                    );
 
+                    if sp_tree.arena[p].visible {
+                        g.append(chemin2);
+                        g.append(chemin3);
+                    };
+                }
+                
                 if sp_tree.is_leaf(index.idx) {
                     // Set the y value of the pipe leaf ro the highest value of the y gene leaves
                     let mut max_gene_y = index.y;
