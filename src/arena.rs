@@ -727,7 +727,6 @@ pub fn xml2tree (
             let name = "N".to_owned() + &numero.to_string();
             //  index de ce nouveau nom
             let name = tree.new_node(name.to_string());
-            println!("name = {}",name);
             //Ajoute ce noeud au parent
             tree.arena[parent].children.push(name);
             // Attribue un parent a ce noeud
@@ -764,7 +763,6 @@ pub fn xml2tree (
                 Some(text) => tree.arena[parent].name = text.to_string(),
                 None => tree.arena[parent].name = "Unkwnown".to_string(),
             };
-            println!("Name of {} = {}",parent,tree.arena[parent].name );
         }
         // Attribue la distance definie dans le tag branch_length
         if child.has_tag_name("branch_length"){
@@ -1892,6 +1890,41 @@ pub fn fusion_mod_xy(tree: &mut ArenaTree<String>, index_1: usize, index_2: usiz
     let width2 = tree.arena[index_2].width;
     tree.arena[index_1].width = width1 + width2;
     tree.arena[index_2].width = width1 + width2;
+
+
+    if ((! tree.is_leaf(index_1) )  && ( tree.is_leaf(index_2) )) || (( tree.is_leaf(index_1) )  && ( !tree.is_leaf(index_2) )) {
+        println!("Hybridation between  {} and  {} is not allowed.",tree.arena[index_1].name,tree.arena[index_2].name);
+        panic!("Hybridation between a leave and an internal node is not allowed");
+    }
+    if (! tree.is_leaf(index_1) )  && (! tree.is_leaf(index_2) ) {
+
+
+        // let height1 = tree.arena[index_1].height;
+        // let height2 = tree.arena[index_2].height;
+        // tree.arena[index_1].height = height1 + height2;
+        // tree.arena[index_2].height = height2 + height2;
+
+        let y1 = tree.arena[index_1].y;
+        let y2 = tree.arena[index_2].y;
+        match y1 as u32 > y2 as u32 {
+            true =>  {
+                tree.arena[index_2].y = tree.arena[index_1].y;
+                let children = &tree.arena[index_2].children;
+                let left = children[0];
+                let right = children[1];
+                shift_nodes_y_values(tree, left, y1 - y2);
+                shift_nodes_y_values(tree, right, y1 - y2);
+            },
+            false => {
+                tree.arena[index_1].y = tree.arena[index_2].y;
+                let children = &tree.arena[index_1].children;
+                let left = children[0];
+                let right = children[1];
+                shift_nodes_y_values(tree, left, y2 - y1);
+                shift_nodes_y_values(tree, right, y2 - y1);
+            },
+        };
+    }
 
 }
 /// Shift the  x y values  of a node and its children according to the cumulated xmod ymod values.
