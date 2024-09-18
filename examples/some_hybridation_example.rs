@@ -13,7 +13,8 @@ fn main() {
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
     let mut global_roots: std::vec::Vec<usize> = Vec::new();
     let transfers = vec![];
-    let config: Config = Config::new();
+    let mut config: Config = Config::new();
+    config.fill_species = true;
     let mut options: Options = Options::new();
     options.species_internal = true ;
     read_recphyloxml_multi("examples/reti2.recphylo".to_string(),
@@ -28,7 +29,8 @@ fn main() {
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
     let mut global_roots: std::vec::Vec<usize> = Vec::new();
     let transfers = vec![];
-    let config: Config = Config::new();
+    let mut config: Config = Config::new();
+    config.fill_species = true;
     let mut options: Options = Options::new();
     options.species_internal = true ;
     // Define hybridation nodes
@@ -49,7 +51,8 @@ fn main() {
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
     let mut global_roots: std::vec::Vec<usize> = Vec::new();
     let transfers = vec![];
-    let config: Config = Config::new();
+    let mut config: Config = Config::new();
+    config.fill_species = true;
     let mut options: Options = Options::new();
     options.species_internal = true ;
     read_recphyloxml_multi("recphylo_examples/FAM000297_reconciliated.recphylo".to_string(),
@@ -64,7 +67,8 @@ fn main() {
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
     let mut global_roots: std::vec::Vec<usize> = Vec::new();
     let transfers = vec![];
-    let config: Config = Config::new();
+    let mut config: Config = Config::new();
+    config.fill_species = true;
     let mut options: Options = Options::new();
     options.species_internal = true ;
     // Define hybridation nodes
@@ -81,7 +85,8 @@ fn main() {
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
     let mut global_roots: std::vec::Vec<usize> = Vec::new();
     let transfers = vec![];
-    let config: Config = Config::new();
+    let mut config: Config = Config::new();
+    config.fill_species = true;
     let mut options: Options = Options::new();
     options.species_internal = true ;
     // Define hybridation nodes
@@ -97,7 +102,8 @@ fn main() {
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
     let mut global_roots: std::vec::Vec<usize> = Vec::new();
     let transfers = vec![];
-    let config: Config = Config::new();
+    let mut config: Config = Config::new();
+    config.fill_species = true;
     let mut options: Options = Options::new();
     options.species_internal = true ;
     // Define hybridation nodes
@@ -116,7 +122,8 @@ fn main() {
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
     let mut global_roots: std::vec::Vec<usize> = Vec::new();
     let transfers = vec![];
-    let config: Config = Config::new();
+    let mut config: Config = Config::new();
+    config.fill_species = true;
     let mut options: Options = Options::new();
     options.species_internal = true ;
     // Define hybridation nodes
@@ -133,7 +140,8 @@ fn main() {
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
     let mut global_roots: std::vec::Vec<usize> = Vec::new();
     let transfers = vec![];
-    let config: Config = Config::new();
+    let mut config: Config = Config::new();
+    config.fill_species = true;
     let mut options: Options = Options::new();
     options.species_internal = true ;
     // Define hybridation nodes
