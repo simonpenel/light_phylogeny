@@ -592,45 +592,6 @@ pub fn draw_sptree_gntrees (
             },
             None => {},
         };
-        let mut element = Element::new("text");
-        // Affiche le texte associe au noeud
-        match sp_tree.is_leaf(index.idx) {
-            true => {
-                element.assign("x", index.x - 15.0);
-                element.assign("y", index.y - index.width /2.0 - 10.0);
-                element.assign("class", "species");
-                let txt  = Text::new(&index.name);
-                element.append(txt);
-                element.assign(
-                    "transform",
-                    "rotate(90 ".to_owned() + &index.x.to_string() + ","
-                    + &index.y.to_string() + ")",
-                );
-                if index.visible {
-                    g.append(element);
-                }
-            },
-            false => {
-                match options.species_internal {
-                    true => {
-                        element.assign("x", index.x + 15.0);
-                        element.assign("y", index.y + 20.0);
-                        element.assign("class", "species");
-                        let txt = Text::new(&index.name);
-                        element.append(txt);
-                        element.assign(
-                            "transform",
-                            "rotate(90 ".to_owned() + &index.x.to_string()
-                            + "," + &index.y.to_string() + ")",
-                        );
-                        if index.visible {
-                            g.append(element);
-                        }
-                    },
-                    false => {},
-                };
-            },
-        };
         // Display branch length
         match options.branch {
             true => {
@@ -660,6 +621,7 @@ pub fn draw_sptree_gntrees (
             false => {},
         }
      }
+
     let  nb_gntree =  gene_trees.len(); // Nombre d'arbres de gene
     let mut idx_rcgen = 0;
      // Boucle sur les arbres de genes
@@ -1068,7 +1030,50 @@ pub fn draw_sptree_gntrees (
         recphylostyle.push_str(add_style_str);
     }
 
+    // Affiche les noms de  l'arbre d'espece ( a la fin pour que ce soit sur le dessus dans le svg)
+    for index in &sp_tree.arena {    
 
+        let mut element = Element::new("text");
+        // Affiche le texte associe au noeud
+        match sp_tree.is_leaf(index.idx) {
+            true => {
+                element.assign("x", index.x - 15.0);
+                element.assign("y", index.y - index.width /2.0 - 10.0);
+                element.assign("class", "species");
+                let txt  = Text::new(&index.name);
+                element.append(txt);
+                element.assign(
+                    "transform",
+                    "rotate(90 ".to_owned() + &index.x.to_string() + ","
+                    + &index.y.to_string() + ")",
+                );
+                if index.visible {
+                    g.append(element);
+                }
+            },
+            false => {
+                match options.species_internal {
+                    true => {
+                        element.assign("x", index.x + 15.0);
+                        element.assign("y", index.y + 20.0);
+                        element.assign("class", "species");
+                        let txt = Text::new(&index.name);
+                        element.append(txt);
+                        element.assign(
+                            "transform",
+                            "rotate(90 ".to_owned() + &index.x.to_string()
+                            + "," + &index.y.to_string() + ")",
+                        );
+                        if index.visible {
+                            g.append(element);
+                        }
+                    },
+                    false => {},
+                };
+            },
+        };
+
+    } 
 
 
     // Ajout le style
