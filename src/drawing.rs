@@ -548,13 +548,33 @@ pub fn draw_sptree_gntrees (
                         index.width / 2.0,
                         index.height / 2.0,
                         max_gene_y - index.y,
-                        color_branch_species,
+                        color_branch_species.clone(),
                         config.species_opacity.to_string(),
                         options.sthickness,
                     );
                     if sp_tree.arena[p].visible {
                         g.append(chemin)
                     };
+
+
+                if config.fill_species {
+                    let chemin2 = close_chemin_sp_filled(
+                        index.x,
+                        index.y,
+                        index.width / 2.0,
+                        index.height / 2.0,
+                        max_gene_y - index.y,
+                        color_branch_species,
+                        config.species_opacity.to_string()
+                    );
+
+                    if sp_tree.arena[p].visible {
+                        g.append(chemin2);
+                    };
+                }
+
+
+
                 }
                 match index.e {
                     Event::Duplication => {
@@ -1447,6 +1467,29 @@ pub fn close_chemin_sp (
             .set("stroke", c)
             .set("opacity", o)
             .set("stroke-width", thickness)
+            .set("d", data);
+        path
+}
+/// Finish  the drawing of filled species tree at the leaves level.
+pub fn close_chemin_sp_filled (
+    x1: f32,
+    y1: f32,
+    width1: f32,
+    height1: f32,
+    height2: f32,
+    c: String,
+    o: String
+    ) -> Path {
+        let data = Data::new()
+            .move_to((x1 - width1, y1 - height1  ))
+            .line_to((x1 - width1, y1 + 1.0 * height2))
+            .line_to((x1 + width1, y1 + 1.0 * height2))
+            .line_to((x1 + width1, y1 - height1 ));
+        let path = Path::new()
+            .set("fill", c.clone())
+            .set("stroke", c)
+            .set("opacity", o)
+            .set("stroke-width", 0)
             .set("d", data);
         path
 }
