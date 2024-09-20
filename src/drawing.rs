@@ -462,7 +462,6 @@ pub fn draw_sptree_gntrees (
                 )
                .set("style","background-color:".to_owned() + &options.bckg_color),
     };
-
     // Initialse la chaine de carctere dediee aux styles des fonts : font pour l'espece
     let mut recphylostyle:String = ".species { font: italic ".to_owned() + "; font-size: "
         + &config.species_police_size.to_string() + "px; fill: "
@@ -514,13 +513,11 @@ pub fn draw_sptree_gntrees (
                         color_branch_species.clone(),
                         config.species_opacity.to_string(),
                     );
-
                     if sp_tree.arena[p].visible {
                         g.append(chemin2);
                         g.append(chemin3);
                     };
                 }
-                
                 if sp_tree.is_leaf(index.idx) {
                     // Set the y value of the pipe leaf ro the highest value of the y gene leaves
                     let mut max_gene_y = index.y;
@@ -533,7 +530,7 @@ pub fn draw_sptree_gntrees (
                         }
                     };
                     if max_gene_y == index.y {
-                        // Dans le cas ou la fauille espece ne contient pas de gene ou seulement
+                        // Dans le cas ou la feuille espece ne contient pas de gene ou seulement
                         // des loss (un peu tordu et surement inutile vu que l'on modifie
                         // cette valeur ensuite.)
                          max_gene_y = max_gene_y + index.height / 2.0;
@@ -555,26 +552,20 @@ pub fn draw_sptree_gntrees (
                     if sp_tree.arena[p].visible {
                         g.append(chemin)
                     };
-
-
-                if config.fill_species {
-                    let chemin2 = close_chemin_sp_filled(
-                        index.x,
-                        index.y,
-                        index.width / 2.0,
-                        index.height / 2.0,
-                        max_gene_y - index.y,
-                        color_branch_species,
-                        config.species_opacity.to_string()
-                    );
-
-                    if sp_tree.arena[p].visible {
-                        g.append(chemin2);
-                    };
-                }
-
-
-
+                    if config.fill_species {
+                        let chemin2 = close_chemin_sp_filled(
+                            index.x,
+                            index.y,
+                            index.width / 2.0,
+                            index.height / 2.0,
+                            max_gene_y - index.y,
+                            color_branch_species,
+                            config.species_opacity.to_string(),
+                        );
+                        if sp_tree.arena[p].visible {
+                            g.append(chemin2);
+                        };
+                    }
                 }
                 match index.e {
                     Event::Duplication => {
@@ -621,10 +612,9 @@ pub fn draw_sptree_gntrees (
             false => {},
         }
      }
-
+    // Boucle sur les arbres de genes
     let  nb_gntree =  gene_trees.len(); // Nombre d'arbres de gene
     let mut idx_rcgen = 0;
-     // Boucle sur les arbres de genes
     loop {
         /* sort de la bcoule si il n'y a pas de genes*/
         if nb_gntree == 0 {
@@ -633,7 +623,6 @@ pub fn draw_sptree_gntrees (
         // Cas de la coloration par noeuds: on modifie l'index de couleur des descendants de chaque
         // noeud dans options.node_colors
         if options.node_colors.len() > 0 {
-
             // On definit la couleur des font pour le style node_0
             // Style de la font pour la partie de l'arbre
             let mut font_color  = get_default_color(0);
@@ -647,7 +636,6 @@ pub fn draw_sptree_gntrees (
             // Je passe en str pour l'ajouter
             let add_style_str :&str = &added_style;
             recphylostyle.push_str(add_style_str);
-
         	let mut node_color_idx = 1; // Les autres restent a 0
         	// Traite tous les noeuds a colorer
         	for node_color in  &options.node_colors {
@@ -679,7 +667,6 @@ pub fn draw_sptree_gntrees (
         		node_color_idx += 1;
         	}
         }
-
         // Choix de la couleur dans le cas d'une coloration par arbre de gene par defaut
         // Boucle sur une base de 6 couleurs avec une modif aleatoire (utile qaund on a pmlus de 6 genes)
         let base_couleur = match &idx_rcgen % 6 {
@@ -696,13 +683,11 @@ pub fn draw_sptree_gntrees (
             .luminosity(Luminosity::Bright) // Optional
             .alpha(1.0) // Optional
             .to_rgb_string(); //
-
         // Modification de la couleur dans le cas d'une coloration par arbre de gene défini par l'utilisateur
         if options.gene_colors.len() > 0 {
             let _idx_user_color = &idx_rcgen % options.gene_colors.len();
             gene_color = options.gene_colors[_idx_user_color].clone();
         }
-
         // Style de la font pour le gene
         let added_style = " .gene_".to_owned() + &idx_rcgen.to_string()
              + " { font-size: " + &config.gene_police_size.to_string() + "px; fill:"
@@ -710,7 +695,6 @@ pub fn draw_sptree_gntrees (
         // Je passe en str pour l'ajouter
         let add_style_str :&str = &added_style;
         recphylostyle.push_str(add_style_str);
-
         for  index in &gene_trees[idx_rcgen].arena {
  			// Cas ou la coloration varie dans l'arbre des genes
             if options.node_colors.len() > 0 {
@@ -962,11 +946,11 @@ pub fn draw_sptree_gntrees (
                     element.assign("x", index.x - 5.0);
                     element.assign("y", index.y + 15.0);
                     if options.node_colors.len() > 0 {
- 					// Mode coloration par noeud
+ 					    // Mode coloration par noeud
                     	element.assign("class", "node_".to_owned() + &index.color_node_idx.to_string());
                     }
                     else {
-                    // Mode coloration par gene
+                        // Mode coloration par gene
                     	element.assign("class", "gene_".to_owned() + &idx_rcgen.to_string());
                     }
                     let txt = Text::new(&index.name);
@@ -985,7 +969,7 @@ pub fn draw_sptree_gntrees (
                             element.assign("x", index.x+10.0);
                             element.assign("y", index.y+0.0);
                             if options.node_colors.len() > 0 {
-                            // Mode coloration par noeud
+                                // Mode coloration par noeud
                                 element.assign("class", "node_".to_owned() + &index.color_node_idx.to_string());
                             }
                             else {
@@ -1029,10 +1013,8 @@ pub fn draw_sptree_gntrees (
         let add_style_str :&str = &added_style;
         recphylostyle.push_str(add_style_str);
     }
-
-    // Affiche les noms de  l'arbre d'espece ( a la fin pour que ce soit sur le dessus dans le svg)
-    for index in &sp_tree.arena {    
-
+    // Affiche les noms de  l'arbre d'espece ( on le fait a la fin pour que ce soit sur le dessus dans le svg)
+    for index in &sp_tree.arena {
         let mut element = Element::new("text");
         // Affiche le texte associe au noeud
         match sp_tree.is_leaf(index.idx) {
@@ -1072,10 +1054,7 @@ pub fn draw_sptree_gntrees (
                 };
             },
         };
-
-    } 
-
-
+    }
     // Ajout le style
     let style = Style::new(recphylostyle);
     document.append(style);
@@ -1083,7 +1062,6 @@ pub fn draw_sptree_gntrees (
         let (end, start) = &transfer;
         if  ((options.trans_start.as_ref() == None) || (options.trans_start.as_ref() == Some(start))) &&
             ((options.trans_end.as_ref() == None) || (options.trans_end.as_ref() == Some(end))) {
-
             /*if (options.trans_start.as_ref() != None) || (options.trans_end.as_ref() != None) {
                 println!("Selected transfer {:?} => {:?}",end,start);
             }*/
@@ -1379,8 +1357,6 @@ pub fn get_chemin_sp (
         path
     }
 }
-
-
 /// Draw a  filled square pipe path between x1,y1 ad x2,y2
 pub fn get_chemin_sp_filled (
     x1: f32,
@@ -1399,19 +1375,12 @@ pub fn get_chemin_sp_filled (
         .line_to((x1 - width1, y2 - height2))
         .line_to((x1 + width1, y2 - height2))
         .line_to((x1 + width1, y1 - height1));
-
     let path1 = Path::new()
         .set("fill", c.clone())
         .set("stroke", c.clone())
         .set("opacity", o.clone())
         .set("stroke-width",0)
         .set("d", data1);
-
-
-    // let mut data2 = Data::new();
-
-    //  always y1 > y2
-
     let path2 = match  x1 < x2 {
         true => {
             let data2 = Data::new()
@@ -1419,14 +1388,12 @@ pub fn get_chemin_sp_filled (
                 .line_to((x2 + width2, y2 - height2))
                 .line_to((x2 + width2, y2 + height2))
                 .line_to((x1 + width1, y2 + height2));
-
             let path = Path::new()
                 .set("fill", c.clone())
                 .set("stroke", c)
                 .set("opacity", o)
                 .set("stroke-width",0)
                 .set("d", data2);
-
             path
         },
         false => {
@@ -1435,21 +1402,17 @@ pub fn get_chemin_sp_filled (
                 .line_to((x1 + width1, y2 - height2))
                 .line_to((x1 + width1, y2 + height2))
                 .line_to((x2 + width2, y2 + height2));
-
             let path = Path::new()
                 .set("fill", c.clone())
                 .set("stroke", c)
                 .set("opacity", o)
                 .set("stroke-width",0)
                 .set("d", data2);
-
             path
         },
     };
-
     (path1,path2)
 }
-
 
 /// Finish  the drawing of species tree at the leaves level.
 pub fn close_chemin_sp (
