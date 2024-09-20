@@ -449,8 +449,9 @@ pub fn recphyloxml_processing(
             },
         };
     }
-
-    // Etape optionelle : switch species tree node
+    // ------------------------------------
+    // Option switch species tree node
+    // ------------------------------------
     for switch in &options.switches {
         let sw = sp_tree.get_index(switch.to_string()).unwrap();
         let mut children : Vec<usize> = Vec::new();
@@ -458,7 +459,6 @@ pub fn recphyloxml_processing(
         children.push(sp_tree.arena[sw].children[0]);
         sp_tree.arena[sw].children = children;
     }
-
     //----------------------------------------------------------
     // 1ere étape :initialisation des x,y de l'arbre d'espèces :
     // profondeur => Y, left => X= 0, right X=1
@@ -466,7 +466,7 @@ pub fn recphyloxml_processing(
     let root = sp_tree.get_root();
     knuth_layout(&mut sp_tree,root, &mut 1);
     // --------------------
-    // OPTIONAL  Cladogramme
+    // Option  Cladogramme
     // --------------------
     if options.clado_flag {
         cladogramme(&mut sp_tree);
@@ -480,7 +480,9 @@ pub fn recphyloxml_processing(
         map_species_trees(&mut sp_tree, &mut gene_trees);
         info!("Species tree after mapping : {:?}",sp_tree);
     }
-    //  Option: uniformise les noeuds de l'arbre d'espece
+    // --------------------------------------------------
+    //  Option  uniformise les noeuds de l'arbre d'espece
+    // --------------------------------------------------
     if options.uniform {
         species_uniformisation(&mut sp_tree);
         // Il fait decaler le tout (mais je ne comprend pas pourquoi?)
@@ -489,7 +491,7 @@ pub fn recphyloxml_processing(
         shift_nodes_y_values(sp_tree, root, -smallest_y + root_width);
     }
     // ---------------------------------------------------------
-    // Option : utilise les longueurs de branches
+    // Option  utilise les longueurs de branches
     // ---------------------------------------------------------
     if options.real_length_flag {
         //  Tout d'abord il faut uniformiser
@@ -512,7 +514,7 @@ pub fn recphyloxml_processing(
         shift_nodes_y_values(sp_tree, root, -smallest_y + root_width);
     }
     // ---------------------------------------------------------
-    // OPTIONAL Optimisation if needed
+    // Oprion Optimisation if needed
     // ---------------------------------------------------------
     if options.optimisation {
         println!("Optimisation of orientation according to transfers");
@@ -551,7 +553,6 @@ pub fn recphyloxml_processing(
     // de xmod dans l'arbre d'espèces
     // ---------------------------------------------------------
     shift_mod_xy(&mut sp_tree, root, &mut 0.0, &mut 0.0);
-
     // ---------------------------------------------------------
     // 5eme étape : Place le parent entre les enfants dans
     // l'arbre d'espèces
@@ -568,13 +569,11 @@ pub fn recphyloxml_processing(
     if ! options.real_length_flag {
         check_vertical_contour_postorder(&mut sp_tree, root, 0.0);
     }
-
-    // ----------------------------------------
-    // Etape optionele gestion des hybridations
-    // ----------------------------------------
+    // -------------------------------
+    // Option gestion des hybridations
+    // -------------------------------
     // Sens dans lequel decaler les noeuds de genes apres la fusion
     let mut fusion_orders:Vec<bool> = Vec::new();
-
     for (name1, name2) in &options.hybrid {
         let h1 = sp_tree.get_index(name1.to_string()).unwrap();
         let h2 = sp_tree.get_index(name2.to_string()).unwrap();
@@ -582,7 +581,6 @@ pub fn recphyloxml_processing(
         fusion_orders.push(sp_tree.arena[h1].x < sp_tree.arena[h2].x);
         fusion_mod_xy(&mut sp_tree, h1, h2);
     }
-
     // ---------------------------------------------------------
     // Egalise les feuilles
     // ---------------------------------------------------------
@@ -596,11 +594,11 @@ pub fn recphyloxml_processing(
         }
     }
     // ---------------------------------------------------------
-    // OPTIONAL Scale the heigt if needed
+    // Option Scale the heigt if needed
     // ---------------------------------------------------------
     if options.height != 1.0 {scale_heigth(&mut sp_tree, options.height)};
     // ---------------------------------------------------------
-    // OPTIONAL Scale the width if needed
+    // Option Scale the width if needed
     // ---------------------------------------------------------
     if options.width != 1.0 { scale_width(&mut sp_tree, options.width)};
     // ---------------------------------------------------------
@@ -608,17 +606,12 @@ pub fn recphyloxml_processing(
     // noeud d'especes pour éviter qu'ils soit superposés
     // ---------------------------------------------------------
     bilan_mappings(&mut sp_tree, &mut gene_trees, initial_root, & options);
-
-
-
     // ---------------------------------------------------------
     // 9eme etape : centre les noeuds de genes dans le noeud de l'espece
     // ---------------------------------------------------------
     center_gene_nodes(&mut sp_tree,&mut gene_trees, initial_root);
-
-
     // -------------------------------------------
-    // Etape optionelle : gestion des hybridations
+    // Option gestion des hybridations
     // -------------------------------------------
     let mut idx_fusion = 0;
     for (name1, name2) in &options.hybrid {
@@ -633,7 +626,6 @@ pub fn recphyloxml_processing(
     if idx_fusion > 0 {
         options.fill_species = true ;
     }
-
     for (name1, name2) in &options.hybrid {
         let fusion_name  = &(name1.to_owned() + " hybrid. " + name2) ;
         let h1 = sp_tree.get_index(name1.to_string()).unwrap();
@@ -641,7 +633,6 @@ pub fn recphyloxml_processing(
         sp_tree.arena[h1].name = fusion_name.to_string();
         sp_tree.arena[h2].name = fusion_name.to_string();
     }
-
     // ---------------------------------------------------------
     // 10eme etape traite spécifiquement les duplications et les feuilles
     // ---------------------------------------------------------
