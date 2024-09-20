@@ -1868,7 +1868,6 @@ pub fn shift_nodes_y_values(tree: &mut ArenaTree<String>, index: usize, y:  f32)
         shift_nodes_y_values(tree, son_right, y);
     }
 }
-
 /// Fusion des noeuds (hybridation)
 pub fn fusion_mod_xy(tree: &mut ArenaTree<String>, index_1: usize, index_2: usize, _xmod: &mut f32, _ymod: &mut f32) {
     if ((! tree.is_leaf(index_1) )  && ( tree.is_leaf(index_2) )) || (( tree.is_leaf(index_1) )  && ( !tree.is_leaf(index_2) )) {
