@@ -1872,8 +1872,9 @@ pub fn shift_nodes_y_values(tree: &mut ArenaTree<String>, index: usize, y:  f32)
 /// Merge 2 nodes in the species tree (hybridation)
 pub fn fusion_mod_xy(tree: &mut ArenaTree<String>, index_1: usize, index_2: usize) {
     if ((! tree.is_leaf(index_1) )  && ( tree.is_leaf(index_2) )) || (( tree.is_leaf(index_1) )  && ( !tree.is_leaf(index_2) )) {
-        println!("Merging between {} and  {} is not allowed.",tree.arena[index_1].name,tree.arena[index_2].name);
-        panic!("Merging between a leave and an internal node is not allowed.");
+        eprintln!("[fusion_mod_xy] ERROR Unable to merge {} and {}.",tree.arena[index_1].name,tree.arena[index_2].name);
+        eprintln!("Merging between a leave and an internal node is not allowed.");
+        process::exit(1)
     }
     let dist1 = tree.arena[index_1].x;
     let dist2 = tree.arena[index_2].x;
