@@ -453,7 +453,13 @@ pub fn recphyloxml_processing(
     // Option switch species tree node
     // ------------------------------------
     for switch in &options.switches {
-        let sw = sp_tree.get_index(switch.to_string()).unwrap();
+        let sw = match sp_tree.get_index(switch.to_string()){
+            Ok(index) => index,
+            Err(_err) => {
+                eprintln!("[recphyloxml_processing] ERROR Unable to find node {:?}",switch.to_string());
+                std::process::exit(1);
+            },
+        };
         let mut children : Vec<usize> = Vec::new();
         children.push(sp_tree.arena[sw].children[1]);
         children.push(sp_tree.arena[sw].children[0]);
@@ -575,8 +581,21 @@ pub fn recphyloxml_processing(
     // Sens dans lequel decaler les noeuds de genes apres la fusion
     let mut fusion_orders:Vec<bool> = Vec::new();
     for (name1, name2) in &options.hybrid {
-        let h1 = sp_tree.get_index(name1.to_string()).unwrap();
-        let h2 = sp_tree.get_index(name2.to_string()).unwrap();
+        let h1 = match sp_tree.get_index(name1.to_string()){
+            Ok(index) => index,
+            Err(_err) => {
+                eprintln!("[recphyloxml_processing] ERROR Unable to find node {:?}",name1.to_string());
+                std::process::exit(1);
+            },
+        };
+        let h2 = match sp_tree.get_index(name2.to_string()){
+            Ok(index) => index,
+            Err(_err) => {
+                eprintln!("[recphyloxml_processing] ERROR Unable to find node {:?}",name2.to_string());
+                std::process::exit(1);
+            },
+        };
+
         println!("Merging nodes {} [{}] and {}  [{}]",h1,sp_tree.arena[h1].name,h2,sp_tree.arena[h2].name);
         fusion_orders.push(sp_tree.arena[h1].x < sp_tree.arena[h2].x);
         fusion_mod_xy(&mut sp_tree, h1, h2);
@@ -615,8 +634,20 @@ pub fn recphyloxml_processing(
     // -------------------------------------------
     let mut idx_fusion = 0;
     for (name1, name2) in &options.hybrid {
-        let h1 = sp_tree.get_index(name1.to_string()).unwrap();
-        let h2 = sp_tree.get_index(name2.to_string()).unwrap();
+        let h1 = match sp_tree.get_index(name1.to_string()){
+            Ok(index) => index,
+            Err(_err) => {
+                eprintln!("[recphyloxml_processing] ERROR Unable to find node {:?}",name1.to_string());
+                std::process::exit(1);
+            },
+        };
+        let h2 = match sp_tree.get_index(name2.to_string()){
+            Ok(index) => index,
+            Err(_err) => {
+                eprintln!("[recphyloxml_processing] ERROR Unable to find node {:?}",name2.to_string());
+                std::process::exit(1);
+            },
+        };
         let fusion_order = fusion_orders[idx_fusion];
         let fusion_order_inv = ! fusion_order;
         bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h1, fusion_order);
@@ -628,8 +659,20 @@ pub fn recphyloxml_processing(
     }
     for (name1, name2) in &options.hybrid {
         let fusion_name  = &(name1.to_owned() + " hybrid. " + name2) ;
-        let h1 = sp_tree.get_index(name1.to_string()).unwrap();
-        let h2 = sp_tree.get_index(name2.to_string()).unwrap();
+        let h1 = match sp_tree.get_index(name1.to_string()){
+            Ok(index) => index,
+            Err(_err) => {
+                eprintln!("[recphyloxml_processing] ERROR Unable to find node {:?}",name1.to_string());
+                std::process::exit(1);
+            },
+        };
+        let h2 = match sp_tree.get_index(name2.to_string()){
+            Ok(index) => index,
+            Err(_err) => {
+                eprintln!("[recphyloxml_processing] ERROR Unable to find node {:?}",name2.to_string());
+                std::process::exit(1);
+            },
+        };
         sp_tree.arena[h1].name = fusion_name.to_string();
         sp_tree.arena[h2].name = fusion_name.to_string();
     }
