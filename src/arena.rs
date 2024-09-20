@@ -429,30 +429,29 @@ pub struct Options{
     pub free_living_shift: bool,
     /// Uniformise the species tree nodes size.
     pub uniform: bool,
-    /// thickness of the stroke for gene trees
+    /// Thickness of the stroke for gene trees
     pub gthickness: usize,
-    /// thickness of the stroke for species trees
+    /// Thickness of the stroke for species trees
     pub sthickness: usize,
-    /// used for the size of square, circle, etc.
+    /// Used for the size of square, circle, etc.
     pub squaresize: f32,
-    /// start transfert
+    /// Start transfert
     pub trans_start: Option<String>,
-    /// end transfert
+    /// End transfert
     pub trans_end: Option<String>,
-    /// place les duplication et les branchingout
-    /// a mi distance de leur parent
+    /// Duplication and  branchingout at mid distance of parent
     pub mid_dist: bool,
-    /// user-defined list of colors for genes
+    /// User-defined list of colors for genes
     pub gene_colors: Vec<String>,
-    /// user-defined list of nodes for genes. Children of nodes will be colorised
+    /// User-defined list of nodes for genes. Children of nodes will be colorised
     pub node_colors: Vec<String>,
     /// svg background color
     pub bckg_color: String,
-    /// hybridisation
+    /// A list of node name couples. Merge the 2 nodes
     pub hybrid: Vec<(String,String)>,
-    /// switches
+    /// A list of node names. Switches the children of the nodes
     pub switches: Vec<String>,
-    /// fill_species (may be defined in config as well)
+    /// Fill species tree (may be defined in config as well)
     pub fill_species: bool,
 }
 impl Options {
@@ -1180,7 +1179,7 @@ pub fn map_species_trees(
         } //Fin de la boucle sur les arbres de gènes
     } // fin de la condition sur ke nb de gènes
 }
-/// Shift the gene nodes in a given species node to avoid superposition after hybridation.
+/// Shift the gene nodes in a given species node to avoid superposition after merging.
 pub fn bilan_mappings_reti(
     sp_tree: &mut ArenaTree<String>,
     gene_trees: &mut std::vec::Vec<ArenaTree<String>>,
@@ -1871,7 +1870,7 @@ pub fn shift_nodes_y_values(tree: &mut ArenaTree<String>, index: usize, y:  f32)
         shift_nodes_y_values(tree, son_right, y);
     }
 }
-/// Fusion des noeuds (hybridation)
+/// Merge 2 nodes in the species tree (hybridation)
 pub fn fusion_mod_xy(tree: &mut ArenaTree<String>, index_1: usize, index_2: usize, _xmod: &mut f32, _ymod: &mut f32) {
     if ((! tree.is_leaf(index_1) )  && ( tree.is_leaf(index_2) )) || (( tree.is_leaf(index_1) )  && ( !tree.is_leaf(index_2) )) {
         println!("Merging between {} and  {} is not allowed.",tree.arena[index_1].name,tree.arena[index_2].name);
@@ -1886,7 +1885,6 @@ pub fn fusion_mod_xy(tree: &mut ArenaTree<String>, index_1: usize, index_2: usiz
     tree.arena[index_2].x = dist;
     info!("[fusion_mod_xy] After : x of {} = {}.",&tree.arena[index_1].name,tree.arena[index_1].x);
     info!("[fusion_mod_xy] After : x of {} = {}.",&tree.arena[index_2].name,tree.arena[index_2].x);
-
     let width1 = tree.arena[index_1].width;
     let width2 = tree.arena[index_2].width;
     info!("[fusion_mod_xy] Before : width of {} = {}.",&tree.arena[index_1].name,tree.arena[index_1].width);
@@ -1895,7 +1893,6 @@ pub fn fusion_mod_xy(tree: &mut ArenaTree<String>, index_1: usize, index_2: usiz
     tree.arena[index_2].width = width1 + width2;
     info!("[fusion_mod_xy] After : width of {} = {}.",&tree.arena[index_1].name,tree.arena[index_1].width);
     info!("[fusion_mod_xy] After : width of {} = {}.",&tree.arena[index_2].name,tree.arena[index_2].width);
-
     if (! tree.is_leaf(index_1) )  && (! tree.is_leaf(index_2) ) {
         let y1 = tree.arena[index_1].y;
         let y2 = tree.arena[index_2].y;
@@ -1922,7 +1919,6 @@ pub fn fusion_mod_xy(tree: &mut ArenaTree<String>, index_1: usize, index_2: usiz
         info!("[fusion_mod_xy] After : y of {} = {}.",&tree.arena[index_1].name,tree.arena[index_1].y);
         info!("[fusion_mod_xy] After: y of {} = {}.",&tree.arena[index_2].name,tree.arena[index_2].y);
     }
-
 }
 /// Shift the  x y values  of a node and its children according to the cumulated xmod ymod values.
 pub fn shift_mod_xy(tree: &mut ArenaTree<String>, index: usize, xmod: &mut f32, ymod: &mut f32) {
