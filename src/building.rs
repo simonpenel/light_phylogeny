@@ -580,7 +580,7 @@ pub fn recphyloxml_processing(
         let h2 = sp_tree.get_index(name2.to_string()).unwrap();
         println!("Merging nodes {} [{}] and {}  [{}]",h1,sp_tree.arena[h1].name,h2,sp_tree.arena[h2].name);
         fusion_orders.push(sp_tree.arena[h1].x < sp_tree.arena[h2].x);
-        fusion_mod_xy(&mut sp_tree, h1, h2, &mut 0.0, &mut 0.0);
+        fusion_mod_xy(&mut sp_tree, h1, h2);
     }
 
     // ---------------------------------------------------------
@@ -626,8 +626,8 @@ pub fn recphyloxml_processing(
         let h2 = sp_tree.get_index(name2.to_string()).unwrap();
         let fusion_order = fusion_orders[idx_fusion];
         let fusion_order_inv = ! fusion_order;
-        bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h1, fusion_order, & options);
-        bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h2, fusion_order_inv, & options);
+        bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h1, fusion_order);
+        bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h2, fusion_order_inv);
         idx_fusion += 1;
     }
     if idx_fusion > 0 {
