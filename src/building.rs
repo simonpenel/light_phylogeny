@@ -408,7 +408,7 @@ pub fn recphyloxml_processing(
     mut sp_tree: &mut ArenaTree<String>,                    // species tree
     mut gene_trees: &mut std::vec::Vec<ArenaTree<String>>,  // gene trees
     options: &mut Options,                                  // display options
-    config: &Config,                                        // svg configuration
+    config: & Config,                                        // svg configuration
     mapping: bool,                                           // map gene and species
     transfers: & std::vec::Vec<(String,String)>,            // optional additional transfers
     outfile: String,                                         // output file
@@ -629,6 +629,9 @@ pub fn recphyloxml_processing(
         bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h1, fusion_order, & options);
         bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h2, fusion_order_inv, & options);
         idx_fusion += 1;
+    }
+    if idx_fusion > 0 {
+        options.fill_species = true ;
     }
 
     for (name1, name2) in &options.hybrid {

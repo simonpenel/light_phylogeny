@@ -500,7 +500,7 @@ pub fn draw_sptree_gntrees (
                 if sp_tree.arena[p].visible {
                     g.append(chemin);
                 }
-                if config.fill_species {
+                if config.fill_species || options.fill_species {
                     let (chemin2,chemin3) = get_chemin_sp_filled(
                         index.x,
                         index.y,
@@ -552,7 +552,7 @@ pub fn draw_sptree_gntrees (
                     if sp_tree.arena[p].visible {
                         g.append(chemin)
                     };
-                    if config.fill_species {
+                    if config.fill_species || options.fill_species {
                         let chemin2 = close_chemin_sp_filled(
                             index.x,
                             index.y,

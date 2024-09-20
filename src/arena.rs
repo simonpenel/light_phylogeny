@@ -451,7 +451,9 @@ pub struct Options{
     /// hybridisation
     pub hybrid: Vec<(String,String)>,
     /// switches
-    pub switches: Vec<String>
+    pub switches: Vec<String>,
+    /// fill_species (may be defined in config as well)
+    pub fill_species: bool,
 }
 impl Options {
     pub fn new() -> Self {
@@ -493,6 +495,7 @@ impl Options {
             bckg_color: "White".to_string(),
             hybrid: Vec::new(),
             switches: Vec::new(),
+            fill_species: false,
         }
     }
 }
