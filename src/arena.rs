@@ -1882,32 +1882,34 @@ pub fn shift_nodes_y_values(tree: &mut ArenaTree<String>, index: usize, y:  f32)
 
 /// Fusion des noeuds (hybridation)
 pub fn fusion_mod_xy(tree: &mut ArenaTree<String>, index_1: usize, index_2: usize, _xmod: &mut f32, _ymod: &mut f32) {
+    if ((! tree.is_leaf(index_1) )  && ( tree.is_leaf(index_2) )) || (( tree.is_leaf(index_1) )  && ( !tree.is_leaf(index_2) )) {
+        println!("Merging between {} and  {} is not allowed.",tree.arena[index_1].name,tree.arena[index_2].name);
+        panic!("Merging between a leave and an internal node is not allowed.");
+    }
     let dist1 = tree.arena[index_1].x;
     let dist2 = tree.arena[index_2].x;
     let dist = ( dist1 + dist2 ) / 2.0 ;
+    info!("[fusion_mod_xy] Before : x of {} = {}.",&tree.arena[index_1].name,tree.arena[index_1].x);
+    info!("[fusion_mod_xy] Before : x of {} = {}.",&tree.arena[index_2].name,tree.arena[index_2].x);
     tree.arena[index_1].x = dist;
     tree.arena[index_2].x = dist;
+    info!("[fusion_mod_xy] After : x of {} = {}.",&tree.arena[index_1].name,tree.arena[index_1].x);
+    info!("[fusion_mod_xy] After : x of {} = {}.",&tree.arena[index_2].name,tree.arena[index_2].x);
 
     let width1 = tree.arena[index_1].width;
     let width2 = tree.arena[index_2].width;
+    info!("[fusion_mod_xy] Before : width of {} = {}.",&tree.arena[index_1].name,tree.arena[index_1].width);
+    info!("[fusion_mod_xy] Before : width of {} = {}.",&tree.arena[index_2].name,tree.arena[index_2].width);
     tree.arena[index_1].width = width1 + width2;
     tree.arena[index_2].width = width1 + width2;
+    info!("[fusion_mod_xy] After : width of {} = {}.",&tree.arena[index_1].name,tree.arena[index_1].width);
+    info!("[fusion_mod_xy] After : width of {} = {}.",&tree.arena[index_2].name,tree.arena[index_2].width);
 
-
-    if ((! tree.is_leaf(index_1) )  && ( tree.is_leaf(index_2) )) || (( tree.is_leaf(index_1) )  && ( !tree.is_leaf(index_2) )) {
-        println!("Hybridation between  {} and  {} is not allowed.",tree.arena[index_1].name,tree.arena[index_2].name);
-        panic!("Hybridation between a leave and an internal node is not allowed");
-    }
     if (! tree.is_leaf(index_1) )  && (! tree.is_leaf(index_2) ) {
-
-
-        // let height1 = tree.arena[index_1].height;
-        // let height2 = tree.arena[index_2].height;
-        // tree.arena[index_1].height = height1 + height2;
-        // tree.arena[index_2].height = height2 + height2;
-
         let y1 = tree.arena[index_1].y;
         let y2 = tree.arena[index_2].y;
+        info!("[fusion_mod_xy] Before : y of {} = {}.",&tree.arena[index_1].name,tree.arena[index_1].y);
+        info!("[fusion_mod_xy] Before : y of {} = {}.",&tree.arena[index_2].name,tree.arena[index_2].y);
         match y1 as u32 > y2 as u32 {
             true =>  {
                 tree.arena[index_2].y = tree.arena[index_1].y;
@@ -1926,6 +1928,8 @@ pub fn fusion_mod_xy(tree: &mut ArenaTree<String>, index_1: usize, index_2: usiz
                 shift_nodes_y_values(tree, right, y2 - y1);
             },
         };
+        info!("[fusion_mod_xy] After : y of {} = {}.",&tree.arena[index_1].name,tree.arena[index_1].y);
+        info!("[fusion_mod_xy] After: y of {} = {}.",&tree.arena[index_2].name,tree.arena[index_2].y);
     }
 
 }

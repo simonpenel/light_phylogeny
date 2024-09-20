@@ -578,8 +578,7 @@ pub fn recphyloxml_processing(
     for (name1, name2) in &options.hybrid {
         let h1 = sp_tree.get_index(name1.to_string()).unwrap();
         let h2 = sp_tree.get_index(name2.to_string()).unwrap();
-
-        println!("Hybridisation between {} [{}] and {}  [{}]",h1,sp_tree.arena[h1].name,h2,sp_tree.arena[h2].name);
+        println!("Merging nodes {} [{}] and {}  [{}]",h1,sp_tree.arena[h1].name,h2,sp_tree.arena[h2].name);
         fusion_orders.push(sp_tree.arena[h1].x < sp_tree.arena[h2].x);
         fusion_mod_xy(&mut sp_tree, h1, h2, &mut 0.0, &mut 0.0);
     }
@@ -625,7 +624,6 @@ pub fn recphyloxml_processing(
     for (name1, name2) in &options.hybrid {
         let h1 = sp_tree.get_index(name1.to_string()).unwrap();
         let h2 = sp_tree.get_index(name2.to_string()).unwrap();
-        println!("Hybridisation between {} [{}] and {}  [{}]",h1,sp_tree.arena[h1].name,h2,sp_tree.arena[h2].name);
         let fusion_order = fusion_orders[idx_fusion];
         let fusion_order_inv = ! fusion_order;
         bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h1, fusion_order, & options);
@@ -639,7 +637,6 @@ pub fn recphyloxml_processing(
         let h2 = sp_tree.get_index(name2.to_string()).unwrap();
         sp_tree.arena[h1].name = fusion_name.to_string();
         sp_tree.arena[h2].name = fusion_name.to_string();
-
     }
 
     // ---------------------------------------------------------
