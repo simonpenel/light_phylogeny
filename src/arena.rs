@@ -1177,8 +1177,6 @@ pub fn map_species_trees(
         } //Fin de la boucle sur les arbres de gènes
     } // fin de la condition sur ke nb de gènes
 }
-
-
 /// Shift the gene nodes in a given species node to avoid superposition after hybridation.
 pub fn bilan_mappings_reti(
     sp_tree: &mut ArenaTree<String>,
@@ -1201,10 +1199,7 @@ pub fn bilan_mappings_reti(
         gene_trees[*index_node].arena[*node].set_x_noref(x);
         info!("[bilan_mappings_reti] Gene node after {:?}",gene_trees[*index_node].arena[*node]);
     }
-
 }
-
-
 /// Shift the gene nodes in a given species node to avoid superposition.
 pub fn bilan_mappings(
     sp_tree: &mut ArenaTree<String>,
@@ -1360,12 +1355,6 @@ pub fn bilan_mappings(
         }
 
     }
-
-
-
-
-
-
     let children = &mut  sp_tree.arena[index].children;
     if children.len() > 0 {
         let son_left = children[0];
