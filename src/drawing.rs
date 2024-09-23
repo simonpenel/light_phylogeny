@@ -251,6 +251,17 @@ pub fn draw_tree (
                 );
                 g.append(diamond);
             },
+            Event::Hybridation  => {
+                g.append(
+                    get_empty_circle(
+                        index.x,
+                        index.y,
+                        options.squaresize * 0.75,
+                        gene_color.to_string(),
+                        config.gene_opacity.to_string(),
+                    )
+                )
+            },
             _  => {
                 if index.visible {
                     g.append(
@@ -937,6 +948,15 @@ pub fn draw_sptree_gntrees (
                         config.gene_opacity.to_string(),
                     )
                 ),
+                Event::Hybridation => g.append(
+                    get_empty_circle(
+                        index.x,
+                        index.y,
+                        options.squaresize * 0.75,
+                        gene_color.to_string(),
+                        config.gene_opacity.to_string(),
+                    )
+                ),
                 _ =>  {},
             };
             // Affiche le texte associe au noeud
@@ -1221,6 +1241,18 @@ pub fn get_circle (x: f32, y:f32, r:f32, c:String, o:String) -> Circle {
         .set("stroke-width", 1);
     circle
 }
+/// Draw an empty circle  of size s at x,y.
+pub fn get_empty_circle (x: f32, y:f32, r:f32, c:String, o:String) -> Circle {
+    let circle = Circle::new()
+        .set("cx", x)
+        .set("cy", y)
+        .set("r", r)
+        .set("fill", "white")
+        .set("stroke", c)
+        .set("opacity", o)
+        .set("stroke-width", 1);
+    circle
+}
 /// Draw a cross  of size s at x,y.
 pub fn get_cross (x: f32, y:f32, s:f32, c:String, o:String) -> Path {
     let data = Data::new()
@@ -1379,7 +1411,7 @@ pub fn get_chemin_sp_filled (
         .set("fill", c.clone())
         .set("stroke", c.clone())
         .set("opacity", o.clone())
-        .set("stroke-width",0)
+        .set("stroke-width",5)
         .set("d", data1);
     let path2 = match  x1 < x2 {
         true => {

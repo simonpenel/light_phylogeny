@@ -7,9 +7,11 @@
 
 use log::{info};
 use std::fs;
+use std::collections::HashMap;
 use crate::arena::Options;
 use crate::arena::ArenaTree;
 use crate::arena::Config;
+use crate::arena::Event;
 use crate::arena::PIPEBLOCK;
 use crate::arena::{newick2tree,xml2tree};
 use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,
@@ -81,6 +83,36 @@ pub fn read_phyloxml(filename: String, tree: &mut ArenaTree<String>) {
     info!("Tree : {:?}",tree);
 }
 
+
+#[allow(dead_code)]
+// Fonction inutilisee
+pub fn get_hybridation( tree: & ArenaTree<String>) -> HashMap::<String,Vec<(usize,usize)>>
+    {
+    let mut dico =  HashMap::<String,Vec<(usize,usize)>>::new();
+    let mut hybrids : Vec<(usize,usize)> = Vec::new();
+    for index in  & tree.arena {
+        let buf : Vec<_> = index.name.split(" ").collect();
+        let tag = buf[0];
+        if tag == "HYBRID" {
+            let name_hybrid = buf[1].to_string();
+            let parent = match index.parent {
+                Some(p) => p,
+                None => panic!("No root"),
+            };
+            let children = &tree.arena[parent].children;
+            let idx = index.idx;
+            let hybrid_from = match  tree.is_left(idx) {
+                true => children[1],
+                false => children[0],
+            };
+            hybrids.push((hybrid_from,idx));
+            println!("hybrids {:?}",hybrids);
+            // Ajoute au dico
+            dico.insert(name_hybrid,hybrids.clone());
+        }
+    }
+    dico
+}
 #[allow(dead_code)]
 // Fonction inutilisee
 pub fn check_reticulation( tree: &mut ArenaTree<String>) {
@@ -575,6 +607,57 @@ pub fn recphyloxml_processing(
     if ! options.real_length_flag {
         check_vertical_contour_postorder(&mut sp_tree, root, 0.0);
     }
+    // Processing  recphyloxml hybrids if present
+    let hybrids = get_hybridation(& sp_tree);
+    let mut fusion_orders_recphylo:Vec<bool> = Vec::new();
+    for (_hybrid_name, hybrid) in &hybrids {
+        let hybrid1 = hybrid[0]; // host1 , host1 hybrided with host2
+        let hybrid2 = hybrid[1]; // host2 , host2 hybrided with host1
+        let h1 = hybrid1.1; //host1 hybrided with host2
+        let h2 = hybrid2.1; //host2 hybrided with host1
+        let o1 = hybrid1.0; // host1
+        let o2 = hybrid2.0; // host2
+        fusion_orders_recphylo.push(sp_tree.arena[h1].x < sp_tree.arena[h2].x);
+        // Fusionne les branche hybrides
+        fusion_mod_xy(&mut sp_tree, h1, h2);
+        let root1 = match sp_tree.arena[h1].parent{
+            Some(p) => p,
+            None => panic!("No root"),
+        };
+        // Aligne le fils avec la racine
+        let root2 = match sp_tree.arena[h2].parent{
+            Some(p) => p,
+            None => panic!("No root"),
+        };
+        sp_tree.arena[o1].x = sp_tree.arena[root1].x;
+        sp_tree.arena[o2].x = sp_tree.arena[root2].x;
+        // Donne la largeur du fils a la racine
+        let max = match sp_tree.arena[o1].height > sp_tree.arena[o2].height {
+            true => sp_tree.arena[o1].height,
+            false => sp_tree.arena[o2].height,
+        };
+        // Donne la longeur la plus grande des 2 hybrdies a la racine
+        sp_tree.arena[root1].height = max ;
+        sp_tree.arena[root2].height = max ;
+        // Donne la largeur du fils a la racine
+        sp_tree.arena[root1].width = sp_tree.arena[o1].width ;
+        sp_tree.arena[root2].width = sp_tree.arena[o2].width ;
+
+        // change l'evenement lie au gene speciation-> hybridation
+        let nodes = &sp_tree.arena[root1].nodes;
+        for (index_node, node) in nodes {
+            if gene_trees[*index_node].arena[*node].e == Event::Speciation {
+                 gene_trees[*index_node].arena[*node].e = Event::Hybridation;
+            }
+        }
+        let nodes = &sp_tree.arena[root2].nodes;
+        for (index_node, node) in nodes {
+            if gene_trees[*index_node].arena[*node].e == Event::Speciation {
+                 gene_trees[*index_node].arena[*node].e = Event::Hybridation;
+            }
+        }
+    }
+
     // -------------------------------
     // Option gestion des hybridations
     // -------------------------------
@@ -629,6 +712,34 @@ pub fn recphyloxml_processing(
     // 9eme etape : centre les noeuds de genes dans le noeud de l'espece
     // ---------------------------------------------------------
     center_gene_nodes(&mut sp_tree,&mut gene_trees, initial_root);
+    // Processing hybrids if present: change gene positions
+    let mut idx_fusion = 0;
+    for (hybrid_name, hybrid) in &hybrids {
+        println!("Hybrid {}: {:?}",hybrid_name,hybrid);
+        let hybrid1 = hybrid[0];
+        let hybrid2 = hybrid[1];
+        let h1 = hybrid1.1;
+        let h2 = hybrid2.1;
+        let fusion_order = fusion_orders_recphylo[idx_fusion];
+        let fusion_order_inv = ! fusion_order;
+        bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h1, fusion_order);
+        bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h2, fusion_order_inv);
+        idx_fusion += 1;
+    }
+    // Change the species node name
+    for (hybrid_name, hybrid) in &hybrids {
+        let hybrid1 = hybrid[0];
+        let hybrid2 = hybrid[1];
+        let h1 = hybrid1.1;
+        let h2 = hybrid2.1;
+        sp_tree.arena[h1].name = hybrid_name.to_string();
+        sp_tree.arena[h2].name = hybrid_name.to_string();
+    }
+
+
+
+
+
     // -------------------------------------------
     // Option gestion des hybridations
     // -------------------------------------------

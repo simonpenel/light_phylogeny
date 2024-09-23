@@ -355,6 +355,7 @@ where
                 Event::BifurcationOut => Event::BifurcationOut,
                 Event::Leaf => Event::Leaf,
                 Event::ObsoleteSpeciationLoss => Event::ObsoleteSpeciationLoss,
+                                Event::Hybridation => Event::Hybridation,
                 Event::Undef => Event::Undef,
             };
             new.arena[idx].location = node.location.clone();
@@ -542,6 +543,7 @@ pub enum Event {
     BifurcationOut,
     Leaf,
     ObsoleteSpeciationLoss,
+    Hybridation,
     Undef,
 }
 /// There  is no Default pour enum, we define one.
@@ -1920,6 +1922,7 @@ pub fn fusion_mod_xy(tree: &mut ArenaTree<String>, index_1: usize, index_2: usiz
         info!("[fusion_mod_xy] After: y of {} = {}.",&tree.arena[index_2].name,tree.arena[index_2].y);
     }
 }
+
 /// Shift the  x y values  of a node and its children according to the cumulated xmod ymod values.
 pub fn shift_mod_xy(tree: &mut ArenaTree<String>, index: usize, xmod: &mut f32, ymod: &mut f32) {
     debug!("[shift_mod_xy] shifting {:?} xmod={} ymod={}", tree.arena[index], xmod, ymod);
