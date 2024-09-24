@@ -1871,7 +1871,7 @@ pub fn shift_nodes_y_values(tree: &mut ArenaTree<String>, index: usize, y:  f32)
         shift_nodes_y_values(tree, son_right, y);
     }
 }
-/// Merge 2 nodes in the species tree (hybridation)
+/// Merge 2 nodes in the species tree (user hybridation)
 pub fn fusion_mod_xy(tree: &mut ArenaTree<String>, index_1: usize, index_2: usize) {
     if ((! tree.is_leaf(index_1) )  && ( tree.is_leaf(index_2) )) || (( tree.is_leaf(index_1) )  && ( !tree.is_leaf(index_2) )) {
         eprintln!("[fusion_mod_xy] ERROR Unable to merge {} and {}.",tree.arena[index_1].name,tree.arena[index_2].name);
@@ -1891,8 +1891,10 @@ pub fn fusion_mod_xy(tree: &mut ArenaTree<String>, index_1: usize, index_2: usiz
     let width2 = tree.arena[index_2].width;
     info!("[fusion_mod_xy] Before : width of {} = {}.",&tree.arena[index_1].name,tree.arena[index_1].width);
     info!("[fusion_mod_xy] Before : width of {} = {}.",&tree.arena[index_2].name,tree.arena[index_2].width);
-    tree.arena[index_1].width = width1 + width2;
-    tree.arena[index_2].width = width1 + width2;
+    if tree.arena[index_1].nbg + tree.arena[index_1].nbg > 0 {
+        tree.arena[index_1].width = width1 + width2;
+        tree.arena[index_2].width = width1 + width2;
+    }
     info!("[fusion_mod_xy] After : width of {} = {}.",&tree.arena[index_1].name,tree.arena[index_1].width);
     info!("[fusion_mod_xy] After : width of {} = {}.",&tree.arena[index_2].name,tree.arena[index_2].width);
     if (! tree.is_leaf(index_1) )  && (! tree.is_leaf(index_2) ) {
@@ -1922,7 +1924,6 @@ pub fn fusion_mod_xy(tree: &mut ArenaTree<String>, index_1: usize, index_2: usiz
         info!("[fusion_mod_xy] After: y of {} = {}.",&tree.arena[index_2].name,tree.arena[index_2].y);
     }
 }
-
 /// Shift the  x y values  of a node and its children according to the cumulated xmod ymod values.
 pub fn shift_mod_xy(tree: &mut ArenaTree<String>, index: usize, xmod: &mut f32, ymod: &mut f32) {
     debug!("[shift_mod_xy] shifting {:?} xmod={} ymod={}", tree.arena[index], xmod, ymod);
