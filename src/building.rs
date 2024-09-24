@@ -662,6 +662,11 @@ pub fn recphyloxml_processing(
             if gene_trees[*index_node].arena[*node].e == Event::Speciation {
                  gene_trees[*index_node].arena[*node].e = Event::Hybridation;
             }
+            let children = &gene_trees[*index_node].arena[*node].children;
+            // gere le cas ou la racine est a gauche du fils gauche ( ou a droite du fils droit)
+            if gene_trees[*index_node].arena[*node].x < gene_trees[*index_node].arena[children[0]].x {
+                gene_trees[*index_node].arena[*node].x = gene_trees[*index_node].arena[children[0]].x;
+            }
         }
         let nodes = &sp_tree.arena[root2].nodes;
         for (index_node, node) in nodes {
@@ -725,7 +730,8 @@ pub fn recphyloxml_processing(
     // 9eme etape : centre les noeuds de genes dans le noeud de l'espece
     // ---------------------------------------------------------
     center_gene_nodes(&mut sp_tree,&mut gene_trees, initial_root);
-    // Processing hybrids if present: change gene positions
+    // Processing recphylo hybrids if present: change gene positions
+    // to avoid superposition
     let mut idx_fusion = 0;
     for (hybrid_name, hybrid) in &hybrids {
         println!("Hybrid {}: {:?}",hybrid_name,hybrid);
@@ -739,6 +745,44 @@ pub fn recphyloxml_processing(
         bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h2, fusion_order_inv);
         idx_fusion += 1;
     }
+    // Processing recphylo hybrids if present: adapt root position
+    // to the new gene positions
+    for (hybrid_name, hybrid) in &hybrids {
+        println!("Hybrid {}: {:?}",hybrid_name,hybrid);
+        let hybrid1 = hybrid[0];
+        let hybrid2 = hybrid[1];
+        let h1 = hybrid1.1;
+        let h2 = hybrid2.1;
+        let root1 = match sp_tree.arena[h1].parent{
+            Some(p) => p,
+            None => panic!("No root"),
+        };
+        // Aligne le fils avec la racine
+        let root2 = match sp_tree.arena[h2].parent{
+            Some(p) => p,
+            None => panic!("No root"),
+        };
+        for root in vec![root1,root2].iter() {
+            let nodes = &sp_tree.arena[*root].nodes;
+            for (index_node, node) in nodes {
+                let children =  & gene_trees[*index_node].arena[*node].children;
+                // gere le cas ou la racine est a gauche du fils gauche ( ou a droite du fils droit)
+                if gene_trees[*index_node].arena[*node].x < gene_trees[*index_node].arena[children[1]].x {
+                    gene_trees[*index_node].arena[*node].x = gene_trees[*index_node].arena[children[1]].x;
+                }
+            }
+            // 2nd round (not possible to modify twice in a single round)
+            for (index_node, node) in nodes {
+                let children =  & gene_trees[*index_node].arena[*node].children;
+                // gere le cas ou la racine est a gauche du fils gauche ( ou a droite du fils droit)
+                if gene_trees[*index_node].arena[*node].x > gene_trees[*index_node].arena[children[1]].x {
+                    gene_trees[*index_node].arena[*node].x = gene_trees[*index_node].arena[children[1]].x;
+                }
+            }
+        }
+    }
+
+
     // Change the species node name
     for (hybrid_name, hybrid) in &hybrids {
         let hybrid1 = hybrid[0];
@@ -748,6 +792,9 @@ pub fn recphyloxml_processing(
         sp_tree.arena[h1].name = hybrid_name.to_string();
         sp_tree.arena[h2].name = hybrid_name.to_string();
     }
+
+
+
 
 
 
