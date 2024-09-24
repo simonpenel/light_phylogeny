@@ -82,13 +82,18 @@ pub fn read_phyloxml(filename: String, tree: &mut ArenaTree<String>) {
     }
     info!("Tree : {:?}",tree);
 }
-
-
-#[allow(dead_code)]
-// Fonction inutilisee
+/// Get the hybridation events in the species tree
 pub fn get_hybridation( tree: & ArenaTree<String>) -> HashMap::<String,Vec<(usize,usize)>>
     {
     let mut dico =  HashMap::<String,Vec<(usize,usize)>>::new();
+    let mut dico2 = HashMap::<String,Vec<(usize,usize)>>::new();
+
+    // if !dico_index_5utr.contains_key(&index_fasta) {
+                // dico_index_5utr.insert(index_fasta,vec![]);
+            // };
+
+
+
     let mut hybrids : Vec<(usize,usize)> = Vec::new();
     for index in  & tree.arena {
         let buf : Vec<_> = index.name.split(" ").collect();
@@ -105,13 +110,21 @@ pub fn get_hybridation( tree: & ArenaTree<String>) -> HashMap::<String,Vec<(usiz
                 true => children[1],
                 false => children[0],
             };
+
+            if !dico2.contains_key(&name_hybrid) {
+                dico2.insert(name_hybrid.clone(),vec![]);
+            }
+            if let Some(x) = dico2.get_mut(&name_hybrid) {
+                x.push((hybrid_from,idx));
+            };
             hybrids.push((hybrid_from,idx));
             println!("hybrids {:?}",hybrids);
             // Ajoute au dico
             dico.insert(name_hybrid,hybrids.clone());
         }
     }
-    dico
+    println!("DICO2 {:?}",dico2);
+    dico2
 }
 #[allow(dead_code)]
 // Fonction inutilisee
@@ -144,7 +157,6 @@ pub fn check_reticulation( tree: &mut ArenaTree<String>) {
         }
     }
     println!("Reticulates = {:?}",reticulates);
-
 // deuxieme passage
     for index in  & tree.arena {
         println!("{:?}",index.name);
@@ -188,7 +200,6 @@ pub fn check_reticulation( tree: &mut ArenaTree<String>) {
     println!("TREE = {:?}",tree);
     println!("Virer {:?}",&tree.arena[a_virer]);
     println!("Le remplacer par  {:?}",&tree.arena[a_utiliser]);
-
 }
 
 /// Adding invisible parent nodes in order to display multiple species trees.
@@ -636,9 +647,11 @@ pub fn recphyloxml_processing(
             true => sp_tree.arena[o1].height,
             false => sp_tree.arena[o2].height,
         };
+        if sp_tree.arena[root1].height != sp_tree.arena[root2].height {
         // Donne la longeur la plus grande des 2 hybrdies a la racine
         sp_tree.arena[root1].height = max ;
         sp_tree.arena[root2].height = max ;
+        }
         // Donne la largeur du fils a la racine
         sp_tree.arena[root1].width = sp_tree.arena[o1].width ;
         sp_tree.arena[root2].width = sp_tree.arena[o2].width ;
