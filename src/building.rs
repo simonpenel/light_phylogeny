@@ -659,6 +659,9 @@ pub fn recphyloxml_processing(
         bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h2, fusion_order_inv);
         idx_fusion += 1;
     }
+    if idx_fusion > 0 {
+        options.fill_species = true ;
+    }
     // Processing recphylo hybrids if present: adapt root position
     // to the new gene positions
     for (_hybrid_name, hybrid) in &hybrids {
