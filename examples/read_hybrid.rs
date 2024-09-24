@@ -10,7 +10,7 @@ fn main() {
     let transfers = vec![];
     let mut options: Options = Options::new();
     //options.species_internal = true;
-    //options.switches.push("HOST2 BEF. HYBR.".to_string());
+    //options.switches.push("HOSTB BEF. HYBR.".to_string());
     let mut config: Config = Config::new();
     config.fill_species = true;
     let mut sp_tree: ArenaTree<String> = ArenaTree::default();

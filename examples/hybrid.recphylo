@@ -5,13 +5,31 @@
       <name>1</name>
       <clade>
         <name>0</name>
+        <!-- Virtual clade to define the hybridation process in HOST1 -->
         <clade>
-          <name>a</name>
+          <name>HOSTA BEF. HYBR.</name>
+          <clade>
+            <name>a</name>
+            </clade>
+            <!-- Clade representing the hybrid of HOST2 with HOST1. This a leaf -->
+            <clade>
+              <!-- The name should be "HYBRID IDENTIFIANT NAME_OF_THE_OTHER_ORGANISM" -->
+              <name>HYBRID HYBRID_ab b</name>
+            </clade>
+          </clade>
+
+          <!-- Virtual clade to define the hybridation process in HOST1 -->
+          <clade>
+            <name>HOSTB BEF. HYBR.</name>
+            <clade>
+              <!-- The name should be "HYBRID IDENTIFIANT NAME_OF_THE_OTHER_ORGANISM" -->
+              <name>HYBRID HYBRID_ab a</name>
+            </clade>
+            <clade>
+              <name>b</name>
+            </clade>
+          </clade>
         </clade>
-        <clade>
-          <name>b</name>
-        </clade>
-      </clade>
       <clade>
         <name>c</name>
         <!-- Virtual clade to define the hybridation process in HOST2 -->
@@ -156,12 +174,32 @@
           <eventsRec>
             <speciation speciesLocation="0"></speciation>
           </eventsRec>
+
+
+
+
+          <!--  pseudo speciation describing hybridation -->
           <clade>
-            <name>a1</name>
+            <name>HOST2 BEF. HYBR.2</name>
             <eventsRec>
-              <leaf geneName="a1" speciesLocation="a"></leaf>
+              <speciation speciesLocation="HOSTA BEF. HYBR."></speciation>
             </eventsRec>
-          </clade>
+            <!-- Clade representing the symbiot in hybridation of HOST1 with HOST2 -->
+            <clade>
+              <name>HOST2 BEF. HYBR.11</name>
+              <eventsRec>
+                <leaf geneName="a1 (hybr.)" speciesLocation="HYBRID HYBRID_ab b"></leaf>
+              </eventsRec>
+            </clade>
+            <!-- Clade representing the symbiot in  HOST1 -->
+            <clade>
+              <name>HOST2 BEF. HYBR.12</name>
+              <eventsRec>
+                <loss speciesLocation="a"></loss>
+              </eventsRec>
+           </clade>
+        </clade>
+
           <clade>
             <name>b3</name>
             <eventsRec>
