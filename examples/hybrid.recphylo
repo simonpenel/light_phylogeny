@@ -174,32 +174,27 @@
           <eventsRec>
             <speciation speciesLocation="0"></speciation>
           </eventsRec>
-
-
-
-
           <!--  pseudo speciation describing hybridation -->
           <clade>
-            <name>HOST2 BEF. HYBR.2</name>
+            <name>HOSTA BEF. HYBR.</name>
             <eventsRec>
               <speciation speciesLocation="HOSTA BEF. HYBR."></speciation>
             </eventsRec>
             <!-- Clade representing the symbiot in hybridation of HOST1 with HOST2 -->
             <clade>
-              <name>HOST2 BEF. HYBR.11</name>
+              <name>A1</name>
               <eventsRec>
                 <leaf geneName="a1 (hybr.)" speciesLocation="HYBRID HYBRID_ab b"></leaf>
               </eventsRec>
             </clade>
             <!-- Clade representing the symbiot in  HOST1 -->
             <clade>
-              <name>HOST2 BEF. HYBR.12</name>
+              <name>LOSS</name>
               <eventsRec>
                 <loss speciesLocation="a"></loss>
               </eventsRec>
            </clade>
         </clade>
-
           <clade>
             <name>b3</name>
             <eventsRec>
