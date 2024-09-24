@@ -85,16 +85,7 @@ pub fn read_phyloxml(filename: String, tree: &mut ArenaTree<String>) {
 /// Get the hybridation events in the species tree
 pub fn get_hybridation( tree: & ArenaTree<String>) -> HashMap::<String,Vec<(usize,usize)>>
     {
-    let mut dico =  HashMap::<String,Vec<(usize,usize)>>::new();
-    let mut dico2 = HashMap::<String,Vec<(usize,usize)>>::new();
-
-    // if !dico_index_5utr.contains_key(&index_fasta) {
-                // dico_index_5utr.insert(index_fasta,vec![]);
-            // };
-
-
-
-    let mut hybrids : Vec<(usize,usize)> = Vec::new();
+    let mut dico = HashMap::<String,Vec<(usize,usize)>>::new();
     for index in  & tree.arena {
         let buf : Vec<_> = index.name.split(" ").collect();
         let tag = buf[0];
@@ -111,97 +102,16 @@ pub fn get_hybridation( tree: & ArenaTree<String>) -> HashMap::<String,Vec<(usiz
                 false => children[0],
             };
 
-            if !dico2.contains_key(&name_hybrid) {
-                dico2.insert(name_hybrid.clone(),vec![]);
+            if !dico.contains_key(&name_hybrid) {
+                dico.insert(name_hybrid.clone(),vec![]);
             }
-            if let Some(x) = dico2.get_mut(&name_hybrid) {
+            if let Some(x) = dico.get_mut(&name_hybrid) {
                 x.push((hybrid_from,idx));
             };
-            hybrids.push((hybrid_from,idx));
-            println!("hybrids {:?}",hybrids);
-            // Ajoute au dico
-            dico.insert(name_hybrid,hybrids.clone());
         }
     }
-    println!("DICO2 {:?}",dico2);
-    dico2
+    dico
 }
-#[allow(dead_code)]
-// Fonction inutilisee
-pub fn check_reticulation( tree: &mut ArenaTree<String>) {
-    let mut a_virer = 0;
-    let mut a_utiliser = 0;
-    let mut reticulates : Vec<String> = Vec::new();
-    let mut reticulates_parent : Vec<usize> = Vec::new();
-    for index in  &mut tree.arena {
-        println!("{:?}",index.name);
-        let buf : Vec<_> = index.name.split(" ").collect();
-        let tag = buf[0];
-        println!("bug  = {:?}",tag);
-        if tag == "RETI" {
-            match reticulates.binary_search(&index.name){
-                Ok(idx) => {
-                    println!("ok1");
-                    index.parent2 = Some(reticulates_parent[idx]);
-                    println!("Le noeud {:?} a deux peres ",index);
-                },
-                Err(_err) => {
-                    reticulates.push(index.name.clone());
-                    match index.parent {
-                        None => {panic!()},
-                        Some(p) => {reticulates_parent.push(p)},
-                    }
-                },
-            }
-        println!("node {:?}",index);
-        }
-    }
-    println!("Reticulates = {:?}",reticulates);
-// deuxieme passage
-    for index in  & tree.arena {
-        println!("{:?}",index.name);
-
-         match index.parent2 {
-            None => {  },
-            Some(p2) => {
-
-                println!("Ce noeud {:?} a 2 parents",index);
-                a_utiliser = index.idx;
-                let name_retic = &index.name;
-                let p =  match index.parent {
-                    None =>  panic!() ,
-                    Some(p) => p,
-
-                };
-                println!("Parent numero 1 {}  = {:?}",p,&tree.arena[p] );
-                println!("Parent numero 2 {}  = {:?}",p2,&tree.arena[p2] );
-                let children = &tree.arena[p].children;
-                println!();
-                println!("Enfant left du parent 1 : {:?}",&tree.arena[children[0]]);
-                println!("Enfant right du parent 1 : {:?}",&tree.arena[children[1]]);
-                println!();
-                let children = &tree.arena[p2].children;
-                println!("Enfant left du parent 2 : {:?}",&tree.arena[children[0]]);
-                println!("Enfant right du parent 2 : {:?}",&tree.arena[children[1]]);
-                if &tree.arena[children[0]].name == name_retic {
-                    println!("Enfant left a supprimer");
-                    a_virer = children[0];
-                }
-                else if &tree.arena[children[1]].name == name_retic {
-                    println!("Enfant right a supprimer");
-                    a_virer = children[1];
-                }
-                else {
-                    panic!()
-                }
-            },
-        };
-    }
-    println!("TREE = {:?}",tree);
-    println!("Virer {:?}",&tree.arena[a_virer]);
-    println!("Le remplacer par  {:?}",&tree.arena[a_utiliser]);
-}
-
 /// Adding invisible parent nodes in order to display multiple species trees.
 pub fn add_virtual_roots(
     global_roots: &mut std::vec::Vec<String>,
@@ -730,15 +640,19 @@ pub fn recphyloxml_processing(
     // 9eme etape : centre les noeuds de genes dans le noeud de l'espece
     // ---------------------------------------------------------
     center_gene_nodes(&mut sp_tree,&mut gene_trees, initial_root);
+
+    // ----------------------------------------------------------
+    // Option gestion des hybridations definies dans le recPhyloXML
+    // ----------------------------------------------------------
     // Processing recphylo hybrids if present: change gene positions
     // to avoid superposition
     let mut idx_fusion = 0;
     for (hybrid_name, hybrid) in &hybrids {
-        println!("Hybrid {}: {:?}",hybrid_name,hybrid);
         let hybrid1 = hybrid[0];
         let hybrid2 = hybrid[1];
         let h1 = hybrid1.1;
         let h2 = hybrid2.1;
+        println!("Hybrid {}: {:?} between {} and {}",hybrid_name,hybrid,sp_tree.arena[hybrid1.0].name,sp_tree.arena[hybrid2.0].name);
         let fusion_order = fusion_orders_recphylo[idx_fusion];
         let fusion_order_inv = ! fusion_order;
         bilan_mappings_reti(&mut sp_tree, &mut gene_trees, h1, fusion_order);
@@ -747,8 +661,7 @@ pub fn recphyloxml_processing(
     }
     // Processing recphylo hybrids if present: adapt root position
     // to the new gene positions
-    for (hybrid_name, hybrid) in &hybrids {
-        println!("Hybrid {}: {:?}",hybrid_name,hybrid);
+    for (_hybrid_name, hybrid) in &hybrids {
         let hybrid1 = hybrid[0];
         let hybrid2 = hybrid[1];
         let h1 = hybrid1.1;
@@ -781,8 +694,6 @@ pub fn recphyloxml_processing(
             }
         }
     }
-
-
     // Change the species node name
     for (hybrid_name, hybrid) in &hybrids {
         let hybrid1 = hybrid[0];
@@ -792,17 +703,9 @@ pub fn recphyloxml_processing(
         sp_tree.arena[h1].name = hybrid_name.to_string();
         sp_tree.arena[h2].name = "".to_string();
     }
-
-
-
-
-
-
-
-
-    // -------------------------------------------
-    // Option gestion des hybridations
-    // -------------------------------------------
+    // ----------------------------------------------------------
+    // Option gestion des hybridations definies par l'utilisateur
+    // ----------------------------------------------------------
     let mut idx_fusion = 0;
     for (name1, name2) in &options.hybrid {
         let h1 = match sp_tree.get_index(name1.to_string()){
@@ -845,7 +748,7 @@ pub fn recphyloxml_processing(
             },
         };
         sp_tree.arena[h1].name = fusion_name.to_string();
-        sp_tree.arena[h2].name = fusion_name.to_string();
+        sp_tree.arena[h2].name = "".to_string();
     }
     // ---------------------------------------------------------
     // 10eme etape traite spécifiquement les duplications et les feuilles
