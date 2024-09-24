@@ -790,7 +790,7 @@ pub fn recphyloxml_processing(
         let h1 = hybrid1.1;
         let h2 = hybrid2.1;
         sp_tree.arena[h1].name = hybrid_name.to_string();
-        sp_tree.arena[h2].name = hybrid_name.to_string();
+        sp_tree.arena[h2].name = "".to_string();
     }
 
 
