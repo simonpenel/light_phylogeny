@@ -516,7 +516,7 @@ impl Config {
     pub fn new() -> Self {
         Self {
             species_color: "pink".to_string(),
-            species_opacity: "0.9".to_string(),
+            species_opacity: "1.0".to_string(),
             single_gene_color: "blue".to_string(),
             gene_opacity: "0.9".to_string(),
             species_police_color: "orange".to_string(),
