@@ -89,7 +89,7 @@ pub fn get_hybridation( tree: & ArenaTree<String>) -> HashMap::<String,Vec<(usiz
     for index in  & tree.arena {
         let buf : Vec<_> = index.name.split(" ").collect();
         let tag = buf[0];
-        if tag == "HYBRID" {
+        if tag == "HYBRID" && buf.len() == 3 {
             let name_hybrid = buf[1].to_string();
             let parent = match index.parent {
                 Some(p) => p,
