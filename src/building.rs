@@ -531,7 +531,12 @@ pub fn recphyloxml_processing(
     // Processing  recphyloxml hybrids if present
     let hybrids = get_hybridation(& sp_tree);
     let mut fusion_orders_recphylo:Vec<bool> = Vec::new();
-    for (_hybrid_name, hybrid) in &hybrids {
+    for (hybrid_name, hybrid) in &hybrids {
+        if hybrid.len() != 2 {
+            println!("ERROR in the hybridation {} {:?}",hybrid_name,hybrid);
+            println!("      Please check the recPhyloXML file.");
+            std::process::exit(1);
+        }
         let hybrid1 = hybrid[0]; // host1 , host1 hybrided with host2
         let hybrid2 = hybrid[1]; // host2 , host2 hybrided with host1
         let h1 = hybrid1.1; //host1 hybrided with host2
