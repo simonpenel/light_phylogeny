@@ -11,8 +11,8 @@ fn main() {
     let mut options: Options = Options::new();
     //options.species_internal = true;
     //options.switches.push("HOSTB BEF. HYBR.".to_string());
-    let mut config: Config = Config::new();
-    config.fill_species = true;
+    let config: Config = Config::new();
+    //config.fill_species = true;
     let mut sp_tree: ArenaTree<String> = ArenaTree::default();
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
     let mut global_roots: std::vec::Vec<usize> = Vec::new();
