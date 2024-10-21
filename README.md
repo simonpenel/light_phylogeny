@@ -36,30 +36,7 @@ phyloXML, recPhyloXML, rooted newick (NHX tags will not be considered).
 
 # Output examples
 
-single gene reconciliation with species tree:
-
-https://raw.githubusercontent.com/simonpenel/thirdkind/74b9c84a5b2ed84ff5230fc3a52af856b9aba53d/output_examples/thirdkind_example1.svg
-
-
-the same gene reconciliation without the species tree:
-
-https://raw.githubusercontent.com/simonpenel/thirdkind/74b9c84a5b2ed84ff5230fc3a52af856b9aba53d/output_examples/thirdkind_example1_bis.svg
-
-
-multiple genes reconciliation:
-
-https://raw.githubusercontent.com/simonpenel/thirdkind/70a7a11aa89eda61926c5cabf221f47bb44e3409/output_examples/thirdkind_example4.svg
-
-example with "free living" species:
-
-https://raw.githubusercontent.com/simonpenel/thirdkind/9eb47ce644998164ff56cc68eb765c0c8a24d389/output_examples/thirdkind_fl_example.svg
-
-multiple gene trees reconciliation with redundant transfers. Display only 1 gene tree and the transfers in red with an opacity according to the abundance of the transfer:
-
-https://raw.githubusercontent.com/simonpenel/thirdkind/70a7a11aa89eda61926c5cabf221f47bb44e3409/output_examples/thirdkind_example2.svg
-
-
-For  more examples, see the "thirdkind" software  https://github.com/simonpenel/thirdkind.
+For output examples, please see home page  https://github.com/simonpenel/thirdkind/wiki
 
 
 # Using the API:
