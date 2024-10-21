@@ -1,11 +1,11 @@
 [package]
 name = "light_phylogeny"
-version = "2.4.2"
+version = "2.4.3"
 authors = ["Simon Penel <simon.penel@univ-lyon1.fr>"]
 edition = "2018"
 description ="Methods and functions for phylogeny."
 license="CECILL-2.1"
-keywords=["phylogeny", "recphyloxml", "phyloxml", "newick", "phylogenetics"]
+keywords=["phylogeny", "recphyloxml", "evolution", "bioinformatics", "phylogenetics"]
 categories = ["science"]
 homepage = "https://github.com/simonpenel/light_phylogeny/wiki"
 repository = "https://github.com/simonpenel/light_phylogeny"
