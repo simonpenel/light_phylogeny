@@ -36,7 +36,7 @@ phyloXML, recPhyloXML, rooted newick (NHX tags will not be considered).
 
 # Output examples
 
-For output examples, please see home page  https://github.com/simonpenel/thirdkind/wiki
+For output examples, please see the thirdkind home page  https://github.com/simonpenel/thirdkind/wiki
 
 
 # Using the API:
