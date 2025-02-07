@@ -20,7 +20,7 @@ use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,
 use crate::arena::{map_species_trees,set_species_width,check_vertical_contour_postorder,
     bilan_mappings,bilan_mappings_reti,center_gene_nodes,move_dupli_mappings,move_species_mappings,
     species_uniformisation,process_fl,uniformise_gene_leaves_y_values};
-use crate::arena::{find_sptrees,find_rgtrees,check_for_obsolete,scale_heigth,scale_width};
+use crate::arena::{make_invisible,find_sptrees,find_rgtrees,check_for_obsolete,scale_heigth,scale_width};
 use crate::thirdlevel::{get_gtransfer,optimisation,check_optimisation,classify_transfer,reorder_transfers};
 use crate::drawing::{draw_tree,draw_sptree_gntrees};
 
@@ -417,6 +417,23 @@ pub fn recphyloxml_processing(
         children.push(sp_tree.arena[sw].children[1]);
         children.push(sp_tree.arena[sw].children[0]);
         sp_tree.arena[sw].children = children;
+    }
+    // ------------------------------------
+    // Option collapse species tree node
+    // ------------------------------------
+    for collapsed_node in &options.collapsed_nodes {
+        let sw = match sp_tree.get_index(collapsed_node.to_string()){
+            Ok(index) => index,
+            Err(_err) => {
+                eprintln!("[recphyloxml_processing] ERROR Unable to find node {:?}",collapsed_node.to_string());
+                std::process::exit(1);
+            },
+        };
+        //let mut children : Vec<usize> = Vec::new();
+        //children.push(sp_tree.arena[sw].children[1]);
+        //children.push(sp_tree.arena[sw].children[0]);
+        make_invisible(sp_tree,sw);
+        sp_tree.arena[sw].children = Vec::new();
     }
     //----------------------------------------------------------
     // 1ere étape :initialisation des x,y de l'arbre d'espèces :
