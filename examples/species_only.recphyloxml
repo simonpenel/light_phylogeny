@@ -1,0 +1,52 @@
+<recPhylo
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.recg.org ./recGeneTreeXML.xsd"
+  xmlns="http://www.recg.org">
+  <spTree>
+    <phylogeny>
+      <clade>
+        <name>13</name>
+        <clade>
+          <name>12</name>
+          <clade>
+            <name>10</name>
+            <clade>
+              <name>1</name>
+            </clade>
+            <clade>
+              <name>8</name>
+              <clade>
+                <name>2</name>
+              </clade>
+              <clade>
+                <name>3</name>
+              </clade>
+            </clade>
+          </clade>
+          <clade>
+            <name>9</name>
+            <clade>
+              <name>4</name>
+            </clade>
+            <clade>
+              <name>5</name>
+            </clade>
+          </clade>
+        </clade>
+        <clade>
+          <name>11</name>
+          <clade>
+            <name>6</name>
+          </clade>
+          <clade>
+            <name>7</name>
+          </clade>
+        </clade>
+      </clade>
+    </phylogeny>
+  </spTree>
+  <recGeneTree>
+    <phylogeny rooted="true">
+    </phylogeny>
+  </recGeneTree>
+</recPhylo>
