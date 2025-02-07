@@ -454,6 +454,8 @@ pub struct Options{
     pub switches: Vec<String>,
     /// Fill species tree (may be defined in config as well)
     pub fill_species: bool,
+    /// List of nodes to be collapsed
+    pub collapsed_nodes: Vec<String>,
 }
 impl Options {
     pub fn new() -> Self {
@@ -496,6 +498,7 @@ impl Options {
             hybrid: Vec::new(),
             switches: Vec::new(),
             fill_species: false,
+            collapsed_nodes: Vec::new(),
         }
     }
 }
@@ -2441,6 +2444,36 @@ pub fn summary_root(tree: &mut ArenaTree<String>, index: usize)  {
         },
     }
 }
+/// Make descendant of the nodes invisible.
+pub fn get_descendant(tree: & ArenaTree<String>, index: usize, descendants: &mut Vec<usize>)  {
+    let node = & tree.arena[index];
+    let children = &node.children;
+    for child in children {
+        descendants.push(*child);
+        get_descendant(tree, *child, descendants);
+    }
+
+}
+pub fn make_invisible(tree: &mut ArenaTree<String>, index: usize)  {
+
+    let node = & tree.arena[index];
+    let mut descendants:Vec<usize> = Vec::new();
+    get_descendant(tree,index,&mut descendants);
+    println!("Debug descendants {:?}",descendants);
+    //tree.arena[index].visible = false;
+    for index in descendants {
+        println!("Remove {:?}",tree.arena[index]);
+        tree.arena[index].visible = false;
+        tree.arena[index].parent = None;
+    }
+    //node.visible = false;
+    //let children  = &node.children;
+    //for child in children {
+    //    make_invisible(tree,*child);
+    //}
+}
+
+
 #[allow(dead_code)]
 /// Reset all positions x y xmod ymod of a tree.
 pub fn reset_pos(tree: &mut ArenaTree<String>)  {
