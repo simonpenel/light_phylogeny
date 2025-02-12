@@ -75,6 +75,8 @@ where
     pub virtualsvg: bool,
     /// Index of the color for the node when the are different colors in a gene
     pub color_node_idx : usize,
+    /// Node is collapsed
+    pub collapsed: bool,
 }
 impl<T> Noeud<T>
 where
@@ -108,6 +110,7 @@ where
             visible: true,
             virtualsvg: false,
             color_node_idx: 0,
+            collapsed: false,
         }
     }
     /// Set node event.
@@ -1376,6 +1379,9 @@ pub fn move_dupli_mappings(
     index: usize,
     options: &Options,
     ) {
+        println!("Debug {:?}",&sp_tree.arena[index] );
+        println!("Debug {:?}",&sp_tree.arena[index].collapsed );
+    //if ! &sp_tree.arena[index].collapsed {
     for (index_node, node) in &sp_tree.arena[index].nodes {
         debug!("[move_dupli_mappings] >>> {:?} {:?}",
             gene_trees[*index_node].arena[*node].name, gene_trees[*index_node].arena[*node].e);
@@ -1435,6 +1441,7 @@ pub fn move_dupli_mappings(
         move_dupli_mappings(sp_tree, gene_trees, son_left, options);
         move_dupli_mappings(sp_tree, gene_trees, son_right, options);
     }
+//}
 }
 /// Move species father when the father and children of a gene speciation
 /// are in the same node tree (Only occurs for 3-level gene/symbiot/host reconciliation).
@@ -1725,7 +1732,7 @@ pub fn uniformise_gene_leaves_y_values(
     let mut leave_y_max = 0.0;
     for spindex in & sp_tree.arena {
         // if the species node is a leaf
-        if spindex.children.len() == 0 {
+        if spindex.children.len() == 0  {
             for (index_node, node) in &sp_tree.arena[spindex.idx].nodes {
                 if gene_trees[*index_node].arena[*node].location != "FREE_LIVING".to_string() &&
                 gene_trees[*index_node].arena[*node].y > leave_y_max {
@@ -1736,7 +1743,7 @@ pub fn uniformise_gene_leaves_y_values(
     }
     for spindex in & sp_tree.arena {
         // if the species node is a leaf
-        if spindex.children.len() == 0 {
+        if spindex.children.len() == 0  {
             for (index_node, node) in &sp_tree.arena[spindex.idx].nodes {
                 // Change y for gene leaves only
                 if gene_trees[*index_node].arena[*node].location != "FREE_LIVING".to_string() &&  gene_trees[*index_node].arena[*node].e == Event::Leaf {
@@ -2454,9 +2461,18 @@ pub fn get_descendant(tree: & ArenaTree<String>, index: usize, descendants: &mut
     }
 
 }
-pub fn make_invisible(tree: &mut ArenaTree<String>, index: usize)  {
+pub fn make_invisible(tree: &mut ArenaTree<String>,
+    gene_trees: &mut std::vec::Vec<ArenaTree<String>>,
+    index: usize)  {
+    println!("DEBUG {:?}",&tree.arena[index]);
+    //let node = & tree.arena[index];
 
-    let node = & tree.arena[index];
+    // for (idx_tree,idx_node) in  &tree.arena[index].nodes {
+    //     println!("==> {} {}",idx_tree,idx_node);
+    //     println!("=> {:?}",gene_trees[*idx_tree].arena[*idx_node]);
+    //     gene_trees[*idx_tree].arena[*idx_node].visible = false;
+    //
+    // }
     let mut descendants:Vec<usize> = Vec::new();
     get_descendant(tree,index,&mut descendants);
     println!("Debug descendants {:?}",descendants);
@@ -2465,6 +2481,13 @@ pub fn make_invisible(tree: &mut ArenaTree<String>, index: usize)  {
         println!("Remove {:?}",tree.arena[index]);
         tree.arena[index].visible = false;
         tree.arena[index].parent = None;
+        println!("Test debug {:?}",tree.arena[index].nodes);
+        for (idx_tree,idx_node) in  &tree.arena[index].nodes {
+            println!("==> {} {}",idx_tree,idx_node);
+            println!("=> {:?}",gene_trees[*idx_tree].arena[*idx_node]);
+            gene_trees[*idx_tree].arena[*idx_node].visible = false;
+
+        }
     }
     //node.visible = false;
     //let children  = &node.children;

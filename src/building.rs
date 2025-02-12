@@ -421,20 +421,25 @@ pub fn recphyloxml_processing(
     // ------------------------------------
     // Option collapse species tree node
     // ------------------------------------
-    for collapsed_node in &options.collapsed_nodes {
-        let sw = match sp_tree.get_index(collapsed_node.to_string()){
-            Ok(index) => index,
-            Err(_err) => {
-                eprintln!("[recphyloxml_processing] ERROR Unable to find node {:?}",collapsed_node.to_string());
-                std::process::exit(1);
-            },
-        };
-        //let mut children : Vec<usize> = Vec::new();
-        //children.push(sp_tree.arena[sw].children[1]);
-        //children.push(sp_tree.arena[sw].children[0]);
-        make_invisible(sp_tree,sw);
-        sp_tree.arena[sw].children = Vec::new();
-    }
+    //for collapsed_node in &options.collapsed_nodes {
+//        let sw = match sp_tree.get_index(collapsed_node.to_string()){
+    //         Ok(index) => index,
+    //         Err(_err) => {
+    //             eprintln!("[recphyloxml_processing] ERROR Unable to find node {:?}",collapsed_node.to_string());
+    //             std::process::exit(1);
+    //         },
+    //     };
+    //     //let mut children : Vec<usize> = Vec::new();
+    //     //children.push(sp_tree.arena[sw].children[1]);
+    //     //children.push(sp_tree.arena[sw].children[0]);
+    //     make_invisible(sp_tree,sw);
+    //     sp_tree.arena[sw].children = Vec::new();
+    //     let gene_nodes = &sp_tree.arena[sw].nodes;
+    //     for gene_node in gene_nodes {
+    //         println!("Debug gene {:?}",gene_node);
+    //     }
+    //     sp_tree.arena[sw].collapsed = true;
+    // }
     //----------------------------------------------------------
     // 1ere étape :initialisation des x,y de l'arbre d'espèces :
     // profondeur => Y, left => X= 0, right X=1
@@ -456,6 +461,27 @@ pub fn recphyloxml_processing(
         map_species_trees(&mut sp_tree, &mut gene_trees);
         info!("Species tree after mapping : {:?}",sp_tree);
     }
+
+    // ------------------------------------
+    // Option collapse species tree node
+    // ------------------------------------
+    for collapsed_node in &options.collapsed_nodes {
+        let sw = match sp_tree.get_index(collapsed_node.to_string()){
+            Ok(index) => index,
+            Err(_err) => {
+                eprintln!("[recphyloxml_processing] ERROR Unable to find node {:?}",collapsed_node.to_string());
+                std::process::exit(1);
+            },
+        };
+        //let mut children : Vec<usize> = Vec::new();
+        //children.push(sp_tree.arena[sw].children[1]);
+        //children.push(sp_tree.arena[sw].children[0]);
+        make_invisible(sp_tree,gene_trees,sw);
+        sp_tree.arena[sw].children = Vec::new();
+        let gene_nodes = &sp_tree.arena[sw].nodes;
+        sp_tree.arena[sw].collapsed = true;
+    }
+
     // --------------------------------------------------
     //  Option  uniformise les noeuds de l'arbre d'espece
     // --------------------------------------------------

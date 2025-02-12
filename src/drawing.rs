@@ -550,16 +550,31 @@ pub fn draw_sptree_gntrees (
                     if ! options.real_length_flag && index.e != Event::Loss {
                         max_gene_y = largest_y_nofl ;
                     }
-                    let chemin = close_chemin_sp(
-                        index.x,
-                        index.y,
-                        index.width / 2.0,
-                        index.height / 2.0,
-                        max_gene_y - index.y,
-                        color_branch_species.clone(),
-                        config.species_opacity.to_string(),
-                        options.sthickness,
-                    );
+                    //if index.collapsed {max_gene_y = max_gene_y - index.height }
+                    let chemin = match index.collapsed {
+                    //let chemin = match  0 > 1  {
+                        false => close_chemin_sp(
+                            index.x,
+                            index.y,
+                            index.width / 2.0,
+                            index.height / 2.0,
+                            max_gene_y - index.y,
+                            color_branch_species.clone(),
+                            config.species_opacity.to_string(),
+                            options.sthickness,
+                        ),
+                        true => close_chemin_sp_collapsed(
+                            index.x,
+                            index.y,
+                            index.width / 2.0,
+                            index.height / 2.0,
+                            max_gene_y - index.y,
+                            //color_branch_species.clone(),
+                            "green".to_string(),
+                            config.species_opacity.to_string(),
+                            options.sthickness,
+                        )
+                    };
                     if sp_tree.arena[p].visible {
                         g.append(chemin)
                     };
@@ -1462,6 +1477,30 @@ pub fn close_chemin_sp (
             .line_to((x1 - width1, y1 + 1.0 * height2))
             .line_to((x1 + width1, y1 + 1.0 * height2))
             .line_to((x1 + width1, y1 - height1 + (thickness / 2)  as f32  ));
+        let path = Path::new()
+            .set("fill", "none")
+            .set("stroke", c)
+            .set("opacity", o)
+            .set("stroke-width", thickness)
+            .set("d", data);
+        path
+}
+/// Finish  the drawing of species tree at the leaves level for collapased nodes.
+pub fn close_chemin_sp_collapsed (
+    x1: f32,
+    y1: f32,
+    width1: f32,
+    height1: f32,
+    height2: f32,
+    c: String,
+    o: String,
+    thickness: usize,
+    ) -> Path {
+        let data = Data::new()
+            .move_to((x1 - width1, y1 - height1 - (thickness )  as f32  ))
+            .line_to((x1 - width1, y1 - 0.5 * height2))
+            //.line_to((x1 + width1, y1 + 1.0 * height2))
+            .line_to((x1 + width1, y1 - height1  + ( thickness / 4 )   as f32  ));
         let path = Path::new()
             .set("fill", "none")
             .set("stroke", c)
