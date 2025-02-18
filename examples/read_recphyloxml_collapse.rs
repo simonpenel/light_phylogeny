@@ -10,7 +10,7 @@ fn main() {
 
     options.gene_internal = true;
     options.species_internal = true;
-
+    // options.fill_species = true;
 
     let input_file = "examples/species_only.recphyloxml".to_string();
     let input_file2 = input_file.clone();
@@ -44,9 +44,9 @@ fn main() {
     let mut options: Options = Options::new();
     let  config: Config = Config::new();
 
-    options.gene_internal = true;
-    options.species_internal = true;
-
+    // options.gene_internal = true;
+    // options.species_internal = true;
+    // options.fill_species = true;
 
     let input_file = "examples/FAM000667_reconciliated.recphylo".to_string();
     let input_file2 = input_file.clone();
@@ -67,14 +67,14 @@ fn main() {
     // Version collapsed
 
     //options.collapsed_nodes.push("8".to_string());
-    //options.collapsed_nodes.push("species_2".to_string());
-    options.collapsed_nodes.push("species_5".to_string());
-    options.collapsed_nodes.push("species_6".to_string());
-    options.collapsed_nodes.push("species_8".to_string());
-        options.collapsed_nodes.push("species_13".to_string());
-    //options.collapsed_nodes.push("species_4".to_string());
+    options.collapsed_nodes.push("species_1".to_string());
+    //options.collapsed_nodes.push("species_5".to_string());
+    //options.collapsed_nodes.push("species_6".to_string());
+    //options.collapsed_nodes.push("species_8".to_string());
+    //    options.collapsed_nodes.push("species_11".to_string());
+    options.collapsed_nodes.push("species_4".to_string());
     options.collapsed_nodes.push("species_16".to_string());
-        options.collapsed_nodes.push("species_17".to_string());
+    //    options.collapsed_nodes.push("species_17".to_string());
     let mut sp_tree: ArenaTree<String> = ArenaTree::default();
     let mut gene_trees:std::vec::Vec<ArenaTree<String>> = Vec::new();
     let mut global_roots: std::vec::Vec<usize> = Vec::new();
@@ -89,6 +89,7 @@ fn main() {
 
     options.gene_internal = true;
     options.species_internal = true;
+    // options.fill_species = true;
     let input_file = "recphylo_examples/example_dupli.recphylo".to_string();
     let input_file2 = input_file.clone();
     // examples/FAM000108_reconciliated.xml
