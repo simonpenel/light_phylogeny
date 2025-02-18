@@ -477,8 +477,15 @@ pub fn recphyloxml_processing(
         //children.push(sp_tree.arena[sw].children[1]);
         //children.push(sp_tree.arena[sw].children[0]);
         make_invisible(sp_tree,gene_trees,sw);
+        for (idx_tree,idx_node) in  &sp_tree.arena[sw].nodes {
+            println!("==> {} {}",idx_tree,idx_node);
+            println!("=> {:?}",gene_trees[*idx_tree].arena[*idx_node]);
+            gene_trees[*idx_tree].arena[*idx_node].visible = false;
+            gene_trees[*idx_tree].arena[*idx_node].collapsed = true;
+        }
         sp_tree.arena[sw].children = Vec::new();
-        let gene_nodes = &sp_tree.arena[sw].nodes;
+        sp_tree.arena[sw].nbg = 0;
+        sp_tree.arena[sw].nodes = Vec::new();
         sp_tree.arena[sw].collapsed = true;
     }
 
