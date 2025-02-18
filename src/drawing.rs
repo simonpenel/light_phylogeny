@@ -497,6 +497,7 @@ pub fn draw_sptree_gntrees (
                     },
                 };
                 let chemin = match index.collapsed {
+                // let chemin = match 0 > 1  {
                     false => get_chemin_sp(
                     index.x,
                     index.y,
@@ -949,6 +950,7 @@ pub fn draw_sptree_gntrees (
                  },
              };
              // Dessine le symbole associe au noeud
+             //if ! &index.collapsed {
              let  event = &index.e;
              match event {
                 Event::Leaf => g.append(
@@ -1041,6 +1043,7 @@ pub fn draw_sptree_gntrees (
                 ),
                 _ =>  {},
             };
+        
             // Affiche le texte associe au noeud
             match event {
                 Event::Leaf => {
@@ -1143,11 +1146,16 @@ pub fn draw_sptree_gntrees (
                 element.assign("class", "species");
                 let txt  = Text::new(&index.name);
                 element.append(txt);
-                // element.assign(
-                //     "transform",
-                //     "rotate(90 ".to_owned() + &index.x.to_string() + ","
-                //     + &index.y.to_string() + ")",
-                // );
+                if index.collapsed {
+
+                }
+                else {
+                    element.assign(
+                        "transform",
+                        "rotate(90 ".to_owned() + &index.x.to_string() + ","
+                        + &index.y.to_string() + ")",
+                    );
+                }
                 if index.visible {
                     g.append(element);
                 }
