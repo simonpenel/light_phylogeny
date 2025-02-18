@@ -480,6 +480,7 @@ pub fn draw_sptree_gntrees (
     let mut g = Element::new("g");
     // Dessine l'arbre d'espece
     for index in &sp_tree.arena {
+        println!("DEBUF PROCESSING {:?}",index);
         // Dessine le tuyeau
         match index.parent {
             Some(p) => {
@@ -495,7 +496,8 @@ pub fn draw_sptree_gntrees (
                         }
                     },
                 };
-                let chemin = get_chemin_sp(
+                let chemin = match index.collapsed {
+                    false => get_chemin_sp(
                     index.x,
                     index.y,
                     index.width / 2.0,
@@ -506,8 +508,22 @@ pub fn draw_sptree_gntrees (
                     n.height / 2.0,
                     color_branch_species.clone(),
                     config.species_opacity.to_string(),
-                    options.sthickness,
-                );
+                    options.sthickness),
+                    true => get_chemin_sp(
+                    index.x,
+                    // index.y - 5.0 * index.height ,
+                    n.y +  2.0 * n.height,
+                    index.width / 2.0,
+                    // index.height / 2.0,
+                    n.height / 2.0,
+                    n.x,
+                    n.y,
+                    n.width / 2.0,
+                    n.height / 2.0,
+                    color_branch_species.clone(),
+                    config.species_opacity.to_string(),
+                    options.sthickness)
+                };
                 if sp_tree.arena[p].visible {
                     g.append(chemin);
                 }
@@ -527,36 +543,44 @@ pub fn draw_sptree_gntrees (
                     if sp_tree.arena[p].visible {
                         g.append(chemin2);
                         g.append(chemin3);
+                        // if index.collapsed  {
+                        //     println!("DEBUG NOT DRAWING {:?}",index.collapsed);
+                        //     g.append(chemin3);
+                        // }
+                        // else {
+                        //     println!("DEBUG DRAWING {:?}",index.collapsed);
+                        //
+                        // }
                     };
                 }
                 if sp_tree.is_leaf(index.idx) {
                     // Set the y value of the pipe leaf ro the highest value of the y gene leaves
                     let mut max_gene_y = index.y;
-                    println!("DEBUG 2  Output filename max_gene_y = {}",max_gene_y);
+                    // println!("DEBUG 2  Output filename max_gene_y = {}",max_gene_y);
                     for (gene_index, gene_node ) in &index.nodes {
                         let gene_y = gene_trees[*gene_index].arena[*gene_node].y;
-                        println!("DEBUG 2bis  Output filename {:?}",gene_trees[*gene_index].arena[*gene_node]);
-                        println!("DEBUG 2bis  Output filename gene_y = {}",gene_y);
+                        // println!("DEBUG 2bis  Output filename {:?}",gene_trees[*gene_index].arena[*gene_node]);
+                        // println!("DEBUG 2bis  Output filename gene_y = {}",gene_y);
                         if  gene_trees[*gene_index].arena[*gene_node].e != Event::Loss {
                             if gene_y >  max_gene_y {
                                 max_gene_y = gene_y;
                             }
                         }
                     };
-                    println!("DEBUG 3  Output filename max_gene_y = {}",max_gene_y);
+                    // println!("DEBUG 3  Output filename max_gene_y = {}",max_gene_y);
                     if max_gene_y == index.y {
                         // Dans le cas ou la feuille espece ne contient pas de gene ou seulement
                         // des loss (un peu tordu et surement inutile vu que l'on modifie
                         // cette valeur ensuite.)
-                        println!("DEBUG Output filename add {}",index.height / 2.0);
+                        // println!("DEBUG Output filename add {}",index.height / 2.0);
                          max_gene_y = max_gene_y + index.height / 2.0;
                         // max_gene_y = max_gene_y + largest_height / 2.0;
                     }
-                    println!("DEBUG 4  Output filename max_gene_y = {}",max_gene_y);
+                    // println!("DEBUG 4  Output filename max_gene_y = {}",max_gene_y);
                     if ! options.real_length_flag && index.e != Event::Loss {
                         max_gene_y = largest_y_nofl ;
                     }
-                    println!("DEBUG 5 Output filename max_gene_y = {}",max_gene_y);
+                    // println!("DEBUG 5 Output filename max_gene_y = {}",max_gene_y);
                     //if index.collapsed {max_gene_y = max_gene_y - index.height }
                     let chemin = match index.collapsed {
                     //let chemin = match  0 > 1  {
@@ -1097,16 +1121,33 @@ pub fn draw_sptree_gntrees (
         // Affiche le texte associe au noeud
         match sp_tree.is_leaf(index.idx) {
             true => {
-                element.assign("x", index.x - 15.0);
-                element.assign("y", index.y - index.width /2.0 - 10.0);
+                // element.assign("x", index.x - 15.0);
+                match index.collapsed {
+                    false => {
+                        element.assign("x", index.x - 15.0);
+                        element.assign("y", index.y - index.width /2.0 - 10.0);
+                    },
+                    true => {
+                        let pere = match index.parent {
+                            None => panic!("No parent for the node"),
+                            Some(p) => p,
+                        };
+                        println!(" DEBUG SPECIES 1 {:?}",index);
+                        println!(" DEBUG SPECIES 2 {:?}",sp_tree.arena[pere]);
+                        println!(" DEBUG SPECIES 3 {} instead {}",sp_tree.arena[pere].y,index.y - index.width /2.0 - 10.0);
+                         element.assign("x", index.x - 15.0);
+                         element.assign("y", sp_tree.arena[pere].y )},
+
+                };
+                // element.assign("y", index.y - index.width /2.0 - 10.0);
                 element.assign("class", "species");
                 let txt  = Text::new(&index.name);
                 element.append(txt);
-                element.assign(
-                    "transform",
-                    "rotate(90 ".to_owned() + &index.x.to_string() + ","
-                    + &index.y.to_string() + ")",
-                );
+                // element.assign(
+                //     "transform",
+                //     "rotate(90 ".to_owned() + &index.x.to_string() + ","
+                //     + &index.y.to_string() + ")",
+                // );
                 if index.visible {
                     g.append(element);
                 }
