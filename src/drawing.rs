@@ -532,24 +532,31 @@ pub fn draw_sptree_gntrees (
                 if sp_tree.is_leaf(index.idx) {
                     // Set the y value of the pipe leaf ro the highest value of the y gene leaves
                     let mut max_gene_y = index.y;
+                    println!("DEBUG 2  Output filename max_gene_y = {}",max_gene_y);
                     for (gene_index, gene_node ) in &index.nodes {
                         let gene_y = gene_trees[*gene_index].arena[*gene_node].y;
+                        println!("DEBUG 2bis  Output filename {:?}",gene_trees[*gene_index].arena[*gene_node]);
+                        println!("DEBUG 2bis  Output filename gene_y = {}",gene_y);
                         if  gene_trees[*gene_index].arena[*gene_node].e != Event::Loss {
                             if gene_y >  max_gene_y {
                                 max_gene_y = gene_y;
                             }
                         }
                     };
+                    println!("DEBUG 3  Output filename max_gene_y = {}",max_gene_y);
                     if max_gene_y == index.y {
                         // Dans le cas ou la feuille espece ne contient pas de gene ou seulement
                         // des loss (un peu tordu et surement inutile vu que l'on modifie
                         // cette valeur ensuite.)
+                        println!("DEBUG Output filename add {}",index.height / 2.0);
                          max_gene_y = max_gene_y + index.height / 2.0;
                         // max_gene_y = max_gene_y + largest_height / 2.0;
                     }
+                    println!("DEBUG 4  Output filename max_gene_y = {}",max_gene_y);
                     if ! options.real_length_flag && index.e != Event::Loss {
                         max_gene_y = largest_y_nofl ;
                     }
+                    println!("DEBUG 5 Output filename max_gene_y = {}",max_gene_y);
                     //if index.collapsed {max_gene_y = max_gene_y - index.height }
                     let chemin = match index.collapsed {
                     //let chemin = match  0 > 1  {
@@ -579,15 +586,37 @@ pub fn draw_sptree_gntrees (
                         g.append(chemin)
                     };
                     if config.fill_species || options.fill_species {
-                        let chemin2 = close_chemin_sp_filled(
-                            index.x,
-                            index.y,
-                            index.width / 2.0,
-                            index.height / 2.0,
-                            max_gene_y - index.y,
-                            color_branch_species,
-                            config.species_opacity.to_string(),
-                        );
+                        let chemin2 = match index.collapsed {
+                            false  => close_chemin_sp_filled(
+                                index.x,
+                                index.y,
+                                index.width / 2.0,
+                                index.height / 2.0,
+                                max_gene_y - index.y,
+                                color_branch_species,
+                                config.species_opacity.to_string(),
+                            ),
+                            true  => close_chemin_sp_filled(
+                                index.x,
+                                index.y,
+                                index.width / 2.0,
+                                index.height / 2.0,
+                                max_gene_y - index.y,
+                                color_branch_species,
+                                "0".to_string(),
+                            )
+
+                        }
+                        ;
+                        // let chemin2 = close_chemin_sp_filled(
+                        //     index.x,
+                        //     index.y,
+                        //     index.width / 2.0,
+                        //     index.height / 2.0,
+                        //     max_gene_y - index.y,
+                        //     color_branch_species,
+                        //     config.species_opacity.to_string(),
+                        // );
                         if sp_tree.arena[p].visible {
                             g.append(chemin2);
                         };
@@ -739,7 +768,7 @@ pub fn draw_sptree_gntrees (
                  Some(p) => {
                     let n = &gene_trees[idx_rcgen].arena[p];
                      // La forme du chemin depend de l'evenement
-                     let chemin = match index.is_a_transfert {
+                     let mut chemin = match index.is_a_transfert {
                         true => {
                             // Si  flag thickness, les transfers sont affiches plus tard,
                             // selon leur redondance
@@ -865,6 +894,20 @@ pub fn draw_sptree_gntrees (
                             }
                         },
                      };
+                     if index.collapsed {
+                         chemin =  get_chemin_carre(
+                            index.x,
+                            index.y,
+                            n.x,
+                            n.y,
+                            //gene_color.to_string(),
+                            "green".to_string(),
+                            config.gene_opacity.to_string(),
+                            false,
+                            options.gthickness,
+                        );
+
+                     }
                      if index.visible {
                          g.append(chemin);
                     }
