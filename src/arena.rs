@@ -1869,6 +1869,21 @@ pub fn set_leaves_y_values(tree: &mut ArenaTree<String>, index: usize, y: f32) {
         };
     }
 }
+
+/// Set the y values of the collapsed node of a tree .
+pub fn set_collapsed_y_values(tree: &mut ArenaTree<String>) {
+    for index   in &mut tree.arena {
+        // if index.collapsed {
+        //     println!("DEBUG FIND COLLAPSED {:?}",index);
+        //     let parent = match index.parent {
+        //         None => panic!("Unable to collapsed the root"),
+        //         Some(p) => p,
+        //     };
+        //     index.y = tree.arena[parent].y;
+        // }
+
+    }
+}
 /// Shift the y values of the nodes of a tree.
 pub fn shift_nodes_y_values(tree: &mut ArenaTree<String>, index: usize, y:  f32) {
     let val = tree.arena[index].y + y ;
@@ -2483,8 +2498,8 @@ pub fn make_invisible(tree: &mut ArenaTree<String>,
         tree.arena[index].parent = None;
         println!("Test debug {:?}",tree.arena[index].nodes);
         for (idx_tree,idx_node) in  &tree.arena[index].nodes {
-            println!("==> {} {}",idx_tree,idx_node);
-            println!("=> {:?}",gene_trees[*idx_tree].arena[*idx_node]);
+            // println!("==> {} {}",idx_tree,idx_node);
+            // println!("=> {:?}",gene_trees[*idx_tree].arena[*idx_node]);
             gene_trees[*idx_tree].arena[*idx_node].visible = false;
 
         }
