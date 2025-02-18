@@ -16,7 +16,7 @@ use crate::arena::PIPEBLOCK;
 use crate::arena::{newick2tree,xml2tree};
 use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,
     check_contour_postorder_tidy_tree,shift_mod_xy,fusion_mod_xy,set_middle_postorder,real_length,
-    set_leaves_y_values,shift_nodes_y_values};
+    set_leaves_y_values,set_collapsed_y_values,shift_nodes_y_values};
 use crate::arena::{map_species_trees,set_species_width,check_vertical_contour_postorder,
     bilan_mappings,bilan_mappings_reti,center_gene_nodes,move_dupli_mappings,move_species_mappings,
     species_uniformisation,process_fl,uniformise_gene_leaves_y_values};
@@ -478,8 +478,8 @@ pub fn recphyloxml_processing(
         //children.push(sp_tree.arena[sw].children[0]);
         make_invisible(sp_tree,gene_trees,sw);
         for (idx_tree,idx_node) in  &sp_tree.arena[sw].nodes {
-            println!("==> {} {}",idx_tree,idx_node);
-            println!("=> {:?}",gene_trees[*idx_tree].arena[*idx_node]);
+            // println!("==> {} {}",idx_tree,idx_node);
+            // println!("=> {:?}",gene_trees[*idx_tree].arena[*idx_node]);
             gene_trees[*idx_tree].arena[*idx_node].visible = false;
             gene_trees[*idx_tree].arena[*idx_node].collapsed = true;
         }
@@ -678,6 +678,7 @@ pub fn recphyloxml_processing(
             check_contour_postorder_tidy_tree(&mut sp_tree, root, & options, & config);
         }
     }
+    // set_collapsed_y_values(sp_tree);
     // ---------------------------------------------------------
     // Option Scale the heigt if needed
     // ---------------------------------------------------------
