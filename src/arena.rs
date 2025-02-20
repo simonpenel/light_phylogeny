@@ -1379,9 +1379,6 @@ pub fn move_dupli_mappings(
     index: usize,
     options: &Options,
     ) {
-        println!("Debug {:?}",&sp_tree.arena[index] );
-        println!("Debug {:?}",&sp_tree.arena[index].collapsed );
-    //if ! &sp_tree.arena[index].collapsed {
     for (index_node, node) in &sp_tree.arena[index].nodes {
         debug!("[move_dupli_mappings] >>> {:?} {:?}",
             gene_trees[*index_node].arena[*node].name, gene_trees[*index_node].arena[*node].e);
@@ -1870,20 +1867,6 @@ pub fn set_leaves_y_values(tree: &mut ArenaTree<String>, index: usize, y: f32) {
     }
 }
 
-/// Set the y values of the collapsed node of a tree .
-pub fn set_collapsed_y_values(tree: &mut ArenaTree<String>) {
-    for index   in &mut tree.arena {
-        // if index.collapsed {
-        //     println!("DEBUG FIND COLLAPSED {:?}",index);
-        //     let parent = match index.parent {
-        //         None => panic!("Unable to collapsed the root"),
-        //         Some(p) => p,
-        //     };
-        //     index.y = tree.arena[parent].y;
-        // }
-
-    }
-}
 /// Shift the y values of the nodes of a tree.
 pub fn shift_nodes_y_values(tree: &mut ArenaTree<String>, index: usize, y:  f32) {
     let val = tree.arena[index].y + y ;
@@ -2466,7 +2449,7 @@ pub fn summary_root(tree: &mut ArenaTree<String>, index: usize)  {
         },
     }
 }
-/// Make descendant of the nodes invisible.
+/// Get all the descendants of a node in a tree.
 pub fn get_descendant(tree: & ArenaTree<String>, index: usize, descendants: &mut Vec<usize>)  {
     let node = & tree.arena[index];
     let children = &node.children;
@@ -2476,42 +2459,24 @@ pub fn get_descendant(tree: & ArenaTree<String>, index: usize, descendants: &mut
     }
 
 }
+// For each descendant  of a node in a species tree,
+/// set its 'parent' field  to None and 'visible' to false, and
+/// set the 'visible' of associated gene tree to false.
 pub fn make_invisible(tree: &mut ArenaTree<String>,
     gene_trees: &mut std::vec::Vec<ArenaTree<String>>,
     index: usize)  {
-    println!("DEBUG {:?}",&tree.arena[index]);
-    //let node = & tree.arena[index];
-
-    // for (idx_tree,idx_node) in  &tree.arena[index].nodes {
-    //     println!("==> {} {}",idx_tree,idx_node);
-    //     println!("=> {:?}",gene_trees[*idx_tree].arena[*idx_node]);
-    //     gene_trees[*idx_tree].arena[*idx_node].visible = false;
-    //
-    // }
     let mut descendants:Vec<usize> = Vec::new();
     get_descendant(tree,index,&mut descendants);
-    println!("Debug descendants {:?}",descendants);
     //tree.arena[index].visible = false;
     for index in descendants {
-        println!("Remove {:?}",tree.arena[index]);
         tree.arena[index].visible = false;
         tree.arena[index].parent = None;
-        println!("Test debug {:?}",tree.arena[index].nodes);
         for (idx_tree,idx_node) in  &tree.arena[index].nodes {
-            // println!("==> {} {}",idx_tree,idx_node);
-            // println!("=> {:?}",gene_trees[*idx_tree].arena[*idx_node]);
             gene_trees[*idx_tree].arena[*idx_node].visible = false;
 
         }
     }
-    //node.visible = false;
-    //let children  = &node.children;
-    //for child in children {
-    //    make_invisible(tree,*child);
-    //}
 }
-
-
 #[allow(dead_code)]
 /// Reset all positions x y xmod ymod of a tree.
 pub fn reset_pos(tree: &mut ArenaTree<String>)  {
