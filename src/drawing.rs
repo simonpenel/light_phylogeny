@@ -1084,7 +1084,9 @@ pub fn draw_sptree_gntrees (
         // Affiche le texte associe au noeud
         match sp_tree.is_leaf(index.idx) {
             true => {
-                element.assign("x", index.x - 15.0);
+                let txt_size = index.name.len() as f32 * config.species_police_size.parse::<f32>().unwrap();
+                println!("debug size {}",txt_size);
+                element.assign("x", index.x  - txt_size / 2.0);
                 element.assign("y", index.y - index.width /2.0 - 10.0);
                 element.assign("class", "species");
                 let txt  = Text::new(&index.name);
