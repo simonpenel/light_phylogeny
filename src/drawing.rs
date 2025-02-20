@@ -1293,7 +1293,7 @@ pub fn get_timeline (x: f32, y:f32, w:f32, h:f32, c:String, b:String) -> Path {
     let path = Path::new()
         .set("fill", c)
         .set("stroke", b)
-        .set("stroke-width", 3)
+        .set("stroke-width", 0)
         .set("d", data);
     path
 }

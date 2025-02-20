@@ -18,16 +18,24 @@ fn main() {
     time_line_1.insert("PPENT".to_string(),"red".to_string());
     time_line_1.insert("PQUAD".to_string(),"green".to_string());
     time_line_1.insert("PTRED".to_string(),"green".to_string());
-    time_line_1.insert("species_24".to_string(),"black".to_string());
+        time_line_1.insert("species_23".to_string(),"blue".to_string());
+    // time_line_1.insert("species_24".to_string(),"grey".to_string());
+    time_line_1.insert("species_23".to_string(),"blue".to_string());
+    time_line_1.insert("species_2".to_string(),"green".to_string());
     time_line_1.insert("species_12".to_string(),"pink".to_string());
     let mut time_line_2 = HashMap::new();
+    time_line_2.insert("species_24".to_string(),"grey".to_string());
     time_line_2.insert("PPENT".to_string(),"pink".to_string());
     time_line_2.insert("PQUAD".to_string(),"yellow".to_string());
     time_line_2.insert("PTRED".to_string(),"orange".to_string());
     time_line_2.insert("species_13".to_string(),"orange".to_string());
+
+    let mut time_line_3 = HashMap::new();
+    time_line_3.insert("PNOVA".to_string(),"blue".to_string());
+    time_line_3.insert("species_12".to_string(),"orange".to_string());
     options.time_lines.push(time_line_1);
     options.time_lines.push(time_line_2);
-
+    options.time_lines.push(time_line_3);
     options.species_internal = true;
     // options.time_lines.insert("PPENT".to_string(),"red".to_string());
     // options.time_lines.insert("PQUAD".to_string(),"green".to_string());
