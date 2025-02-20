@@ -16,7 +16,7 @@ use crate::arena::PIPEBLOCK;
 use crate::arena::{newick2tree,xml2tree};
 use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,
     check_contour_postorder_tidy_tree,shift_mod_xy,fusion_mod_xy,set_middle_postorder,real_length,
-    set_leaves_y_values,set_collapsed_y_values,shift_nodes_y_values};
+    set_leaves_y_values,shift_nodes_y_values};
 use crate::arena::{map_species_trees,set_species_width,check_vertical_contour_postorder,
     bilan_mappings,bilan_mappings_reti,center_gene_nodes,move_dupli_mappings,move_species_mappings,
     species_uniformisation,process_fl,uniformise_gene_leaves_y_values};
@@ -418,28 +418,6 @@ pub fn recphyloxml_processing(
         children.push(sp_tree.arena[sw].children[0]);
         sp_tree.arena[sw].children = children;
     }
-    // ------------------------------------
-    // Option collapse species tree node
-    // ------------------------------------
-    //for collapsed_node in &options.collapsed_nodes {
-//        let sw = match sp_tree.get_index(collapsed_node.to_string()){
-    //         Ok(index) => index,
-    //         Err(_err) => {
-    //             eprintln!("[recphyloxml_processing] ERROR Unable to find node {:?}",collapsed_node.to_string());
-    //             std::process::exit(1);
-    //         },
-    //     };
-    //     //let mut children : Vec<usize> = Vec::new();
-    //     //children.push(sp_tree.arena[sw].children[1]);
-    //     //children.push(sp_tree.arena[sw].children[0]);
-    //     make_invisible(sp_tree,sw);
-    //     sp_tree.arena[sw].children = Vec::new();
-    //     let gene_nodes = &sp_tree.arena[sw].nodes;
-    //     for gene_node in gene_nodes {
-    //         println!("Debug gene {:?}",gene_node);
-    //     }
-    //     sp_tree.arena[sw].collapsed = true;
-    // }
     //----------------------------------------------------------
     // 1ere étape :initialisation des x,y de l'arbre d'espèces :
     // profondeur => Y, left => X= 0, right X=1
@@ -477,16 +455,25 @@ pub fn recphyloxml_processing(
         //children.push(sp_tree.arena[sw].children[1]);
         //children.push(sp_tree.arena[sw].children[0]);
         make_invisible(sp_tree,gene_trees,sw);
+    println!("DEBUG ==> {} {:?}",collapsed_node,sp_tree.arena[sw]);
         for (idx_tree,idx_node) in  &sp_tree.arena[sw].nodes {
-            // println!("==> {} {}",idx_tree,idx_node);
-            // println!("=> {:?}",gene_trees[*idx_tree].arena[*idx_node]);
+            println!("DEBUG ==> {} {}",idx_tree,idx_node);
+            println!("DEBUG ==> {:?}",gene_trees[*idx_tree].arena[*idx_node]);
             gene_trees[*idx_tree].arena[*idx_node].visible = false;
             gene_trees[*idx_tree].arena[*idx_node].collapsed = true;
+            gene_trees[*idx_tree].arena[*idx_node].location = collapsed_node.to_string() ;
         }
         sp_tree.arena[sw].children = Vec::new();
         sp_tree.arena[sw].nbg = 0;
         sp_tree.arena[sw].nodes = Vec::new();
         sp_tree.arena[sw].collapsed = true;
+
+        println!("DEBUG2 ==> {} {:?}",collapsed_node,sp_tree.arena[sw]);
+            for (idx_tree,idx_node) in  &sp_tree.arena[sw].nodes {
+                println!("DEBUG2 ==> {} {}",idx_tree,idx_node);
+                println!("DEBUG2 ==> {:?}",gene_trees[*idx_tree].arena[*idx_node]);
+            }
+
     }
 
     // --------------------------------------------------
