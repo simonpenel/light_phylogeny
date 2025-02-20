@@ -12,6 +12,7 @@ use crate::arena::Config;
 use crate::arena::Event;
 use crate::arena::BLOCK;
 use crate::arena::PIPEBLOCK;
+use crate::arena::get_x_span;
 use svg::Document;
 use svg::node::element::Path;
 use svg::node::element::Circle;
@@ -449,6 +450,9 @@ pub fn draw_sptree_gntrees (
     let height_svg = height_svg * 1.0;
     let x_viewbox = smallest_x - 0.0 ;
     let y_viewbox = smallest_y - 0.0;
+
+    // let mut total_width_timeline = 0.0;
+    let width_timeline = 20.0;
     let  mut document = match options.rotate {
         true => Document::new()
                 .set("width", height_svg)
@@ -963,8 +967,8 @@ pub fn draw_sptree_gntrees (
             match event {
                 Event::Leaf => {
                     let mut element = Element::new("text");
-                    element.assign("x", index.x - 5.0);
-                    element.assign("y", index.y + 15.0);
+                    element.assign("x", index.x - 5.0  +  options.time_lines.len() as f32  * width_timeline);
+                    element.assign("y", index.y + 15.0 );
                     if options.node_colors.len() > 0 {
  					    // Mode coloration par noeud
                     	element.assign("class", "node_".to_owned() + &index.color_node_idx.to_string());
@@ -1033,7 +1037,48 @@ pub fn draw_sptree_gntrees (
         let add_style_str :&str = &added_style;
         recphylostyle.push_str(add_style_str);
     }
+
+    let max_y = sp_tree.get_largest_y();
+    // affiche les timeline des noeuds internes
+    // on les prend dans l'ordre  d'entree, a
+    //charge de l'utilisateur  de faire a bien
+    let mut idx_tl = 0.0;
+    // total_width_timeline = 0.0;
+    for time_line in &options.time_lines {
+        println!("DEBUG TIMELINE {} {:?}",idx_tl,time_line);
+        for (node_name, color)  in time_line {
+            println!("{:?}=>{}",node_name,color);
+            let node = sp_tree.get_index(node_name.to_string());
+            println!("{:?}=>{:?}",node_name,node);
+            match node {
+                 Err(_err) => eprintln!("There is no node named {}",node_name),
+                 Ok(node) => {
+                     if sp_tree.is_leaf(node) {}
+                     else {
+                     let (min,max) = get_x_span(&sp_tree,node);
+                     let chemin = get_timeline(
+                         min,
+                         // lo,ng index.x - index.width ,
+                         max_y + idx_tl * width_timeline + 5.0,
+                         //index.y,
+                         //index.width ,
+                         max - min,
+                         //lo,g index.width * 4.0 ,
+                         width_timeline,
+                         color.to_string(),
+                         color.to_string()
+                     );
+                     g.append(chemin);
+                 }
+                 },
+            }
+        }
+        idx_tl = idx_tl + 1.0;
+    }
+
+
     // Affiche les noms de  l'arbre d'espece ( on le fait a la fin pour que ce soit sur le dessus dans le svg)
+    // let max_y = sp_tree.get_largest_y();
     for index in &sp_tree.arena {
         let mut element = Element::new("text");
         // Affiche le texte associe au noeud
@@ -1051,7 +1096,51 @@ pub fn draw_sptree_gntrees (
                 );
                 if index.visible {
                     g.append(element);
+                    let mut idx_tl = 0.0;
+                    // total_width_timeline = 0.0;
+                    for time_line in &options.time_lines {
+                        // total_width_timeline += width_timeline;
+                    match  time_line.get(&index.name)
+                        {
+                            Some(time_line_color) => {
+                                let chemin = get_timeline(
+                                    index.x - index.width / 2.0,
+                                    // lo,ng index.x - index.width ,
+                                    max_y + idx_tl * width_timeline + 5.0,
+                                    //index.y,
+                                    index.width ,
+                                    //lo,g index.width * 4.0 ,
+                                    width_timeline,
+                                    time_line_color.to_string(),
+                                    time_line_color.to_string()
+                                );
+                                g.append(chemin);
+
+
+
+                            },
+                            _ => {},
+                        };
+                    //     {
+                    //         Some(s) => s,
+                    //         _ => "grey",
+                    //     };
+                    // let chemin = get_timeline(
+                    //     index.x - index.width / 2.0,
+                    //     // lo,ng index.x - index.width ,
+                    //     max_y + idx_tl * width_timeline + 5.0,
+                    //     //index.y,
+                    //     index.width ,
+                    //     //lo,g index.width * 4.0 ,
+                    //     width_timeline,
+                    //     time_line_color.to_string(),
+                    //     time_line_color.to_string()
+                    // );
+                    // g.append(chemin);
+                    idx_tl = idx_tl + 1.0;
                 }
+            }
+
             },
             false => {
                 match options.species_internal {
@@ -1068,6 +1157,15 @@ pub fn draw_sptree_gntrees (
                         );
                         if index.visible {
                             g.append(element);
+                            // let chemin = get_cadre(
+                            //     index.x - index.width / 2.0,
+                            //     max_y,
+                            //     //index.y,
+                            //     index.width,
+                            //     40.0,
+                            //     "blue".to_string()
+                            // );
+                            // g.append(chemin);
                         }
                     },
                     false => {},
@@ -1151,6 +1249,21 @@ pub fn draw_sptree_gntrees (
             }
         }
     }
+
+    // Timeline
+    let min_x = sp_tree.get_smallest_x();
+    let max_y = sp_tree.get_largest_y();
+    let width = sp_tree.get_largest_x() - min_x;
+    // let chemin = get_cadre(
+    //     min_x,
+    //     max_y + 10.0,
+    //     width,
+    //     40.0,
+    //     "red".to_string()
+    // );
+    // g.append(chemin);
+
+
     let mut transfo: String = "translate(  ".to_owned();
     transfo.push_str(&( x_viewbox).to_string());
     transfo.push_str(" ");
@@ -1160,9 +1273,31 @@ pub fn draw_sptree_gntrees (
         true => g.assign("transform",transfo),
         false => {}
     };
+
+
+
     document.append(g);
+
+
     svg::save(name, &document).unwrap();
 }
+
+/// Draw a frame.
+pub fn get_timeline (x: f32, y:f32, w:f32, h:f32, c:String, b:String) -> Path {
+    let data = Data::new()
+        .move_to((x, y))
+        .line_by((w, 0.0))
+        .line_by((0.0, h))
+        .line_by((-w, 0.0))
+        .close();
+    let path = Path::new()
+        .set("fill", c)
+        .set("stroke", b)
+        .set("stroke-width", 3)
+        .set("d", data);
+    path
+}
+
 #[allow(dead_code)]
 /// Draw a frame.
 pub fn get_cadre (x: f32, y:f32, w:f32, h:f32, c:String) -> Path {

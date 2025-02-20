@@ -4,6 +4,7 @@
 /// license = "CECILL-2.1"
 use std::process;
 use log::{info,debug};
+use std::collections::HashMap;
 pub const BLOCK: f32 = 60.0;
 pub const PIPEBLOCK: f32 = BLOCK / 4.0;
 
@@ -454,6 +455,8 @@ pub struct Options{
     pub switches: Vec<String>,
     /// Fill species tree (may be defined in config as well)
     pub fill_species: bool,
+    /// Timelines
+    pub time_lines: Vec<HashMap<String,String>>,
 }
 impl Options {
     pub fn new() -> Self {
@@ -496,6 +499,7 @@ impl Options {
             hybrid: Vec::new(),
             switches: Vec::new(),
             fill_species: false,
+            time_lines: Vec::new(),
         }
     }
 }
@@ -2441,6 +2445,28 @@ pub fn summary_root(tree: &mut ArenaTree<String>, index: usize)  {
         },
     }
 }
+/// Get all the descendants of a node in a tree.
+pub fn get_descendant(tree: & ArenaTree<String>, index: usize, descendants: &mut Vec<usize>)  {
+    let node = & tree.arena[index];
+    let children = &node.children;
+    for child in children {
+        descendants.push(*child);
+        get_descendant(tree, *child, descendants);
+    }
+}
+/// Get all the descendants of a node in a tree.
+pub fn get_x_span(tree: & ArenaTree<String>, index: usize) -> (f32,f32) {
+    let mut descendants:Vec<usize> = Vec::new();
+    let mut min_x = 100000.0;
+    let mut max_x = 0.0;
+    get_descendant(tree,index,&mut descendants);
+    for index in descendants {
+        if tree.arena[index].x > max_x { max_x =  tree.arena[index].x }
+        if tree.arena[index].x < min_x { min_x =  tree.arena[index].x }
+        }
+    (min_x, max_x)
+}
+
 #[allow(dead_code)]
 /// Reset all positions x y xmod ymod of a tree.
 pub fn reset_pos(tree: &mut ArenaTree<String>)  {
