@@ -76,15 +76,15 @@ pub fn draw_tree (
                 ))
                 .set("style","background-color:".to_owned() + &options.bckg_color),
     };
+    // Gestion des styles
+    // ------------------
     let style = Style::new(".gene { font-size: ".to_owned()
         + &config.gene_police_size.to_string() + "px; fill:"
         + &gene_color.to_string() + "; } .support { font-size: "
         + &config.gene_police_size.to_string() + "px; fill: red; } .branch { font-size: "
         + &config.gene_police_size.to_string() + "px; fill: black; }" );
     document.append(style);
-
     let mut phylostyle:String = Default::default() ;
-
     // Cas ou il y a des couleurs definies par l'utilsateur: ajout de styles pour la police
     if options.gene_colors.len() > 0 {
         // On definit le style gene_O qu'on associe a la premiere couleur
@@ -96,7 +96,6 @@ pub fn draw_tree (
             let add_style_str :&str = &added_style;
             phylostyle.push_str(add_style_str);
     }
-
     // Cas ou il y a des noeuds a colorer: ajout de styles pour la police
     if options.node_colors.len() > 0 {
         // On definit la couleur des font pour le style node_0
@@ -112,7 +111,6 @@ pub fn draw_tree (
         // Je passe en str pour l'ajouter
         let add_style_str :&str = &added_style;
         phylostyle.push_str(add_style_str);
-
         let mut node_color_idx = 1; // Les autres restent a 0
         // Traite tous les noeuds a colorer
         for node_color in  &options.node_colors {
@@ -148,21 +146,23 @@ pub fn draw_tree (
     let style = Style::new(phylostyle);
     document.append(style);
 
+    // Construction du svg
+    // -------------------
     // Cas ou l'utilisateur a defini des couleur. Le gene unique a la premiere couleur
     if options.gene_colors.len() > 0 {
         gene_color = options.gene_colors[0].clone();
     }
+    // Creation d'un element
     let mut g = Element::new("g");
-
-    // Affiche les timelines au debut pour eviter un eventuel recouvrement
-    // des nom de noeuds internes.
-    display_timeline_internal_nodes(
+    // Affiche les timelines (au debut pour eviter un eventuel recouvrement
+    // des nom de noeuds internes)
+    display_timelines(
         tree,   // species tree
         options,   // drawing options
         &mut g,
         width_timeline
     );
-
+    // Exploration de l'arbre
     for  index in &tree.arena {
         // Cas ou il y a une coloration par noeud
         if options.node_colors.len() > 0 {
@@ -190,7 +190,6 @@ pub fn draw_tree (
                             config.gene_opacity.to_string(),
                             true,
                             options.gthickness,
-
                         )
                     },
                     false => {
@@ -314,14 +313,6 @@ pub fn draw_tree (
                 true => {
                     // Cas d'une feuille: on decale pour prendre en compte les timelines
                     element.assign("x", index.x  +  options.time_lines.len() as f32  * width_timeline);
-                    // display_timeline_leave(
-                    //     tree,   // species tree
-                    //     &index,
-                    //     options,   // drawing options
-                    //     &mut g,
-                    //     &mut unknown_symbols,
-                    //     width_timeline
-                    // );
                 },
             }
             element.assign("y", index.y + 10.0);
@@ -403,7 +394,6 @@ pub fn draw_tree (
             }
         }
     }
-
     // Note : simple tree
     let mut transfo: String = "translate(  ".to_owned();
     transfo.push_str(&( x_viewbox).to_string());
@@ -480,8 +470,6 @@ pub fn draw_sptree_gntrees (
     let height_svg = height_svg * 1.0;
     let x_viewbox = smallest_x - 0.0 ;
     let y_viewbox = smallest_y - 0.0;
-
-    // let mut total_width_timeline = 0.0;
     let width_timeline = 20.0;
     let  mut document = match options.rotate {
         true => Document::new()
@@ -507,12 +495,13 @@ pub fn draw_sptree_gntrees (
                 )
                .set("style","background-color:".to_owned() + &options.bckg_color),
     };
-    // Initialse la chaine de carctere dediee aux styles des fonts : font pour l'espece
+    // Initialise la chaine de carctere dediee aux styles des fonts : font pour l'espece
     let mut recphylostyle:String = ".species { font: italic ".to_owned() + "; font-size: "
         + &config.species_police_size.to_string() + "px; fill: "
         + &config.species_police_color.to_string() + "; }";
     let mut g = Element::new("g");
     // Dessine l'arbre d'espece
+    // ------------------------
     for index in &sp_tree.arena {
         // Dessine le tuyeau
         match index.parent {
@@ -658,6 +647,7 @@ pub fn draw_sptree_gntrees (
         }
      }
     // Boucle sur les arbres de genes
+    // ------------------------------
     let  nb_gntree =  gene_trees.len(); // Nombre d'arbres de gene
     let mut idx_rcgen = 0;
     loop {
@@ -668,6 +658,7 @@ pub fn draw_sptree_gntrees (
         // Cas de la coloration par noeuds: on modifie l'index de couleur des descendants de chaque
         // noeud dans options.node_colors
         if options.node_colors.len() > 0 {
+            // Gestion des styles
             // On definit la couleur des font pour le style node_0
             // Style de la font pour la partie de l'arbre
             let mut font_color  = get_default_color(0);
@@ -740,6 +731,8 @@ pub fn draw_sptree_gntrees (
         // Je passe en str pour l'ajouter
         let add_style_str :&str = &added_style;
         recphylostyle.push_str(add_style_str);
+        // Exploration de l'arbre de gene
+        // ------------------------------
         for  index in &gene_trees[idx_rcgen].arena {
  			// Cas ou la coloration varie dans l'arbre des genes
             if options.node_colors.len() > 0 {
@@ -1046,8 +1039,9 @@ pub fn draw_sptree_gntrees (
             break;
         }
     }
-    // Ajoute les Transfers surnumeraire
+
     // Analyse l'abondance des transferts
+    // ----------------------------------
     let mut unique_transfers: std::vec::Vec<(String,String)> = vec![];
     let mut scores: std::vec::Vec<usize> = vec![];
     let mut score_max = 1;
@@ -1068,22 +1062,18 @@ pub fn draw_sptree_gntrees (
         recphylostyle.push_str(add_style_str);
     }
 
-
-
     // La longeur maximum de l'arbre pour determiner  l'emplacement de la timeline
     let max_y = sp_tree.get_largest_y();
 
-    // Affiche les timelines definis par les noeuds internes.
-    display_timeline_internal_nodes(
+    // Affiche les timelines.
+    display_timelines(
         sp_tree,   // species tree
         options,   // drawing options
         &mut g,
         width_timeline
     );
 
-    let mut unknown_symbols = false; // Tag qui signale si il y a eu un symbol inconnu
     // Affiche les noms de  l'arbre d'espece ( on le fait a la fin pour que ce soit sur le dessus dans le svg)
-    // let max_y = sp_tree.get_largest_y();
     for index in &sp_tree.arena {
         let mut element = Element::new("text");
         // Affiche le texte associe au noeud
@@ -1102,103 +1092,6 @@ pub fn draw_sptree_gntrees (
                 );
                 if index.visible {
                     g.append(element);
-                    // // Affiche la partie de la timeline associée à l'espece
-                    // let mut idx_tl = 0.0;
-                    // for time_line in &options.time_lines {
-                    //     match  time_line.get(&index.name){
-                    //         Some(time_line_color) => {
-                    //              if time_line_color.starts_with('%'){
-                    //                 let v: Vec<&str> = time_line_color.split(":").collect();
-                    //                 let time_line_symbol = v[0];
-                    //                 let mut time_line_symbol_color = "red";
-                    //                 if v.len() > 1 {
-                    //                     time_line_symbol_color = v[1];
-                    //                 }
-                    //                 let mut find_symbol = false;
-                    //                 if time_line_symbol.to_string() == "%circle" {
-                    //                     find_symbol = true;
-                    //                     g.append(
-                    //                         get_circle(
-                    //                             index.x ,
-                    //                             max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
-                    //                             width_timeline / 2.5,
-                    //                             time_line_symbol_color.to_string(),
-                    //                             "1.0".to_string(),
-                    //                         )
-                    //                     )
-                    //                 }
-                    //                 if time_line_symbol.to_string() == "%square" {
-                    //                     find_symbol = true;
-                    //                     g.append(
-                    //                         get_carre(
-                    //                             index.x ,
-                    //                             max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
-                    //                             width_timeline / 2.0,
-                    //                             time_line_symbol_color.to_string(),
-                    //                             "1.0".to_string(),
-                    //                         )
-                    //                     )
-                    //                 }
-                    //                 if time_line_symbol.to_string() == "%cross" {
-                    //                     find_symbol = true;
-                    //                     g.append(
-                    //                         get_cross(
-                    //                             index.x ,
-                    //                             max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
-                    //                             width_timeline / 4.0,
-                    //                             time_line_symbol_color.to_string(),
-                    //                             "1.0".to_string(),
-                    //                         )
-                    //                     )
-                    //                 }
-                    //                 if time_line_symbol.to_string() == "%halfcircle" {
-                    //                     find_symbol = true;
-                    //                     g.append(
-                    //                         get_half_circle(
-                    //                             index.x ,
-                    //                             max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
-                    //                             width_timeline / 2.5,
-                    //                             time_line_symbol_color.to_string(),
-                    //                             "1.0".to_string(),
-                    //                         )
-                    //                     )
-                    //                 }
-                    //                 if time_line_symbol.to_string() == "%triangle" {
-                    //                     find_symbol = true;
-                    //                     g.append(
-                    //                         get_triangle(
-                    //                             index.x ,
-                    //                             max_y + idx_tl * width_timeline + 10.0 + width_timeline / 2.0,
-                    //                             width_timeline / 2.0,
-                    //                             time_line_symbol_color.to_string(),
-                    //                             "1.0".to_string(),
-                    //                         )
-                    //                     )
-                    //                 }
-                    //                 if ! find_symbol {
-                    //                     eprintln!("The symbol {} is unknown",time_line_symbol);
-                    //                     unknown_symbols = true;
-                    //                 }
-                    //             }
-                    //             else {
-                    //                 let chemin = get_timeline(
-                    //                     index.x - index.width / 2.0,
-                    //                     // lo,ng index.x - index.width ,
-                    //                     max_y + idx_tl * width_timeline + 5.0,
-                    //                     //index.y,
-                    //                     index.width ,
-                    //                     //lo,g index.width * 4.0 ,
-                    //                     width_timeline,
-                    //                     time_line_color.to_string(),
-                    //                     time_line_color.to_string()
-                    //                 );
-                    //                 g.append(chemin);
-                    //             }
-                    //         },
-                    //         _ => {},
-                    //     };
-                    // idx_tl = idx_tl + 1.0;
-                    // }
                 }
             },
             false => {
@@ -1223,17 +1116,12 @@ pub fn draw_sptree_gntrees (
             },
         };
     }
-    if unknown_symbols {
-        eprintln!("Allowed symbols are:");
-        eprintln!("%circle");
-        eprintln!("%cross");
-        eprintln!("%halfcircle");
-        eprintln!("%square");
-        eprintln!("%triangle");
-    }
+
     // Ajout le style
     let style = Style::new(recphylostyle);
     document.append(style);
+
+    // Ajout des transferts
     for transfer in transfers {
         let (end, start) = &transfer;
         if  ((options.trans_start.as_ref() == None) || (options.trans_start.as_ref() == Some(start))) &&
@@ -1308,18 +1196,6 @@ pub fn draw_sptree_gntrees (
         }
     }
 
-    // Timeline
-    //let min_x = sp_tree.get_smallest_x();
-    //let max_y = sp_tree.get_largest_y();
-    //let width = sp_tree.get_largest_x() - min_x;
-    // let chemin = get_cadre(
-    //     min_x,
-    //     max_y + 10.0,
-    //     width,
-    //     40.0,
-    //     "red".to_string()
-    // );
-    // g.append(chemin);
 
 
     let mut transfo: String = "translate(  ".to_owned();
@@ -1335,7 +1211,7 @@ pub fn draw_sptree_gntrees (
     svg::save(name, &document).unwrap();
 }
 
-pub fn display_timeline_internal_nodes(
+pub fn display_timelines(
         tree: &mut ArenaTree<String>,                    // species tree
         options: &Options,                                  // drawing options
         g: &mut Element,
@@ -1376,16 +1252,11 @@ pub fn display_timeline_internal_nodes(
         // Dessine les timelines
         for time_line_node in time_line_nodes {
             let (min,max) = get_x_span(&tree,time_line_node.index);
-
-
-
             match tree.is_leaf(time_line_node.index) {
                 true => {
                     // get the value associated to the considered nodes
                     let tl_x = tree.arena[time_line_node.index].x;
                     let tl_width = tree.arena[time_line_node.index].width;
-
-
                     if time_line_node.color.starts_with('%'){
                        let v: Vec<&str> = time_line_node.color.split(":").collect();
                        let time_line_symbol = v[0];
@@ -1460,9 +1331,6 @@ pub fn display_timeline_internal_nodes(
                        }
                    }
                    else {
-
-
-
                     let chemin = get_timeline(
                         tl_x - tl_width / 2.0,
                         // lo,ng index.x - index.width ,
@@ -1474,18 +1342,6 @@ pub fn display_timeline_internal_nodes(
                         time_line_node.color.to_string(),
                         time_line_node.color.to_string()
                     );
-
-                    // let chemin = get_timeline(
-                    //     index.x - index.width / 2.0,
-                    //     // lo,ng index.x - index.width ,
-                    //     max_y + idx_tl * width_timeline + 5.0,
-                    //     //index.y,
-                    //     index.width ,
-                    //     //lo,g index.width * 4.0 ,
-                    //     width_timeline,
-                    //     time_line_node.color.to_string(),
-                    //     time_line_node.color.to_string()
-                    // );
                      g.append(chemin);
                  };
 
