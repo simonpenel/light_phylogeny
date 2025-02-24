@@ -1343,6 +1343,7 @@ pub fn display_timeline_internal_nodes(
 ){
 
     // affiche les timeline des noeuds internes
+    let mut unknown_symbols = false;
     // Structure utilisée pour classer les noeuds internes selon leur distance à la racine.
     #[derive(Debug)]
     struct TimeLineNode {
@@ -1385,6 +1386,84 @@ pub fn display_timeline_internal_nodes(
                     let tl_x = tree.arena[time_line_node.index].x;
                     let tl_width = tree.arena[time_line_node.index].width;
 
+
+                    if time_line_node.color.starts_with('%'){
+                       let v: Vec<&str> = time_line_node.color.split(":").collect();
+                       let time_line_symbol = v[0];
+                       let mut time_line_symbol_color = "red";
+                       if v.len() > 1 {
+                           time_line_symbol_color = v[1];
+                       }
+                       let mut find_symbol = false;
+                       if time_line_symbol.to_string() == "%circle" {
+                           find_symbol = true;
+                           g.append(
+                               get_circle(
+                                   tl_x ,
+                                   max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+                                   width_timeline / 2.5,
+                                   time_line_symbol_color.to_string(),
+                                   "1.0".to_string(),
+                               )
+                           )
+                       }
+                       if time_line_symbol.to_string() == "%square" {
+                           find_symbol = true;
+                           g.append(
+                               get_carre(
+                                   tl_x ,
+                                   max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+                                   width_timeline / 2.0,
+                                   time_line_symbol_color.to_string(),
+                                   "1.0".to_string(),
+                               )
+                           )
+                       }
+                       if time_line_symbol.to_string() == "%cross" {
+                           find_symbol = true;
+                           g.append(
+                               get_cross(
+                                   tl_x ,
+                                   max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+                                   width_timeline / 4.0,
+                                   time_line_symbol_color.to_string(),
+                                   "1.0".to_string(),
+                               )
+                           )
+                       }
+                       if time_line_symbol.to_string() == "%halfcircle" {
+                           find_symbol = true;
+                           g.append(
+                               get_half_circle(
+                                   tl_x ,
+                                   max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+                                   width_timeline / 2.5,
+                                   time_line_symbol_color.to_string(),
+                                   "1.0".to_string(),
+                               )
+                           )
+                       }
+                       if time_line_symbol.to_string() == "%triangle" {
+                           find_symbol = true;
+                           g.append(
+                               get_triangle(
+                                   tl_x ,
+                                   max_y + idx_tl * width_timeline + 10.0 + width_timeline / 2.0,
+                                   width_timeline / 2.0,
+                                   time_line_symbol_color.to_string(),
+                                   "1.0".to_string(),
+                               )
+                           )
+                       }
+                       if ! find_symbol {
+                           eprintln!("The symbol {} is unknown",time_line_symbol);
+                           unknown_symbols = true;
+                       }
+                   }
+                   else {
+
+
+
                     let chemin = get_timeline(
                         tl_x - tl_width / 2.0,
                         // lo,ng index.x - index.width ,
@@ -1409,6 +1488,7 @@ pub fn display_timeline_internal_nodes(
                     //     time_line_node.color.to_string()
                     // );
                      g.append(chemin);
+                 };
 
                 },
                 false => {
@@ -1428,7 +1508,14 @@ pub fn display_timeline_internal_nodes(
         idx_tl = idx_tl + 1.0;
     }
 
-
+    if unknown_symbols {
+        eprintln!("Allowed symbols are:");
+        eprintln!("%circle");
+        eprintln!("%cross");
+        eprintln!("%halfcircle");
+        eprintln!("%square");
+        eprintln!("%triangle");
+    }
 }
 
 pub fn display_timeline_leave <T: std::cmp::PartialEq>(
