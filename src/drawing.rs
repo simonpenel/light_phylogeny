@@ -1375,19 +1375,39 @@ pub fn display_timeline_internal_nodes(
         // Dessine les timelines
         for time_line_node in time_line_nodes {
             println!("debug {}",tree.is_leaf(time_line_node.index));
-            let (min,max) = match tree.is_leaf(time_line_node.index) {
-                true => get_x_span(&tree,time_line_node.index),
-                false => get_x_span(&tree,time_line_node.index),
+            let (min,max) = get_x_span(&tree,time_line_node.index);
+
+
+
+            match tree.is_leaf(time_line_node.index) {
+                true => {
+                    // let chemin = get_timeline(
+                    //     index.x - index.width / 2.0,
+                    //     // lo,ng index.x - index.width ,
+                    //     max_y + idx_tl * width_timeline + 5.0,
+                    //     //index.y,
+                    //     index.width ,
+                    //     //lo,g index.width * 4.0 ,
+                    //     width_timeline,
+                    //     time_line_node.color.to_string(),
+                    //     time_line_node.color.to_string()
+                    // );
+                    // g.append(chemin);
+
+                },
+                false => {
+                    g.append(
+                    get_timeline(
+                      min,
+                      max_y + idx_tl * width_timeline + 5.0,
+                      max - min,
+                      width_timeline,
+                      time_line_node.color.to_string(),
+                      time_line_node.color.to_string()
+                  ))
+              },
             };
-            let chemin =  get_timeline(
-                min,
-                max_y + idx_tl * width_timeline + 5.0,
-                max - min,
-                width_timeline,
-                time_line_node.color.to_string(),
-                time_line_node.color.to_string()
-                );
-            g.append(chemin);
+            // g.append(chemin);
         }
         idx_tl = idx_tl + 1.0;
     }
