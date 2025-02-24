@@ -1381,6 +1381,22 @@ pub fn display_timeline_internal_nodes(
 
             match tree.is_leaf(time_line_node.index) {
                 true => {
+                    // get the value associated to the considered nodes
+                    let tl_x = tree.arena[time_line_node.index].x;
+                    let tl_width = tree.arena[time_line_node.index].width;
+
+                    let chemin = get_timeline(
+                        tl_x - tl_width / 2.0,
+                        // lo,ng index.x - index.width ,
+                        max_y + idx_tl * width_timeline + 5.0,
+                        //index.y,
+                        tl_width ,
+                        //lo,g index.width * 4.0 ,
+                        width_timeline,
+                        time_line_node.color.to_string(),
+                        time_line_node.color.to_string()
+                    );
+
                     // let chemin = get_timeline(
                     //     index.x - index.width / 2.0,
                     //     // lo,ng index.x - index.width ,
@@ -1392,7 +1408,7 @@ pub fn display_timeline_internal_nodes(
                     //     time_line_node.color.to_string(),
                     //     time_line_node.color.to_string()
                     // );
-                    // g.append(chemin);
+                     g.append(chemin);
 
                 },
                 false => {
