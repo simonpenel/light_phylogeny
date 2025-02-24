@@ -1102,103 +1102,103 @@ pub fn draw_sptree_gntrees (
                 );
                 if index.visible {
                     g.append(element);
-                    // Affiche la partie de la timeline associée à l'espece
-                    let mut idx_tl = 0.0;
-                    for time_line in &options.time_lines {
-                        match  time_line.get(&index.name){
-                            Some(time_line_color) => {
-                                 if time_line_color.starts_with('%'){
-                                    let v: Vec<&str> = time_line_color.split(":").collect();
-                                    let time_line_symbol = v[0];
-                                    let mut time_line_symbol_color = "red";
-                                    if v.len() > 1 {
-                                        time_line_symbol_color = v[1];
-                                    }
-                                    let mut find_symbol = false;
-                                    if time_line_symbol.to_string() == "%circle" {
-                                        find_symbol = true;
-                                        g.append(
-                                            get_circle(
-                                                index.x ,
-                                                max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
-                                                width_timeline / 2.5,
-                                                time_line_symbol_color.to_string(),
-                                                "1.0".to_string(),
-                                            )
-                                        )
-                                    }
-                                    if time_line_symbol.to_string() == "%square" {
-                                        find_symbol = true;
-                                        g.append(
-                                            get_carre(
-                                                index.x ,
-                                                max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
-                                                width_timeline / 2.0,
-                                                time_line_symbol_color.to_string(),
-                                                "1.0".to_string(),
-                                            )
-                                        )
-                                    }
-                                    if time_line_symbol.to_string() == "%cross" {
-                                        find_symbol = true;
-                                        g.append(
-                                            get_cross(
-                                                index.x ,
-                                                max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
-                                                width_timeline / 4.0,
-                                                time_line_symbol_color.to_string(),
-                                                "1.0".to_string(),
-                                            )
-                                        )
-                                    }
-                                    if time_line_symbol.to_string() == "%halfcircle" {
-                                        find_symbol = true;
-                                        g.append(
-                                            get_half_circle(
-                                                index.x ,
-                                                max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
-                                                width_timeline / 2.5,
-                                                time_line_symbol_color.to_string(),
-                                                "1.0".to_string(),
-                                            )
-                                        )
-                                    }
-                                    if time_line_symbol.to_string() == "%triangle" {
-                                        find_symbol = true;
-                                        g.append(
-                                            get_triangle(
-                                                index.x ,
-                                                max_y + idx_tl * width_timeline + 10.0 + width_timeline / 2.0,
-                                                width_timeline / 2.0,
-                                                time_line_symbol_color.to_string(),
-                                                "1.0".to_string(),
-                                            )
-                                        )
-                                    }
-                                    if ! find_symbol {
-                                        eprintln!("The symbol {} is unknown",time_line_symbol);
-                                        unknown_symbols = true;
-                                    }
-                                }
-                                else {
-                                    let chemin = get_timeline(
-                                        index.x - index.width / 2.0,
-                                        // lo,ng index.x - index.width ,
-                                        max_y + idx_tl * width_timeline + 5.0,
-                                        //index.y,
-                                        index.width ,
-                                        //lo,g index.width * 4.0 ,
-                                        width_timeline,
-                                        time_line_color.to_string(),
-                                        time_line_color.to_string()
-                                    );
-                                    g.append(chemin);
-                                }
-                            },
-                            _ => {},
-                        };
-                    idx_tl = idx_tl + 1.0;
-                    }
+                    // // Affiche la partie de la timeline associée à l'espece
+                    // let mut idx_tl = 0.0;
+                    // for time_line in &options.time_lines {
+                    //     match  time_line.get(&index.name){
+                    //         Some(time_line_color) => {
+                    //              if time_line_color.starts_with('%'){
+                    //                 let v: Vec<&str> = time_line_color.split(":").collect();
+                    //                 let time_line_symbol = v[0];
+                    //                 let mut time_line_symbol_color = "red";
+                    //                 if v.len() > 1 {
+                    //                     time_line_symbol_color = v[1];
+                    //                 }
+                    //                 let mut find_symbol = false;
+                    //                 if time_line_symbol.to_string() == "%circle" {
+                    //                     find_symbol = true;
+                    //                     g.append(
+                    //                         get_circle(
+                    //                             index.x ,
+                    //                             max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+                    //                             width_timeline / 2.5,
+                    //                             time_line_symbol_color.to_string(),
+                    //                             "1.0".to_string(),
+                    //                         )
+                    //                     )
+                    //                 }
+                    //                 if time_line_symbol.to_string() == "%square" {
+                    //                     find_symbol = true;
+                    //                     g.append(
+                    //                         get_carre(
+                    //                             index.x ,
+                    //                             max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+                    //                             width_timeline / 2.0,
+                    //                             time_line_symbol_color.to_string(),
+                    //                             "1.0".to_string(),
+                    //                         )
+                    //                     )
+                    //                 }
+                    //                 if time_line_symbol.to_string() == "%cross" {
+                    //                     find_symbol = true;
+                    //                     g.append(
+                    //                         get_cross(
+                    //                             index.x ,
+                    //                             max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+                    //                             width_timeline / 4.0,
+                    //                             time_line_symbol_color.to_string(),
+                    //                             "1.0".to_string(),
+                    //                         )
+                    //                     )
+                    //                 }
+                    //                 if time_line_symbol.to_string() == "%halfcircle" {
+                    //                     find_symbol = true;
+                    //                     g.append(
+                    //                         get_half_circle(
+                    //                             index.x ,
+                    //                             max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+                    //                             width_timeline / 2.5,
+                    //                             time_line_symbol_color.to_string(),
+                    //                             "1.0".to_string(),
+                    //                         )
+                    //                     )
+                    //                 }
+                    //                 if time_line_symbol.to_string() == "%triangle" {
+                    //                     find_symbol = true;
+                    //                     g.append(
+                    //                         get_triangle(
+                    //                             index.x ,
+                    //                             max_y + idx_tl * width_timeline + 10.0 + width_timeline / 2.0,
+                    //                             width_timeline / 2.0,
+                    //                             time_line_symbol_color.to_string(),
+                    //                             "1.0".to_string(),
+                    //                         )
+                    //                     )
+                    //                 }
+                    //                 if ! find_symbol {
+                    //                     eprintln!("The symbol {} is unknown",time_line_symbol);
+                    //                     unknown_symbols = true;
+                    //                 }
+                    //             }
+                    //             else {
+                    //                 let chemin = get_timeline(
+                    //                     index.x - index.width / 2.0,
+                    //                     // lo,ng index.x - index.width ,
+                    //                     max_y + idx_tl * width_timeline + 5.0,
+                    //                     //index.y,
+                    //                     index.width ,
+                    //                     //lo,g index.width * 4.0 ,
+                    //                     width_timeline,
+                    //                     time_line_color.to_string(),
+                    //                     time_line_color.to_string()
+                    //                 );
+                    //                 g.append(chemin);
+                    //             }
+                    //         },
+                    //         _ => {},
+                    //     };
+                    // idx_tl = idx_tl + 1.0;
+                    // }
                 }
             },
             false => {
@@ -1375,7 +1375,6 @@ pub fn display_timeline_internal_nodes(
         time_line_nodes.sort_by(|a, b| a.root_distance.cmp(&b.root_distance));
         // Dessine les timelines
         for time_line_node in time_line_nodes {
-            println!("debug {}",tree.is_leaf(time_line_node.index));
             let (min,max) = get_x_span(&tree,time_line_node.index);
 
 
