@@ -151,6 +151,9 @@ fn main() {
 
     let mut time_line_3 = HashMap::new();
     time_line_3.insert("b1".to_string(),"pink".to_string());
+    time_line_3.insert("a1".to_string(),"%circle:green".to_string());
+    time_line_3.insert("a2".to_string(),"%circlea:green".to_string());
+    time_line_3.insert("c1".to_string(),"%ciracle:green".to_string());    
     options.time_lines.push(time_line_3);
 
     let config: Config = Config::new();
