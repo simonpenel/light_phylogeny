@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use light_phylogeny::{ArenaTree,Options,Config,read_phyloxml,phyloxml_processing};
 
 fn main() {
@@ -127,6 +128,35 @@ fn main() {
     read_phyloxml("xml_examples/example_dupli.xml".to_string(), &mut tree);
     phyloxml_processing(&mut tree, &options, &config,"read_phyloxml_example_dupli_color_2.svg".to_string());
     println!("Please open output file 'read_phyloxml_example_dupli_color_2.svg' with your browser");
+
+    let mut tree: ArenaTree<String> = ArenaTree::default();
+    let mut options: Options = Options::new();
+    options.gene_colors.push("green".to_string());
+    options.gene_colors.push("red".to_string());
+    options.gene_colors.push("orange".to_string());
+    options.node_colors.push("02_speciation".to_string());
+    options.node_colors.push("01_speciation".to_string());
+    options.node_colors.push("b1".to_string());
+    options.node_colors.push("b2".to_string());
+    options.gene_internal = true;
+    options.squaresize = 15.0;
+
+    let mut time_line_1 = HashMap::new();
+    time_line_1.insert("02_speciation".to_string(),"blue".to_string());
+    time_line_1.insert("01_speciation".to_string(),"yellow".to_string());
+    options.time_lines.push(time_line_1);
+    let mut time_line_2 = HashMap::new();
+    time_line_2.insert("0".to_string(),"purple".to_string());
+    options.time_lines.push(time_line_2);
+
+    let mut time_line_3 = HashMap::new();
+    time_line_3.insert("b1".to_string(),"pink".to_string());
+    options.time_lines.push(time_line_3);
+
+    let config: Config = Config::new();
+    read_phyloxml("xml_examples/example_dupli.xml".to_string(), &mut tree);
+    phyloxml_processing(&mut tree, &options, &config,"read_phyloxml_example_timelines.svg".to_string());
+    println!("Please open output file 'read_phyloxml_example_timelines.svg' with your browser");
 
 
 

@@ -8,6 +8,7 @@
 use log::{info};
 use crate::arena::Options;
 use crate::arena::ArenaTree;
+use crate::arena::Noeud;
 use crate::arena::Config;
 use crate::arena::Event;
 use crate::arena::BLOCK;
@@ -38,6 +39,7 @@ pub fn draw_tree (
     config: &Config,              // svg config
     ) {
     info!("[draw_tree] Drawing tree...");
+    let width_timeline = 10.0;
     let mut gene_color = config.single_gene_color.clone();
     let largest_x = tree.get_largest_x() * 1.0 + 0.0 ;
     let largest_y = tree.get_largest_y() * 1.0 + 0.0 ;
@@ -51,6 +53,7 @@ pub fn draw_tree (
     let height_svg = height_svg * 1.0;
     let x_viewbox = smallest_x - 0.0 ;
     let y_viewbox = smallest_y - 0.0;
+    let mut unknown_symbols = false;
     let  mut document = match options.rotate {
         true => Document::new()
                 .set("width", height_svg)
@@ -150,6 +153,16 @@ pub fn draw_tree (
         gene_color = options.gene_colors[0].clone();
     }
     let mut g = Element::new("g");
+
+    // Affiche les timelines au debut pour eviter un eventuel recouvrement
+    // des nom de noeuds internes.
+    display_timeline_internal_nodes(
+        tree,   // species tree
+        options,   // drawing options
+        &mut g,
+        width_timeline
+    );
+
     for  index in &tree.arena {
         // Cas ou il y a une coloration par noeud
         if options.node_colors.len() > 0 {
@@ -294,7 +307,23 @@ pub fn draw_tree (
         // Display name
         if index.visible {
             let mut element = Element::new("text");
-            element.assign("x", index.x - 5.0);
+            match tree.is_leaf(index.idx) {
+                false => {
+                    element.assign("x", index.x - 5.0 )
+                    },
+                true => {
+                    // Cas d'une feuille: on decale pour prendre en compte les timelines
+                    element.assign("x", index.x  +  options.time_lines.len() as f32  * width_timeline);
+                    // display_timeline_leave(
+                    //     tree,   // species tree
+                    //     &index,
+                    //     options,   // drawing options
+                    //     &mut g,
+                    //     &mut unknown_symbols,
+                    //     width_timeline
+                    // );
+                },
+            }
             element.assign("y", index.y + 10.0);
             // Mode coloration par noeud
             if options.node_colors.len() > 0 {
@@ -374,6 +403,7 @@ pub fn draw_tree (
             }
         }
     }
+
     // Note : simple tree
     let mut transfo: String = "translate(  ".to_owned();
     transfo.push_str(&( x_viewbox).to_string());
@@ -1038,51 +1068,19 @@ pub fn draw_sptree_gntrees (
         recphylostyle.push_str(add_style_str);
     }
 
-    // affiche les timeline des noeuds internes
-    // Structure utilisée pour classer les noeuds internes selon leur distance à la racine.
-    #[derive(Debug)]
-    struct TimeLineNode {
-        color: String,
-        index: usize,
-        root_distance: usize,
-    }
+
+
     // La longeur maximum de l'arbre pour determiner  l'emplacement de la timeline
     let max_y = sp_tree.get_largest_y();
-    let mut idx_tl = 0.0;
-    // Boucle sur les differentes timelines
-    for time_line in &options.time_lines {
-        // On remplit vecteur de  TimeLineNode
-        let mut time_line_nodes: std::vec::Vec<TimeLineNode> = vec![];
-        for (node_name, node_color) in time_line.iter() {
-            let node = sp_tree.get_index(node_name.to_string());
-            match node {
-                Err(_err) => eprintln!("There is no node named {}",node_name),
-                Ok(node) => {
-                    // On ne considere pas les feuilles
-                    if ! sp_tree.is_leaf(node) {
-                        let root_dist = get_root_distance(sp_tree,node,&mut 0);
-                        time_line_nodes.push(TimeLineNode {color: node_color.to_string(), index:node, root_distance: root_dist});
-                    }
-                },
-            }
-        }
-        // Classement de la structure selon la distance à la racine.
-        time_line_nodes.sort_by(|a, b| a.root_distance.cmp(&b.root_distance));
-        // Dessine les timelines
-        for time_line_node in time_line_nodes {
-            let (min,max) = get_x_span(&sp_tree,time_line_node.index);
-            let chemin = get_timeline(
-                min,
-                max_y + idx_tl * width_timeline + 5.0,
-                max - min,
-                width_timeline,
-                time_line_node.color.to_string(),
-                time_line_node.color.to_string()
-                );
-            g.append(chemin);
-        }
-        idx_tl = idx_tl + 1.0;
-    }
+
+    // Affiche les timelines definis par les noeuds internes.
+    display_timeline_internal_nodes(
+        sp_tree,   // species tree
+        options,   // drawing options
+        &mut g,
+        width_timeline
+    );
+
     let mut unknown_symbols = false; // Tag qui signale si il y a eu un symbol inconnu
     // Affiche les noms de  l'arbre d'espece ( on le fait a la fin pour que ce soit sur le dessus dans le svg)
     // let max_y = sp_tree.get_largest_y();
@@ -1333,14 +1331,281 @@ pub fn draw_sptree_gntrees (
         true => g.assign("transform",transfo),
         false => {}
     };
-
-
-
     document.append(g);
-
-
     svg::save(name, &document).unwrap();
 }
+
+pub fn display_timeline_internal_nodes(
+        tree: &mut ArenaTree<String>,                    // species tree
+        options: &Options,                                  // drawing options
+        g: &mut Element,
+        width_timeline: f32
+){
+
+    // affiche les timeline des noeuds internes
+    // Structure utilisée pour classer les noeuds internes selon leur distance à la racine.
+    #[derive(Debug)]
+    struct TimeLineNode {
+        color: String,
+        index: usize,
+        root_distance: usize,
+    }
+    // La longeur maximum de l'arbre pour determiner  l'emplacement de la timeline
+    let max_y = tree.get_largest_y();
+    let mut idx_tl = 0.0;
+    // Boucle sur les differentes timelines
+    for time_line in &options.time_lines {
+        // On remplit vecteur de  TimeLineNode
+        let mut time_line_nodes: std::vec::Vec<TimeLineNode> = vec![];
+        for (node_name, node_color) in time_line.iter() {
+            let node = tree.get_index(node_name.to_string());
+            match node {
+                Err(_err) => eprintln!("There is no node named {}",node_name),
+                Ok(node) => {
+                    // On ne considere pas les feuilles
+                    //if ! tree.is_leaf(node) {
+                        let root_dist = get_root_distance(tree,node,&mut 0);
+                        time_line_nodes.push(TimeLineNode {color: node_color.to_string(), index:node, root_distance: root_dist});
+                    //}
+                },
+            }
+        }
+        // Classement de la structure selon la distance à la racine.
+        time_line_nodes.sort_by(|a, b| a.root_distance.cmp(&b.root_distance));
+        // Dessine les timelines
+        for time_line_node in time_line_nodes {
+            println!("debug {}",tree.is_leaf(time_line_node.index));
+            let (min,max) = match tree.is_leaf(time_line_node.index) {
+                true => get_x_span(&tree,time_line_node.index),
+                false => get_x_span(&tree,time_line_node.index),
+            };
+            let chemin =  get_timeline(
+                min,
+                max_y + idx_tl * width_timeline + 5.0,
+                max - min,
+                width_timeline,
+                time_line_node.color.to_string(),
+                time_line_node.color.to_string()
+                );
+            g.append(chemin);
+        }
+        idx_tl = idx_tl + 1.0;
+    }
+
+
+}
+
+pub fn display_timeline_leave <T: std::cmp::PartialEq>(
+    tree: &mut ArenaTree<String>,  // tree
+    index: &Noeud<T>,
+    options: &Options,                                  // drawing options
+    g: &mut Element,
+    unknown_symbols: &mut bool,
+    width_timeline: f32
+) {
+// Affiche la partie de la timeline associée à l'espece
+let mut idx_tl = 0.0;
+let max_y = tree.get_largest_y();
+for time_line in &options.time_lines {
+    match  time_line.get(&index.name){
+        Some(time_line_color) => {
+             if time_line_color.starts_with('%'){
+                let v: Vec<&str> = time_line_color.split(":").collect();
+                let time_line_symbol = v[0];
+                let mut time_line_symbol_color = "red";
+                if v.len() > 1 {
+                    time_line_symbol_color = v[1];
+                }
+                let mut find_symbol = false;
+                if time_line_symbol.to_string() == "%circle" {
+                    find_symbol = true;
+                    g.append(
+                        get_circle(
+                            index.x ,
+                            max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+                            width_timeline / 2.5,
+                            time_line_symbol_color.to_string(),
+                            "1.0".to_string(),
+                        )
+                    )
+                }
+                if time_line_symbol.to_string() == "%square" {
+                    find_symbol = true;
+                    g.append(
+                        get_carre(
+                            index.x ,
+                            max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+                            width_timeline / 2.0,
+                            time_line_symbol_color.to_string(),
+                            "1.0".to_string(),
+                        )
+                    )
+                }
+                if time_line_symbol.to_string() == "%cross" {
+                    find_symbol = true;
+                    g.append(
+                        get_cross(
+                            index.x ,
+                            max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+                            width_timeline / 4.0,
+                            time_line_symbol_color.to_string(),
+                            "1.0".to_string(),
+                        )
+                    )
+                }
+                if time_line_symbol.to_string() == "%halfcircle" {
+                    find_symbol = true;
+                    g.append(
+                        get_half_circle(
+                            index.x ,
+                            max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+                            width_timeline / 2.5,
+                            time_line_symbol_color.to_string(),
+                            "1.0".to_string(),
+                        )
+                    )
+                }
+                if time_line_symbol.to_string() == "%triangle" {
+                    find_symbol = true;
+                    g.append(
+                        get_triangle(
+                            index.x ,
+                            max_y + idx_tl * width_timeline + 10.0 + width_timeline / 2.0,
+                            width_timeline / 2.0,
+                            time_line_symbol_color.to_string(),
+                            "1.0".to_string(),
+                        )
+                    )
+                }
+                if ! find_symbol {
+                    eprintln!("The symbol {} is unknown",time_line_symbol);
+                    *unknown_symbols = true;
+                }
+            }
+            else {
+                let chemin = get_timeline(
+                    index.x - index.width / 2.0,
+                    // lo,ng index.x - index.width ,
+                    max_y + idx_tl * width_timeline + 5.0,
+                    //index.y,
+                    index.width ,
+                    //lo,g index.width * 4.0 ,
+                    width_timeline,
+                    time_line_color.to_string(),
+                    time_line_color.to_string()
+                );
+                g.append(chemin);
+            }
+        },
+        _ => {},
+    };
+idx_tl = idx_tl + 1.0;
+}
+}
+// pub fn display_timeline_leaves(
+//     tree: &mut ArenaTree<String>,                    // species tree
+//     index: usize,
+//     options: &Options,                                  // drawing options
+//     g: &mut Element
+// ) {
+// // Affiche la partie de la timeline associée à l'espece
+// let mut idx_tl = 0.0;
+// for time_line in &options.time_lines {
+//     match  time_line.get(&index.name){
+//         Some(time_line_color) => {
+//              if time_line_color.starts_with('%'){
+//                 let v: Vec<&str> = time_line_color.split(":").collect();
+//                 let time_line_symbol = v[0];
+//                 let mut time_line_symbol_color = "red";
+//                 if v.len() > 1 {
+//                     time_line_symbol_color = v[1];
+//                 }
+//                 let mut find_symbol = false;
+//                 if time_line_symbol.to_string() == "%circle" {
+//                     find_symbol = true;
+//                     g.append(
+//                         get_circle(
+//                             index.x ,
+//                             max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+//                             width_timeline / 2.5,
+//                             time_line_symbol_color.to_string(),
+//                             "1.0".to_string(),
+//                         )
+//                     )
+//                 }
+//                 if time_line_symbol.to_string() == "%square" {
+//                     find_symbol = true;
+//                     g.append(
+//                         get_carre(
+//                             index.x ,
+//                             max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+//                             width_timeline / 2.0,
+//                             time_line_symbol_color.to_string(),
+//                             "1.0".to_string(),
+//                         )
+//                     )
+//                 }
+//                 if time_line_symbol.to_string() == "%cross" {
+//                     find_symbol = true;
+//                     g.append(
+//                         get_cross(
+//                             index.x ,
+//                             max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+//                             width_timeline / 4.0,
+//                             time_line_symbol_color.to_string(),
+//                             "1.0".to_string(),
+//                         )
+//                     )
+//                 }
+//                 if time_line_symbol.to_string() == "%halfcircle" {
+//                     find_symbol = true;
+//                     g.append(
+//                         get_half_circle(
+//                             index.x ,
+//                             max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+//                             width_timeline / 2.5,
+//                             time_line_symbol_color.to_string(),
+//                             "1.0".to_string(),
+//                         )
+//                     )
+//                 }
+//                 if time_line_symbol.to_string() == "%triangle" {
+//                     find_symbol = true;
+//                     g.append(
+//                         get_triangle(
+//                             index.x ,
+//                             max_y + idx_tl * width_timeline + 10.0 + width_timeline / 2.0,
+//                             width_timeline / 2.0,
+//                             time_line_symbol_color.to_string(),
+//                             "1.0".to_string(),
+//                         )
+//                     )
+//                 }
+//                 if ! find_symbol {
+//                     eprintln!("The symbol {} is unknown",time_line_symbol);
+//                     unknown_symbols = true;
+//                 }
+//             }
+//             else {
+//                 let chemin = get_timeline(
+//                     index.x - index.width / 2.0,
+//                     // lo,ng index.x - index.width ,
+//                     max_y + idx_tl * width_timeline + 5.0,
+//                     //index.y,
+//                     index.width ,
+//                     //lo,g index.width * 4.0 ,
+//                     width_timeline,
+//                     time_line_color.to_string(),
+//                     time_line_color.to_string()
+//                 );
+//                 g.append(chemin);
+//             }
+//         },
+//         _ => {},
+//     };
+// idx_tl = idx_tl + 1.0;
+// }
+// }
 
 /// Draw a frame.
 pub fn get_timeline (x: f32, y:f32, w:f32, h:f32, c:String, b:String) -> Path {
