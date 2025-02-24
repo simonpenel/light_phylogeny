@@ -1831,6 +1831,16 @@ pub fn get_maxdepth(tree: &mut ArenaTree<String>, index: usize, max :&mut usize)
     }
     *max
 }
+/// Get the distance to the root
+pub fn get_root_distance(tree: &mut ArenaTree<String>, index: usize, dist :&mut usize) -> usize {
+    match tree.arena[index].parent {
+        None => *dist,
+        Some(p) => {
+            *dist = *dist + 1;
+            return get_root_distance(tree,p,dist)
+        }
+    }
+}
 /// Set the y values of the leaves of a tree to the same value in a cladogram.
 pub fn set_leaves_to_bottom(tree: &mut ArenaTree<String>, index: usize, max:&mut usize) {
     let children = &mut tree.arena[index].children;
@@ -2461,8 +2471,8 @@ pub fn get_x_span(tree: & ArenaTree<String>, index: usize) -> (f32,f32) {
     let mut max_x = 0.0;
     get_descendant(tree,index,&mut descendants);
     for index in descendants {
-        if tree.arena[index].x > max_x { max_x =  tree.arena[index].x }
-        if tree.arena[index].x < min_x { min_x =  tree.arena[index].x }
+        if tree.arena[index].x + tree.arena[index].width / 2.0 > max_x { max_x =  tree.arena[index].x + tree.arena[index].width / 2.0 }
+        if tree.arena[index].x - tree.arena[index].width / 2.0 < min_x { min_x =  tree.arena[index].x - tree.arena[index].width / 2.0 }
         }
     (min_x, max_x)
 }

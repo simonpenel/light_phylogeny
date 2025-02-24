@@ -12,7 +12,7 @@ use crate::arena::Config;
 use crate::arena::Event;
 use crate::arena::BLOCK;
 use crate::arena::PIPEBLOCK;
-use crate::arena::get_x_span;
+use crate::arena::{get_x_span,get_root_distance};
 use svg::Document;
 use svg::node::element::Path;
 use svg::node::element::Circle;
@@ -1038,45 +1038,52 @@ pub fn draw_sptree_gntrees (
         recphylostyle.push_str(add_style_str);
     }
 
-    let max_y = sp_tree.get_largest_y();
     // affiche les timeline des noeuds internes
-    // on les prend dans l'ordre  d'entree, a
-    //charge de l'utilisateur  de faire a bien
+    // Structure utilisée pour classer les noeuds internes selon leur distance à la racine.
+    #[derive(Debug)]
+    struct TimeLineNode {
+        color: String,
+        index: usize,
+        root_distance: usize,
+    }
+    // La longeur maximum de l'arbre pour determiner  l'emplacement de la timeline
+    let max_y = sp_tree.get_largest_y();
     let mut idx_tl = 0.0;
-    // total_width_timeline = 0.0;
+    // Boucle sur les differentes timelines
     for time_line in &options.time_lines {
-        println!("DEBUG TIMELINE {} {:?}",idx_tl,time_line);
-        for (node_name, color)  in time_line {
-            println!("{:?}=>{}",node_name,color);
+        // On remplit vecteur de  TimeLineNode
+        let mut time_line_nodes: std::vec::Vec<TimeLineNode> = vec![];
+        for (node_name, node_color) in time_line.iter() {
             let node = sp_tree.get_index(node_name.to_string());
-            println!("{:?}=>{:?}",node_name,node);
             match node {
-                 Err(_err) => eprintln!("There is no node named {}",node_name),
-                 Ok(node) => {
-                     if sp_tree.is_leaf(node) {}
-                     else {
-                     let (min,max) = get_x_span(&sp_tree,node);
-                     let chemin = get_timeline(
-                         min,
-                         // lo,ng index.x - index.width ,
-                         max_y + idx_tl * width_timeline + 5.0,
-                         //index.y,
-                         //index.width ,
-                         max - min,
-                         //lo,g index.width * 4.0 ,
-                         width_timeline,
-                         color.to_string(),
-                         color.to_string()
-                     );
-                     g.append(chemin);
-                 }
-                 },
+                Err(_err) => eprintln!("There is no node named {}",node_name),
+                Ok(node) => {
+                    // On ne considere pas les feuilles
+                    if ! sp_tree.is_leaf(node) {
+                        let root_dist = get_root_distance(sp_tree,node,&mut 0);
+                        time_line_nodes.push(TimeLineNode {color: node_color.to_string(), index:node, root_distance: root_dist});
+                    }
+                },
             }
+        }
+        // Classement de la structure selon la distance à la racine.
+        time_line_nodes.sort_by(|a, b| a.root_distance.cmp(&b.root_distance));
+        // Dessine les timelines
+        for time_line_node in time_line_nodes {
+            let (min,max) = get_x_span(&sp_tree,time_line_node.index);
+            let chemin = get_timeline(
+                min,
+                max_y + idx_tl * width_timeline + 5.0,
+                max - min,
+                width_timeline,
+                time_line_node.color.to_string(),
+                time_line_node.color.to_string()
+                );
+            g.append(chemin);
         }
         idx_tl = idx_tl + 1.0;
     }
-
-
+    let mut unknown_symbols = false; // Tag qui signale si il y a eu un symbol inconnu
     // Affiche les noms de  l'arbre d'espece ( on le fait a la fin pour que ce soit sur le dessus dans le svg)
     // let max_y = sp_tree.get_largest_y();
     for index in &sp_tree.arena {
@@ -1085,7 +1092,6 @@ pub fn draw_sptree_gntrees (
         match sp_tree.is_leaf(index.idx) {
             true => {
                 let txt_size = index.name.len() as f32 * config.species_police_size.parse::<f32>().unwrap();
-                println!("debug size [{}] {}",index.name,txt_size);
                 element.assign("x", index.x  - txt_size / 2.0);
                 element.assign("y", index.y - index.width /2.0 - 10.0);
                 element.assign("class", "species");
@@ -1098,51 +1104,104 @@ pub fn draw_sptree_gntrees (
                 );
                 if index.visible {
                     g.append(element);
+                    // Affiche la partie de la timeline associée à l'espece
                     let mut idx_tl = 0.0;
-                    // total_width_timeline = 0.0;
                     for time_line in &options.time_lines {
-                        // total_width_timeline += width_timeline;
-                    match  time_line.get(&index.name)
-                        {
+                        match  time_line.get(&index.name){
                             Some(time_line_color) => {
-                                let chemin = get_timeline(
-                                    index.x - index.width / 2.0,
-                                    // lo,ng index.x - index.width ,
-                                    max_y + idx_tl * width_timeline + 5.0,
-                                    //index.y,
-                                    index.width ,
-                                    //lo,g index.width * 4.0 ,
-                                    width_timeline,
-                                    time_line_color.to_string(),
-                                    time_line_color.to_string()
-                                );
-                                g.append(chemin);
-
-
-
+                                 if time_line_color.starts_with('%'){
+                                    let v: Vec<&str> = time_line_color.split(":").collect();
+                                    let time_line_symbol = v[0];
+                                    let mut time_line_symbol_color = "red";
+                                    if v.len() > 1 {
+                                        time_line_symbol_color = v[1];
+                                    }
+                                    let mut find_symbol = false;
+                                    if time_line_symbol.to_string() == "%circle" {
+                                        find_symbol = true;
+                                        g.append(
+                                            get_circle(
+                                                index.x ,
+                                                max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+                                                width_timeline / 2.5,
+                                                time_line_symbol_color.to_string(),
+                                                "1.0".to_string(),
+                                            )
+                                        )
+                                    }
+                                    if time_line_symbol.to_string() == "%square" {
+                                        find_symbol = true;
+                                        g.append(
+                                            get_carre(
+                                                index.x ,
+                                                max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+                                                width_timeline / 2.0,
+                                                time_line_symbol_color.to_string(),
+                                                "1.0".to_string(),
+                                            )
+                                        )
+                                    }
+                                    if time_line_symbol.to_string() == "%cross" {
+                                        find_symbol = true;
+                                        g.append(
+                                            get_cross(
+                                                index.x ,
+                                                max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+                                                width_timeline / 4.0,
+                                                time_line_symbol_color.to_string(),
+                                                "1.0".to_string(),
+                                            )
+                                        )
+                                    }
+                                    if time_line_symbol.to_string() == "%halfcircle" {
+                                        find_symbol = true;
+                                        g.append(
+                                            get_half_circle(
+                                                index.x ,
+                                                max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
+                                                width_timeline / 2.5,
+                                                time_line_symbol_color.to_string(),
+                                                "1.0".to_string(),
+                                            )
+                                        )
+                                    }
+                                    if time_line_symbol.to_string() == "%triangle" {
+                                        find_symbol = true;
+                                        g.append(
+                                            get_triangle(
+                                                index.x ,
+                                                max_y + idx_tl * width_timeline + 10.0 + width_timeline / 2.0,
+                                                width_timeline / 2.0,
+                                                time_line_symbol_color.to_string(),
+                                                "1.0".to_string(),
+                                            )
+                                        )
+                                    }
+                                    if ! find_symbol {
+                                        eprintln!("The symbol {} is unknown",time_line_symbol);
+                                        unknown_symbols = true;
+                                    }
+                                }
+                                else {
+                                    let chemin = get_timeline(
+                                        index.x - index.width / 2.0,
+                                        // lo,ng index.x - index.width ,
+                                        max_y + idx_tl * width_timeline + 5.0,
+                                        //index.y,
+                                        index.width ,
+                                        //lo,g index.width * 4.0 ,
+                                        width_timeline,
+                                        time_line_color.to_string(),
+                                        time_line_color.to_string()
+                                    );
+                                    g.append(chemin);
+                                }
                             },
                             _ => {},
                         };
-                    //     {
-                    //         Some(s) => s,
-                    //         _ => "grey",
-                    //     };
-                    // let chemin = get_timeline(
-                    //     index.x - index.width / 2.0,
-                    //     // lo,ng index.x - index.width ,
-                    //     max_y + idx_tl * width_timeline + 5.0,
-                    //     //index.y,
-                    //     index.width ,
-                    //     //lo,g index.width * 4.0 ,
-                    //     width_timeline,
-                    //     time_line_color.to_string(),
-                    //     time_line_color.to_string()
-                    // );
-                    // g.append(chemin);
                     idx_tl = idx_tl + 1.0;
+                    }
                 }
-            }
-
             },
             false => {
                 match options.species_internal {
@@ -1159,21 +1218,20 @@ pub fn draw_sptree_gntrees (
                         );
                         if index.visible {
                             g.append(element);
-                            // let chemin = get_cadre(
-                            //     index.x - index.width / 2.0,
-                            //     max_y,
-                            //     //index.y,
-                            //     index.width,
-                            //     40.0,
-                            //     "blue".to_string()
-                            // );
-                            // g.append(chemin);
                         }
                     },
                     false => {},
                 };
             },
         };
+    }
+    if unknown_symbols {
+        eprintln!("Allowed symbols are:");
+        eprintln!("%circle");
+        eprintln!("%cross");
+        eprintln!("%halfcircle");
+        eprintln!("%square");
+        eprintln!("%triangle");
     }
     // Ajout le style
     let style = Style::new(recphylostyle);
@@ -1253,9 +1311,9 @@ pub fn draw_sptree_gntrees (
     }
 
     // Timeline
-    let min_x = sp_tree.get_smallest_x();
-    let max_y = sp_tree.get_largest_y();
-    let width = sp_tree.get_largest_x() - min_x;
+    //let min_x = sp_tree.get_smallest_x();
+    //let max_y = sp_tree.get_largest_y();
+    //let width = sp_tree.get_largest_x() - min_x;
     // let chemin = get_cadre(
     //     min_x,
     //     max_y + 10.0,
