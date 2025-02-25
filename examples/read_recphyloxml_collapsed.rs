@@ -17,7 +17,9 @@ fn main() {
     let mut global_roots: std::vec::Vec<usize> = Vec::new();
     options.collapsed_nodes.push("species_1".to_string());
     options.collapsed_nodes.push("species_6".to_string());
-    options.collapsed_nodes.push("species_4".to_string());
+    options.collapsed_nodes.push("species_15".to_string());
+    options.collapsed_nodes.push("species_11".to_string());
+
     options.species_internal = true;
     read_recphyloxml_multi("examples/FAM000297_reconciliated.recphylo".to_string(),
         &mut sp_tree, &mut gene_trees, &mut global_roots);
