@@ -1207,11 +1207,12 @@ pub fn draw_sptree_gntrees (
     svg::save(name, &document).unwrap();
 }
 
+/// Displaying timelines
 pub fn display_timelines(
-        tree: &mut ArenaTree<String>,                    // species tree
-        options: &Options,                                  // drawing options
-        g: &mut Element,
-        width_timeline: f32
+        tree: &mut ArenaTree<String>,  // tree
+        options: &Options,             // drawing options
+        g: &mut Element,               // svg element 
+        width_timeline: f32            // timeline width
 ){
 
     // affiche les timeline des noeuds internes
@@ -1235,11 +1236,8 @@ pub fn display_timelines(
             match node {
                 Err(_err) => eprintln!("There is no node named {}",node_name),
                 Ok(node) => {
-                    // On ne considere pas les feuilles
-                    //if ! tree.is_leaf(node) {
                         let root_dist = get_root_distance(tree,node,&mut 0);
                         time_line_nodes.push(TimeLineNode {color: node_color.to_string(), index:node, root_distance: root_dist});
-                    //}
                 },
             }
         }
@@ -1249,8 +1247,10 @@ pub fn display_timelines(
         for time_line_node in time_line_nodes {
             let (min,max) = get_x_span(&tree,time_line_node.index);
             match tree.is_leaf(time_line_node.index) {
+                // Cas d'une feuille
                 true => {
                     // get the value associated to the considered nodes
+                    // (time_line_node.index = index du noeud dans l'arbre)
                     let tl_x = tree.arena[time_line_node.index].x;
                     let tl_width = tree.arena[time_line_node.index].width;
                     if time_line_node.color.starts_with('%'){
@@ -1358,7 +1358,6 @@ pub fn display_timelines(
         }
         idx_tl = idx_tl + 1.0;
     }
-
     if unknown_symbols {
         eprintln!("Allowed symbols are:");
         eprintln!("%circle");
