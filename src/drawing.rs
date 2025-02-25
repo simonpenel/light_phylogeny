@@ -836,7 +836,7 @@ pub fn draw_sptree_gntrees (
                                     n.y,
                                     gene_color.to_string(),
                                     config.gene_opacity.to_string(),
-                                    false,
+                                    index.collapsed,
                                     options.gthickness,
                                 )
                             }
