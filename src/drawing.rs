@@ -961,7 +961,12 @@ pub fn draw_sptree_gntrees (
                         index.y,
                         options.squaresize * 0.75,
                         gene_color.to_string(),
-                        config.gene_opacity.to_string(),
+                        // Pas d'affichage de speciation dans les noeuds collapses
+                        match index.collapsed {
+                            true => "0".to_string(),
+                            false =>  config.gene_opacity.to_string(),
+                        },
+                        
                     )
                 ),
                 Event::ObsoleteSpeciationLoss => g.append(
