@@ -2497,10 +2497,10 @@ pub fn make_invisible(tree: &mut ArenaTree<String>,
     for index in descendants {
         tree.arena[index].visible = false;
         tree.arena[index].parent = None;
-/*        for (idx_tree,idx_node) in  &tree.arena[index].nodes {
+        for (idx_tree,idx_node) in  &tree.arena[index].nodes {
             gene_trees[*idx_tree].arena[*idx_node].visible = false;
 
-        }*/
+        }
     }
 }
 
