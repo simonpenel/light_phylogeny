@@ -891,8 +891,9 @@ pub fn draw_sptree_gntrees (
                     g.append(triangle);
                  },
              };
-             // Dessine le symbole associe au noeud
-             let  event = &index.e;
+            // Dessine le symbole associe au noeud
+            let  event = &index.e;
+            if index.visible {
              match event {
                 Event::Leaf => g.append(
                     get_half_circle(
@@ -989,7 +990,9 @@ pub fn draw_sptree_gntrees (
                 ),
                 _ =>  {},
             };
+        };
             // Affiche le texte associe au noeud
+            if index.visible {
             match event {
                 Event::Leaf => {
                     let mut element = Element::new("text");
@@ -1036,6 +1039,7 @@ pub fn draw_sptree_gntrees (
                     }
                 },
             }
+        }
         }
         idx_rcgen += 1;
         if idx_rcgen == nb_gntree {
