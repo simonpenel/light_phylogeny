@@ -1224,7 +1224,7 @@ pub fn display_timelines(
         root_distance: usize,
     }
     // La longeur maximum de l'arbre pour determiner  l'emplacement de la timeline
-    let max_y = tree.get_largest_y();
+    let max_y = tree.get_largest_y_nofl();
     let mut idx_tl = 0.0;
     // Boucle sur les differentes timelines
     for time_line in &options.time_lines {
