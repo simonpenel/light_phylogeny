@@ -453,13 +453,13 @@ pub fn recphyloxml_processing(
         };
          make_invisible(sp_tree,gene_trees,sw);
         println!("DEBUG ==> {} {:?}",collapsed_node,sp_tree.arena[sw]);
-/*        for (idx_tree,idx_node) in  &sp_tree.arena[sw].nodes {
+        for (idx_tree,idx_node) in  &sp_tree.arena[sw].nodes {
             println!("DEBUG ==> {} {}",idx_tree,idx_node);
             println!("DEBUG ==> {:?}",gene_trees[*idx_tree].arena[*idx_node]);
-            gene_trees[*idx_tree].arena[*idx_node].visible = false;
+/*            gene_trees[*idx_tree].arena[*idx_node].visible = false;*/
             gene_trees[*idx_tree].arena[*idx_node].collapsed = true;
-            gene_trees[*idx_tree].arena[*idx_node].location = collapsed_node.to_string() ;
-        }*/
+/*            gene_trees[*idx_tree].arena[*idx_node].location = collapsed_node.to_string() ;*/
+        }
         sp_tree.arena[sw].children = Vec::new();
 /*        sp_tree.arena[sw].nbg = 0;
         sp_tree.arena[sw].nodes = Vec::new();*/
