@@ -76,6 +76,8 @@ where
     pub virtualsvg: bool,
     /// Index of the color for the node when the are different colors in a gene
     pub color_node_idx : usize,
+    /// Node is collapsed
+    pub collapsed : bool
 }
 impl<T> Noeud<T>
 where
@@ -109,6 +111,7 @@ where
             visible: true,
             virtualsvg: false,
             color_node_idx: 0,
+            collapsed: false
         }
     }
     /// Set node event.
@@ -456,7 +459,10 @@ pub struct Options{
     /// Fill species tree (may be defined in config as well)
     pub fill_species: bool,
     /// Timelines
-    pub time_lines: Vec<HashMap<String,String>>,
+    pub time_lines: Vec<HashMap<String,String>>,    
+    /// List of nodes to be collapsed
+    pub collapsed_nodes: Vec<String>
+
 }
 impl Options {
     pub fn new() -> Self {
@@ -500,6 +506,7 @@ impl Options {
             switches: Vec::new(),
             fill_species: false,
             time_lines: Vec::new(),
+            collapsed_nodes: Vec::new()
         }
     }
 }
