@@ -498,7 +498,7 @@ impl Options {
             bckg_color: "White".to_string(),
             hybrid: Vec::new(),
             switches: Vec::new(),
-            fill_species: true,
+            fill_species: false,
             time_lines: Vec::new(),
         }
     }
@@ -527,7 +527,7 @@ impl Config {
             species_police_size: "12".to_string(),
             gene_police_size: "10".to_string(),
             bezier: "1".to_string(),
-            fill_species: true,
+            fill_species: false,
         }
     }
 }
