@@ -578,7 +578,11 @@ pub fn draw_sptree_gntrees (
                         index.height / 2.0,
                         max_gene_y - index.y,
                         color_branch_species.clone(),
-                        config.species_opacity.to_string(),
+                        match index.collapsed {
+                            true => "0.0".to_string(),
+                            false => config.species_opacity.to_string(),
+                        },
+                        //config.species_opacity.to_string(),
                         options.sthickness,
                     );
                     if sp_tree.arena[p].visible {
