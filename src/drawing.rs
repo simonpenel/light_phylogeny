@@ -8,7 +8,6 @@
 use log::{info};
 use crate::arena::Options;
 use crate::arena::ArenaTree;
-use crate::arena::Noeud;
 use crate::arena::Config;
 use crate::arena::Event;
 use crate::arena::BLOCK;
@@ -53,7 +52,6 @@ pub fn draw_tree (
     let height_svg = height_svg * 1.0;
     let x_viewbox = smallest_x - 0.0 ;
     let y_viewbox = smallest_y - 0.0;
-    let mut unknown_symbols = false;
     let  mut document = match options.rotate {
         true => Document::new()
                 .set("width", height_svg)
@@ -1062,8 +1060,6 @@ pub fn draw_sptree_gntrees (
         recphylostyle.push_str(add_style_str);
     }
 
-    // La longeur maximum de l'arbre pour determiner  l'emplacement de la timeline
-    let max_y = sp_tree.get_largest_y();
 
     // Affiche les timelines.
     display_timelines(
@@ -1373,217 +1369,6 @@ pub fn display_timelines(
     }
 }
 
-pub fn display_timeline_leave <T: std::cmp::PartialEq>(
-    tree: &mut ArenaTree<String>,  // tree
-    index: &Noeud<T>,
-    options: &Options,                                  // drawing options
-    g: &mut Element,
-    unknown_symbols: &mut bool,
-    width_timeline: f32
-) {
-// Affiche la partie de la timeline associée à l'espece
-let mut idx_tl = 0.0;
-let max_y = tree.get_largest_y();
-for time_line in &options.time_lines {
-    match  time_line.get(&index.name){
-        Some(time_line_color) => {
-             if time_line_color.starts_with('%'){
-                let v: Vec<&str> = time_line_color.split(":").collect();
-                let time_line_symbol = v[0];
-                let mut time_line_symbol_color = "red";
-                if v.len() > 1 {
-                    time_line_symbol_color = v[1];
-                }
-                let mut find_symbol = false;
-                if time_line_symbol.to_string() == "%circle" {
-                    find_symbol = true;
-                    g.append(
-                        get_circle(
-                            index.x ,
-                            max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
-                            width_timeline / 2.5,
-                            time_line_symbol_color.to_string(),
-                            "1.0".to_string(),
-                        )
-                    )
-                }
-                if time_line_symbol.to_string() == "%square" {
-                    find_symbol = true;
-                    g.append(
-                        get_carre(
-                            index.x ,
-                            max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
-                            width_timeline / 2.0,
-                            time_line_symbol_color.to_string(),
-                            "1.0".to_string(),
-                        )
-                    )
-                }
-                if time_line_symbol.to_string() == "%cross" {
-                    find_symbol = true;
-                    g.append(
-                        get_cross(
-                            index.x ,
-                            max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
-                            width_timeline / 4.0,
-                            time_line_symbol_color.to_string(),
-                            "1.0".to_string(),
-                        )
-                    )
-                }
-                if time_line_symbol.to_string() == "%halfcircle" {
-                    find_symbol = true;
-                    g.append(
-                        get_half_circle(
-                            index.x ,
-                            max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
-                            width_timeline / 2.5,
-                            time_line_symbol_color.to_string(),
-                            "1.0".to_string(),
-                        )
-                    )
-                }
-                if time_line_symbol.to_string() == "%triangle" {
-                    find_symbol = true;
-                    g.append(
-                        get_triangle(
-                            index.x ,
-                            max_y + idx_tl * width_timeline + 10.0 + width_timeline / 2.0,
-                            width_timeline / 2.0,
-                            time_line_symbol_color.to_string(),
-                            "1.0".to_string(),
-                        )
-                    )
-                }
-                if ! find_symbol {
-                    eprintln!("The symbol {} is unknown",time_line_symbol);
-                    *unknown_symbols = true;
-                }
-            }
-            else {
-                let chemin = get_timeline(
-                    index.x - index.width / 2.0,
-                    // lo,ng index.x - index.width ,
-                    max_y + idx_tl * width_timeline + 5.0,
-                    //index.y,
-                    index.width ,
-                    //lo,g index.width * 4.0 ,
-                    width_timeline,
-                    time_line_color.to_string(),
-                    time_line_color.to_string()
-                );
-                g.append(chemin);
-            }
-        },
-        _ => {},
-    };
-idx_tl = idx_tl + 1.0;
-}
-}
-// pub fn display_timeline_leaves(
-//     tree: &mut ArenaTree<String>,                    // species tree
-//     index: usize,
-//     options: &Options,                                  // drawing options
-//     g: &mut Element
-// ) {
-// // Affiche la partie de la timeline associée à l'espece
-// let mut idx_tl = 0.0;
-// for time_line in &options.time_lines {
-//     match  time_line.get(&index.name){
-//         Some(time_line_color) => {
-//              if time_line_color.starts_with('%'){
-//                 let v: Vec<&str> = time_line_color.split(":").collect();
-//                 let time_line_symbol = v[0];
-//                 let mut time_line_symbol_color = "red";
-//                 if v.len() > 1 {
-//                     time_line_symbol_color = v[1];
-//                 }
-//                 let mut find_symbol = false;
-//                 if time_line_symbol.to_string() == "%circle" {
-//                     find_symbol = true;
-//                     g.append(
-//                         get_circle(
-//                             index.x ,
-//                             max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
-//                             width_timeline / 2.5,
-//                             time_line_symbol_color.to_string(),
-//                             "1.0".to_string(),
-//                         )
-//                     )
-//                 }
-//                 if time_line_symbol.to_string() == "%square" {
-//                     find_symbol = true;
-//                     g.append(
-//                         get_carre(
-//                             index.x ,
-//                             max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
-//                             width_timeline / 2.0,
-//                             time_line_symbol_color.to_string(),
-//                             "1.0".to_string(),
-//                         )
-//                     )
-//                 }
-//                 if time_line_symbol.to_string() == "%cross" {
-//                     find_symbol = true;
-//                     g.append(
-//                         get_cross(
-//                             index.x ,
-//                             max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
-//                             width_timeline / 4.0,
-//                             time_line_symbol_color.to_string(),
-//                             "1.0".to_string(),
-//                         )
-//                     )
-//                 }
-//                 if time_line_symbol.to_string() == "%halfcircle" {
-//                     find_symbol = true;
-//                     g.append(
-//                         get_half_circle(
-//                             index.x ,
-//                             max_y + idx_tl * width_timeline + 5.0 + width_timeline / 2.0,
-//                             width_timeline / 2.5,
-//                             time_line_symbol_color.to_string(),
-//                             "1.0".to_string(),
-//                         )
-//                     )
-//                 }
-//                 if time_line_symbol.to_string() == "%triangle" {
-//                     find_symbol = true;
-//                     g.append(
-//                         get_triangle(
-//                             index.x ,
-//                             max_y + idx_tl * width_timeline + 10.0 + width_timeline / 2.0,
-//                             width_timeline / 2.0,
-//                             time_line_symbol_color.to_string(),
-//                             "1.0".to_string(),
-//                         )
-//                     )
-//                 }
-//                 if ! find_symbol {
-//                     eprintln!("The symbol {} is unknown",time_line_symbol);
-//                     unknown_symbols = true;
-//                 }
-//             }
-//             else {
-//                 let chemin = get_timeline(
-//                     index.x - index.width / 2.0,
-//                     // lo,ng index.x - index.width ,
-//                     max_y + idx_tl * width_timeline + 5.0,
-//                     //index.y,
-//                     index.width ,
-//                     //lo,g index.width * 4.0 ,
-//                     width_timeline,
-//                     time_line_color.to_string(),
-//                     time_line_color.to_string()
-//                 );
-//                 g.append(chemin);
-//             }
-//         },
-//         _ => {},
-//     };
-// idx_tl = idx_tl + 1.0;
-// }
-// }
 
 /// Draw a frame.
 pub fn get_timeline (x: f32, y:f32, w:f32, h:f32, c:String, b:String) -> Path {
