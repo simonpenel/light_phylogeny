@@ -2484,6 +2484,26 @@ pub fn get_x_span(tree: & ArenaTree<String>, index: usize) -> (f32,f32) {
     (min_x, max_x)
 }
 
+
+// For each descendant  of a node in a species tree,
+/// set its 'parent' field  to None and 'visible' to false, and
+/// set the 'visible' of associated gene tree to false.
+pub fn make_invisible(tree: &mut ArenaTree<String>,
+    gene_trees: &mut std::vec::Vec<ArenaTree<String>>,
+    index: usize)  {
+    let mut descendants:Vec<usize> = Vec::new();
+    get_descendant(tree,index,&mut descendants);
+    //tree.arena[index].visible = false;
+    for index in descendants {
+        tree.arena[index].visible = false;
+        tree.arena[index].parent = None;
+/*        for (idx_tree,idx_node) in  &tree.arena[index].nodes {
+            gene_trees[*idx_tree].arena[*idx_node].visible = false;
+
+        }*/
+    }
+}
+
 #[allow(dead_code)]
 /// Reset all positions x y xmod ymod of a tree.
 pub fn reset_pos(tree: &mut ArenaTree<String>)  {
