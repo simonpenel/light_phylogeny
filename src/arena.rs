@@ -459,7 +459,9 @@ pub struct Options{
     /// Fill species tree (may be defined in config as well)
     pub fill_species: bool,
     /// Timelines
-    pub time_lines: Vec<HashMap<String,String>>,    
+    pub time_lines: Vec<HashMap<String,String>>,
+    /// Pictures
+    pub pictures: HashMap<String,String>,
     /// List of nodes to be collapsed
     pub collapsed_nodes: Vec<String>
 
@@ -506,6 +508,7 @@ impl Options {
             switches: Vec::new(),
             fill_species: false,
             time_lines: Vec::new(),
+            pictures: HashMap::new(),            
             collapsed_nodes: Vec::new()
         }
     }

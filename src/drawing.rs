@@ -1231,7 +1231,12 @@ pub fn draw_sptree_gntrees (
         }
     }
 
-
+    // Affiche les images.
+    display_pictures(
+        sp_tree,   // species tree
+        options,   // drawing options
+        &mut g,
+    );
 
     let mut transfo: String = "translate(  ".to_owned();
     transfo.push_str(&( x_viewbox).to_string());
@@ -1365,19 +1370,6 @@ pub fn display_timelines(
                            unknown_symbols = true;
                        }
                    }
-                   else if time_line_node.color.starts_with('@'){
-                       let v: Vec<&str> = time_line_node.color.split(":").collect();
-                       let imagePath = v[1];
-                       println!("Debug image {}",imagePath);
-                       let image = Image::new()
-                           .set("x", tl_x)
-                           .set("y", max_y + idx_tl * width_timeline + 10.0 + width_timeline / 2.0)
-                           .set("width",100)
-                           .set("heigt",100)
-                           .set("href", imagePath);
-                        g.append(image);
-
-                   }
                    else {
                     let chemin = get_timeline(
                         tl_x - tl_width / 2.0,
@@ -1420,6 +1412,79 @@ pub fn display_timelines(
     }
 }
 
+/// Displaying timelines
+pub fn display_pictures(
+        tree: &mut ArenaTree<String>,  // tree
+        options: &Options,             // drawing options
+        g: &mut Element,               // svg element
+    ){
+    for (node_name, picture) in options.pictures.iter() {
+        println!("debug {} {}",node_name,picture);
+        let node = tree.get_index(node_name.to_string());
+        match node {
+            Err(_err) => eprintln!("There is no node named {}",node_name),
+            Ok(node) => {
+                println!("debug2 {} {}",node,picture);
+                let v: Vec<&str> = picture.split(":").collect();
+                if v.len() < 4  {
+                    eprintln!("ERROR : Wrong format in timeline image  : {}",picture);
+                    eprintln!("        Format is image_name:image_size:shift_x:shift_y");
+                }
+                let image_path = v[0];
+                let image_size = v[1].parse::<f32>().unwrap();
+                let image_shift_x = v[2].parse::<f32>().unwrap();
+                let image_shift_y = v[3].parse::<f32>().unwrap();
+                println!("Insert image {}",image_path);
+                let image_x = tree.arena[node].x  + image_size   / 2.0 + image_shift_x ;
+                let image_y = tree.arena[node].y  - image_size + image_shift_y;
+                let mut image = Image::new()
+                    .set("x", image_x)
+                    .set("y", image_y)
+                    .set("width",image_size)
+                    .set("heigt",image_size)
+                    .set("href", image_path);
+                image.assign(
+                    "transform",
+                    "rotate(90 ".to_owned() + &image_x.to_string() + " " + &image_y.to_string() + ")",
+                );
+                g.append(image);
+            },
+        }
+
+            //        else if time_line_node.color.starts_with('@'){
+            //            let v: Vec<&str> = time_line_node.color.split(":").collect();
+            //            if v.len() < 5  {
+            //                eprintln!("ERROR : Wrong format in timeline image  : {}",time_line_node.color);
+            //                eprintln!("        Format is @:image_name:image_size:shift_x:shift_y");
+            //            }
+            //            else {
+            //            let image_path = v[1];
+            //            let image_size = v[2].parse::<f32>().unwrap();
+            //            let image_shift_x = v[3].parse::<f32>().unwrap();
+            //            let image_shift_y = v[4].parse::<f32>().unwrap();
+            //                                   // let image_size = width_timeline;
+            //            println!("Insert image {}",image_path);
+            //            let image_x = tree.arena[time_line_node.index].x  + image_size   / 2.0 + image_shift_x ;
+            //            let image_y = max_y  - image_size + image_shift_y;
+            //            let mut image = Image::new()
+            //                .set("x", image_x)
+            //                .set("y", image_y)
+            //                .set("width",image_size)
+            //                .set("heigt",image_size)
+            //                .set("href", image_path);
+            //            image.assign(
+            //                    "transform",
+            //                    "rotate(90 ".to_owned() + &image_x.to_string() + " " + &image_y.to_string() + ")",
+            //                );
+            //             g.append(image);
+            //         }
+            //
+            //        }
+            //
+            // };
+
+    }
+}
 
 /// Draw a frame.
 pub fn get_timeline (x: f32, y:f32, w:f32, h:f32, c:String, b:String) -> Path {
