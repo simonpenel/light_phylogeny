@@ -13,7 +13,7 @@ use crate::arena::ArenaTree;
 use crate::arena::Config;
 use crate::arena::Event;
 use crate::arena::PIPEBLOCK;
-use crate::arena::{newick2tree,xml2tree};
+use crate::arena::{newick2tree,xml2tree,get_descendant};
 use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,
     check_contour_postorder_tidy_tree,shift_mod_xy,fusion_mod_xy,set_middle_postorder,real_length,
     set_leaves_y_values,shift_nodes_y_values};
@@ -318,6 +318,29 @@ pub fn phyloxml_processing(
     if options.clado_flag {
         cladogramme(&mut tree);
     }
+
+    // ------------------------------------
+    // Option collapse tree node
+    // ------------------------------------
+    for collapsed_node in &options.collapsed_nodes {
+        let sw = match tree.get_index(collapsed_node.to_string()){
+            Ok(index) => index,
+            Err(_err) => {
+                eprintln!("[recphyloxml_processing] ERROR Unable to find node {:?}",collapsed_node.to_string());
+                std::process::exit(1);
+            },
+        };
+        let mut descendants:Vec<usize> = Vec::new();
+        get_descendant(tree,sw,&mut descendants);
+        for index in descendants {
+            tree.arena[index].visible = false;
+            tree.arena[index].parent = None;
+        }
+        tree.arena[sw].children = Vec::new();
+        tree.arena[sw].collapsed = true;
+    }
+
+
     // ---------------------------------------------------------
     // 2ème étape : Vérifie les contours
     // ---------------------------------------------------------
