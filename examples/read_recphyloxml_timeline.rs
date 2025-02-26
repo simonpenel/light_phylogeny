@@ -33,8 +33,8 @@ fn main() {
     time_line_2.insert("species_13".to_string(),"orange".to_string());
 
     let mut time_line_3 = HashMap::new();
-    time_line_3.insert("PNOVA".to_string(),"blue".to_string());
-    time_line_3.insert("species_12".to_string(),"orange".to_string());
+    time_line_3.insert("PNOVA".to_string(),"@:Mus_musculus_George_Shuklin.jpg:12:23".to_string());
+    time_line_3.insert("species_11".to_string(),"orange".to_string());
     options.time_lines.push(time_line_1);
     options.time_lines.push(time_line_2);
     options.time_lines.push(time_line_3);

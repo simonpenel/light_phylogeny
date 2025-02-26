@@ -16,6 +16,7 @@ use crate::arena::{get_x_span,get_root_distance};
 use svg::Document;
 use svg::node::element::Path;
 use svg::node::element::Circle;
+use svg::node::element::Image;
 use svg::node::element::Style;
 use svg::node::Text;
 use svg::node::element::Element;
@@ -1363,6 +1364,19 @@ pub fn display_timelines(
                            eprintln!("The symbol {} is unknown",time_line_symbol);
                            unknown_symbols = true;
                        }
+                   }
+                   else if time_line_node.color.starts_with('@'){
+                       let v: Vec<&str> = time_line_node.color.split(":").collect();
+                       let imagePath = v[1];
+                       println!("Debug image {}",imagePath);
+                       let image = Image::new()
+                           .set("x", tl_x)
+                           .set("y", max_y + idx_tl * width_timeline + 10.0 + width_timeline / 2.0)
+                           .set("width",100)
+                           .set("heigt",100)
+                           .set("href", imagePath);
+                        g.append(image);
+
                    }
                    else {
                     let chemin = get_timeline(
