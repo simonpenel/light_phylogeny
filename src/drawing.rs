@@ -211,6 +211,24 @@ pub fn draw_tree (
             None => { -1 },
         };
         let  event = &index.e;
+        if index.collapsed {
+            let mut triangle = get_triangle(
+                index.x,
+                index.y,
+                options.squaresize * 2.0,
+                gene_color.to_string(),
+                match index.visible {
+                    false => "0".to_string(),
+                    true =>  config.gene_opacity.to_string(),
+                },
+            );
+            triangle.assign(
+                "transform",
+                "rotate(180 ".to_owned() + &index.x.to_string() + " " + &index.y.to_string() + ")",
+            );
+            g.append(triangle);
+            }
+        else {
         match event {
             Event::Leaf => {
                 g.append(
@@ -286,6 +304,7 @@ pub fn draw_tree (
                     )
                 }
             },
+        };
         };
         match index.is_a_transfert {
             true => {
