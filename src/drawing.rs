@@ -543,7 +543,10 @@ pub fn draw_sptree_gntrees (
                         n.width / 2.0,
                         n.height / 2.0,
                         color_branch_species.clone(),
-                        config.species_opacity.to_string(),
+                        match index.collapsed {
+                            true => "0.0".to_string(),
+                            false => config.species_opacity.to_string(),
+                        },
                     );
                     if sp_tree.arena[p].visible {
                         g.append(chemin2);
@@ -596,7 +599,10 @@ pub fn draw_sptree_gntrees (
                             index.height / 2.0,
                             max_gene_y - index.y,
                             color_branch_species,
-                            config.species_opacity.to_string(),
+                            match index.collapsed {
+                                true => "0.0".to_string(),
+                                false => config.species_opacity.to_string(),
+                            },
                         );
                         if sp_tree.arena[p].visible {
                             g.append(chemin2);
@@ -971,7 +977,7 @@ pub fn draw_sptree_gntrees (
                             true => "0".to_string(),
                             false =>  config.gene_opacity.to_string(),
                         },
-                        
+
                     )
                 ),
                 Event::ObsoleteSpeciationLoss => g.append(
@@ -1224,7 +1230,7 @@ pub fn draw_sptree_gntrees (
 pub fn display_timelines(
         tree: &mut ArenaTree<String>,  // tree
         options: &Options,             // drawing options
-        g: &mut Element,               // svg element 
+        g: &mut Element,               // svg element
         width_timeline: f32            // timeline width
 ){
 
