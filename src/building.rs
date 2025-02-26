@@ -681,6 +681,30 @@ pub fn recphyloxml_processing(
             check_contour_postorder_tidy_tree(&mut sp_tree, root, & options, & config);
         }
     }
+
+    // -------------------------------------------------
+    // Option collapse species tree node; shifting nodes
+    // -------------------------------------------------
+    for collapsed_node in &options.collapsed_nodes {
+        let sw = match sp_tree.get_index(collapsed_node.to_string()){
+            Ok(index) => index,
+            Err(_err) => {
+                eprintln!("[recphyloxml_processing] ERROR Unable to find node {:?}",collapsed_node.to_string());
+                std::process::exit(1);
+            },
+        };
+        println!("DEBUG COLL {}",sp_tree.arena[sw].y);
+        match sp_tree.arena[sw].parent {
+            None => {},
+            Some(p) => {
+                println!("DEBUG COLL 2 {}",sp_tree.arena[p].y);
+                let shift_y = ( sp_tree.arena[sw].y - sp_tree.arena[p].y) / 2.0;
+                sp_tree.arena[sw].y = sp_tree.arena[sw].y - shift_y;
+
+            }
+        }
+
+    }
     // ---------------------------------------------------------
     // Option Scale the heigt if needed
     // ---------------------------------------------------------
