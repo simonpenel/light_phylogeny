@@ -474,22 +474,12 @@ pub fn recphyloxml_processing(
                 std::process::exit(1);
             },
         };
-         make_invisible(sp_tree,gene_trees,sw);
-        println!("DEBUG ==> {} {:?}",collapsed_node,sp_tree.arena[sw]);
+        make_invisible(sp_tree,gene_trees,sw);
         for (idx_tree,idx_node) in  &sp_tree.arena[sw].nodes {
-            println!("DEBUG ==> {} {}",idx_tree,idx_node);
-            println!("DEBUG ==> {:?}",gene_trees[*idx_tree].arena[*idx_node]);
             gene_trees[*idx_tree].arena[*idx_node].collapsed = true;
         }
         sp_tree.arena[sw].children = Vec::new();
         sp_tree.arena[sw].collapsed = true;
-
-        println!("DEBUG2 ==> {} {:?}",collapsed_node,sp_tree.arena[sw]);
-            for (idx_tree,idx_node) in  &sp_tree.arena[sw].nodes {
-                println!("DEBUG2 ==> {} {}",idx_tree,idx_node);
-                println!("DEBUG2 ==> {:?}",gene_trees[*idx_tree].arena[*idx_node]);
-            }
-
     }
 
     // --------------------------------------------------
@@ -681,7 +671,6 @@ pub fn recphyloxml_processing(
             check_contour_postorder_tidy_tree(&mut sp_tree, root, & options, & config);
         }
     }
-
     // -------------------------------------------------
     // Option collapse species tree node; shifting nodes
     // -------------------------------------------------
@@ -693,11 +682,9 @@ pub fn recphyloxml_processing(
                 std::process::exit(1);
             },
         };
-        println!("DEBUG COLL {}",sp_tree.arena[sw].y);
         match sp_tree.arena[sw].parent {
             None => {},
             Some(p) => {
-                println!("DEBUG COLL 2 {}",sp_tree.arena[p].y);
                 let shift_y = ( sp_tree.arena[sw].y - sp_tree.arena[p].y) / 2.0;
                 sp_tree.arena[sw].y = sp_tree.arena[sw].y - shift_y;
 
