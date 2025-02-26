@@ -63,7 +63,7 @@ fn main() {
     let mut pictures = HashMap::new();
     pictures.insert("PNOVA".to_string(),"Mus_musculus_George_Shuklin.png:100:-60:10".to_string());
     pictures.insert("PQUAD".to_string(),"Mus_musculus_George_Shuklin.png:100:-60:10".to_string());
-    pictures.insert("species_17".to_string(),"Mus_musculus_George_Shuklin.png:100:-60:10".to_string());
+    pictures.insert("species_17".to_string(),"Extant_tetrapoda.jpg:300:120:-20".to_string());
     options.pictures =  pictures;
 
     options.time_lines.push(time_line_1);
