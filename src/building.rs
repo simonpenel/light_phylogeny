@@ -326,7 +326,7 @@ pub fn phyloxml_processing(
         let sw = match tree.get_index(collapsed_node.to_string()){
             Ok(index) => index,
             Err(_err) => {
-                eprintln!("[recphyloxml_processing] ERROR Unable to find node {:?}",collapsed_node.to_string());
+                eprintln!("[phyloxml_processing] ERROR Unable to find node {:?}",collapsed_node.to_string());
                 std::process::exit(1);
             },
         };
