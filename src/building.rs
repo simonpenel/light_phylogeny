@@ -13,14 +13,14 @@ use crate::arena::ArenaTree;
 use crate::arena::Config;
 use crate::arena::Event;
 use crate::arena::PIPEBLOCK;
-use crate::arena::{newick2tree,xml2tree};
+use crate::arena::{newick2tree,xml2tree,get_descendant};
 use crate::arena::{knuth_layout,cladogramme,check_contour_postorder,
     check_contour_postorder_tidy_tree,shift_mod_xy,fusion_mod_xy,set_middle_postorder,real_length,
     set_leaves_y_values,shift_nodes_y_values};
 use crate::arena::{map_species_trees,set_species_width,check_vertical_contour_postorder,
     bilan_mappings,bilan_mappings_reti,center_gene_nodes,move_dupli_mappings,move_species_mappings,
     species_uniformisation,process_fl,uniformise_gene_leaves_y_values};
-use crate::arena::{find_sptrees,find_rgtrees,check_for_obsolete,scale_heigth,scale_width};
+use crate::arena::{find_sptrees,find_rgtrees,check_for_obsolete,scale_heigth,scale_width,make_invisible};
 use crate::thirdlevel::{get_gtransfer,optimisation,check_optimisation,classify_transfer,reorder_transfers};
 use crate::drawing::{draw_tree,draw_sptree_gntrees};
 
@@ -318,6 +318,29 @@ pub fn phyloxml_processing(
     if options.clado_flag {
         cladogramme(&mut tree);
     }
+
+    // ------------------------------------
+    // Option collapse tree node
+    // ------------------------------------
+    for collapsed_node in &options.collapsed_nodes {
+        let sw = match tree.get_index(collapsed_node.to_string()){
+            Ok(index) => index,
+            Err(_err) => {
+                eprintln!("[phyloxml_processing] ERROR Unable to find node {:?}",collapsed_node.to_string());
+                std::process::exit(1);
+            },
+        };
+        let mut descendants:Vec<usize> = Vec::new();
+        get_descendant(tree,sw,&mut descendants);
+        for index in descendants {
+            tree.arena[index].visible = false;
+            tree.arena[index].parent = None;
+        }
+        tree.arena[sw].children = Vec::new();
+        tree.arena[sw].collapsed = true;
+    }
+
+
     // ---------------------------------------------------------
     // 2ème étape : Vérifie les contours
     // ---------------------------------------------------------
@@ -439,6 +462,26 @@ pub fn recphyloxml_processing(
         map_species_trees(&mut sp_tree, &mut gene_trees);
         info!("Species tree after mapping : {:?}",sp_tree);
     }
+
+    // ------------------------------------
+    // Option collapse species tree node
+    // ------------------------------------
+    for collapsed_node in &options.collapsed_nodes {
+        let sw = match sp_tree.get_index(collapsed_node.to_string()){
+            Ok(index) => index,
+            Err(_err) => {
+                eprintln!("[recphyloxml_processing] ERROR Unable to find node {:?}",collapsed_node.to_string());
+                std::process::exit(1);
+            },
+        };
+        make_invisible(sp_tree,gene_trees,sw);
+        for (idx_tree,idx_node) in  &sp_tree.arena[sw].nodes {
+            gene_trees[*idx_tree].arena[*idx_node].collapsed = true;
+        }
+        sp_tree.arena[sw].children = Vec::new();
+        sp_tree.arena[sw].collapsed = true;
+    }
+
     // --------------------------------------------------
     //  Option  uniformise les noeuds de l'arbre d'espece
     // --------------------------------------------------
@@ -627,6 +670,27 @@ pub fn recphyloxml_processing(
         if options.tidy{
             check_contour_postorder_tidy_tree(&mut sp_tree, root, & options, & config);
         }
+    }
+    // -------------------------------------------------
+    // Option collapse species tree node; shifting nodes
+    // -------------------------------------------------
+    for collapsed_node in &options.collapsed_nodes {
+        let sw = match sp_tree.get_index(collapsed_node.to_string()){
+            Ok(index) => index,
+            Err(_err) => {
+                eprintln!("[recphyloxml_processing] ERROR Unable to find node {:?}",collapsed_node.to_string());
+                std::process::exit(1);
+            },
+        };
+        match sp_tree.arena[sw].parent {
+            None => {},
+            Some(p) => {
+                let shift_y = ( sp_tree.arena[sw].y - sp_tree.arena[p].y) / 2.0;
+                sp_tree.arena[sw].y = sp_tree.arena[sw].y - shift_y;
+
+            }
+        }
+
     }
     // ---------------------------------------------------------
     // Option Scale the heigt if needed

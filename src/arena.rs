@@ -76,6 +76,8 @@ where
     pub virtualsvg: bool,
     /// Index of the color for the node when the are different colors in a gene
     pub color_node_idx : usize,
+    /// Node is collapsed
+    pub collapsed : bool
 }
 impl<T> Noeud<T>
 where
@@ -109,6 +111,7 @@ where
             visible: true,
             virtualsvg: false,
             color_node_idx: 0,
+            collapsed: false
         }
     }
     /// Set node event.
@@ -456,7 +459,10 @@ pub struct Options{
     /// Fill species tree (may be defined in config as well)
     pub fill_species: bool,
     /// Timelines
-    pub time_lines: Vec<HashMap<String,String>>,
+    pub time_lines: Vec<HashMap<String,String>>,    
+    /// List of nodes to be collapsed
+    pub collapsed_nodes: Vec<String>
+
 }
 impl Options {
     pub fn new() -> Self {
@@ -500,6 +506,7 @@ impl Options {
             switches: Vec::new(),
             fill_species: false,
             time_lines: Vec::new(),
+            collapsed_nodes: Vec::new()
         }
     }
 }
@@ -2475,6 +2482,26 @@ pub fn get_x_span(tree: & ArenaTree<String>, index: usize) -> (f32,f32) {
         if tree.arena[index].x - tree.arena[index].width / 2.0 < min_x { min_x =  tree.arena[index].x - tree.arena[index].width / 2.0 }
         }
     (min_x, max_x)
+}
+
+
+// For each descendant  of a node in a species tree,
+/// set its 'parent' field  to None and 'visible' to false, and
+/// set the 'visible' of associated gene tree to false.
+pub fn make_invisible(tree: &mut ArenaTree<String>,
+    gene_trees: &mut std::vec::Vec<ArenaTree<String>>,
+    index: usize)  {
+    let mut descendants:Vec<usize> = Vec::new();
+    get_descendant(tree,index,&mut descendants);
+    //tree.arena[index].visible = false;
+    for index in descendants {
+        tree.arena[index].visible = false;
+        tree.arena[index].parent = None;
+        for (idx_tree,idx_node) in  &tree.arena[index].nodes {
+            gene_trees[*idx_tree].arena[*idx_node].visible = false;
+
+        }
+    }
 }
 
 #[allow(dead_code)]

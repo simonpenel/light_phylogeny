@@ -211,6 +211,24 @@ pub fn draw_tree (
             None => { -1 },
         };
         let  event = &index.e;
+        if index.collapsed {
+            let mut triangle = get_triangle(
+                index.x,
+                index.y,
+                options.squaresize * 2.0,
+                gene_color.to_string(),
+                match index.visible {
+                    false => "0".to_string(),
+                    true =>  config.gene_opacity.to_string(),
+                },
+            );
+            triangle.assign(
+                "transform",
+                "rotate(180 ".to_owned() + &index.x.to_string() + " " + &index.y.to_string() + ")",
+            );
+            g.append(triangle);
+            }
+        else {
         match event {
             Event::Leaf => {
                 g.append(
@@ -286,6 +304,7 @@ pub fn draw_tree (
                     )
                 }
             },
+        };
         };
         match index.is_a_transfert {
             true => {
@@ -543,7 +562,10 @@ pub fn draw_sptree_gntrees (
                         n.width / 2.0,
                         n.height / 2.0,
                         color_branch_species.clone(),
-                        config.species_opacity.to_string(),
+                        match index.collapsed {
+                            true => "0.0".to_string(),
+                            false => config.species_opacity.to_string(),
+                        },
                     );
                     if sp_tree.arena[p].visible {
                         g.append(chemin2);
@@ -578,7 +600,11 @@ pub fn draw_sptree_gntrees (
                         index.height / 2.0,
                         max_gene_y - index.y,
                         color_branch_species.clone(),
-                        config.species_opacity.to_string(),
+                        match index.collapsed {
+                            true => "0.0".to_string(),
+                            false => config.species_opacity.to_string(),
+                        },
+                        //config.species_opacity.to_string(),
                         options.sthickness,
                     );
                     if sp_tree.arena[p].visible {
@@ -592,7 +618,10 @@ pub fn draw_sptree_gntrees (
                             index.height / 2.0,
                             max_gene_y - index.y,
                             color_branch_species,
-                            config.species_opacity.to_string(),
+                            match index.collapsed {
+                                true => "0.0".to_string(),
+                                false => config.species_opacity.to_string(),
+                            },
                         );
                         if sp_tree.arena[p].visible {
                             g.append(chemin2);
@@ -836,7 +865,7 @@ pub fn draw_sptree_gntrees (
                                     n.y,
                                     gene_color.to_string(),
                                     config.gene_opacity.to_string(),
-                                    false,
+                                    index.collapsed,
                                     options.gthickness,
                                 )
                             }
@@ -891,8 +920,9 @@ pub fn draw_sptree_gntrees (
                     g.append(triangle);
                  },
              };
-             // Dessine le symbole associe au noeud
-             let  event = &index.e;
+            // Dessine le symbole associe au noeud
+            let  event = &index.e;
+            if index.visible {
              match event {
                 Event::Leaf => g.append(
                     get_half_circle(
@@ -961,7 +991,12 @@ pub fn draw_sptree_gntrees (
                         index.y,
                         options.squaresize * 0.75,
                         gene_color.to_string(),
-                        config.gene_opacity.to_string(),
+                        // Pas d'affichage de speciation dans les noeuds collapses
+                        match index.collapsed {
+                            true => "0".to_string(),
+                            false =>  config.gene_opacity.to_string(),
+                        },
+
                     )
                 ),
                 Event::ObsoleteSpeciationLoss => g.append(
@@ -984,7 +1019,9 @@ pub fn draw_sptree_gntrees (
                 ),
                 _ =>  {},
             };
+        };
             // Affiche le texte associe au noeud
+            if index.visible {
             match event {
                 Event::Leaf => {
                     let mut element = Element::new("text");
@@ -1031,6 +1068,7 @@ pub fn draw_sptree_gntrees (
                     }
                 },
             }
+        }
         }
         idx_rcgen += 1;
         if idx_rcgen == nb_gntree {
@@ -1211,7 +1249,7 @@ pub fn draw_sptree_gntrees (
 pub fn display_timelines(
         tree: &mut ArenaTree<String>,  // tree
         options: &Options,             // drawing options
-        g: &mut Element,               // svg element 
+        g: &mut Element,               // svg element
         width_timeline: f32            // timeline width
 ){
 
