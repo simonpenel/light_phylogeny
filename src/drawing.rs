@@ -1448,10 +1448,12 @@ pub fn display_pictures(
                     .set("width",image_size)
                     .set("heigt",image_size)
                     .set("href", image_path);
-                image.assign(
-                    "transform",
-                    "rotate(90 ".to_owned() + &image_x.to_string() + " " + &image_y.to_string() + ")",
-                );
+                if options.rotate {    
+                    image.assign(
+                        "transform",
+                        "rotate(90 ".to_owned() + &image_x.to_string() + " " + &image_y.to_string() + ")",
+                    );
+                }
                 g.append(image);
             },
         }
