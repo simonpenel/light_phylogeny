@@ -1435,8 +1435,8 @@ pub fn display_pictures(
                 let image_shift_x = v[2].parse::<f32>().unwrap();
                 let image_shift_y = v[3].parse::<f32>().unwrap();
                 println!("Insert image {}",image_path);
-                let image_x = tree.arena[node].x  + image_size   / 2.0 + image_shift_x ;
-                let image_y = tree.arena[node].y  - image_size + image_shift_y;
+                let image_x = tree.arena[node].x   + image_shift_x ;
+                let image_y = tree.arena[node].y   + image_shift_y;                
                 let mut image = Image::new()
                     .set("x", image_x)
                     .set("y", image_y)
