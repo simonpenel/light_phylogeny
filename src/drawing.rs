@@ -1419,12 +1419,10 @@ pub fn display_pictures(
         g: &mut Element,               // svg element
     ){
     for (node_name, picture) in options.pictures.iter() {
-        println!("debug {} {}",node_name,picture);
         let node = tree.get_index(node_name.to_string());
         match node {
             Err(_err) => eprintln!("There is no node named {}",node_name),
             Ok(node) => {
-                println!("debug2 {} {}",node,picture);
                 let v: Vec<&str> = picture.split(":").collect();
                 if v.len() < 4  {
                     eprintln!("ERROR : Wrong format in timeline image  : {}",picture);
