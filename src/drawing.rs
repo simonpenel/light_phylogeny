@@ -412,6 +412,13 @@ pub fn draw_tree (
             }
         }
     }
+    // Affiche les images.
+    display_pictures(
+        tree,   // species tree
+        options,   // drawing options
+        &mut g,
+    );
+
     // Note : simple tree
     let mut transfo: String = "translate(  ".to_owned();
     transfo.push_str(&( x_viewbox).to_string());
