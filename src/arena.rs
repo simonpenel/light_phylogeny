@@ -464,7 +464,7 @@ pub struct Options{
     pub pictures: HashMap<String,String>,
     /// List of nodes to be collapsed
     pub collapsed_nodes: Vec<String>,
-    /// Species tree compression factor
+    /// Species tree compression factor ( high factor = low compression , 0 = maximum compression)
     pub species_compression: f32
 
 }
@@ -512,7 +512,7 @@ impl Options {
             time_lines: Vec::new(),
             pictures: HashMap::new(),
             collapsed_nodes: Vec::new(),
-            species_compression: 1.0
+            species_compression: 0.0
         }
     }
 }
