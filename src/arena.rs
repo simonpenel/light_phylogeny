@@ -2031,8 +2031,8 @@ pub fn push_down (tree: &mut ArenaTree<String>, parent: usize, left: usize, righ
     let node_parent_down_pos = node_ypos(tree, parent, 1);
     let node_left_up_pos = node_ypos(tree, left, -1);
     let node_right_up_pos = node_ypos(tree, right, -1);
-    if (node_left_up_pos <=  node_parent_down_pos  + 1.0 * PIPEBLOCK ) ||
-       (node_right_up_pos <=  node_parent_down_pos + 1.0 * PIPEBLOCK) {
+    if (node_left_up_pos <=  node_parent_down_pos ) ||
+       (node_right_up_pos <= node_parent_down_pos ) {
         let shift_left = node_parent_down_pos - node_left_up_pos ;
         let shift_right = node_parent_down_pos - node_right_up_pos ;
         let mut shift_down = match shift_left > shift_right {
