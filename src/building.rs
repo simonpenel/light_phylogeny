@@ -569,7 +569,7 @@ pub fn recphyloxml_processing(
     // l'arbre d'espèces
     // ---------------------------------------------------------
     if ! options.real_length_flag {
-        check_vertical_contour_postorder(&mut sp_tree, root, 0.0);
+        check_vertical_contour_postorder(&mut sp_tree, root, 0.0, &options.species_compression);
     }
     // Processing  recphyloxml hybrids if present
     let hybrids = get_hybridation(& sp_tree);

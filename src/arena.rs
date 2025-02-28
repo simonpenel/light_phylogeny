@@ -463,7 +463,9 @@ pub struct Options{
     /// Pictures
     pub pictures: HashMap<String,String>,
     /// List of nodes to be collapsed
-    pub collapsed_nodes: Vec<String>
+    pub collapsed_nodes: Vec<String>,
+    /// Species tree compression factor
+    pub species_compression: f32
 
 }
 impl Options {
@@ -509,7 +511,8 @@ impl Options {
             fill_species: false,
             time_lines: Vec::new(),
             pictures: HashMap::new(),
-            collapsed_nodes: Vec::new()
+            collapsed_nodes: Vec::new(),
+            species_compression: 1.0
         }
     }
 }
@@ -2012,7 +2015,7 @@ pub fn  explore_postorder(tree: &mut ArenaTree<String>, index: usize) {
     }
 }
 /// Solve the conflicts between a parent and its children in a tree  (species pipe tree only).
-pub fn  check_vertical_contour_postorder(tree: &mut ArenaTree<String>, index: usize, ymod: f32) {
+pub fn  check_vertical_contour_postorder(tree: &mut ArenaTree<String>, index: usize, ymod: f32, compression: & f32) {
     let children  = &mut  tree.arena[index].children;
     if children.len() > 0 {
         let left = children[0];
@@ -2020,19 +2023,19 @@ pub fn  check_vertical_contour_postorder(tree: &mut ArenaTree<String>, index: us
         debug!("[check_vertical_contour_postorder] Father = {} (ymod = {} ) , Left = {}, Right = {}",
             tree.arena[index].name, tree.arena[index].ymod, tree.arena[left].name,
             tree.arena[right].name);
-        push_down(tree, index, left, right);
-        check_vertical_contour_postorder(tree, left, tree.arena[left].ymod + 0.0 *  ymod);
-        check_vertical_contour_postorder(tree, right, tree.arena[right].ymod + 0.0 * ymod);
+        push_down(tree, index, left, right,compression);
+        check_vertical_contour_postorder(tree, left, tree.arena[left].ymod + 0.0 *  ymod, compression);
+        check_vertical_contour_postorder(tree, right, tree.arena[right].ymod + 0.0 * ymod, compression);
     }
 }
 /// Check for conficts between parents and children and shift down nodes in order to solve
 /// detected conflicts (species pipe tree only).
-pub fn push_down (tree: &mut ArenaTree<String>, parent: usize, left: usize, right: usize) {
+pub fn push_down (tree: &mut ArenaTree<String>, parent: usize, left: usize, right: usize, compression: & f32) {
     let node_parent_down_pos = node_ypos(tree, parent, 1);
     let node_left_up_pos = node_ypos(tree, left, -1);
     let node_right_up_pos = node_ypos(tree, right, -1);
-    if (node_left_up_pos <=  node_parent_down_pos ) ||
-       (node_right_up_pos <= node_parent_down_pos ) {
+    if (node_left_up_pos <=  node_parent_down_pos + compression *  PIPEBLOCK ) ||
+       (node_right_up_pos <= node_parent_down_pos + compression *  PIPEBLOCK ) {
         let shift_left = node_parent_down_pos - node_left_up_pos ;
         let shift_right = node_parent_down_pos - node_right_up_pos ;
         let mut shift_down = match shift_left > shift_right {
@@ -2043,7 +2046,7 @@ pub fn push_down (tree: &mut ArenaTree<String>, parent: usize, left: usize, righ
             shift_down = PIPEBLOCK;
         }
         // TODO configurable
-        let shift_down = shift_down + 4.0 * PIPEBLOCK;
+        let shift_down = shift_down + ( compression + 4.0 ) * PIPEBLOCK;
         debug!("[push_down] CONFLIT AT SPEC NODE {}: parent y = {} ymod = {} down = {} left up = {} right up = {} => shift = {}",
             tree.arena[parent].name, tree.arena[parent].y, tree.arena[parent].ymod,
             node_parent_down_pos, node_left_up_pos, node_right_up_pos, shift_down);
