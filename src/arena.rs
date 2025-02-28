@@ -2046,7 +2046,7 @@ pub fn push_down (tree: &mut ArenaTree<String>, parent: usize, left: usize, righ
             shift_down = PIPEBLOCK;
         }
         // TODO configurable
-        let shift_down = shift_down + ( compression + 4.0 ) * PIPEBLOCK;
+        let shift_down = shift_down + ( compression + 1.0 ) * PIPEBLOCK;
         debug!("[push_down] CONFLIT AT SPEC NODE {}: parent y = {} ymod = {} down = {} left up = {} right up = {} => shift = {}",
             tree.arena[parent].name, tree.arena[parent].y, tree.arena[parent].ymod,
             node_parent_down_pos, node_left_up_pos, node_right_up_pos, shift_down);
