@@ -39,7 +39,7 @@ phyloXML, recPhyloXML, rooted newick (NHX tags will not be considered).
 For output examples, please see the thirdkind home page  https://github.com/simonpenel/thirdkind/wiki
 
 
-# Using the API:
+# Using the library:
 
 https://crates.io/crates/light_phylogeny
 
