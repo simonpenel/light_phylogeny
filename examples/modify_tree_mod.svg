@@ -1,0 +1,64 @@
+<svg height="315" style="background-color:White" viewBox="-7.5 52.5 515 435" width="395" xmlns="http://www.w3.org/2000/svg">
+<style>
+.gene { font-size: 10px; fill:blue; } .support { font-size: 10px; fill: red; } .branch { font-size: 10px; fill: black; }
+</style>
+<style>
+
+</style>
+<g transform="translate(  -7.5 370) rotate(-90 0 0 ) ">
+<circle cx="187.5" cy="60" fill="blue" opacity="0.9" r="4.5" stroke="blue" stroke-width="1"/>
+<text class="gene" transform="rotate(90 182.5,70)" x="182.5" y="70">
+MyRoot
+</text>
+<path d="M60,300 L60,240 L90,240" fill="none" opacity="0.9" stroke="blue" stroke-width="3"/>
+<circle cx="60" cy="300" fill="blue" opacity="0.9" r="4.5" stroke="blue" stroke-width="1"/>
+<text class="gene" transform="rotate(90 55,310)" x="60" y="310">
+Gene A1
+</text>
+<path d="M120,300 L120,240 L90,240" fill="none" opacity="0.9" stroke="blue" stroke-width="3"/>
+<circle cx="120" cy="300" fill="blue" opacity="0.9" r="4.5" stroke="blue" stroke-width="1"/>
+<text class="gene" transform="rotate(90 115,310)" x="120" y="310">
+Gene A2
+</text>
+<path d="M90,240 L90,180 L150,180" fill="none" opacity="0.9" stroke="blue" stroke-width="3"/>
+<circle cx="90" cy="240" fill="blue" opacity="0.9" r="4.5" stroke="blue" stroke-width="1"/>
+<text class="gene" transform="rotate(90 85,250)" x="85" y="250">
+Gene A
+</text>
+<path d="M180,300 L180,240 L210,240" fill="none" opacity="0.9" stroke="blue" stroke-width="3"/>
+<circle cx="180" cy="300" fill="blue" opacity="0.9" r="4.5" stroke="blue" stroke-width="1"/>
+<text class="gene" transform="rotate(90 175,310)" x="180" y="310">
+Gene B1
+</text>
+<path d="M240,300 L240,240 L210,240" fill="none" opacity="0.9" stroke="blue" stroke-width="3"/>
+<circle cx="240" cy="300" fill="blue" opacity="0.9" r="4.5" stroke="blue" stroke-width="1"/>
+<text class="gene" transform="rotate(90 235,310)" x="240" y="310">
+Gene B2
+</text>
+<path d="M210,240 L210,180 L150,180" fill="none" opacity="0.9" stroke="blue" stroke-width="3"/>
+<circle cx="210" cy="240" fill="blue" opacity="0.9" r="4.5" stroke="blue" stroke-width="1"/>
+<text class="gene" transform="rotate(90 205,250)" x="205" y="250">
+Gene B
+</text>
+<path d="M75,120 L75,60 L187.5,60" fill="none" opacity="0.9" stroke="blue" stroke-width="3"/>
+<circle cx="75" cy="120" fill="blue" opacity="0.9" r="4.5" stroke="blue" stroke-width="1"/>
+<text class="gene" transform="rotate(90 70,130)" x="70" y="130">
+Gene C
+</text>
+<path d="M300,300 L300,60 L187.5,60" fill="none" opacity="0.9" stroke="blue" stroke-width="3"/>
+<circle cx="300" cy="300" fill="blue" opacity="0.9" r="4.5" stroke="blue" stroke-width="1"/>
+<text class="gene" transform="rotate(90 295,310)" x="300" y="310">
+Gene D
+</text>
+<path d="M0,270 L0,120 L75,120" fill="none" opacity="0.9" stroke="blue" stroke-width="3"/>
+<path d="M0,264 l0,12 M-6,270 l12,0" fill="blue" opacity="0.9" stroke="blue" stroke-width="3" transform="rotate(45 0 270)"/>
+<text class="gene" transform="rotate(90 -5,280)" x="0" y="280">
+Loss
+</text>
+<path d="M150,180 L150,120 L75,120" fill="none" opacity="0.9" stroke="blue" stroke-width="3"/>
+<circle cx="150" cy="180" fill="blue" opacity="0.9" r="4.5" stroke="blue" stroke-width="1"/>
+<text class="gene" transform="rotate(90 145,190)" x="145" y="190">
+Added up to  B
+</text>
+</g>
+</svg>
