@@ -8,11 +8,12 @@
 
 # light_phylogeny is a rust library dedicated to phylogeny.
 
-You may :
 
-- Read, build, modify and displays as svg reconciled phylogenetic trees.
+- Read, build, modify and displays as svg  phylogenetic trees.
 
-- Drawing reconciled phylogenetic trees allowing 1, 2 or 3 reconciliation levels
+- Draw  phylogenetic trees
+
+- Draw reconciled phylogenetic trees allowing 1, 2 or 3 reconciliation levels
 
 - Build a svg representation of a phylogenetic reconciled (or not) tree with events (loss, duplication, speciation, transfer).
 
@@ -22,9 +23,9 @@ You may :
 
 - Read a newick or phyloxml file: create a svg representation of the gene tree only.
 
-You may use light_phylogeny functions and methods to build, manipulate, modify or draw phylogenetic trees.
+You can use light_phylogeny functions and methods to build, manipulate, modify or draw phylogenetic trees.
 
-You may use the "thirdkind" software  https://github.com/simonpenel/thirdkind/wiki  based on 'light_phylogeny' to represent  trees with 1, 2 or 3 reconciliation levels
+You can use the "thirdkind" software  https://github.com/simonpenel/thirdkind/wiki  based on 'light_phylogeny' to represent  trees with 1, 2 or 3 reconciliation levels
 
 Keywords:  phylogeny, reconciled trees, phylogenetic trees
 
