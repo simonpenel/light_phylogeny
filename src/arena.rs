@@ -831,7 +831,12 @@ pub fn xml2tree (
             let mut sploss_num = 0; // pour le format obsolete
             let current_sploss_name = parent;
             for evenement in child.children() {
+                let mut flag_correct_tag_found = true;
+                if evenement.is_element() {
+                    flag_correct_tag_found = false;
+                }
                 if evenement.has_tag_name("speciationLoss"){
+                    flag_correct_tag_found = true;
                     // speciationLoss is obsolete and need a special processing: adding 2 nodes,
                     // one of them  being a loss
                     info!("[xml2tree] Find obsolete tag speciationLoss (# {})", sploss_num);
@@ -896,6 +901,7 @@ pub fn xml2tree (
                     panic!("Warning: taxon 'speciationOut' is obsolete");
                 }
                 if evenement.has_tag_name("loss"){
+                    flag_correct_tag_found = true;
                     event_num += 1;
                     info!("[xml2tree] event Nb {} = {:?}",event_num,evenement);
                     tree.arena[parent].set_event(Event::Loss);
@@ -907,6 +913,7 @@ pub fn xml2tree (
                     tree.arena[parent].location = location.to_string();
                 }
                 if evenement.has_tag_name("leaf"){
+                    flag_correct_tag_found = true;
                     event_num += 1;
                     info!("[xml2tree] event Nb {} = {:?}",event_num,evenement);
                     // TODO
@@ -959,6 +966,7 @@ pub fn xml2tree (
                     }
                 }
                 if evenement.has_tag_name("speciation"){
+                    flag_correct_tag_found = true;
                     event_num += 1;
                     info!("[xml2tree] event Nb {} = {:?}", event_num, evenement);
                     tree.arena[parent].set_event(Event::Speciation);
@@ -972,6 +980,7 @@ pub fn xml2tree (
                     tree.arena[parent].location = location.to_string();
                 }
                 if evenement.has_tag_name("duplication"){
+                    flag_correct_tag_found = true;
                     event_num += 1;
                     info!("[xml2tree] event Nb {} = {:?}", event_num, evenement);
                     tree.arena[parent].set_event(Event::Duplication);
@@ -985,6 +994,7 @@ pub fn xml2tree (
                     tree.arena[parent].location = location.to_string();
                 }
                 if evenement.has_tag_name("branchingOut"){
+                    flag_correct_tag_found = true;
                     event_num += 1;
                     info!("[xml2tree] event Nb {} = {:?}", event_num, evenement);
                     tree.arena[parent].set_event(Event::BranchingOut);
@@ -1000,6 +1010,7 @@ pub fn xml2tree (
                 // TODO
                 // a verifier
                 if evenement.has_tag_name("transferBack"){
+                    flag_correct_tag_found = true;
                     // Ici on plusieurs evenements
                     // Par exemple
                     // <eventsRec>
@@ -1030,6 +1041,7 @@ pub fn xml2tree (
                 }
                 // TODO
                 if evenement.has_tag_name("bifurcationOut"){
+                    flag_correct_tag_found = true;
                     event_num += 1;
                     info!("[xml2tree] event Nb {} = {:?}", event_num, evenement);
                     tree.arena[parent].set_event(Event::BifurcationOut);
@@ -1050,6 +1062,24 @@ pub fn xml2tree (
                     // assert_eq!(evenement.attributes()[0].name(),"destinationSpecies");
                     // let location = evenement.attributes()[0].value();
                     // tree.arena[parent].location = location.to_string();
+                }
+                if flag_correct_tag_found == false {
+                    eprintln!("\nERROR: The event [{:?}] is not a recPhyloXML standard event.",evenement.tag_name());
+                    eprintln!("         The recPhyloXML  standard events are :");
+                    eprintln!("         - leaf");
+                    eprintln!("         - loss");
+                    eprintln!("         - speciation");
+                    eprintln!("         - duplication");
+                    eprintln!("         - branchingOut");
+                    eprintln!("         - transferBack");
+                    eprintln!("         - bifurcationOut");
+                    eprintln!("         - speciationLoss (obsolete)");
+                    eprintln!("        See  http://phylariane.univ-lyon1.fr/recphyloxml/");
+                    eprintln!("             Note : Unlike the example given in http://phylariane.univ-lyon1.fr/recphyloxml/#bifurcationout-tag");
+                    eprintln!("             the species tree is not modified by the bifurcationOut event for the moment.");
+                    // example species tree is not modified ")
+
+                    process::exit(1)
                 }
             }
             info!("[xml2tree]Event closed");
