@@ -1075,9 +1075,6 @@ pub fn xml2tree (
                     eprintln!("         - bifurcationOut");
                     eprintln!("         - speciationLoss (obsolete)");
                     eprintln!("        See  http://phylariane.univ-lyon1.fr/recphyloxml/");
-                    eprintln!("             Note : Unlike the example given in http://phylariane.univ-lyon1.fr/recphyloxml/#bifurcationout-tag");
-                    eprintln!("             the species tree is not modified by the bifurcationOut event for the moment.");
-                    // example species tree is not modified ")
 
                     process::exit(1)
                 }
