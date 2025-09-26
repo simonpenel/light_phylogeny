@@ -783,10 +783,16 @@ pub fn draw_sptree_gntrees (
             }
             // Dessine le chemin du noeud a son pere
             match index.parent {
-                 Some(p) => {
+                Some(p) => {
                     let n = &gene_trees[idx_rcgen].arena[p];
+
+                    // Pour gerer les bifurcation out. A ameliorer
+                    let new_gene_color = match index.e {
+                        Event::BifurcationOut => "yellow".to_string(),
+                        _ => gene_color.clone(),
+                    };
                      // La forme du chemin depend de l'evenement
-                     let chemin = match index.is_a_transfert {
+                    let chemin = match index.is_a_transfert {
                         true => {
                             // Si  flag thickness, les transfers sont affiches plus tard,
                             // selon leur redondance
@@ -801,7 +807,7 @@ pub fn draw_sptree_gntrees (
                                     index.y,
                                     n.x,
                                     n.y,
-                                    gene_color.to_string(),
+                                    new_gene_color.to_string(),
                                     transfer_opacity,
                                     config.bezier.to_string().parse::<f32>().unwrap(),
                                     1,
@@ -812,7 +818,7 @@ pub fn draw_sptree_gntrees (
                                     index.y,
                                     n.x,
                                     n.y,
-                                    gene_color.to_string(),
+                                    new_gene_color.to_string(),
                                     transfer_opacity,
                                     config.bezier.to_string().parse::<f32>().unwrap(),
                                     2,
@@ -827,7 +833,7 @@ pub fn draw_sptree_gntrees (
                                             index.y,
                                             n.x,
                                             n.y,
-                                            gene_color.to_string(),
+                                            new_gene_color.to_string(),
                                             transfer_opacity,
                                             config.bezier.to_string().parse::<f32>().unwrap(),
                                             1,
@@ -848,7 +854,7 @@ pub fn draw_sptree_gntrees (
                                                 index.y,
                                                 nnn.x,
                                                 nnn.y,
-                                                gene_color.to_string(),
+                                                new_gene_color.to_string(),
                                                 1.0.to_string(),
                                                 config.bezier.to_string().parse::<f32>().unwrap(),
                                                 1,
@@ -871,7 +877,7 @@ pub fn draw_sptree_gntrees (
                                     index.y,
                                     n.x,
                                     n.y,
-                                    gene_color.to_string(),
+                                    new_gene_color.to_string(),
                                     config.gene_opacity.to_string(),
                                     index.collapsed,
                                     options.gthickness,
@@ -888,7 +894,7 @@ pub fn draw_sptree_gntrees (
                                         index.y,
                                         n.x,
                                         n.y,
-                                        gene_color.to_string(),
+                                        new_gene_color.to_string(),
                                         free_opacity.to_string(),
                                         false,
                                         options.gthickness,
@@ -902,7 +908,7 @@ pub fn draw_sptree_gntrees (
                                         index.y,
                                         n.x,
                                         n.y,
-                                        gene_color.to_string(),
+                                        new_gene_color.to_string(),
                                         free_opacity.to_string(),
                                         config.bezier.to_string().parse::<f32>().unwrap(),
                                         3,
@@ -985,10 +991,10 @@ pub fn draw_sptree_gntrees (
                 },
                 // Est ce que BifurcationOut existe encore ???
                 Event::BifurcationOut => g.append(
-                    get_carre(
+                    get_empty_circle(
                         index.x,
                         index.y,
-                        options.squaresize,
+                        options.squaresize * 1.2,
                         "yellow".to_string(),
                         config.gene_opacity.to_string(),
                     )
