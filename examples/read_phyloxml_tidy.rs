@@ -1,4 +1,4 @@
-use light_phylogeny::{ArenaTree,Options,Config,read_phyloxml,phyloxml_processing};
+use light_phylogeny::{phyloxml_processing, read_phyloxml, ArenaTree, Config, Options};
 
 fn main() {
     // landscape
@@ -12,7 +12,12 @@ fn main() {
     // options.branch = true;
     let config: Config = Config::new();
     read_phyloxml("examples/apaf_name.xml".to_string(), &mut tree);
-    phyloxml_processing(&mut tree, &options, &config,"read_phyloxml_dist_real.svg".to_string());
+    phyloxml_processing(
+        &mut tree,
+        &options,
+        &config,
+        "read_phyloxml_dist_real.svg".to_string(),
+    );
     println!("Please open output file 'read_phyloxml_dist_real.svg' with your browser");
 
     // landscape + tidy
@@ -27,9 +32,13 @@ fn main() {
     // options.branch = true;
     let config: Config = Config::new();
     read_phyloxml("examples/apaf_name.xml".to_string(), &mut tree);
-    phyloxml_processing(&mut tree, &options, &config,"read_phyloxml_dist_real_tidy.svg".to_string());
+    phyloxml_processing(
+        &mut tree,
+        &options,
+        &config,
+        "read_phyloxml_dist_real_tidy.svg".to_string(),
+    );
     println!("Please open output file 'read_phyloxml_dist_real_tidy.svg' with your browser");
-
 
     // portrait
     let mut tree: ArenaTree<String> = ArenaTree::default();
@@ -42,7 +51,12 @@ fn main() {
     // options.branch = true;
     let config: Config = Config::new();
     read_phyloxml("examples/apaf_name.xml".to_string(), &mut tree);
-    phyloxml_processing(&mut tree, &options, &config,"read_phyloxml_dist_real_portrait.svg".to_string());
+    phyloxml_processing(
+        &mut tree,
+        &options,
+        &config,
+        "read_phyloxml_dist_real_portrait.svg".to_string(),
+    );
     println!("Please open output file 'read_phyloxml_dist_real_portrait.svg' with your browser");
 
     // portrait + tidy
@@ -57,7 +71,13 @@ fn main() {
     // options.branch = true;
     let config: Config = Config::new();
     read_phyloxml("examples/apaf_name.xml".to_string(), &mut tree);
-    phyloxml_processing(&mut tree, &options, &config,"read_phyloxml_dist_real_tidy_portrait.svg".to_string());
-    println!("Please open output file 'read_phyloxml_dist_real_tidy_portrait.svg' with your browser");
-
+    phyloxml_processing(
+        &mut tree,
+        &options,
+        &config,
+        "read_phyloxml_dist_real_tidy_portrait.svg".to_string(),
+    );
+    println!(
+        "Please open output file 'read_phyloxml_dist_real_tidy_portrait.svg' with your browser"
+    );
 }

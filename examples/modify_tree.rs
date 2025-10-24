@@ -1,5 +1,7 @@
-use light_phylogeny::{ArenaTree,Options,Config,Event,add_child,move_child,phyloxml_processing,
-    summary,reset_pos};
+use light_phylogeny::{
+    add_child, move_child, phyloxml_processing, reset_pos, summary, ArenaTree, Config, Event,
+    Options,
+};
 fn main() {
     let mut tree: ArenaTree<String> = ArenaTree::default();
     let mut options: Options = Options::new();
@@ -34,25 +36,30 @@ fn main() {
     summary(&mut tree);
     // Set hierarchy
     //  a1 and a2 are children of a
-    add_child(&mut tree,a,a1);
-    add_child(&mut tree,a,a2);
+    add_child(&mut tree, a, a1);
+    add_child(&mut tree, a, a2);
     //  a1 and a2 are children of a
-    add_child(&mut tree,b,b1);
-    add_child(&mut tree,b,b2);
+    add_child(&mut tree, b, b1);
+    add_child(&mut tree, b, b2);
     // a and b are children of c
-    add_child(&mut tree,c,a);
-    add_child(&mut tree,c,b);
+    add_child(&mut tree, c, a);
+    add_child(&mut tree, c, b);
     // c and d are children of root
-    add_child(&mut tree,root,c);
-    add_child(&mut tree,root,d);
+    add_child(&mut tree, root, c);
+    add_child(&mut tree, root, d);
 
     println!("");
     println!("Tree after hierarchy attribution:");
     summary(&mut tree);
     // Display internal nodes
-    options.gene_internal = true ;
+    options.gene_internal = true;
 
-    phyloxml_processing(&mut tree, &options, &config,"modify_tree_ini.svg".to_string());
+    phyloxml_processing(
+        &mut tree,
+        &options,
+        &config,
+        "modify_tree_ini.svg".to_string(),
+    );
     // knuth_layout(&mut tree,root, &mut 1);
     // cladogramme(&mut tree);
     // check_contour_postorder(&mut tree, root);
@@ -64,7 +71,7 @@ fn main() {
     let loss = tree.new_node("loss".to_string());
     tree.arena[loss].name = "Loss".to_string();
     tree.arena[loss].e = Event::Loss;
-    add_child(&mut tree,c,loss);
+    add_child(&mut tree, c, loss);
 
     println!("Add a node up to  B");
     let add = tree.new_node("add".to_string());
@@ -79,7 +86,12 @@ fn main() {
     println!("Tree after hierarchy modification:");
     summary(&mut tree);
     reset_pos(&mut tree);
-    phyloxml_processing(&mut tree, &options, &config,"modify_tree_mod.svg".to_string());
+    phyloxml_processing(
+        &mut tree,
+        &options,
+        &config,
+        "modify_tree_mod.svg".to_string(),
+    );
 
     // knuth_layout(&mut tree,root, &mut 1);
     // cladogramme(&mut tree);

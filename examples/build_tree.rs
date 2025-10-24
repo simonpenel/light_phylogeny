@@ -1,4 +1,4 @@
-use light_phylogeny::{ArenaTree,Options,Config,Event,phyloxml_processing,summary};
+use light_phylogeny::{phyloxml_processing, summary, ArenaTree, Config, Event, Options};
 fn main() {
     let mut tree: ArenaTree<String> = ArenaTree::default();
     let mut options: Options = Options::new();
@@ -50,10 +50,13 @@ fn main() {
     // set duplication
     tree.arena[a].e = Event::Duplication;
     println!("");
-    println!("Event associated to gene {} ({}) : {:?}",a,tree.arena[a].name,tree.arena[a].e);
+    println!(
+        "Event associated to gene {} ({}) : {:?}",
+        a, tree.arena[a].name, tree.arena[a].e
+    );
     // Display internal nodes
-    options.gene_internal = true ;
-    phyloxml_processing(&mut tree, &options, &config,"build_tree.svg".to_string());
+    options.gene_internal = true;
+    phyloxml_processing(&mut tree, &options, &config, "build_tree.svg".to_string());
     println!("Please open output file 'build_tree.svg' with your browser");
     println!("OK.");
 }

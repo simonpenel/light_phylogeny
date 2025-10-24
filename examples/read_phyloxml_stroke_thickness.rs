@@ -1,15 +1,18 @@
-use light_phylogeny::{ArenaTree,Options,Config,read_phyloxml,phyloxml_processing};
+use light_phylogeny::{phyloxml_processing, read_phyloxml, ArenaTree, Config, Options};
 
 fn main() {
-
     let mut tree: ArenaTree<String> = ArenaTree::default();
     let mut options: Options = Options::new();
     options.rotate = false;
     let config: Config = Config::new();
     read_phyloxml("examples/FAM036542_gene.xml".to_string(), &mut tree);
-    phyloxml_processing(&mut tree, &options, &config,"read_phyloxml_stroke_thickness_1.svg".to_string());
+    phyloxml_processing(
+        &mut tree,
+        &options,
+        &config,
+        "read_phyloxml_stroke_thickness_1.svg".to_string(),
+    );
     println!("Please open output file 'read_phyloxml_stroke_thickness_1.svg' with your browser");
-
 
     let mut tree: ArenaTree<String> = ArenaTree::default();
     let mut options: Options = Options::new();
@@ -17,7 +20,12 @@ fn main() {
     options.gthickness = 1;
     let config: Config = Config::new();
     read_phyloxml("examples/FAM036542_gene.xml".to_string(), &mut tree);
-    phyloxml_processing(&mut tree, &options, &config,"read_phyloxml_stroke_thickness_2.svg".to_string());
+    phyloxml_processing(
+        &mut tree,
+        &options,
+        &config,
+        "read_phyloxml_stroke_thickness_2.svg".to_string(),
+    );
     println!("Please open output file 'read_phyloxml_stroke_thickness_2.svg' with your browser");
 
     let mut tree: ArenaTree<String> = ArenaTree::default();
@@ -26,7 +34,12 @@ fn main() {
     options.gthickness = 6;
     let config: Config = Config::new();
     read_phyloxml("examples/FAM036542_gene.xml".to_string(), &mut tree);
-    phyloxml_processing(&mut tree, &options, &config,"read_phyloxml_stroke_thickness_3.svg".to_string());
+    phyloxml_processing(
+        &mut tree,
+        &options,
+        &config,
+        "read_phyloxml_stroke_thickness_3.svg".to_string(),
+    );
     println!("Please open output file 'read_phyloxml_stroke_thickness_3.svg' with your browser");
 
     let mut tree: ArenaTree<String> = ArenaTree::default();
@@ -36,8 +49,11 @@ fn main() {
     options.squaresize = 15.0;
     let config: Config = Config::new();
     read_phyloxml("examples/FAM036542_gene.xml".to_string(), &mut tree);
-    phyloxml_processing(&mut tree, &options, &config,"read_phyloxml_stroke_thickness_4.svg".to_string());
+    phyloxml_processing(
+        &mut tree,
+        &options,
+        &config,
+        "read_phyloxml_stroke_thickness_4.svg".to_string(),
+    );
     println!("Please open output file 'read_phyloxml_stroke_thickness_4.svg' with your browser");
-
-
 }
